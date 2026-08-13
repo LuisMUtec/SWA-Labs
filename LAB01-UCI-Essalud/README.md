@@ -50,11 +50,67 @@ El piloto arranca en **Lima y sus distritos**, con proyección a escalar a nivel
 
 ## 2. Usuarios / Clientes del Sistema
 
-> Identificación de los actores que interactúan con el sistema. Completar en grupo.
+Distinguimos **quién decide y paga** (clientes), **quién opera el sistema a diario** (usuarios directos),
+**quién se ve afectado sin operarlo** (usuarios indirectos) y **quién impone restricciones externas**
+(reguladores). Solo los usuarios directos generan personas modelo.
 
-| Actor | Tipo | Interacción principal | Persona modelo asociada |
-|---|---|---|---|
-| _(pendiente)_ | Directo / Indirecto | | |
+### 2.1 Clientes (deciden, financian y son dueños del resultado)
+
+| Cliente | Qué espera del sistema | Criterio con el que juzga el piloto |
+|---|---|---|
+| Essalud — Gerencia Central de Operaciones | Reducir el desorden de horarios y estandarizar la continuidad clínica en UCI | Piloto replicable a otras regiones sin rehacer el sistema |
+| Dirección de Red Prestacional (Lima) | Visibilidad de cobertura de turnos en todos los hospitales de su red | Cero turnos UCI sin médico asignado |
+| Jefatura de Departamento de Cuidados Críticos | Que el diagnóstico del turno saliente exista y sea legible | Trazabilidad completa de entregas de turno |
+| Oficina de Tecnologías de Información | Desplegar y operar en N hospitales con equipo limitado | Despliegue sin intervención máquina por máquina |
+
+### 2.2 Usuarios directos (operan el sistema)
+
+| Actor | Tipo | Interacción principal | Problema | Persona modelo |
+|---|---|---|---|---|
+| Médico internista rotante | Directo | Lee el handoff al entrar; registra evolución y diagnóstico al salir | P1 | [Rodrigo.MD](Personas/Rodrigo.MD) |
+| Enfermera asistencial de UCI | Directo | Registra signos y eventos a pie de cama; escala deterioro | P2, P3 | [Milagros.MD](Personas/Milagros.MD) |
+| Jefe / coordinador de UCI | Directo | Programa turnos mensuales; resuelve cruces y ausencias | P1 | [Carmen.MD](Personas/Carmen.MD) |
+| Médico intensivista de guardia localizable | Directo | Recibe escalamiento fuera del hospital; decide conducta remota | P2 | [Anibal.MD](Personas/Anibal.MD) |
+| Coordinador de TI de red asistencial | Directo | Despliega, monitorea y recupera el sistema en los hospitales | P3 | [Katherine.MD](Personas/Katherine.MD) |
+| Enfermera jefa de turno | Directo | Distribuye camas y valida la entrega de turno de enfermería | P1 | _(cubierta por Milagros y Carmen)_ |
+| Técnico de enfermería | Directo | Consulta indicaciones; registra tareas de cuidado básico | P3 | _(no modelada en el piloto)_ |
+
+### 2.3 Usuarios indirectos (afectados, no operan el sistema)
+
+| Actor | Relación con el sistema |
+|---|---|
+| Paciente crítico | Sujeto de los datos clínicos; no interactúa (sedado/intubado en la mayoría de casos) |
+| Familiar o apoderado | Recibe información derivada del sistema; puede ejercer derechos sobre los datos |
+| Médico de otras especialidades | Solicita y responde interconsultas sobre pacientes UCI |
+| Químico farmacéutico | Valida indicaciones farmacológicas registradas |
+| Auditoría médica y calidad | Audita a posteriori la trazabilidad de diagnósticos y turnos |
+| Admisión / referencias | Origina el ingreso del paciente a la unidad |
+
+### 2.4 Reguladores y restricciones externas
+
+| Fuente | Restricción que impone |
+|---|---|
+| Ley N.° 29733 — Protección de Datos Personales | Datos de salud son categoría sensible: consentimiento, cifrado y trazabilidad de acceso |
+| Ley N.° 30024 — RENHICE | Interoperabilidad de la historia clínica electrónica a nivel nacional |
+| SUSALUD | Estándares de calidad y disponibilidad del registro clínico |
+
+### 2.5 Justificación de las personas elegidas
+
+Cinco personas, una por cada punto donde el sistema puede fallar de forma distinta:
+
+- **Rodrigo** es el eje de **P1**: encarna la alta rotación de internistas que el enunciado marca como
+  causa raíz. Si el handoff no le sirve a él, el sistema no resuelve nada.
+- **Milagros** detecta el deterioro antes que nadie y dispara **P2**; además es la usuaria de mayor
+  volumen de escritura, lo que tensiona **P3**.
+- **Anibal** es el otro extremo de **P2**: recibe el escalamiento fuera del hospital, con conectividad
+  móvil y sin acceso al contexto de la cama.
+- **Carmen** es la única que ve el sistema en modo planificación y no en modo emergencia; es quien
+  expone el requisito de "horarios sin cruces".
+- **Katherine** no es clínica y por eso es indispensable: traduce las metas de disponibilidad,
+  recuperación y escalamiento en restricciones reales de operación.
+
+Dejamos fuera del modelado al técnico de enfermería (sus necesidades son un subconjunto de las de
+Milagros) y a paciente y familiar (no operan el sistema en el alcance del piloto).
 
 ---
 
