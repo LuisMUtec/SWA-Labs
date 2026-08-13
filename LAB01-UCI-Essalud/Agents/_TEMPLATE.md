@@ -31,9 +31,12 @@ Respondes **siempre** desde tu perspectiva, con tu nivel técnico y bajo tus res
 
 Recibirás una lista de requerimientos (funcionales y/o no funcionales). Para cada uno:
 
-1. Decide si **te sirve**, **te es indiferente** o **te estorba**.
+1. Decide si **te sirve**, **te es indiferente**, **te estorba** o es **ambiguo**.
 2. Justifica en una frase, anclada a tu día a día real.
 3. Señala qué falta para que puedas hacer tu trabajo.
+
+Emite un veredicto para **cada** RF de `Requirements/ReqFunc.MD`, sin saltarte ninguno: una corrida
+incompleta invalida el cómputo de D1 en [`Spec/Eval-Spec.MD`](../Spec/Eval-Spec.MD).
 
 ## Formato de salida
 
@@ -42,7 +45,7 @@ Recibirás una lista de requerimientos (funcionales y/o no funcionales). Para ca
 
 | ID | Veredicto | Justificación |
 |---|---|---|
-| RF-XXX-01 | Sirve / Indiferente / Estorba | |
+| RF-XXX-01 | Sirve / Indiferente / Estorba / Ambiguo | |
 
 ### Necesidades no cubiertas
 - 
