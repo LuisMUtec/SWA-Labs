@@ -71,9 +71,9 @@ Distinguimos **quién decide y paga** (clientes), **quién opera el sistema a di
 | Enfermera asistencial de UCI | Directo | Registra signos y eventos a pie de cama; escala deterioro | P2, P3 | [Milagros.MD](Personas/Milagros.MD) |
 | Jefe / coordinador de UCI | Directo | Programa turnos mensuales; resuelve cruces y ausencias | P1 | [Carmen.MD](Personas/Carmen.MD) |
 | Médico intensivista de guardia localizable | Directo | Recibe escalamiento fuera del hospital; decide conducta remota | P2 | [Anibal.MD](Personas/Anibal.MD) |
-| Coordinador de TI de red asistencial | Directo | Despliega, monitorea y recupera el sistema en los hospitales | P3 | [Katherine.MD](Personas/Katherine.MD) |
 | Enfermera jefa de turno | Directo | Distribuye camas y valida la entrega de turno de enfermería | P1 | _(cubierta por Milagros y Carmen)_ |
-| Técnico de enfermería | Directo | Consulta indicaciones; registra tareas de cuidado básico | P3 | _(no modelada en el piloto)_ |
+| Técnico de enfermería | Directo | Consulta indicaciones; registra tareas de cuidado básico | P3 | _(no modelada: ver 2.5)_ |
+| Coordinador de TI de red asistencial | Directo | Despliega, monitorea y recupera el sistema en los hospitales | P3 | _(no modelada: ver 2.5)_ |
 
 ### 2.3 Usuarios indirectos (afectados, no operan el sistema)
 
@@ -96,27 +96,43 @@ Distinguimos **quién decide y paga** (clientes), **quién opera el sistema a di
 
 ### 2.5 Justificación de las personas elegidas
 
-Cinco personas, una por cada punto donde el sistema puede fallar de forma distinta:
+Cuatro personas, una por cada punto donde el sistema puede fallar de forma distinta:
 
 - **Rodrigo** es el eje de **P1**: encarna la alta rotación de internistas que el enunciado marca como
   causa raíz. Si el handoff no le sirve a él, el sistema no resuelve nada.
 - **Milagros** detecta el deterioro antes que nadie y dispara **P2**; además es la usuaria de mayor
   volumen de escritura, lo que tensiona **P3**.
-- **Anibal** es el otro extremo de **P2**: recibe el escalamiento fuera del hospital, con conectividad
+- **Aníbal** es el otro extremo de **P2**: recibe el escalamiento fuera del hospital, con conectividad
   móvil y sin acceso al contexto de la cama.
 - **Carmen** es la única que ve el sistema en modo planificación y no en modo emergencia; es quien
   expone el requisito de "horarios sin cruces".
-- **Katherine** no es clínica y por eso es indispensable: traduce las metas de disponibilidad,
-  recuperación y escalamiento en restricciones reales de operación.
 
-Dejamos fuera del modelado al técnico de enfermería (sus necesidades son un subconjunto de las de
-Milagros) y a paciente y familiar (no operan el sistema en el alcance del piloto).
+Las cuatro son personal clínico: la evaluación de calidad puntúa únicamente requerimientos funcionales
+(sección 3), y el comportamiento observable del sistema se juzga desde quien lo opera al lado del
+paciente.
+
+Quedan fuera del modelado:
+
+| Actor | Motivo |
+|---|---|
+| Coordinador de TI de red asistencial | Sus necesidades son atributos de calidad —disponibilidad, recuperación, escalamiento—, que el enunciado ya fija como metas numéricas y que la evaluación no puntúa. Su exclusión desplaza el origen de los RNF: dejan de trazar a una persona y trazan al enunciado del caso. |
+| Técnico de enfermería | Sus necesidades son un subconjunto de las de Milagros. |
+| Paciente y familiar | No operan el sistema en el alcance del piloto. |
+
+La Oficina de Tecnologías de Información permanece en la tabla de clientes (2.1): sigue siendo dueña
+del resultado del piloto aunque no se modele como persona.
 
 ---
 
 ## 3. Prompt de Evaluación
 
 > Prompt usado para contrastar los requerimientos contra las definiciones de personas (usuarios modelo).
+
+**Alcance de la evaluación: requerimientos funcionales.** La rúbrica de
+[`Spec/Eval-Spec.MD`](Spec/Eval-Spec.MD) puntúa `Requirements/ReqFunc.MD` frente a las personas y los
+problemas críticos. `Requirements/ReqNoFunc.MD` se entrega —el enunciado lo exige— pero queda fuera
+del porcentaje: los atributos de calidad se verifican contra las metas numéricas del caso, no contra
+la satisfacción de una persona.
 
 ```text
 (pendiente)

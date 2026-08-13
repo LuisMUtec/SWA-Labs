@@ -10,15 +10,18 @@ Cada sección sirve a una dimensión de la rúbrica de [`Eval-Spec.MD`](../Spec/
 
 | Sección | Dimensión que sirve |
 |---|---|
-| 1. Fronteras entre documentos | D6 Consistencia |
-| 2. Reglas transversales | D3 Verificabilidad, D6 Consistencia |
+| 1. Fronteras entre documentos | D5 Consistencia |
+| 2. Reglas transversales | D3 Verificabilidad y forma, D5 Consistencia |
 | 3. Personas | D1 Cobertura de personas |
 | 4. Agentes de persona | D1 Cobertura de personas |
-| 5. Requerimientos funcionales | D2 Problemas críticos, D3 Verificabilidad |
-| 6. Criterios de aceptación | D3 Verificabilidad |
-| 7. Requerimientos no funcionales | D4 Atributos de calidad |
-| 8. Glosario | D6 Consistencia |
-| 9. Trazabilidad y prioridad | D5 Trazabilidad, D7 Priorización |
+| 5. Requerimientos funcionales | D2 Problemas críticos, D3 Verificabilidad y forma |
+| 6. Criterios de aceptación | D3 Verificabilidad y forma |
+| 7. Requerimientos no funcionales | — fuera del alcance de la evaluación |
+| 8. Glosario | D5 Consistencia |
+| 9. Trazabilidad y prioridad | D4 Trazabilidad, D6 Priorización |
+
+La rúbrica puntúa únicamente requerimientos funcionales. `ReqNoFunc.MD` es entregable exigido por el
+enunciado y se rige por la sección 7, pero ninguna de sus afirmaciones suma ni resta en el porcentaje.
 
 ---
 
@@ -160,8 +163,8 @@ circunstancias. Todo RNF se enuncia como **escenario de atributo de calidad**, e
 > 10 M hospitales registrados, `[SUPUESTO: 2 % concurrentes en la ventana de cambio de turno]`.
 > *Respuesta:* se entrega el diagnóstico vigente. *Medida:* p95 inferior a 1 s.
 
-- **La medida es un número con unidad y percentil**, no un adjetivo. Un RNF sin medida cuenta como no
-  verificable en D3 y no aporta a D4.
+- **La medida es un número con unidad y percentil**, no un adjetivo. Un RNF sin medida no es
+  verificable, aunque la rúbrica no lo puntúe: la sección 7 rige por sí misma.
 - **La medida es agnóstica de la tecnología.** Nombra el resultado, no el componente que lo produce.
 - **Invariante antes que porcentaje.** «Ningún diagnóstico confirmado se pierde ante la caída de un
   nodo» no depende del conjunto de pruebas que alguien haya armado; «el 100 % de los casos de prueba
@@ -184,17 +187,17 @@ sus relaciones. Fija el vocabulario que RF, RNF, personas y agentes usan sin var
 
 ## 9. Trazabilidad y prioridad
 
-- **Ningún requerimiento es huérfano.** Todo RF y RNF declara la persona que lo motiva y el problema
-  crítico al que responde, o el enunciado del caso como origen. Un requerimiento sin trazas resta en
-  D5 aunque esté bien escrito.
+- **Ningún requerimiento es huérfano.** Todo RF declara la persona que lo motiva y el problema crítico
+  al que responde. Un RF sin trazas resta en D4 aunque esté bien escrito. Los RNF trazan al enunciado
+  del caso como origen: ninguna persona los motiva, porque las cuatro modeladas son clínicas y los
+  atributos de calidad no se juzgan desde su satisfacción.
 - **Ninguna persona queda sin cobertura.** Cada tarea crítica de cada persona traza a al menos un RF.
   La matriz de trazabilidad se mantiene al día con el cuerpo del documento; una matriz desfasada es
   una contradicción interna.
-- **P1, P2 y P3 tienen dueño explícito.** Cada problema crítico del enunciado traza a al menos un RF
-  y un RNF.
+- **P1, P2 y P3 tienen dueño explícito.** Cada problema crítico del enunciado traza a al menos un RF.
 - **MUST se reserva.** Es MUST el requerimiento cuya ausencia deja sin resolver un problema crítico o
   deja a una persona sin su tarea crítica. Todo lo demás es SHOULD o COULD. Una lista donde todo es
-  MUST no está priorizada y resta en D7.
+  MUST no está priorizada y resta en D6.
 
 ## 10. Estilo
 
