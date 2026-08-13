@@ -8,7 +8,7 @@ Enunciado completo: [`docs/LAB-01-ARQ-2026.2.md`](docs/LAB-01-ARQ-2026.2.md)
 
 | Nombre | GitHub | Rol |
 |---|---|---|
-| Luis Maquera | _(pendiente)_ | |
+| Luis Maquera | [@LuisMUtec](https://github.com/LuisMUtec) | |
 | Johar Barzola | [@Joharjbe](https://github.com/Joharjbe) | |
 | Fernando Aguilar | [@LordFernan](https://github.com/LordFernan) | |
 
