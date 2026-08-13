@@ -8,10 +8,9 @@ Enunciado completo: [`docs/LAB-01-ARQ-2026.2.md`](docs/LAB-01-ARQ-2026.2.md)
 
 | Nombre | GitHub | Rol |
 |---|---|---|
-| _(pendiente)_ | | |
-| _(pendiente)_ | | |
-| _(pendiente)_ | | |
-| _(pendiente)_ | | |
+| Luis | _(pendiente)_ | |
+| _(pendiente)_ | [@Joharjbe](https://github.com/Joharjbe) | |
+| Fernando Aguilar | [@LordFernan](https://github.com/LordFernan) | |
 
 ---
 
