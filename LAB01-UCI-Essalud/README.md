@@ -130,7 +130,7 @@ Resultado del agente [`Spec/Eval-Spec.MD`](Spec/Eval-Spec.MD): **__ %**
 
 ```
 README.md              # Este archivo: problema, usuarios/clientes y prompt de evaluación
-/docs                  # Enunciado del caso de estudio
+/docs                  # Enunciado del caso de estudio y convenciones de redacción
 /Personas              # Un MD por persona / usuario modelo
 /Requirements          # ReqFunc.MD y ReqNoFunc.MD
 /Agents                # Definición de agente por cada persona
@@ -139,7 +139,10 @@ README.md              # Este archivo: problema, usuarios/clientes y prompt de e
 
 ## Cómo trabajamos
 
-1. Cada quien toma una persona y escribe su MD en `/Personas` + su agente en `/Agents`.
-2. Los requerimientos F y NF se consensúan en grupo antes de commitear.
-3. Ramas por tema (`persona/pablo`, `reqs/funcionales`), PR a `main`.
-4. La corrida de `Eval-Spec` se documenta al final en este README.
+1. Antes de escribir, se lee [`docs/CONVENCIONES.md`](docs/CONVENCIONES.md): fija qué afirma cada
+   documento, la forma EARS de los requerimientos funcionales, el escenario de atributo de calidad de
+   los no funcionales y la verificación de cada entregable contra la rúbrica de `Eval-Spec`.
+2. Cada quien toma una persona y escribe su MD en `/Personas` + su agente en `/Agents`.
+3. Los requerimientos F y NF se consensúan en grupo antes de commitear.
+4. Ramas por tema (`persona/pablo`, `reqs/funcionales`), PR a `main`.
+5. La corrida de `Eval-Spec` se documenta al final en este README.
