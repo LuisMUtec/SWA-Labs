@@ -1,4 +1,4 @@
-# Prompt de ejecución — Additional V2
+# Prompt de ejecución — Evaluación de requerimientos funcionales
 
 Trabajas dentro del repositorio:
 
@@ -9,18 +9,19 @@ Dominio: sistema de gestión de UCI de Essalud.
 
 ## Objetivo
 
-Ejecutar de forma completa y auditable la sección **Additional** de
-`docs/V2-LAB-01-ARQ-2026.2.md`:
+Evaluar `Requirements/ReqFunc.MD` desde las cuatro personas modelo y emitir el porcentaje de calidad
+que indica si los requerimientos las satisfacen:
 
-1. Crear un agente evaluador por cada persona.
-2. Evaluar `Requirements/ReqFunc.MD` desde las cuatro personas.
-3. Calcular el porcentaje global mediante `Spec/Eval-Spec.MD`.
+1. Comprobar que los cuatro agentes de persona derivan de su persona.
+2. Evaluar los requerimientos funcionales desde cada una de las cuatro perspectivas.
+3. Calcular el porcentaje global con la rúbrica de `Spec/Eval-Spec.MD`.
 4. Documentar iteraciones reales.
 5. Corregir únicamente los requerimientos funcionales cuando el resultado sea `FAILED`.
 6. Detenerse al obtener `PASSED` o después de tres iteraciones.
 7. No hacer commit, push ni pull request sin autorización explícita.
 
-No copies los puntajes ilustrativos de la V2. Debes realizar una evaluación nueva sobre el estado actual del repositorio.
+La evaluación se realiza sobre el estado actual del repositorio. No se reutiliza ningún puntaje
+previo ni ilustrativo.
 
 ---
 
@@ -30,27 +31,26 @@ Cuando exista una duda, aplica este orden:
 
 1. `Personas/Rodrigo.MD`, `Personas/Milagros.MD`, `Personas/Carmen.MD` y `Personas/Anibal.MD`.
 
-   Son la única fuente válida de tareas críticas, criterios de éxito, contexto, frustraciones y restricciones de cada persona.
+   Son la única fuente válida de tareas críticas, criterios de éxito, contexto, frustraciones,
+   escenario clave y restricciones de cada persona.
 
 2. `Personas/README.md`.
 
-   Es la fuente de las tensiones entre personas y decisiones que deben reflejarse en los requerimientos.
+   Es la fuente de las tensiones entre personas y de las decisiones que deben reflejarse en los
+   requerimientos.
 
 3. `Spec/Eval-Spec.MD`.
 
-   Fija la rúbrica global D1–D6, los pesos, las reglas duras y el formato del diagnóstico.
+   Fija la rúbrica D1–D6, los pesos, la escala de puntaje por persona, las reglas duras, las cinco
+   condiciones del veredicto y el formato del diagnóstico. **Este prompt no redeclara ninguna de esas
+   cifras**: si una discrepancia aparece, manda `Eval-Spec`.
 
 4. `docs/CONVENCIONES.md`.
 
-   Fija la forma de RF, criterios de aceptación, trazabilidad, prioridad, separación RF/RNF y los controles mecánicos.
+   Fija la forma de RF, criterios de aceptación, trazabilidad, prioridad y separación RF/RNF.
 
-5. `docs/V2-LAB-01-ARQ-2026.2.md`.
-
-   Exige el puntaje por persona, el reporte y las iteraciones. Sus tablas de Roberto y Pablo son ejemplos del enunciado, no resultados del proyecto.
-
-No edites ninguna de estas fuentes para elevar el puntaje.
-
-> **Importante:** los promedios mostrados como ejemplo en la V2 son matemáticamente inconsistentes. No los copies ni los uses como fórmula. Los puntajes y promedios de esta ejecución deben calcularse desde cero.
+No edites ninguna de estas fuentes para elevar el puntaje. Son la vara con la que se mide, y una vara
+que se ajusta para alcanzar el número deja de medir.
 
 ---
 
@@ -60,7 +60,8 @@ Se evalúa exclusivamente:
 
 `Requirements/ReqFunc.MD`
 
-`Requirements/ReqNoFunc.MD` no suma ni resta en el porcentaje. Si una afirmación no funcional aparece dentro de `ReqFunc.MD`, repórtala como requerimiento mal ubicado.
+`Requirements/ReqNoFunc.MD` no suma ni resta en el porcentaje. Si una afirmación no funcional aparece
+dentro de `ReqFunc.MD`, repórtala como requerimiento mal ubicado.
 
 Utiliza únicamente estos cuatro agentes como agentes de persona:
 
@@ -77,18 +78,18 @@ No consultes fuentes externas. El repositorio es la única fuente de verdad.
 
 ## 3. Preparación Git
 
-Antes de modificar archivos:
+Ejecuta desde la raíz:
 
-1. Comprueba que el repositorio no tenga cambios locales.
-2. Ejecuta `fetch` de `origin`.
-3. Cambia a `main`.
-4. Actualiza `main` exclusivamente mediante fast-forward desde `origin/main`.
-5. Confirma que `main` queda limpio y sincronizado.
-6. Crea la rama:
+```bash
+scripts/preparar-git.sh eval/additional-v2 main
+```
 
-   `eval/additional-v2`
+El script comprueba que no haya cambios locales, actualiza `main` solo por fast-forward, verifica que
+la rama de trabajo no exista ni localmente ni en `origin`, y la crea. Ante cualquier condición que
+obligaría a descartar, sobrescribir o esconder trabajo, aborta con el motivo y no toca nada.
 
-Si existen cambios locales, `main` no puede actualizarse mediante fast-forward o la rama ya existe, detente y repórtalo. No descartes, sobrescribas ni escondas cambios.
+**Si el script aborta, detente y reporta su mensaje.** No resuelvas a mano lo que el script se negó a
+hacer: no ejecutes `stash`, `reset`, `checkout -f` ni reescribas historia.
 
 No hagas commit, push, merge ni pull request durante esta ejecución.
 
@@ -102,55 +103,71 @@ Emite:
 
 Puedes crear o modificar exclusivamente:
 
+- `Requirements/ReqFunc.MD`
+- `Spec/Eval-Report.MD`
+- La aparición final del porcentaje en la línea «Resultado del agente» de `README.md`.
+
+Y, **solo durante el Paso 0** y solo sobre lo que la comprobación declare no conforme:
+
 - `Agents/agent-rodrigo.MD`
 - `Agents/agent-milagros.MD`
 - `Agents/agent-carmen.MD`
 - `Agents/agent-anibal.MD`
 - `Agents/README.md`
-- `Requirements/ReqFunc.MD`
-- `Spec/Eval-Report.MD`
-- La aparición final del porcentaje en la línea “Resultado del agente” de `README.md`.
 
-Todos los demás archivos son de solo lectura, incluidos:
+Terminado el Paso 0, `Agents/*` queda de solo lectura durante el resto de la ejecución.
 
-- `Personas/*`
-- `docs/*`
-- `Spec/Eval-Spec.MD`
-- `Requirements/ReqNoFunc.MD`
-- `Agents/_TEMPLATE.md`
+Todos los demás archivos son de solo lectura, incluidos `Personas/*`, `docs/*`, `Spec/Eval-Spec.MD`,
+`Requirements/ReqNoFunc.MD`, `Agents/_TEMPLATE.md`, `scripts/*` y `.claude/*`.
 
-En `README.md` reemplaza solamente el marcador final `**__ %**` de la línea “Resultado del agente”. Conserva literalmente el resto de esa línea, incluso su formato actual. No aproveches la edición para corregir enlaces ni otros contenidos.
+En `README.md` reemplaza solamente el marcador final `**__ %**` de la línea «Resultado del agente».
+Conserva literalmente el resto de esa línea, incluso su formato actual. No aproveches la edición para
+corregir enlaces ni otros contenidos.
 
-No añadas dependencias, scripts, configuración, workflows, plantillas, carpetas ni archivos distintos de los enumerados.
+No añadas dependencias, configuración, workflows, plantillas, carpetas ni archivos distintos de los
+enumerados. `scripts/guardia-diff.sh` comprueba esta lista y se ejecuta como control E4.
 
 ---
 
-## 5. Paso 0 — Creación de los agentes
+## 5. Paso 0 — Comprobación de los agentes de persona
 
-Crea los cuatro archivos `Agents/agent-<nombre>.MD` usando la estructura de `Agents/_TEMPLATE.md`.
+Este paso se ejecuta **una sola vez**, antes de la primera iteración. No se repite en las iteraciones
+siguientes: el ciclo del §6 vuelve a leer los agentes, nunca a rehacerlos.
 
-Para cada agente:
+Los agentes son el instrumento de medición. Si cambian entre una iteración y la siguiente, el `Delta`
+del reporte deja de ser atribuible a las correcciones de `ReqFunc.MD`: no se sabría si mejoró el
+requerimiento o se ablandó el evaluador.
 
-- Deriva identidad, contexto, necesidades, tareas, restricciones, frustraciones, escenario clave y criterios de éxito únicamente de su archivo `Personas/<Nombre>.MD`.
-- No introduzcas ninguna tarea, necesidad, restricción o preferencia que la persona no documente.
-- No copies información de otra persona.
-- No conviertas RNF en necesidades personales.
+Los cuatro agentes ya existen. Antes de evaluar, verifica que cada uno siga siendo fiel a su persona:
+
+- Su identidad, contexto, necesidades, tareas, restricciones, frustraciones, escenario clave y
+  criterios de éxito derivan únicamente de su archivo `Personas/<Nombre>.MD`.
+- No contiene ninguna tarea, necesidad, restricción o preferencia que la persona no documente.
+- No contiene información de otra persona.
+- No convierte un RNF en necesidad personal.
 - Declara que una ambigüedad se penaliza y nunca se interpreta de forma favorable.
 - Declara que el alcance evaluado es únicamente `ReqFunc.MD`.
-- Mantén el nombre del archivo en minúsculas y sin tilde: `agent-anibal.MD`.
 
-Actualiza `Agents/README.md` para sustituir la fila pendiente por las cuatro filas reales, enlazando cada agente con su persona.
+Verifica además que existan exactamente cuatro agentes de persona, que `Agents/README.md` enlace cada
+uno con su persona y que no queden filas pendientes.
 
-Después, verifica:
+Corrige en el agente lo que se desvíe de su persona. **Si una necesidad legítima falta en la persona,
+no la agregues al agente**: `Personas/*` es de solo lectura, así que repórtalo como bloqueado.
 
-- Existen exactamente cuatro agentes de persona.
-- Cada uno enlaza a la persona correcta.
-- No queda la fila `_(pendiente)_`.
-- Ningún agente contiene necesidades ajenas a su persona.
+Interviene solo sobre la desviación concreta que detectes. No reescribas un agente que ya cumple, no
+retoques su redacción y no ajustes ningún agente en función de los RF que va a evaluar.
+
+Los agentes mencionan archivar su corrida en `Agents/Veredictos/`. Esa carpeta no se crea: en esta
+ejecución los veredictos viven dentro de `Spec/Eval-Report.MD`.
 
 Emite:
 
-`✅ 4 agentes creados y Agents/README.md actualizado`
+`✅ Paso 0 completado — cuatro agentes verificados`
+
+Informa qué archivos tocaste. Si no tocaste ninguno, dilo explícitamente.
+
+Desde aquí y hasta el final de la ejecución, `Agents/*` es de solo lectura. Si una iteración posterior
+necesitara cambiar un agente, detente y repórtalo según el §10.
 
 ---
 
@@ -158,22 +175,18 @@ Emite:
 
 Ejecuta como máximo tres iteraciones.
 
-Cada iteración debe releer desde disco todos los insumos. No reutilices veredictos, matrices ni puntajes de una iteración anterior.
+Cada iteración relee desde disco todos los insumos. No reutilices veredictos, matrices ni puntajes de
+una iteración anterior.
 
-Cada iteración contiene las fases A, B y C. La fase D se ejecuta únicamente cuando el resultado sea `FAILED` y todavía quede otra iteración disponible.
+Cada iteración contiene las fases A, B y C. La fase D se ejecuta únicamente cuando el resultado sea
+`FAILED` y todavía quede otra iteración disponible.
 
 ### Fase A — Evaluación independiente por persona
 
-Realiza cuatro evaluaciones independientes:
+Realiza cuatro evaluaciones independientes: Rodrigo, Milagros, Carmen y Aníbal.
 
-1. Rodrigo.
-2. Milagros.
-3. Carmen.
-4. Aníbal.
-
-Adopta íntegramente el agente correspondiente y recorre todos los RF, sin omitir ningún ID.
-
-Para cada RF asigna exactamente uno de estos veredictos:
+Adopta íntegramente el agente correspondiente y recorre todos los RF, sin omitir ningún ID. Para cada
+uno asigna exactamente uno de estos veredictos:
 
 - **Sirve:** aporta de forma explícita a una tarea, criterio de éxito o escenario de la persona.
 - **Indiferente:** no afecta de forma relevante a esa persona.
@@ -185,67 +198,19 @@ Justifica cada veredicto en una sola frase, anclada al trabajo cotidiano de la p
 Reglas:
 
 - No atribuyas al RF capacidades implícitas.
-- No uses criterios de aceptación para ampliar el comportamiento que el enunciado del RF no declara.
+- No uses los criterios de aceptación para ampliar el comportamiento que el enunciado no declara.
 - Si admite más de una lectura, es `Ambiguo`.
-- Un RF ambiguo nunca puede contar como cobertura total.
-- Un RF marcado `Estorba` no cuenta como cobertura de la tarea afectada.
-- Recorre las seis tareas críticas de la persona una por una.
-- Contrasta también sus criterios de éxito.
-- Recorre su escenario clave de extremo a extremo encadenando RF.
-- Si el flujo se interrumpe, identifica el paso exacto.
+- Recorre las seis tareas críticas de la persona una por una y contrasta sus criterios de éxito.
+- Recorre su escenario clave de extremo a extremo encadenando RF. Si el flujo se interrumpe o se
+  sostiene en un RF ambiguo, identifica el paso exacto.
+- Declara tu cobertura percibida como porcentaje. Es un autoinforme: no la calcules a partir de la
+  rúbrica ni la ajustes después para que coincida con el puntaje computado. Su valor está justamente
+  en poder diferir.
 - No redactes soluciones ni RF nuevos en esta fase.
 
----
-
-## 7. Fórmula del puntaje por persona
-
-La puntuación individual usa la intención de la rúbrica adicional `5/1/0 + 4`, normalizada a 10 puntos.
-
-### A. Cobertura de necesidades: máximo 6 puntos
-
-Evalúa cada una de las seis tareas críticas:
-
-- **5 puntos internos:** cobertura total.
-- **1 punto interno:** cobertura parcial o dependiente de un RF ambiguo.
-- **0 puntos internos:** sin cobertura o cubierta únicamente por un RF que `Estorba`.
-
-Una tarea solo es cobertura total cuando:
-
-- Al menos un RF declara explícitamente el comportamiento necesario.
-- El conjunto de RF cubre la tarea completa.
-- Se satisfacen los criterios de éxito relacionados.
-- No hay contradicción entre los RF usados.
-
-Calcula:
-
-```text
-Cobertura de necesidades =
-suma de puntos internos de las seis tareas / 5
-```
-
-El resultado queda entre 0 y 6.
-
-### B. Claridad del flujo: máximo 4 puntos
-
-- **4 puntos:** el escenario clave puede recorrerse completo, en orden, con RF explícitos y sin saltos ni interpretaciones favorables.
-- **0 puntos:** el flujo se interrumpe, depende de comportamiento no declarado o contiene un salto ambiguo.
-
-### C. Puntaje individual
-
-```text
-Puntaje de persona =
-Cobertura de necesidades + Claridad del flujo
-```
-
-Máximo: 10.
-
-```text
-Cobertura percibida = Puntaje de persona × 10 %
-```
-
-Muestra los cálculos. Redondea el puntaje individual a un decimal.
-
-El promedio de la iteración es la media aritmética de los cuatro puntajes individuales mostrados. Redondea una sola vez, al final, a un decimal.
+En esta fase **no se calcula ningún puntaje**. El agente juzga; el agregador computa. Cada evaluación
+entrega su tabla de veredictos, sus necesidades no cubiertas, sus riesgos, el recorrido de su
+escenario y su cobertura percibida.
 
 Emite:
 
@@ -253,91 +218,18 @@ Emite:
 
 ### Fase B — Agregación mediante Eval-Spec
 
-Aplica `Spec/Eval-Spec.MD` sobre los RF y sobre las cuatro evaluaciones de la fase A.
+Aplica `Spec/Eval-Spec.MD` sobre los RF y sobre las cuatro evaluaciones de la fase A. La rúbrica, la
+escala de puntaje por persona, las fórmulas de D1 a D6, los pesos y las reglas duras están todas allí:
+síguelas al pie de la letra y no las reinterpretes.
 
-Construye primero estas evidencias:
+Construye primero estas cuatro evidencias:
 
-1. Matriz de las 24 tareas críticas: persona × tarea → RF → estado.
-2. Matriz de P1, P2 y P3: problema → RF → comportamiento que lo resuelve → estado.
-3. Inventario de todos los RF: ID → forma EARS → respuesta atómica → sujeto del DEBE → criterios de aceptación → trazabilidad → prioridad → resultado.
+1. Matriz de las 24 tareas críticas: persona × tarea → RF → veredicto → puntos.
+2. Matriz de P1, P2 y P3: problema → RF → comportamiento que lo resuelve → puntos.
+3. Inventario de todos los RF: ID → las ocho condiciones de D3 → resultado.
 4. Matriz de las cinco tensiones de `Personas/README.md`: tensión → RF que la decide → estado.
 
-Puntúa las dimensiones así:
-
-#### D1 — Cobertura de personas
-
-- Usa los valores internos `5/1/0` de las 24 tareas.
-- `D1 = suma obtenida / 120 × 100`.
-- Un RF `Ambiguo` permite como máximo cobertura parcial.
-- Un RF `Estorba` no cubre la tarea afectada.
-- Aplica las reglas duras de `Eval-Spec`.
-
-#### D2 — Problemas críticos
-
-Para P1, P2 y P3 asigna:
-
-- **100:** resuelto de extremo a extremo por RF explícitos.
-- **50:** parcialmente resuelto.
-- **0:** solo nombrado o no resuelto.
-
-D2 es el promedio de los tres valores.
-
-Si algún problema obtiene 0, aplica el límite de `Eval-Spec`: D2 no puede superar 60.
-
-#### D3 — Verificabilidad y forma
-
-Un RF es conforme únicamente si cumple simultáneamente:
-
-- Un patrón EARS identificable.
-- Una sola respuesta.
-- El sistema es el sujeto del `DEBE`.
-- Declara garantía y no mecanismo.
-- No contiene interfaz ni tecnología.
-- Tiene criterios de aceptación.
-- Cada criterio contiene un solo par Cuando/Entonces.
-- Los criterios no amplían el contrato del enunciado.
-
-`D3 = RF conformes / total de RF × 100`.
-
-No declares conforme un RF que falle cualquiera de estas condiciones.
-
-#### D4 — Trazabilidad
-
-Calcula:
-
-- **70 %:** proporción de RF que trazan correctamente a persona y problema.
-- **30 %:** proporción de las 24 tareas con al menos cobertura parcial.
-
-Las matrices internas de `ReqFunc.MD` deben coincidir con el cuerpo. Una matriz desactualizada cuenta como defecto de trazabilidad.
-
-#### D5 — Consistencia
-
-- 60 puntos corresponden a las cinco tensiones: 12 puntos por cada tensión decidida explícitamente por RF.
-- 40 puntos corresponden a ausencia de contradicciones, duplicados encubiertos y uso inconsistente del vocabulario.
-- Resta 10 de esos 40 puntos por cada contradicción, duplicado o inconsistencia independiente, sin bajar de 0.
-
-El repositorio no contiene actualmente un glosario separado. No inventes uno ni modifiques `docs`. Decláralo como limitación de la evaluación y, mientras falte, D5 no puede superar 80.
-
-#### D6 — Priorización
-
-Empieza en 100 y aplica:
-
-- Resta 10 por cada RF sin prioridad o con prioridad inválida.
-- Resta 5 por cada MUST cuya ausencia no deje descubierto un problema crítico o una tarea crítica.
-- Si todos los RF usan la misma prioridad, D6 no puede superar 60.
-- El mínimo es 0.
-
-#### Cálculo global
-
-```text
-Global =
-D1×0.30 + D2×0.25 + D3×0.20 +
-D4×0.10 + D5×0.10 + D6×0.05
-```
-
-Muestra cada dimensión, peso y aporte. Utiliza un decimal como máximo y verifica que la suma de los aportes coincida con el resultado global.
-
-Ante la duda se penaliza. Un puntaje alto debe estar respaldado por evidencia trazable.
+Después computa D1 a D6, aplica los pesos y muestra cada operación. Ante la duda se penaliza.
 
 Emite:
 
@@ -345,17 +237,11 @@ Emite:
 
 ### Fase C — Veredicto
 
-La iteración obtiene `PASSED` únicamente si cumple simultáneamente:
+Aplica las cinco condiciones de `Spec/Eval-Spec.MD`, sección «Veredicto», y presenta la tabla de
+condición contra umbral. La quinta exige que los ocho controles de la sección 8 devuelvan vacío.
 
-1. Puntaje global ≥ 80.0 %.
-2. Promedio de las cuatro personas ≥ 8.0/10.
-3. Ninguna persona < 7.0/10.
-4. D2 ≥ 80.0.
-5. Los cuatro controles mecánicos de `docs/CONVENCIONES.md` devuelven vacío.
-
-Si falla una sola condición, el resultado es `FAILED`.
-
-No redondees un valor hacia arriba para atravesar un umbral.
+Falla una sola condición y el resultado es `FAILED`. No redondees un valor hacia arriba para atravesar
+un umbral.
 
 Emite una de estas líneas:
 
@@ -367,11 +253,8 @@ o:
 
 ### Fase D — Corrección controlada
 
-Ejecuta esta fase solamente si:
-
-- La iteración fue `FAILED`.
-- Todavía no se realizaron tres iteraciones.
-- La corrección cabe dentro de los archivos editables.
+Ejecuta esta fase solamente si la iteración fue `FAILED`, no se realizaron todavía tres iteraciones y
+la corrección cabe dentro de los archivos editables.
 
 Modifica exclusivamente `Requirements/ReqFunc.MD`.
 
@@ -384,35 +267,30 @@ Prioriza:
 5. Tensiones sin decidir.
 6. Priorización injustificada.
 
+La escala de D1 dice qué tipo de corrección corresponde: una tarea en **3** pide comportamiento que
+falta y se corrige agregándolo; una tarea en **1** pide un enunciado que solo admita una lectura y se
+corrige reescribiendo. No confundas una con otra.
+
 Cada cambio debe:
 
 - Trazar a una brecha concreta de la iteración anterior.
-- Mantener un solo patrón EARS.
-- Contener una sola respuesta.
+- Mantener un solo patrón EARS y una sola respuesta.
 - Usar al sistema como sujeto del `DEBE`.
-- Declarar comportamiento observable.
-- Evitar interfaz, navegación, tecnología y mecanismos.
-- Incluir criterios de aceptación deterministas.
+- Declarar comportamiento observable, no interfaz, navegación, tecnología ni mecanismo.
+- Incluir criterios de aceptación deterministas que no amplíen el contrato del enunciado.
 - Declarar persona, problema y prioridad.
 - Mantener actualizadas todas las matrices y resúmenes internos.
 - Usar `[ACLARAR: pregunta concreta]` o `[SUPUESTO: enunciado]` cuando falte información.
 
-Al agregar un RF:
+Al agregar un RF: no renumeres los existentes, usa el siguiente número disponible dentro de su área y
+actualiza conteos, distribución de prioridades y matrices.
 
-- No renumeres RF existentes.
-- Usa el siguiente número disponible dentro del área correspondiente.
-- Actualiza conteos, distribución de prioridades y matrices.
-
-Al dividir un RF no atómico:
-
-- Conserva el ID original para una de las respuestas.
-- Crea un ID nuevo para la otra.
-- Conserva o ajusta su trazabilidad con evidencia.
-- No elimines silenciosamente comportamiento existente.
+Al dividir un RF no atómico: conserva el ID original para una de las respuestas, crea un ID nuevo para
+la otra, ajusta su trazabilidad con evidencia y no elimines comportamiento en silencio.
 
 Prohibido:
 
-- Modificar personas, agentes, convenciones, Eval-Spec o RNF.
+- Modificar personas, agentes, convenciones, `Eval-Spec`, scripts o RNF.
 - Suavizar criterios de evaluación.
 - Inventar necesidades.
 - Añadir RF genéricos para elevar D1.
@@ -420,12 +298,8 @@ Prohibido:
 - Eliminar un RF para ocultar una contradicción.
 - Modificar los puntajes manualmente.
 
-Registra el diff conceptual:
-
-- ID agregado, modificado o dividido.
-- Brecha exacta que corrige.
-- Persona, tarea o problema beneficiado.
-- Efecto esperado en la siguiente iteración.
+Registra el diff conceptual: ID agregado, modificado o dividido; brecha exacta que corrige; persona,
+tarea o problema beneficiado; efecto esperado en la siguiente iteración.
 
 Emite:
 
@@ -435,35 +309,34 @@ Después, relee todos los archivos y comienza una evaluación nueva.
 
 ---
 
-## 8. Controles obligatorios
+## 7. Controles obligatorios
 
-Ejecuta estos cuatro controles desde la raíz antes de declarar `PASSED`:
+Ejecuta desde la raíz, antes de declarar `PASSED`:
 
 ```bash
-grep -nE "^\*\*Enunciado:\*\*" Requirements/ReqFunc.MD | grep -v "DEBE"
-
-grep -nEi "el médico DEBE|la enfermera DEBE|el coordinador DEBE|el hospital DEBE|el equipo DEBE" Requirements/*.MD
-
-grep -nEi "kafka|redis|websocket|microservicio|kubernetes|base de datos|caché|endpoint|push" Requirements/*.MD
-
-grep -nE "~~|\(Decidido|\(Refinado|\(Corregido|versión anterior|por ahora" README.md Requirements/*.MD Personas/*.MD
+scripts/verificar.sh --sin-agentes
 ```
 
-Los cuatro deben devolver vacío.
+Son ocho controles: los cuatro mecánicos de `docs/CONVENCIONES.md`, sección 11, y cuatro
+estructurales —identificadores duplicados, campos obligatorios de cada RF, matrices que citen IDs
+inexistentes y archivos de solo lectura tocados—. El script sale con código 0 cuando los ocho pasan y
+1 cuando alguno falla, con el detalle de las líneas culpables.
 
-También verifica:
+`--sin-agentes` retira `Agents/*` de la lista de editables, y por eso acompaña a toda ejecución
+posterior al Paso 0: hace cumplir por control lo que el §4 exige por regla. Durante el Paso 0, y solo
+entonces, se ejecuta sin el flag.
 
-- No hay IDs de RF duplicados.
-- Cada RF tiene enunciado, prioridad, persona, problema y al menos un criterio de aceptación.
-- Las matrices internas de `ReqFunc.MD` solo referencian IDs existentes.
-- `git diff --name-only` contiene exclusivamente archivos editables.
-- No se modificó ningún archivo de solo lectura.
+El skill `verificar-requerimientos` documenta qué detecta cada control, qué significa una falla y
+dónde vive su corrección. Consúltalo antes de interpretar un hallazgo.
 
-Incluye el resultado literal de estos controles en `Eval-Report.MD`.
+**Ningún puntaje se declara `PASSED` con un control en rojo**, por alto que sea el porcentaje. Si la
+corrección de un hallazgo exige tocar un archivo de solo lectura, repórtala como bloqueada.
+
+Incluye la salida literal del script en `Spec/Eval-Report.MD`.
 
 ---
 
-## 9. Entregable — Spec/Eval-Report.MD
+## 8. Entregable — Spec/Eval-Report.MD
 
 Crea `Spec/Eval-Report.MD`.
 
@@ -484,7 +357,7 @@ Incluye una sección por iteración con esta estructura:
 Tabla completa ID → veredicto → justificación.
 Tareas y criterios no cubiertos.
 Recorrido del escenario.
-Cálculo del puntaje.
+Cobertura percibida declarada.
 
 ### Evaluación de Milagros
 
@@ -497,39 +370,13 @@ Mismo contenido.
 ### Evaluación de Aníbal
 
 Mismo contenido.
-
-### Puntajes por persona
-
-| Persona | Necesidades /6 | Flujo /4 | Score |
-|---|---:|---:|---:|
-| Rodrigo | | | _/10 |
-| Milagros | | | _/10 |
-| Carmen | | | _/10 |
-| Aníbal | | | _/10 |
-| PROMEDIO | | | _/10 — PASSED / FAILED |
-
-### Puntaje global: __ %
-
-| Dimensión | Puntaje | Peso | Aporte |
-|---|---:|---:|---:|
-| D1 Cobertura de personas | | 30 % | |
-| D2 Cobertura de problemas críticos | | 25 % | |
-| D3 Verificabilidad y forma | | 20 % | |
-| D4 Trazabilidad | | 10 % | |
-| D5 Consistencia | | 10 % | |
-| D6 Priorización | | 5 % | |
-
-### Veredicto
-### Matriz de cobertura
-### Cobertura de P1, P2 y P3
-### Brechas encontradas
-### Tensiones sin decidir
-### Requerimientos huérfanos
-### Requerimientos mal formados
-### Requerimientos mal ubicados
-### Acciones recomendadas (priorizadas)
-### Controles de convenciones
 ```
+
+A continuación, el diagnóstico completo en el formato que define la sección «Salida» de
+`Spec/Eval-Spec.MD`: puntaje global, tabla de dimensiones con peso y aporte, tabla del veredicto,
+puntajes por persona, veredictos agregados, matriz de cobertura, cobertura de P1–P3, brechas,
+discrepancias, tensiones sin decidir, requerimientos huérfanos, mal formados y mal ubicados,
+controles de convenciones y acciones recomendadas priorizadas.
 
 En las iteraciones posteriores a la primera, comienza además con:
 
@@ -546,7 +393,8 @@ Y termina con:
 ### Delta
 ```
 
-Explica qué dimensión cambió, cuánto cambió y qué evidencia produjo el cambio. No atribuyas una mejora a una corrección que no afecte esa dimensión.
+Explica qué dimensión cambió, cuánto cambió y qué evidencia produjo el cambio. No atribuyas una mejora
+a una corrección que no afecte esa dimensión.
 
 Cierre del documento:
 
@@ -564,9 +412,10 @@ El resultado final debe coincidir con la última iteración.
 
 ---
 
-## 10. Actualización del README
+## 9. Actualización del README
 
-Cuando termine la última iteración, actualiza exclusivamente el marcador `**__ %**` de la línea final “Resultado del agente” en `README.md`.
+Cuando termine la última iteración, actualiza exclusivamente el marcador `**__ %**` de la línea final
+«Resultado del agente» en `README.md`.
 
 Usa el porcentaje global de la última iteración, incluso si el resultado final es `FAILED`.
 
@@ -578,7 +427,7 @@ Emite:
 
 ---
 
-## 11. Condiciones de parada
+## 10. Condiciones de parada
 
 Detente y solicita autorización antes de:
 
@@ -587,37 +436,32 @@ Detente y solicita autorización antes de:
 - Modificar un archivo de solo lectura.
 - Crear un archivo no autorizado.
 - Cambiar una persona, tarea crítica o criterio de éxito.
-- Cambiar Eval-Spec, la rúbrica o las convenciones.
+- Cambiar `Eval-Spec`, la rúbrica, las convenciones o los scripts.
 - Hacer commit, push, merge o pull request.
 
-Si una corrección necesaria depende de cualquiera de esas acciones, repórtala como bloqueada y no la sustituyas por una solución inventada.
+Si una corrección necesaria depende de cualquiera de esas acciones, repórtala como bloqueada y no la
+sustituyas por una solución inventada.
 
-Si la tercera iteración sigue en `FAILED`:
-
-- Conserva las tres iteraciones en `Eval-Report.MD`.
-- Documenta todas las brechas restantes.
-- Actualiza README con el porcentaje real.
-- Detente.
-- Nunca fuerces `PASSED`.
+Si la tercera iteración sigue en `FAILED`: conserva las tres iteraciones en `Eval-Report.MD`, documenta
+todas las brechas restantes, actualiza el README con el porcentaje real y detente. Nunca fuerces
+`PASSED`.
 
 ---
 
-## 12. Reporte final en la conversación
+## 11. Reporte final en la conversación
 
 Al terminar informa:
 
 - Rama creada.
-- Número de iteraciones.
-- Resultado de cada iteración.
-- Puntajes individuales finales.
-- Promedio final.
-- D1–D6 finales.
-- Porcentaje global.
-- `PASSED` o `FAILED`.
+- Número de iteraciones y resultado de cada una.
+- Puntajes individuales finales y promedio.
+- D1–D6 finales y porcentaje global.
+- `PASSED` o `FAILED`, con la tabla de las cinco condiciones.
 - RF agregados, modificados o divididos.
 - Archivos creados y modificados.
-- Resultado de los cuatro controles.
+- Salida de `scripts/verificar.sh`.
 - Brechas todavía abiertas.
 - Estado de Git.
 
-No hagas commit ni subas cambios. Termina preguntando si se autoriza crear el commit y el pull request.
+No hagas commit ni subas cambios. Termina preguntando si se autoriza crear el commit y el pull
+request.
