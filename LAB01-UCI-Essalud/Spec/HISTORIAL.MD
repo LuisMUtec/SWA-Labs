@@ -9,6 +9,7 @@ Responde la pregunta que ningún reporte individual responde, porque cada corrid
 
 | Fecha | Corrida | ReqFunc | Rúbrica | Instr. | D1 | D2 | D3 | D4 | D5 | D6 | Global | Veredicto |
 |---|---|---|---|:---:|---:|---:|---:|---:|---:|---:|---:|:---:|
+| 2026-08-13 | 2026-08-13-additional-v2 | `a1df636` | `8af38e9` | — | 61,0 | 66,7 | 54,8 | 40,0 | 40,0 | 95,0 | 58,7 | FAILED |
 
 ## Cómo se lee
 

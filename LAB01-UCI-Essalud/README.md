@@ -164,7 +164,7 @@ Corregir `ReqFunc.MD` es trabajo de otra rama, y se comprueba con una corrida po
 [`Spec/HISTORIAL.MD`](Spec/HISTORIAL.MD) deja comparar con esta. Medir y corregir en la misma
 ejecución destruye la medición, porque quien corrige ya conoce la vara.
 
-Resultado del agente [`Spec/Eval-Spec.MD`](Spec/Eval-Spec.MD): **__ %**
+Resultado del agente [`Spec/Eval-Spec.MD`](Spec/Eval-Spec.MD): **58,7 %**
 
 ---
 
