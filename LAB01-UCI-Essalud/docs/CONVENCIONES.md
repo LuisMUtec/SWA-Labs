@@ -10,14 +10,14 @@ Cada sección sirve a una dimensión de la rúbrica de [`Eval-Spec.MD`](../Spec/
 
 | Sección | Dimensión que sirve |
 |---|---|
-| 1. Fronteras entre documentos | D5 Consistencia |
-| 2. Reglas transversales | D3 Verificabilidad y forma, D5 Consistencia |
-| 3. Personas | D1 Cobertura de personas |
-| 4. Agentes de persona | D1 Cobertura de personas |
+| 1. Fronteras entre documentos | D5 Consistencia y tensiones |
+| 2. Reglas transversales | D3 Verificabilidad y forma, D5 Consistencia y tensiones |
+| 3. Personas | D1 Satisfacción de las personas |
+| 4. Agentes de persona | D1 Satisfacción de las personas |
 | 5. Requerimientos funcionales | D2 Problemas críticos, D3 Verificabilidad y forma |
 | 6. Criterios de aceptación | D3 Verificabilidad y forma |
 | 7. Requerimientos no funcionales | — fuera del alcance de la evaluación |
-| 8. Glosario | D5 Consistencia |
+| 8. Glosario | D5 Consistencia y tensiones |
 | 9. Trazabilidad y prioridad | D4 Trazabilidad, D6 Priorización |
 
 La rúbrica puntúa únicamente requerimientos funcionales. `ReqNoFunc.MD` es entregable exigido por el
