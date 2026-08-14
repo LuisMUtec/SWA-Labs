@@ -5,11 +5,16 @@
 #   scripts/guardia-diff.sh [--silencioso] [--sin-agentes]
 #
 # La lista de editables la fija el protocolo de evaluación: los cuatro agentes de
-# persona, el índice de agentes, los requerimientos funcionales, el reporte y el
-# marcador de resultado del README. Todo lo demás —personas, convenciones, la
-# definición del evaluador y los requerimientos no funcionales— es de solo lectura
-# durante una corrida: son la vara con la que se mide, y una vara que se ajusta
-# para alcanzar el número deja de medir.
+# persona, el índice de agentes, los requerimientos funcionales, el reporte, el
+# historial, el directorio de la corrida y el marcador de resultado del README.
+# Todo lo demás —personas, convenciones, la definición del evaluador, el esquema
+# de corrida y los requerimientos no funcionales— es de solo lectura durante una
+# corrida: son la vara con la que se mide, y una vara que se ajusta para alcanzar
+# el número deja de medir.
+#
+# Dentro de Spec/corridas/ cada corrida escribe su propio directorio, sin límite
+# de corridas. Lo que vive en la raíz de esa carpeta —el esquema— no es material
+# de corrida y queda fuera.
 #
 # Los agentes de persona solo son editables durante el Paso 0. Terminado ese paso,
 # pasan a ser instrumento de medición: si cambian entre una iteración y la
@@ -48,6 +53,7 @@ git rev-parse --git-dir >/dev/null 2>&1 || {
 EDITABLES="
 Requirements/ReqFunc.MD
 Spec/Eval-Report.MD
+Spec/HISTORIAL.MD
 README.md
 "
 
@@ -66,13 +72,25 @@ TOCADOS="$( { git diff --name-only HEAD
               git diff --name-only --cached
               git ls-files --others --exclude-standard; } | sort -u | grep -v '^$')"
 
+# es_editable <ruta>
+es_editable() {
+  printf '%s\n' "$EDITABLES" | grep -qxF "$1" && return 0
+  # Cada corrida escribe bajo su propio directorio; el esquema, que vive en la
+  # raíz de Spec/corridas/, no lo hace y por eso el patrón exige dos tramos.
+  case "$1" in
+    Spec/corridas/*/*) return 0 ;;
+  esac
+  return 1
+}
+
 INFRACTORES=""
-for ruta in $TOCADOS; do
-  if ! printf '%s\n' "$EDITABLES" | grep -qxF "$ruta"; then
+while IFS= read -r ruta; do
+  [ -z "$ruta" ] && continue
+  if ! es_editable "$ruta"; then
     INFRACTORES="${INFRACTORES}${ruta}
 "
   fi
-done
+done <<< "$TOCADOS"
 INFRACTORES="$(printf '%s' "$INFRACTORES" | grep -v '^$')"
 
 if [ "$SILENCIOSO" -eq 1 ]; then

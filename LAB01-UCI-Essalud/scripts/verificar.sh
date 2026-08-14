@@ -8,16 +8,19 @@
 # ejecutarse desde la primera iteración en adelante, cuando los agentes ya son
 # instrumento de medición y no material editable.
 #
-# Ocho controles. Los cuatro primeros son los mecánicos de docs/CONVENCIONES.md,
-# sección 11: buscan texto que no debería existir, y aciertan cuando no encuentran
-# nada. Los cuatro siguientes verifican que el documento de requerimientos sea
-# internamente consistente y que la corrida no haya tocado archivos ajenos.
+# Nueve controles en tres familias. Los cuatro mecánicos son los de
+# docs/CONVENCIONES.md, sección 11: buscan texto que no debería existir, y
+# aciertan cuando no encuentran nada. Los cuatro estructurales verifican que el
+# documento de requerimientos sea internamente consistente y que la corrida no
+# haya tocado archivos ajenos. El de cómputo recomputa los puntajes que la corrida
+# declaró: hasta él, las fórmulas y los techos de la rúbrica los aplicaba el mismo
+# agente que quería aprobar.
 #
 # Ninguno emite juicio. Un control en verde no dice que el requerimiento sea
 # bueno: dice que no incurre en el defecto que ese control sabe detectar.
 #
 # Códigos de salida
-#   0  los ocho controles pasan
+#   0  los nueve controles pasan
 #   1  al menos un control falla; el detalle va después de la tabla
 #   2  falta un archivo obligatorio
 
@@ -39,14 +42,28 @@ REQ="Requirements/ReqFunc.MD"
 
 ANCHO=42
 FALLAS=0
+OMITIDOS=0
 DETALLE=""
+
+# etiquetar <etiqueta> — el relleno de puntos hasta la columna de resultado.
+etiquetar() {
+  local relleno=$((ANCHO - ${#1}))
+  [ "$relleno" -lt 1 ] && relleno=1
+  printf '%*s' "$relleno" '' | tr ' ' '.'
+}
+
+# omitir <etiqueta> <motivo> — el control no tenía nada que verificar.
+# Se distingue de PASA a propósito: un control que no corrió no es un control en
+# verde, y confundirlos convierte una ausencia de evidencia en evidencia.
+omitir() {
+  printf '%s %s OMITE (%s)\n' "$1" "$(etiquetar "$1")" "$2"
+  OMITIDOS=$((OMITIDOS + 1))
+}
 
 # reportar <etiqueta> <n_hallazgos> <cuerpo>
 reportar() {
   local etiqueta="$1" n="$2" cuerpo="${3:-}" puntos=""
-  local relleno=$((ANCHO - ${#etiqueta}))
-  [ "$relleno" -lt 1 ] && relleno=1
-  puntos="$(printf '%*s' "$relleno" '' | tr ' ' '.')"
+  puntos="$(etiquetar "$etiqueta")"
 
   if [ "$n" -eq 0 ]; then
     printf '%s %s PASA\n' "$etiqueta" "$puntos"
@@ -126,12 +143,38 @@ else
   reportar '[E4] Archivos de solo lectura intactos' 1 'falta scripts/guardia-diff.sh'
 fi
 
+printf '\nControl de cómputo\n'
+
+# ── C1 ── Los puntajes declarados coinciden con los recomputados.
+if [ -x scripts/verificar-puntaje.sh ]; then
+  H="$(scripts/verificar-puntaje.sh --silencioso)"
+  CODIGO=$?
+  REGISTRADAS="$(find Spec/corridas -mindepth 2 -maxdepth 2 -name 'corrida.json' \
+                   -not -name '_*' 2>/dev/null | grep -c '')"
+  if [ "$CODIGO" -eq 2 ]; then
+    reportar '[C1] Aritmética del puntaje' 1 "$H"
+  elif [ "$REGISTRADAS" -eq 0 ] && [ -z "$H" ]; then
+    omitir '[C1] Aritmética del puntaje' 'sin corridas registradas'
+  else
+    reportar '[C1] Aritmética del puntaje' "$(contar "$H")" "$H"
+  fi
+else
+  reportar '[C1] Aritmética del puntaje' 1 'falta scripts/verificar-puntaje.sh'
+fi
+
 # ── Cierre ──
 TOTAL="$(printf '%s\n' "$DEFINIDOS" | sort -u | grep -c '')"
 printf '\n%s requerimientos funcionales inventariados.\n' "$TOTAL"
 
+if [ "$FALLAS" -eq 0 ] && [ "$OMITIDOS" -eq 0 ]; then
+  printf '\n✅ Los nueve controles devuelven vacío.\n\n'
+  exit 0
+fi
+
 if [ "$FALLAS" -eq 0 ]; then
-  printf '\n✅ Los ocho controles devuelven vacío.\n\n'
+  printf '\n✅ Los %s controles ejecutados devuelven vacío. %s omitido(s): sin material que verificar.\n' \
+    "$((9 - OMITIDOS))" "$OMITIDOS"
+  printf '   El veredicto exige los nueve; una corrida que declara PASSED ya escribió su corrida.json.\n\n'
   exit 0
 fi
 
