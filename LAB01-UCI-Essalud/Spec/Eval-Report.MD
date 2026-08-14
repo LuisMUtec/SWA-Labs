@@ -10,7 +10,7 @@
 | Rúbrica | `Spec/Eval-Spec.MD` @ `8af38e9` |
 | Personas | `Personas/` @ `6340172` |
 | Agentes | `Agents/` @ `fb5856c` |
-| Instrumento modificado en el Paso 0 | no |
+| Instrumento modificado | no |
 
 ## Puntaje global: 58,7 %
 
@@ -100,7 +100,7 @@ falta de requerimientos.
 
 ## Evidencia
 
-- [`corridas/2026-08-13-additional-v2/iteracion-1/`](corridas/2026-08-13-additional-v2/iteracion-1/)
+- [`corridas/2026-08-13-additional-v2/`](corridas/2026-08-13-additional-v2/)
   — cuatro veredictos de persona y `diagnostico.MD` con las matrices de cobertura, P1–P3, el
   inventario de D3, las tensiones y las discrepancias.
 - [`corridas/2026-08-13-additional-v2/controles.txt`](corridas/2026-08-13-additional-v2/controles.txt)
@@ -110,13 +110,37 @@ falta de requerimientos.
 
 ## Resultado final: 58,7 %
 
-La corrida se cierra en la iteración 1 por decisión del equipo: la Fase D habría reescrito
-`Requirements/ReqFunc.MD` con una docena de requerimientos nuevos, y ese documento se consensúa en
-grupo antes de modificarse. Las tres iteraciones que el protocolo admite no se agotaron; el 58,7 %
-es el estado real del documento evaluado, no el resultado de un ciclo de corrección incompleto.
+La corrida mide una vez y no corrige. `Requirements/ReqFunc.MD` queda como estaba: las dieciocho
+brechas se corrigen en otra rama, que el equipo consensúa antes de modificar el documento. El 58,7 %
+es el estado real de lo evaluado.
 
-- Iteraciones ejecutadas: 1 de 3 admitidas — corrida cerrada por decisión, sin Fase D
 - Veredicto final: FAILED
+
+### Salvedad sobre el instrumento
+
+Esta corrida se ejecutó con los agentes de persona anteriores a su estandarización —`Agents/` @
+`fb5856c`, como registra la cabecera—. Su propio hallazgo **B-19** describe un defecto de ese
+instrumento: la definición de cobertura percibida que los cuatro agentes compartían devolvía 100 %
+siempre que cada tarea recibiera un solo «Sirve», por parcial que fuera. Ese defecto quedó corregido
+después de esta medición; la cobertura percibida es ahora un autoinforme y no se calcula con la
+rúbrica.
+
+La corrección alcanza a un número. **D5 no vale 40 por su cómputo, sino por un techo:**
+
+```
+D5 = 12 × 4 tensiones decididas + máx(0, 40 − 10 × 3) = 48 + 10 = 58
+                                       1 tensión sin decidir → D5 ≤ 40
+```
+
+El techo lo dispara el contraste de conformidad unánime, que exige que las cuatro coberturas
+percibidas alcancen 90. Valían exactamente 100, que es justo lo que B-19 explica. Con la definición
+corregida basta que una de las cuatro baje de 90 para que el techo no dispare: D5 volvería a 58 y el
+global a 60,5 %. El veredicto seguiría siendo FAILED —el umbral es 80— y las dieciocho brechas
+seguirían en pie.
+
+Ese 60,5 % no se publica aquí porque ninguna corrida lo midió: suponerlo exigiría dar por sabido lo
+que reportarían las percibidas nuevas. Lo resuelve la corrida siguiente, y la columna **Instr.** de
+[`HISTORIAL.MD`](HISTORIAL.MD) advertirá que su delta no es atribuible solo a `ReqFunc.MD`.
 - Promedio final de personas: 6,1/10
 - Puntaje global final: 58,7 %
 - Brechas abiertas: 14 de necesidad no cubierta, más 5 de forma, trazabilidad, consistencia e

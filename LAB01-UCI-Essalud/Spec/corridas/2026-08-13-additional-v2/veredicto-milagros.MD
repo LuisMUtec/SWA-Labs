@@ -1,6 +1,6 @@
-# Evaluación de Milagros — iteración 1
+# Evaluación de Milagros
 
-Agente: [`Agents/agent-milagros.MD`](../../../../Agents/agent-milagros.MD) ·
+Agente: [`Agents/agent-milagros.MD`](../../../Agents/agent-milagros.MD) ·
 Evaluado: `Requirements/ReqFunc.MD`, 42 requerimientos.
 
 | ID | Veredicto | Justificación |

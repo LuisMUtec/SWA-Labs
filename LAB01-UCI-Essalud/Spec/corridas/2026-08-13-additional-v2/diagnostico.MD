@@ -1,6 +1,6 @@
-# Diagnóstico — iteración 1
+# Diagnóstico
 
-Corrida `2026-08-13-additional-v2` · rúbrica [`Spec/Eval-Spec.MD`](../../../Eval-Spec.MD) ·
+Corrida `2026-08-13-additional-v2` · rúbrica [`Spec/Eval-Spec.MD`](../../Eval-Spec.MD) ·
 42 requerimientos funcionales, 4 evaluaciones de persona, 24 tareas críticas.
 
 ## Veredictos agregados

@@ -1,6 +1,6 @@
-# Evaluación de Aníbal — iteración 1
+# Evaluación de Aníbal
 
-Agente: [`Agents/agent-anibal.MD`](../../../../Agents/agent-anibal.MD) ·
+Agente: [`Agents/agent-anibal.MD`](../../../Agents/agent-anibal.MD) ·
 Evaluado: `Requirements/ReqFunc.MD`, 42 requerimientos.
 
 | ID | Veredicto | Justificación |

@@ -1,6 +1,6 @@
-# Evaluación de Rodrigo — iteración 1
+# Evaluación de Rodrigo
 
-Agente: [`Agents/agent-rodrigo.MD`](../../../../Agents/agent-rodrigo.MD) ·
+Agente: [`Agents/agent-rodrigo.MD`](../../../Agents/agent-rodrigo.MD) ·
 Evaluado: `Requirements/ReqFunc.MD`, 42 requerimientos.
 
 | ID | Veredicto | Justificación |
