@@ -240,7 +240,7 @@ RESTRICCIONES DE TODA LA EJECUCIÓN
 - No consultes fuentes externas al repositorio adjunto.
 ```
 
-Resultado del agente [`[Spec/Eval-Spec.MD](https://claude.ai/cowork/Spec/Eval-Spec.MD)`](Spec/Eval-Spec.MD): **__ %**
+Resultado del agente [`[Spec/Eval-Spec.MD](https://claude.ai/cowork/Spec/Eval-Spec.MD)`](Spec/Eval-Spec.MD): **58.7 %**
 
 ---
 
