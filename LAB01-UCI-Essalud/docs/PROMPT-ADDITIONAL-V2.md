@@ -105,7 +105,14 @@ Puedes crear o modificar exclusivamente:
 
 - `Requirements/ReqFunc.MD`
 - `Spec/Eval-Report.MD`
+- `Spec/corridas/‹id-de-esta-corrida›/` y todo lo que va dentro
+- `Spec/HISTORIAL.MD`, **solo agregando la fila de esta corrida**
 - La aparición final del porcentaje en la línea «Resultado del agente» de `README.md`.
+
+El identificador de la corrida es la fecha y la etiqueta de la rama:
+`Spec/corridas/2026-08-13-additional-v2/`. No hay límite de corridas: cada una escribe su propio
+directorio y no toca los de las anteriores. `Spec/corridas/_ESQUEMA.MD` fija qué va dentro y es de
+solo lectura, como el resto de la vara.
 
 Y, **solo durante el Paso 0** y solo sobre lo que la comprobación declare no conforme:
 
@@ -118,14 +125,16 @@ Y, **solo durante el Paso 0** y solo sobre lo que la comprobación declare no co
 Terminado el Paso 0, `Agents/*` queda de solo lectura durante el resto de la ejecución.
 
 Todos los demás archivos son de solo lectura, incluidos `Personas/*`, `docs/*`, `Spec/Eval-Spec.MD`,
-`Requirements/ReqNoFunc.MD`, `Agents/_TEMPLATE.md`, `scripts/*` y `.claude/*`.
+`Spec/corridas/_ESQUEMA.MD`, los directorios de corridas anteriores, `Requirements/ReqNoFunc.MD`,
+`Agents/_TEMPLATE.md`, `scripts/*` y `.claude/*`.
 
 En `README.md` reemplaza solamente el marcador final `**__ %**` de la línea «Resultado del agente».
 Conserva literalmente el resto de esa línea, incluso su formato actual. No aproveches la edición para
 corregir enlaces ni otros contenidos.
 
-No añadas dependencias, configuración, workflows, plantillas, carpetas ni archivos distintos de los
-enumerados. `scripts/guardia-diff.sh` comprueba esta lista y se ejecuta como control E4.
+No añadas dependencias, configuración, workflows, plantillas ni archivos distintos de los enumerados.
+La única carpeta que creas es la de tu corrida. `scripts/guardia-diff.sh` comprueba esta lista y se
+ejecuta como control E4.
 
 ---
 
@@ -317,10 +326,26 @@ Ejecuta desde la raíz, antes de declarar `PASSED`:
 scripts/verificar.sh --sin-agentes
 ```
 
-Son ocho controles: los cuatro mecánicos de `docs/CONVENCIONES.md`, sección 11, y cuatro
-estructurales —identificadores duplicados, campos obligatorios de cada RF, matrices que citen IDs
-inexistentes y archivos de solo lectura tocados—. El script sale con código 0 cuando los ocho pasan y
-1 cuando alguno falla, con el detalle de las líneas culpables.
+Son nueve controles en tres familias: los cuatro mecánicos de `docs/CONVENCIONES.md`, sección 11;
+cuatro estructurales —identificadores duplicados, campos obligatorios de cada RF, matrices que citen
+IDs inexistentes y archivos de solo lectura tocados—; y uno de cómputo, C1, que recomputa los
+puntajes declarados en `corrida.json`. El script sale con código 0 cuando los nueve pasan y 1 cuando
+alguno falla, con el detalle de las líneas culpables.
+
+C1 comprueba que `Puntaje_p`, D1, D2, D3 y el global salgan de sus fórmulas, que los techos duros de
+`Eval-Spec` se respeten, que el veredicto declarado sea el que producen las cinco condiciones y que el
+porcentaje del README sea el de la última corrida. Hasta ahora esas reglas las aplicabas tú, que eres
+además quien quiere aprobar. Puedes ejecutarlo por separado mientras trabajas:
+
+```bash
+scripts/verificar-puntaje.sh
+```
+
+Si C1 contradice un número tuyo, corrige el número. La fórmula, el techo y el umbral no se tocan.
+
+C1 aparece como `OMITE` mientras no exista ningún `corrida.json`. **Un control omitido no es un
+control cumplido**: la condición 5 del veredicto exige los nueve, así que no hay `PASSED` sin el JSON
+de la corrida escrito.
 
 `--sin-agentes` retira `Agents/*` de la lista de editables, y por eso acompaña a toda ejecución
 posterior al Paso 0: hace cumplir por control lo que el §4 exige por regla. Durante el Paso 0, y solo
@@ -332,13 +357,45 @@ dónde vive su corrección. Consúltalo antes de interpretar un hallazgo.
 **Ningún puntaje se declara `PASSED` con un control en rojo**, por alto que sea el porcentaje. Si la
 corrección de un hallazgo exige tocar un archivo de solo lectura, repórtala como bloqueada.
 
-Incluye la salida literal del script en `Spec/Eval-Report.MD`.
+Guarda la salida literal del script, con su código de salida, en
+`Spec/corridas/‹id›/controles.txt`.
 
 ---
 
-## 8. Entregable — Spec/Eval-Report.MD
+## 8. Entregables de la corrida
 
-Crea `Spec/Eval-Report.MD`.
+La salida no cabe en un archivo. `Spec/corridas/_ESQUEMA.MD` explica por qué y fija la estructura;
+`Spec/Eval-Spec.MD`, sección «Salida», fija los contenidos. Esto es lo que produces:
+
+```
+Spec/
+  Eval-Report.MD                        resumen de esta corrida, 1–2 páginas
+  HISTORIAL.MD                          una fila más, la de esta corrida
+  corridas/‹AAAA-MM-DD›-‹etiqueta›/
+    corrida.json                        cabecera y puntajes, para el control C1
+    controles.txt                       salida literal de verificar.sh y su código de salida
+    bloqueos.MD                         lo que el §10 impidió corregir; omítelo si no hubo
+    iteracion-N/
+      veredicto-rodrigo.MD
+      veredicto-milagros.MD
+      veredicto-carmen.MD
+      veredicto-anibal.MD
+      diagnostico.MD
+```
+
+### El resumen
+
+`Spec/Eval-Report.MD` sigue el formato de `Eval-Spec.MD` §Salida → «Resumen». Empieza por la cabecera
+de reproducibilidad —los SHA de lo evaluado, de la rúbrica, de las personas y de los agentes— y
+sigue con veredicto, dimensiones, puntajes por persona, brechas y acciones. **No pegues aquí la
+evidencia**: enlázala.
+
+Los SHA se obtienen del repositorio, no se inventan:
+
+```bash
+git log -1 --format=%h -- Requirements/ReqFunc.MD
+git log -1 --format=%h -- Spec/Eval-Spec.MD
+```
 
 Encabezado:
 
@@ -347,38 +404,37 @@ Encabezado:
 ## Sistema de Gestión UCI — Essalud
 ```
 
-Incluye una sección por iteración con esta estructura:
+### La evidencia
 
-```markdown
-## ITERACION #N
+Cada iteración escribe su propio directorio `iteracion-N/`. Los cuatro veredictos van en archivos
+separados, uno por persona, cada uno con:
 
-### Evaluación de Rodrigo
+- Tabla completa ID → veredicto → justificación.
+- Tareas y criterios no cubiertos.
+- Recorrido del escenario.
+- Cobertura percibida declarada.
 
-Tabla completa ID → veredicto → justificación.
-Tareas y criterios no cubiertos.
-Recorrido del escenario.
-Cobertura percibida declarada.
+Y `diagnostico.MD` lleva el resto de las tablas del formato «Evidencia»: veredictos agregados, matriz
+de cobertura, cobertura de P1–P3, discrepancias, tensiones sin decidir, requerimientos huérfanos, mal
+formados y mal ubicados, y evaluaciones ausentes o inválidas.
 
-### Evaluación de Milagros
+**No reescribas `iteracion-1/` al ejecutar la iteración 2.** Cada iteración es un directorio nuevo:
+esa separación es lo que permite diffearlas, y un diff entre iteraciones es la única evidencia de que
+una corrección cerró la brecha que decía cerrar.
 
-Mismo contenido.
+### Los números
 
-### Evaluación de Carmen
+`corrida.json` según `Spec/corridas/_ESQUEMA.MD`. Escríbelo antes de ejecutar los controles: C1 lo
+lee, y sin él la condición 5 del veredicto no se cumple.
 
-Mismo contenido.
+### El historial
 
-### Evaluación de Aníbal
+Al cerrar la corrida agrega **una** fila a `Spec/HISTORIAL.MD` con los valores de la última
+iteración. No edites filas anteriores ni las reordenes.
 
-Mismo contenido.
-```
+### Entre iteraciones
 
-A continuación, el diagnóstico completo en el formato que define la sección «Salida» de
-`Spec/Eval-Spec.MD`: puntaje global, tabla de dimensiones con peso y aporte, tabla del veredicto,
-puntajes por persona, veredictos agregados, matriz de cobertura, cobertura de P1–P3, brechas,
-discrepancias, tensiones sin decidir, requerimientos huérfanos, mal formados y mal ubicados,
-controles de convenciones y acciones recomendadas priorizadas.
-
-En las iteraciones posteriores a la primera, comienza además con:
+En las iteraciones posteriores a la primera, `diagnostico.MD` comienza con:
 
 ```markdown
 ### Cambios respecto a la iteración anterior
@@ -396,7 +452,7 @@ Y termina con:
 Explica qué dimensión cambió, cuánto cambió y qué evidencia produjo el cambio. No atribuyas una mejora
 a una corrección que no afecte esa dimensión.
 
-Cierre del documento:
+Cierre de `Spec/Eval-Report.MD`:
 
 ```markdown
 ## Resultado final: __ %
@@ -408,7 +464,8 @@ Cierre del documento:
 - Brechas abiertas: N
 ```
 
-El resultado final debe coincidir con la última iteración.
+El resultado final debe coincidir con la última iteración, con el bloque `resultado` de
+`corrida.json` y con la fila de `HISTORIAL.MD`. C1 comprueba las dos primeras coincidencias.
 
 ---
 
@@ -417,13 +474,15 @@ El resultado final debe coincidir con la última iteración.
 Cuando termine la última iteración, actualiza exclusivamente el marcador `**__ %**` de la línea final
 «Resultado del agente» en `README.md`.
 
-Usa el porcentaje global de la última iteración, incluso si el resultado final es `FAILED`.
+Usa el porcentaje global de la última iteración, incluso si el resultado final es `FAILED`. C1
+compara ese número con el que `corrida.json` declara en `resultado.global`: un README que se queda
+con el porcentaje de una corrida anterior publica un valor que ya nadie sostiene.
 
 No modifiques ninguna otra parte del README.
 
 Emite:
 
-`✅ Eval-Report.MD creado y resultado de README.md actualizado`
+`✅ Entregables de la corrida escritos y resultado de README.md actualizado`
 
 ---
 
@@ -436,15 +495,16 @@ Detente y solicita autorización antes de:
 - Modificar un archivo de solo lectura.
 - Crear un archivo no autorizado.
 - Cambiar una persona, tarea crítica o criterio de éxito.
-- Cambiar `Eval-Spec`, la rúbrica, las convenciones o los scripts.
+- Cambiar `Eval-Spec`, la rúbrica, las convenciones, el esquema de corrida o los scripts.
+- Reescribir el directorio de una corrida anterior o una fila ya escrita de `HISTORIAL.MD`.
 - Hacer commit, push, merge o pull request.
 
-Si una corrección necesaria depende de cualquiera de esas acciones, repórtala como bloqueada y no la
-sustituyas por una solución inventada.
+Si una corrección necesaria depende de cualquiera de esas acciones, repórtala como bloqueada y
+regístrala en `Spec/corridas/‹id›/bloqueos.MD`. No la sustituyas por una solución inventada.
 
-Si la tercera iteración sigue en `FAILED`: conserva las tres iteraciones en `Eval-Report.MD`, documenta
-todas las brechas restantes, actualiza el README con el porcentaje real y detente. Nunca fuerces
-`PASSED`.
+Si la tercera iteración sigue en `FAILED`: conserva los tres directorios `iteracion-N/`, documenta
+todas las brechas restantes en el resumen, agrega igual la fila al historial, actualiza el README con
+el porcentaje real y detente. Nunca fuerces `PASSED`.
 
 ---
 
@@ -452,15 +512,16 @@ todas las brechas restantes, actualiza el README con el porcentaje real y detent
 
 Al terminar informa:
 
-- Rama creada.
+- Rama creada y directorio de la corrida.
 - Número de iteraciones y resultado de cada una.
 - Puntajes individuales finales y promedio.
 - D1–D6 finales y porcentaje global.
 - `PASSED` o `FAILED`, con la tabla de las cinco condiciones.
 - RF agregados, modificados o divididos.
 - Archivos creados y modificados.
-- Salida de `scripts/verificar.sh`.
-- Brechas todavía abiertas.
+- Salida de `scripts/verificar.sh`, con el estado de C1.
+- Brechas todavía abiertas y bloqueos registrados.
+- Fila agregada a `Spec/HISTORIAL.MD`.
 - Estado de Git.
 
 No hagas commit ni subas cambios. Termina preguntando si se autoriza crear el commit y el pull

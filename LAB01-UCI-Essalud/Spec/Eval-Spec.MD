@@ -9,7 +9,7 @@ inputs:
   - las cuatro evaluaciones de persona sobre ReqFunc.MD — insumo obligatorio
   - ../Requirements/ReqFunc.MD      # Único documento de requerimientos que se puntúa
   - ../scripts/verificar.sh         # Controles de forma y estructura
-output: porcentaje (0–100) + puntaje por persona, desglose, matriz de cobertura y brechas
+output: resumen (`Spec/Eval-Report.MD`), evidencia y `corrida.json` en `Spec/corridas/‹id›/`, y una fila en `Spec/HISTORIAL.MD`
 ---
 
 # Agente: Eval-Spec
@@ -248,10 +248,15 @@ La iteración obtiene **PASSED** solo si se cumplen las cinco condiciones a la v
 2. D1 ≥ 80,0 —equivale a un promedio de personas ≥ 8,0/10—.
 3. Ninguna persona por debajo de 7,0/10.
 4. D2 ≥ 80,0.
-5. Los ocho controles de `scripts/verificar.sh` devuelven vacío.
+5. Los nueve controles de `scripts/verificar.sh` devuelven vacío.
 
 Falla una sola y el resultado es **FAILED**. No se redondea un valor hacia arriba para atravesar un
 umbral, ni se declara PASSED con un control en rojo por alto que sea el porcentaje.
+
+El noveno control, C1, recomputa los puntajes que la corrida declaró en su `corrida.json`: las
+fórmulas de esta rúbrica, sus techos duros y estas cinco condiciones dejan de depender del criterio de
+quien evalúa. Un control **omitido** no cuenta como cumplido: si C1 no encuentra `corrida.json`, la
+condición 5 no se satisface y no hay PASSED.
 
 ## Procedimiento
 
@@ -274,6 +279,9 @@ umbral, ni se declara PASSED con un control en rojo por alto que sea el porcenta
    resolver o una tarea crítica descubierta.
 10. **Aplica los contrastes cruzados** de la sección siguiente.
 11. **Puntúa cada dimensión de 0 a 100, aplica los pesos, muestra el cálculo y emite el veredicto.**
+12. **Reparte la salida** en sus tres piezas —resumen, evidencia y `corrida.json`— y ejecuta
+    `scripts/verificar-puntaje.sh`. Si C1 reporta una discrepancia, corrige el número: la fórmula no
+    se toca.
 
 ## Contrastes cruzados
 
@@ -292,8 +300,33 @@ porcentaje.
 
 ## Salida
 
+La salida se reparte en tres piezas porque tiene tres lectores. `Spec/corridas/_ESQUEMA.MD` fija la
+estructura de directorios; aquí van los contenidos.
+
+| Pieza | Dónde vive | Para quién |
+|---|---|---|
+| Resumen | `Spec/Eval-Report.MD` | quien revisa el entregable y necesita el veredicto en una página |
+| Evidencia | `Spec/corridas/‹id›/iteracion-N/` | quien corrige `ReqFunc.MD` y necesita la traza completa |
+| `corrida.json` | `Spec/corridas/‹id›/` | el control C1, que recomputa lo que aquí se declara |
+
+Un solo documento serviría mal a los tres: el veredicto quedaría sepultado bajo la evidencia, y los
+puntajes seguirían siendo prosa que nadie puede verificar.
+
+### Resumen — `Spec/Eval-Report.MD`
+
 ```markdown
 # Evaluación de Requerimientos Funcionales — Sistema UCI Essalud
+
+| | |
+|---|---|
+| Corrida | ‹AAAA-MM-DD›-‹etiqueta› |
+| Rama | |
+| Modelo | |
+| Evaluado | `Requirements/ReqFunc.MD` @ ‹sha› |
+| Rúbrica | `Spec/Eval-Spec.MD` @ ‹sha› |
+| Personas | `Personas/` @ ‹sha› |
+| Agentes | `Agents/` @ ‹sha› |
+| Instrumento modificado en el Paso 0 | sí / no |
 
 ## Puntaje global: __ %
 
@@ -314,7 +347,7 @@ porcentaje.
 | 2 | D1 | ≥ 80,0 | | |
 | 3 | Persona más baja | ≥ 7,0/10 | | |
 | 4 | D2 | ≥ 80,0 | | |
-| 5 | Controles de `verificar.sh` | 8/8 | | |
+| 5 | Controles de `verificar.sh` | 9/9 | | |
 
 ## Puntajes por persona
 
@@ -326,6 +359,30 @@ porcentaje.
 | Aníbal | | | | | | | |
 | **PROMEDIO** | | | | | | | |
 
+## Brechas encontradas
+
+| # | Persona o problema afectado | Brecha | Origen | Severidad |
+|---|---|---|---|---|
+
+## Acciones recomendadas (priorizadas)
+
+1. 
+2. 
+3. 
+
+## Evidencia
+
+Una línea por iteración, enlazando su directorio en `Spec/corridas/‹id›/`.
+```
+
+La cabecera no es adorno. Esta rúbrica está versionada y cambia: un 82 % medido contra `Eval-Spec` de
+ayer y un 82 % medido contra el de hoy no son el mismo número, y sin los SHA no hay forma de saber
+cuál se leyó. `Instrumento modificado` dice lo mismo del otro lado: si el Paso 0 corrigió un agente,
+la corrida no es comparable con las anteriores, porque cambió quien mide y no solo lo medido.
+
+### Evidencia — `Spec/corridas/‹id›/iteracion-N/diagnostico.MD`
+
+```markdown
 ## Veredictos agregados
 
 | RF | Rodrigo | Milagros | Carmen | Aníbal | Efecto en D1 |
@@ -340,11 +397,6 @@ porcentaje.
 
 | Problema | RF asociados | Comportamiento que lo resuelve | Puntos |
 |---|---|---|---:|
-
-## Brechas encontradas
-
-| # | Persona o problema afectado | Brecha | Origen | Severidad |
-|---|---|---|---|---|
 
 ## Discrepancias entre agente y cómputo
 
@@ -375,21 +427,31 @@ porcentaje.
 
 | Persona | Qué falta |
 |---|---|
-
-## Controles de convenciones
-
-Salida literal de `scripts/verificar.sh`.
-
-## Acciones recomendadas (priorizadas)
-
-1. 
-2. 
-3. 
 ```
+
+Los cuatro veredictos de persona de esa iteración van en archivos propios, uno cada uno, junto a este
+diagnóstico. Separarlos es lo que hace legible la iteración siguiente: `git diff` entre dos
+directorios `iteracion-N` muestra exactamente qué RF cambió de veredicto, que es justo lo que la
+corrección tiene que atribuir a una brecha concreta.
+
+La salida literal de `scripts/verificar.sh`, con su código de salida, va en
+`Spec/corridas/‹id›/controles.txt`.
 
 La columna **Origen** de la tabla de brechas registra de dónde sale el hallazgo: `veredicto-‹persona›`
 cuando lo declaró un agente, `auditoría` cuando lo detectaste tú, `control-‹id›` cuando lo marcó un
 control mecánico.
+
+### Números — `Spec/corridas/‹id›/corrida.json`
+
+Los mismos puntajes del resumen, como datos. `Spec/corridas/_ESQUEMA.MD` fija los campos; C1 los
+recomputa. Un número que aparece en el resumen y no en el JSON queda sin verificar, y uno que difiere
+entre ambos es exactamente el error que C1 existe para atrapar.
+
+### Historial — `Spec/HISTORIAL.MD`
+
+Al cerrar la corrida se agrega una fila con los valores de su última iteración. El archivo solo se
+agrega, nunca se reescribe, y no tiene límite de filas: es lo único que sobrevive a la siguiente
+corrida, porque `Eval-Report.MD` se sobrescribe.
 
 ## Reglas
 
@@ -413,3 +475,7 @@ control mecánico.
 - No modifiques ninguna fuente de la evaluación para elevar el puntaje. Personas, agentes,
   convenciones y esta rúbrica son la vara con la que se mide.
 - Reporta el porcentaje con un decimal como máximo y muestra el cálculo.
+- Todo puntaje que declares en el resumen va también en `corrida.json`. Un resumen sin su JSON deja
+  la condición 5 sin cumplir, y con ella el veredicto en FAILED.
+- Si C1 contradice un número tuyo, el equivocado es el número. Corregir la fórmula, el techo o el
+  umbral para que la discrepancia desaparezca es ajustar la vara.
