@@ -124,135 +124,60 @@ del resultado del piloto aunque no se modele como persona.
 
 ---
 
-## 3. Prompt de Evaluación
+## 3. Evaluación de los Requerimientos
 
-> Prompt usado para contrastar los requerimientos contra las definiciones de personas (usuarios modelo).
+> Cómo se contrastan los requerimientos contra las personas modelo, y con qué resultado.
 
-**Alcance de la evaluación: requerimientos funcionales.** La rúbrica de
-[`[Spec/Eval-Spec.MD](https://claude.ai/cowork/Spec/Eval-Spec.MD)`](Spec/Eval-Spec.MD) puntúa `Requirements/ReqFunc.MD` frente a las personas y los
-problemas críticos. `Requirements/ReqNoFunc.MD` se entrega —el enunciado lo exige— pero queda fuera
-del porcentaje: los atributos de calidad se verifican contra las metas numéricas del caso, no contra
-la satisfacción de una persona.
+**Alcance: requerimientos funcionales.** La rúbrica de [`Spec/Eval-Spec.MD`](Spec/Eval-Spec.MD) puntúa
+`Requirements/ReqFunc.MD` frente a las personas y los problemas críticos.
+`Requirements/ReqNoFunc.MD` se entrega —el enunciado lo exige— pero queda fuera del porcentaje: los
+atributos de calidad se verifican contra las metas numéricas del caso, no contra la satisfacción de
+una persona.
 
-El prompt se ejecuta en un cliente de IA con los archivos del repositorio adjuntos. Produce dos
-salidas encadenadas: una evaluación por cada persona modelo y una agregación ponderada que devuelve
-el porcentaje de calidad.
+La evaluación no es un prompt suelto. Está repartida entre los documentos que la sostienen, y cada uno
+declara su parte:
 
-```text
-Actúas sobre la especificación de requerimientos del sistema de gestión de UCI de Essalud.
-Trabajas únicamente con los archivos adjuntos. No supongas contenido que no esté en ellos.
-
-INSUMOS
-1. README.md — problema, clientes y usuarios del sistema.
-2. Personas/Rodrigo.MD, Personas/Milagros.MD, Personas/Carmen.MD, Personas/Anibal.MD —
-   las cuatro personas modelo, con sus tareas críticas, criterios de éxito, escenario clave
-   y restricciones.
-3. Agents/agent-rodrigo.MD, Agents/agent-milagros.MD, Agents/agent-carmen.MD,
-   Agents/agent-anibal.MD — la definición de agente derivada de cada persona.
-4. Requirements/ReqFunc.MD — los requerimientos funcionales a evaluar.
-5. Spec/Eval-Spec.MD — la rúbrica de agregación.
-6. docs/CONVENCIONES.md — la forma que todo requerimiento debe adoptar.
-
-ALCANCE
-Se evalúa exclusivamente Requirements/ReqFunc.MD. Requirements/ReqNoFunc.MD no se puntúa:
-sus afirmaciones no suman ni restan en ninguna dimensión. Si un RNF aparece dentro de
-ReqFunc.MD, se reporta como requerimiento mal ubicado.
-
-Ejecuta las dos fases en orden y no las mezcles. La fase 2 consume la salida literal de la fase 1.
-
-═══ FASE 1 — EVALUACIÓN POR PERSONA ═══
-
-Repite este bloque una vez por cada uno de los cuatro agentes.
-
-Adopta íntegramente la definición de Agents/agent-<nombre>.MD: su identidad, su contexto
-operativo, lo que le importa y lo que le frustra. Responde desde esa persona y no como
-asistente. Recorre Requirements/ReqFunc.MD requerimiento por requerimiento y, para cada uno,
-decide si te sirve, te es indiferente o te estorba, y justifícalo en una frase anclada a tu
-día a día.
-
-Reglas de la fase 1:
-- No atribuyas al requerimiento capacidades que su enunciado no declara.
-- Si un requerimiento admite más de una lectura, decláralo ambiguo. No adoptes la
-  interpretación que te conviene.
-- Prioriza la seguridad del paciente sobre la comodidad operativa.
-- Recorre tus tareas críticas y tus criterios de éxito uno por uno y señala cuáles quedan
-  sin cubrir por ningún RF. Esa lista es el insumo más importante de la fase 2.
-- Verifica que tu escenario clave pueda recorrerse de principio a fin encadenando RF.
-  Si se corta, indica en qué paso.
-- No propongas requerimientos nuevos. Señalas la carencia; no la resuelves.
-
-Formato de salida de cada agente:
-
-## Evaluación de <Nombre>
-
-| ID | Veredicto | Justificación |
+| Pieza | Dónde vive | Qué fija |
 |---|---|---|
-| RF-XXX-NN | Sirve / Indiferente / Estorba / Ambiguo | |
+| Cómo juzga cada persona | [`Agents/agent-*.MD`](Agents) | vocabulario de veredicto, los dos recorridos y el formato de salida |
+| El estándar de los agentes | [`Agents/README.md`](Agents/README.md) | qué comparten los cuatro y cómo se comprueba su conformidad |
+| Cómo se agrega y se puntúa | [`Spec/Eval-Spec.MD`](Spec/Eval-Spec.MD) | rúbrica D1–D6, pesos, techos duros y condiciones del veredicto |
+| Qué deja escrito una corrida | [`Spec/corridas/_ESQUEMA.MD`](Spec/corridas/_ESQUEMA.MD) | estructura de la salida y archivos que puede tocar |
+| La forma exigida a un RF | [`docs/CONVENCIONES.md`](docs/CONVENCIONES.md) | patrones EARS, criterios de aceptación, trazabilidad |
 
-### Necesidades no cubiertas
-- <tarea crítica o criterio de éxito sin RF que lo cubra>
+### Cómo se ejecuta una corrida
 
-### Riesgos que veo
--
+1. **Se comprueba el instrumento.** Los cuatro agentes tienen que derivar de su persona; la lista de
+   comprobación está en [`Agents/README.md`](Agents/README.md). Se hace antes de leer un solo
+   requerimiento, para que la conformidad no se decida sabiendo a quién favorece.
+2. **Se lanzan cuatro evaluaciones en paralelo**, un subagente por persona. Cada uno recibe solo su
+   agente, su persona y `ReqFunc.MD`, y emite un veredicto —Sirve, Indiferente, Estorba o Ambiguo—
+   para cada RF, más el recorrido de sus tareas críticas y el de su escenario clave. Ninguno ve lo que
+   respondieron los otros: es lo que hace que cuatro lecturas coincidentes signifiquen algo.
+3. **Se agregan** con la rúbrica de [`Spec/Eval-Spec.MD`](Spec/Eval-Spec.MD), que computa las seis
+   dimensiones, aplica los pesos y emite el porcentaje.
+4. **Se verifica la aritmética.** `scripts/verificar.sh` corre nueve controles mecánicos. Sin los
+   nueve en verde no hay `PASSED`, por alto que sea el porcentaje.
 
-### Recorrido del escenario clave
-<RF encadenados, o el paso en que se interrumpe>
+**Una corrida mide una vez.** No itera ni corrige los requerimientos: emite su veredicto y termina.
+Corregir `ReqFunc.MD` es trabajo de otra rama, y se comprueba con una corrida posterior que
+[`Spec/HISTORIAL.MD`](Spec/HISTORIAL.MD) deja comparar con esta. Medir y corregir en la misma
+ejecución destruye la medición, porque quien corrige ya conoce la vara.
 
-### Cobertura percibida: __ %
-
-═══ FASE 2 — AGREGACIÓN ═══
-
-Adopta la rúbrica de Spec/Eval-Spec.MD. Recibe las cuatro evaluaciones de la fase 1 junto con
-los insumos originales. No eres complaciente: un puntaje alto debe costar, y ante la duda se
-penaliza.
-
-Procedimiento:
-1. Construye la matriz persona × tarea crítica → RF con las 24 tareas críticas de las cuatro
-   personas. Marca los vacíos.
-2. Verifica que P1 (rotación de doctor), P2 (medianoche) y P3 (actualizaciones en tiempo real)
-   tengan al menos un RF que los resuelva, no que solo los nombre.
-3. Revisa cada RF contra la forma exigida: un patrón EARS identificable, una sola respuesta,
-   el sistema como sujeto del DEBE, sin mecanismo ni interfaz, con criterios de aceptación en
-   pares Cuando/Entonces.
-4. Incorpora los veredictos de la fase 1: un RF marcado Estorba o Ambiguo por una persona resta
-   en D1.
-5. Revisa las tensiones documentadas en Personas/README.md. Una tensión que ningún RF decide es
-   brecha de D5, aunque cada RF por separado esté bien escrito.
-6. Puntúa cada dimensión de 0 a 100, aplica los pesos y muestra el cálculo.
-
-Reglas duras:
-- Si una persona no tiene ninguna tarea crítica cubierta, D1 no supera 50.
-- Si P1, P2 o P3 queda sin resolver, D2 no supera 60.
-- Un RF cuyo sujeto del DEBE es una persona y no el sistema cuenta como no verificable en D3.
-- Un RF sin criterios de aceptación cuenta como no verificable en D3.
-- Un RF que nombra un mecanismo, un producto o una pantalla resta en D3 aunque sea claro.
-- Reporta el porcentaje con un decimal como máximo.
-
-Emite el resultado en el formato de salida que Spec/Eval-Spec.MD define: puntaje global, tabla
-de dimensiones con peso y aporte, veredicto, matriz de cobertura, brechas, tensiones sin decidir,
-requerimientos huérfanos, requerimientos mal formados, requerimientos mal ubicados y acciones
-recomendadas priorizadas.
-
-RESTRICCIONES DE TODA LA EJECUCIÓN
-- No redactes ni reescribas requerimientos. El resultado es un diagnóstico, no una corrección.
-- No inventes tareas críticas, criterios de éxito ni restricciones que las personas no declaren.
-- Si falta un insumo, decláralo y no supongas su contenido.
-- No consultes fuentes externas al repositorio adjunto.
-```
-
-Resultado del agente [`[Spec/Eval-Spec.MD](https://claude.ai/cowork/Spec/Eval-Spec.MD)`](Spec/Eval-Spec.MD): **__ %**
+Resultado del agente [`Spec/Eval-Spec.MD`](Spec/Eval-Spec.MD): **__ %**
 
 ---
 
 ## Estructura del repositorio
 
 ```
-README.md              # Este archivo: problema, usuarios/clientes y prompt de evaluación
+README.md              # Este archivo: problema, usuarios/clientes y evaluación
 /docs                  # Enunciado del caso de estudio y convenciones de redacción
 /Personas              # Un MD por persona / usuario modelo
 /Requirements          # ReqFunc.MD y ReqNoFunc.MD
-/Agents                # Definición de agente por cada persona
-/Spec                  # Eval-Spec.MD — agente evaluador de calidad de requerimientos
+/Agents                # Un agente por persona, más el estándar que comparten
+/Spec                  # Eval-Spec.MD (rúbrica), HISTORIAL.MD y las corridas
+/scripts               # Controles mecánicos y preparación de la rama
 ```
 
 ## Cómo trabajamos
@@ -260,7 +185,10 @@ README.md              # Este archivo: problema, usuarios/clientes y prompt de e
 1. Antes de escribir, se lee [`docs/CONVENCIONES.md`](docs/CONVENCIONES.md): fija qué afirma cada
    documento, la forma EARS de los requerimientos funcionales, el escenario de atributo de calidad de
    los no funcionales y la verificación de cada entregable contra la rúbrica de `Eval-Spec`.
-2. Cada quien toma una persona y escribe su MD en `/Personas` + su agente en `/Agents`.
+2. Cada quien toma una persona y escribe su MD en `/Personas` + su agente en `/Agents`, siguiendo
+   [`Agents/_TEMPLATE.md`](Agents/_TEMPLATE.md): el bloque fijo del template se copia sin variación.
 3. Los requerimientos F y NF se consensúan en grupo antes de commitear.
 4. Ramas por tema (`persona/pablo`, `reqs/funcionales`), PR a `main`.
-5. La corrida de `Eval-Spec` se documenta al final en este README.
+5. Antes de dar algo por terminado se corre `scripts/verificar.sh`.
+6. La corrida de `Eval-Spec` deja su resumen en `Spec/Eval-Report.MD`, su fila en `Spec/HISTORIAL.MD`
+   y su porcentaje en la línea «Resultado del agente» de este README.

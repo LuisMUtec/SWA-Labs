@@ -1,6 +1,6 @@
 ---
 name: verificar-requerimientos
-description: Ejecuta los controles de forma y estructura sobre los entregables del caso UCI Essalud e interpreta sus hallazgos. Úsalo antes de declarar PASSED una iteración de evaluación, después de editar Requirements/ReqFunc.MD o los agentes de persona, y cuando haya que comprobar que una corrida no tocó archivos de solo lectura. También prepara la rama de trabajo de una corrida.
+description: Ejecuta los controles de forma y estructura sobre los entregables del caso UCI Essalud e interpreta sus hallazgos. Úsalo antes de declarar PASSED una corrida de evaluación, después de editar Requirements/ReqFunc.MD o los agentes de persona, y cuando haya que comprobar que una corrida no tocó archivos de solo lectura. También prepara la rama de trabajo de una corrida.
 allowed-tools: Bash, Read, Grep
 ---
 
@@ -21,9 +21,13 @@ scripts/verificar-puntaje.sh            # solo la aritmética del puntaje de las
 declara `PASSED` con un control en rojo**, por alto que sea el porcentaje.
 
 `--sin-agentes` cambia una sola cosa: retira los cuatro agentes de persona y su índice de la lista de
-editables. Se usa **desde la primera iteración en adelante**. Los agentes solo se corrigen durante el
-Paso 0; a partir de ahí son el instrumento de medición, y si cambian entre una iteración y la
-siguiente ya no se sabe si mejoró el requerimiento o se ablandó el evaluador.
+editables. Se usa **una vez pasada la comprobación de conformidad** de
+[`Agents/README.md`](../../../Agents/README.md), que es el único momento en que un agente se corrige.
+A partir de ahí son el instrumento de medición: si cambian con el puntaje a la vista, ya no se sabe si
+mejoró el requerimiento o se ablandó el evaluador.
+
+`Requirements/ReqFunc.MD` no está en la lista de editables en ningún momento. Una corrida mide una vez
+y no corrige; E4 falla si la corrida lo tocó.
 
 ## Qué verifica cada control
 

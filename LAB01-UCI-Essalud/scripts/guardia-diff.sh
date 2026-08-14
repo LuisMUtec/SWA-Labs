@@ -4,23 +4,25 @@
 #
 #   scripts/guardia-diff.sh [--silencioso] [--sin-agentes]
 #
-# La lista de editables la fija el protocolo de evaluación: los cuatro agentes de
-# persona, el índice de agentes, los requerimientos funcionales, el reporte, el
-# historial, el directorio de la corrida y el marcador de resultado del README.
-# Todo lo demás —personas, convenciones, la definición del evaluador, el esquema
-# de corrida y los requerimientos no funcionales— es de solo lectura durante una
-# corrida: son la vara con la que se mide, y una vara que se ajusta para alcanzar
-# el número deja de medir.
+# La lista de editables la fija Spec/corridas/_ESQUEMA.MD, sección «Qué puede
+# tocar una corrida»: los cuatro agentes de persona, el índice de agentes, el
+# reporte, el historial, el directorio de la corrida y el marcador de resultado
+# del README. Todo lo demás —personas, requerimientos, convenciones, la rúbrica y
+# el esquema de corrida— es de solo lectura: son la vara con la que se mide, y una
+# vara que se ajusta para alcanzar el número deja de medir.
+#
+# Requirements/ReqFunc.MD NO es editable durante una corrida. Una corrida mide una
+# vez y no corrige: corregir los requerimientos con el puntaje a la vista convierte
+# la medición en una comprobación de la corrección.
 #
 # Dentro de Spec/corridas/ cada corrida escribe su propio directorio, sin límite
 # de corridas. Lo que vive en la raíz de esa carpeta —el esquema— no es material
 # de corrida y queda fuera.
 #
-# Los agentes de persona solo son editables durante el Paso 0. Terminado ese paso,
-# pasan a ser instrumento de medición: si cambian entre una iteración y la
-# siguiente, la mejora del reporte deja de ser atribuible a las correcciones de los
-# requerimientos. Con --sin-agentes se los retira de la lista, que es como debe
-# ejecutarse el control desde la primera iteración en adelante.
+# Los agentes de persona solo son editables durante la comprobación de conformidad
+# de Agents/README.md, que ocurre antes de leer un solo requerimiento. Terminada
+# esa comprobación pasan a ser instrumento de medición y --sin-agentes los retira
+# de la lista: así debe ejecutarse el control durante el resto de la corrida.
 #
 # Con --silencioso imprime solo las rutas infractoras, una por línea, sin adornos:
 # ese es el modo que consume verificar.sh.
@@ -51,13 +53,12 @@ git rev-parse --git-dir >/dev/null 2>&1 || {
 }
 
 EDITABLES="
-Requirements/ReqFunc.MD
 Spec/Eval-Report.MD
 Spec/HISTORIAL.MD
 README.md
 "
 
-# Los agentes solo entran en la lista durante el Paso 0.
+# Los agentes solo entran durante la comprobación de conformidad.
 if [ "$SIN_AGENTES" -eq 0 ]; then
   EDITABLES="${EDITABLES}Agents/agent-rodrigo.MD
 Agents/agent-milagros.MD
