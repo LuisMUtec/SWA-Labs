@@ -16,10 +16,13 @@ satisfechos a la vez es señal de que una tensión se esquivó, y `Eval-Spec` lo
 
 ## Corridas
 
-Ejecutar un agente sobre [`ReqFunc.MD`](../Requirements/ReqFunc.MD) produce una corrida, que se
-archiva en `Veredictos/veredicto-‹nombre›.MD` con el formato de salida del template.
+Ejecutar un agente sobre [`ReqFunc.MD`](../Requirements/ReqFunc.MD) produce una corrida con el formato
+de salida del template. Cuando se archiva, vive en `Veredictos/veredicto-‹nombre›.MD`.
 
 Las cuatro corridas son insumo obligatorio del agente evaluador global, que vive aparte en
-[`/Spec/Eval-Spec.MD`](../Spec/Eval-Spec.MD): de ellas computa D1 —satisfacción de las personas, 35 %
+[`/Spec/Eval-Spec.MD`](../Spec/Eval-Spec.MD): de ellas computa D1 —satisfacción de las personas, 30 %
 del puntaje—. Sin las cuatro no hay porcentaje global. Una corrida que omite un RF cuenta ese RF como
 ambiguo y penaliza.
+
+El agente emite veredictos; no calcula puntajes. La escala que traduce esos veredictos a puntos vive
+en `Eval-Spec`, de modo que ningún agente puede subir su propia nota.
