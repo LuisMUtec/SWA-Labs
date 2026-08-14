@@ -8,6 +8,7 @@ inputs:
   - ../Agents/*.MD                  # Definiciones de agente, una por persona
   - las cuatro evaluaciones de persona sobre ReqFunc.MD — insumo obligatorio
   - ../Requirements/ReqFunc.MD      # Único documento de requerimientos que se puntúa
+  - ../docs/CONVENCIONES.md         # Forma exigida a los RF y a sus criterios de aceptación
   - ../scripts/verificar.sh         # Controles de forma y estructura
 output: resumen (`Spec/Eval-Report.MD`), evidencia y `corrida.json` en `Spec/corridas/‹id›/`, y una fila en `Spec/HISTORIAL.MD`
 ---
@@ -64,7 +65,7 @@ el comportamiento y solo enuncia un umbral, no es un RF: se reporta como requeri
 5. **Las cuatro evaluaciones de esos agentes sobre `ReqFunc.MD`**, cada una con su tabla
    `ID | Veredicto | Justificación`, sus necesidades no cubiertas, sus riesgos, el recorrido de su
    escenario clave y su cobertura percibida. Cuando se archivan, viven en
-   `Agents/Veredictos/veredicto-‹nombre›.MD`.
+   `Spec/corridas/‹id›/veredicto-‹nombre›.MD`.
 6. Requerimientos funcionales (`Requirements/ReqFunc.MD`).
 
 El vocabulario de veredicto es cerrado: **Sirve**, **Indiferente**, **Estorba**, **Ambiguo**. Un
@@ -242,7 +243,7 @@ por evidencia trazable.
 
 ## Veredicto
 
-La iteración obtiene **PASSED** solo si se cumplen las cinco condiciones a la vez:
+La corrida obtiene **PASSED** solo si se cumplen las cinco condiciones a la vez:
 
 1. Puntaje global ≥ 80,0 %.
 2. D1 ≥ 80,0 —equivale a un promedio de personas ≥ 8,0/10—.
@@ -258,7 +259,53 @@ fórmulas de esta rúbrica, sus techos duros y estas cinco condiciones dejan de 
 quien evalúa. Un control **omitido** no cuenta como cumplido: si C1 no encuentra `corrida.json`, la
 condición 5 no se satisface y no hay PASSED.
 
-## Procedimiento
+## Ejecución de una corrida
+
+Una corrida es una medición, no un ciclo de mejora: se ejecuta **una sola vez** sobre un estado
+congelado del repositorio y emite su veredicto. No corrige `ReqFunc.MD` ni vuelve a medir después de
+corregirlo — eso es trabajo de otra rama, con su propia revisión, y de una corrida posterior que
+podrá compararse con esta a través de `HISTORIAL.MD`.
+
+Medir y corregir en la misma ejecución destruye la medición: quien corrige conoce la vara, y el
+segundo puntaje dice tanto sobre el requerimiento corregido como sobre la corrección ajustada al
+puntaje.
+
+### Precedencia de las fuentes
+
+Ante cualquier duda manda este orden, y ninguna de estas fuentes se edita para elevar el puntaje:
+
+1. `Personas/*.MD` — única fuente de tareas críticas, criterios de éxito, escenario y restricciones.
+2. `Personas/README.md` — las cinco tensiones.
+3. Este documento — rúbrica, escalas, pesos, techos duros y condiciones del veredicto.
+4. `docs/CONVENCIONES.md` — forma de los RF, criterios de aceptación, trazabilidad y prioridad.
+
+### Pasos
+
+1. **Prepara la rama.** `scripts/preparar-git.sh ‹rama› main`. Si aborta, detente y reporta su
+   mensaje: no resuelvas a mano lo que el script se negó a hacer.
+2. **Comprueba la conformidad de los agentes** contra la lista de
+   [`../Agents/README.md`](../Agents/README.md). Se hace **antes** de leer un solo RF, para que la
+   conformidad del instrumento no se decida sabiendo a quién favorece. Si corriges algún agente,
+   `instrumento_modificado` queda en `sí`.
+3. **Lanza las cuatro evaluaciones en paralelo**, un subagente por persona. Cada uno recibe
+   únicamente su `Agents/agent-‹nombre›.MD`, su `Personas/‹Nombre›.MD` y `Requirements/ReqFunc.MD`, y
+   devuelve la salida que su agente define. Ningún subagente ve lo que devolvieron los otros: el
+   aislamiento es lo que hace que la coincidencia entre cuatro lecturas sea evidencia y no contagio.
+4. **Agrega** con el procedimiento de la sección siguiente y **emite el veredicto**.
+5. **Reparte la salida** en sus piezas y ejecuta los controles.
+
+### Qué puede tocar
+
+Una corrida escribe su propio directorio de corrida, el resumen y su fila del historial;
+`Spec/corridas/_ESQUEMA.MD` fija la lista y `scripts/guardia-diff.sh` la hace cumplir como control E4.
+Todo lo demás —las personas, los agentes una vez comprobados, esta rúbrica, las convenciones, los
+requerimientos— es de solo lectura durante la ejecución.
+
+Si una corrección necesaria cae fuera de esa lista, **no se hace**: se registra en
+`Spec/corridas/‹id›/bloqueos.MD` y el informe la reporta. Una vara que se ajusta para alcanzar el
+número deja de medir.
+
+## Procedimiento de agregación
 
 1. **Verifica las precondiciones.** Cuatro evaluaciones presentes, cada una con veredicto para todos
    los RF vigentes y vocabulario cerrado. Anota omisiones y veredictos inválidos.
@@ -306,7 +353,7 @@ estructura de directorios; aquí van los contenidos.
 | Pieza | Dónde vive | Para quién |
 |---|---|---|
 | Resumen | `Spec/Eval-Report.MD` | quien revisa el entregable y necesita el veredicto en una página |
-| Evidencia | `Spec/corridas/‹id›/iteracion-N/` | quien corrige `ReqFunc.MD` y necesita la traza completa |
+| Evidencia | `Spec/corridas/‹id›/` | quien corrige `ReqFunc.MD` y necesita la traza completa |
 | `corrida.json` | `Spec/corridas/‹id›/` | el control C1, que recomputa lo que aquí se declara |
 
 Un solo documento serviría mal a los tres: el veredicto quedaría sepultado bajo la evidencia, y los
@@ -326,7 +373,7 @@ puntajes seguirían siendo prosa que nadie puede verificar.
 | Rúbrica | `Spec/Eval-Spec.MD` @ ‹sha› |
 | Personas | `Personas/` @ ‹sha› |
 | Agentes | `Agents/` @ ‹sha› |
-| Instrumento modificado en el Paso 0 | sí / no |
+| Instrumento modificado | sí / no |
 
 ## Puntaje global: __ %
 
@@ -372,15 +419,16 @@ puntajes seguirían siendo prosa que nadie puede verificar.
 
 ## Evidencia
 
-Una línea por iteración, enlazando su directorio en `Spec/corridas/‹id›/`.
+Enlace al directorio de la corrida en `Spec/corridas/‹id›/`.
 ```
 
 La cabecera no es adorno. Esta rúbrica está versionada y cambia: un 82 % medido contra `Eval-Spec` de
 ayer y un 82 % medido contra el de hoy no son el mismo número, y sin los SHA no hay forma de saber
-cuál se leyó. `Instrumento modificado` dice lo mismo del otro lado: si el Paso 0 corrigió un agente,
-la corrida no es comparable con las anteriores, porque cambió quien mide y no solo lo medido.
+cuál se leyó. `Instrumento modificado` dice lo mismo del otro lado: si la comprobación de conformidad
+corrigió un agente, la corrida no es comparable con las anteriores, porque cambió quien mide y no solo
+lo medido.
 
-### Evidencia — `Spec/corridas/‹id›/iteracion-N/diagnostico.MD`
+### Evidencia — `Spec/corridas/‹id›/diagnostico.MD`
 
 ```markdown
 ## Veredictos agregados
@@ -429,10 +477,10 @@ la corrida no es comparable con las anteriores, porque cambió quien mide y no s
 |---|---|
 ```
 
-Los cuatro veredictos de persona de esa iteración van en archivos propios, uno cada uno, junto a este
-diagnóstico. Separarlos es lo que hace legible la iteración siguiente: `git diff` entre dos
-directorios `iteracion-N` muestra exactamente qué RF cambió de veredicto, que es justo lo que la
-corrección tiene que atribuir a una brecha concreta.
+Los cuatro veredictos de persona van en archivos propios, uno cada uno, junto a este diagnóstico.
+Separarlos es lo que hace comparable una corrida con la siguiente: `git diff` entre dos directorios de
+corrida muestra exactamente qué RF cambió de veredicto para qué persona. Dentro de un documento único
+ese diff es ilegible.
 
 La salida literal de `scripts/verificar.sh`, con su código de salida, va en
 `Spec/corridas/‹id›/controles.txt`.
@@ -449,9 +497,9 @@ entre ambos es exactamente el error que C1 existe para atrapar.
 
 ### Historial — `Spec/HISTORIAL.MD`
 
-Al cerrar la corrida se agrega una fila con los valores de su última iteración. El archivo solo se
-agrega, nunca se reescribe, y no tiene límite de filas: es lo único que sobrevive a la siguiente
-corrida, porque `Eval-Report.MD` se sobrescribe.
+Al cerrar la corrida se agrega su fila. El archivo solo se agrega, nunca se reescribe, y no tiene
+límite de filas: es lo único que sobrevive a la siguiente corrida, porque `Eval-Report.MD` se
+sobrescribe.
 
 ## Reglas
 
@@ -474,6 +522,10 @@ corrida, porque `Eval-Report.MD` se sobrescribe.
   como ausente.
 - No modifiques ninguna fuente de la evaluación para elevar el puntaje. Personas, agentes,
   convenciones y esta rúbrica son la vara con la que se mide.
+- Una corrida mide una vez y no corrige `ReqFunc.MD`: emite el veredicto y termina. Corregir dentro de
+  la misma ejecución convierte la segunda medición en una comprobación de la corrección.
+- Las cuatro evaluaciones se producen aisladas entre sí. Una corrida que las genera en un mismo
+  contexto se reporta como tal: sus coincidencias no cuentan como evidencia independiente.
 - Reporta el porcentaje con un decimal como máximo y muestra el cálculo.
 - Todo puntaje que declares en el resumen va también en `corrida.json`. Un resumen sin su JSON deja
   la condición 5 sin cumplir, y con ella el veredicto en FAILED.

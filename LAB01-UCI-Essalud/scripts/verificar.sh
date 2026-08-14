@@ -5,8 +5,8 @@
 #   scripts/verificar.sh [--sin-agentes]
 #
 # Con --sin-agentes, el control E4 deja de admitir cambios en Agents/*: así debe
-# ejecutarse desde la primera iteración en adelante, cuando los agentes ya son
-# instrumento de medición y no material editable.
+# ejecutarse una vez pasada la comprobación de conformidad, cuando los agentes ya
+# son instrumento de medición y no material editable.
 #
 # Nueve controles en tres familias. Los cuatro mecánicos son los de
 # docs/CONVENCIONES.md, sección 11: buscan texto que no debería existir, y

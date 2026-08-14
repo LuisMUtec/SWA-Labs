@@ -4,7 +4,7 @@
 #
 #   scripts/preparar-git.sh [rama] [base]
 #
-#   rama   Rama de trabajo a crear.   Por defecto: eval/additional-v2
+#   rama   Rama de trabajo a crear.   Por defecto: eval/corrida
 #   base   Rama de la que se parte.   Por defecto: main
 #
 # Aborta —sin tocar nada— ante cualquier condición que obligaría a descartar,
@@ -18,7 +18,7 @@
 set -uo pipefail
 export LC_ALL="${LC_ALL:-en_US.UTF-8}"
 
-RAMA="${1:-eval/additional-v2}"
+RAMA="${1:-eval/corrida}"
 BASE="${2:-main}"
 
 abortar() {

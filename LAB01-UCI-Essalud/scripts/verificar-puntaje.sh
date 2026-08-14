@@ -86,11 +86,12 @@ def n1: (. * 10 | round) / 10;
   ( ["requerimientos","rubrica","personas","agentes"][] as $k
     | select((.commits // {})[$k] == null) | "cabecera: falta commits.\($k)" ),
 
-  ( select((.iteraciones // []) | length == 0) | "cabecera: la corrida no declara ninguna iteración" ),
+  ( select((.iteraciones // []) | length != 1)
+    | "cabecera: iteraciones debe traer exactamente una entrada, trae \((.iteraciones // []) | length) — una corrida mide una vez" ),
 
-  # ── Por iteración ───────────────────────────────────────────────────────────
+  # ── Medición ────────────────────────────────────────────────────────────────
   ( (.iteraciones // [])[] as $it
-    | "iteración \($it.n // "?")" as $p
+    | "medición \($it.n // "?")" as $p
     | ([ "dimensiones","d2_problemas","d3_rf","tensiones_sin_decidir",
          "prioridad_uniforme","controles_pasan","global","veredicto","personas" ]
        | map(select($it[.] == null))) as $faltan_it
@@ -205,14 +206,14 @@ def n1: (. * 10 | round) / 10;
     | ( ( select($r == null) | "cierre: la corrida no declara resultado" ),
         ( select($r != null and $r.global != null and $u.global != null
                  and (cerca($r.global; $u.global) | not))
-          | "cierre: resultado.global \($r.global) no coincide con la última iteración (\($u.global))" ),
+          | "cierre: resultado.global \($r.global) no coincide con la medición (\($u.global))" ),
         ( select($r != null and $r.veredicto != $u.veredicto)
-          | "cierre: resultado.veredicto \($r.veredicto) no coincide con la última iteración (\($u.veredicto))" ),
+          | "cierre: resultado.veredicto \($r.veredicto) no coincide con la medición (\($u.veredicto))" ),
         ( select($r != null and $r.promedio_personas != null and $u.personas != null)
           | (($u.personas | [ .rodrigo, .milagros, .carmen, .anibal ]
               | map(.puntaje // 0) | add) / 4) as $esp
           | select(cerca($r.promedio_personas; $esp) | not)
-          | "cierre: promedio_personas \($r.promedio_personas) no coincide con el de la última iteración (\($esp | n1))" ) ) )
+          | "cierre: promedio_personas \($r.promedio_personas) no coincide con el de la medición (\($esp | n1))" ) ) )
 ]
 | .[]
 JQ
