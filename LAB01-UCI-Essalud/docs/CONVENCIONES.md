@@ -231,15 +231,25 @@ romper la coherencia de otro.
 - [ ] Estilo: sin historial en el cuerpo; registro impersonal fuera de Personas y Agents
 ```
 
-Cuatro comprobaciones son mecánicas y se ejecutan desde la raíz del repositorio:
+Cuatro de estas comprobaciones son mecánicas y viven en un script, no aquí: una regla escrita dos
+veces se corrige una sola vez y las copias se contradicen. Se ejecutan desde la raíz junto con cuatro
+controles estructurales:
 
 ```
-grep -nE "^\*\*Enunciado:\*\*" Requirements/ReqFunc.MD | grep -v "DEBE"
-grep -nEi "el médico DEBE|la enfermera DEBE|el coordinador DEBE|el hospital DEBE|el equipo DEBE" Requirements/*.MD
-grep -nEi "kafka|redis|websocket|microservicio|kubernetes|base de datos|caché|endpoint|push" Requirements/*.MD
-grep -nE "~~|\(Decidido|\(Refinado|\(Corregido|versión anterior|por ahora" README.md Requirements/*.MD Personas/*.MD
+scripts/verificar.sh
 ```
 
-El primero y el cuarto no devuelven nada. El segundo marca requerimientos cuyo sujeto no es el
-sistema. El tercero marca mecanismos infiltrados en un requerimiento; cada acierto se reformula como
-garantía o se desplaza a `docs/`.
+| Control | Marca |
+|---|---|
+| **M1** | Enunciados que no llevan el auxiliar DEBE |
+| **M2** | Requerimientos cuyo sujeto no es el sistema |
+| **M3** | Mecanismos infiltrados en un requerimiento; cada acierto se reformula como garantía o se desplaza a `docs/` |
+| **M4** | Lápidas y rastro de historial en el cuerpo |
+| **E1** | Identificadores de RF duplicados |
+| **E2** | RF que no declaran enunciado, prioridad, persona, problema o criterios |
+| **E3** | Matrices que citan identificadores inexistentes |
+| **E4** | Archivos de solo lectura tocados durante una corrida |
+
+Los ocho aciertan cuando no encuentran nada. Un control en verde no dice que el requerimiento sea
+bueno: dice que no incurre en el defecto que ese control sabe detectar. El resto de la revisión de
+esta sección no es mecanizable y se hace a mano.
