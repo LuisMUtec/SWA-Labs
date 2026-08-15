@@ -1,0 +1,39 @@
+{
+  "corrida": "2026-08-15-iteracion-7",
+  "fecha": "2026-08-15",
+  "rama": "eval/iteracion-7",
+  "modelo": "claude-opus-5",
+  "commits": {
+    "requerimientos": "c923c7f7e720bd3881bb8effa70355a274be2b48",
+    "rubrica": "b492237b254baa5c538b9d68803e1b0bd456112a",
+    "personas": "6340172da2d8c0b4ccabfc93880446cce9025732",
+    "agentes": "34877c7cc8316f7222914b8f03b0b548fb5d2806"
+  },
+  "instrumento_modificado": false,
+  "glosario": true,
+  "iteraciones": [
+    {
+      "n": 1,
+      "personas": {
+        "rodrigo":  { "tareas": 22, "estorba_fuera": 2, "flujo": 2, "puntaje": 5.6, "percibida": 75, "tareas_en_cero": 0 },
+        "milagros": { "tareas": 20, "estorba_fuera": 0, "flujo": 2, "puntaje": 6.0, "percibida": 85, "tareas_en_cero": 0 },
+        "carmen":   { "tareas": 20, "estorba_fuera": 1, "flujo": 2, "puntaje": 5.6, "percibida": 80, "tareas_en_cero": 0 },
+        "anibal":   { "tareas": 26, "estorba_fuera": 1, "flujo": 2, "puntaje": 6.8, "percibida": 85, "tareas_en_cero": 0 }
+      },
+      "dimensiones": { "D1": 60.0, "D2": 83.3, "D3": 96.3, "D4": 100.0, "D5": 60.0, "D6": 75.0 },
+      "d2_problemas": { "P1": 50, "P2": 100, "P3": 100 },
+      "d3_rf": { "conformes": 157, "total": 163 },
+      "tensiones_sin_decidir": 0,
+      "prioridad_uniforme": false,
+      "controles_pasan": true,
+      "global": 77.8,
+      "veredicto": "FAILED"
+    }
+  ],
+  "resultado": {
+    "global": 77.8,
+    "veredicto": "FAILED",
+    "promedio_personas": 6.0,
+    "brechas_abiertas": 29
+  }
+}
