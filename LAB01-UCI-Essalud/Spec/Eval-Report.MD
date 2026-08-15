@@ -2,119 +2,116 @@
 
 | | |
 |---|---|
-| Corrida | 2026-08-15-iteracion-7 |
-| Rama | `eval/iteracion-7` |
+| Corrida | 2026-08-15-iteracion-8 |
+| Rama | `eval/iteracion-8` |
 | Modelo | claude-opus-5 |
-| Evaluado | `Requirements/ReqFunc.MD` @ `c923c7f` |
+| Evaluado | `Requirements/ReqFunc.MD` @ `df4ec25` |
 | Rúbrica | `Spec/Eval-Spec.MD` @ `b492237` |
 | Personas | `Personas/` @ `6340172` |
 | Agentes | `Agents/` @ `34877c7` |
 | Instrumento modificado | no |
 
-## Puntaje global: 77,8 %
+## Puntaje global: 79,9 %
 
 | Dimensión | Puntaje | Peso | Aporte |
 |---|---:|---:|---:|
-| D1 Satisfacción de las personas | 60,0 | 30 % | 18,00 |
+| D1 Satisfacción de las personas | 66,0 | 30 % | 19,80 |
 | D2 Cobertura de problemas críticos | 83,3 | 25 % | 20,83 |
-| D3 Verificabilidad y forma | 96,3 | 20 % | 19,26 |
-| D4 Trazabilidad | 100,0 | 10 % | 10,00 |
+| D3 Verificabilidad y forma | 98,9 | 20 % | 19,78 |
+| D4 Trazabilidad | 90,0 | 10 % | 9,00 |
 | D5 Consistencia y tensiones | 60,0 | 10 % | 6,00 |
-| D6 Priorización | 75,0 | 5 % | 3,75 |
-| **Suma de aportes** | | | **77,84 → 77,8** |
+| D6 Priorización | 90,0 | 5 % | 4,50 |
+| **Suma de aportes** | | | **79,9** |
 
 ## Veredicto: FAILED
 
 | # | Condición | Umbral | Obtenido | Cumple |
 |---|---|---:|---:|:---:|
-| 1 | Puntaje global | ≥ 80,0 % | 77,8 % | no |
-| 2 | D1 | ≥ 80,0 | 60,0 | no |
-| 3 | Persona más baja | ≥ 7,0/10 | 5,6 (Rodrigo y Carmen) | no |
-| 4 | D2 | ≥ 80,0 | 83,3 | sí |
-| 5 | Controles de `scripts/verificar.sh` | 9/9 | 9/9 | sí |
+| 1 | Puntaje global | ≥ 80,0 % | 79,9 | ✗ |
+| 2 | D1 | ≥ 80,0 | 66,0 | ✗ |
+| 3 | Persona más baja | ≥ 7,0/10 | 4,8 (Rodrigo) | ✗ |
+| 4 | D2 | ≥ 80,0 | 83,3 | ✓ |
+| 5 | Controles de `verificar.sh` | 9/9 | 9/9 | ✓ |
 
-Fallan tres de las cinco. El documento está bien formado y bien trazado —D3 y D4 son las dimensiones
-altas— y sigue sin satisfacer a las personas: ninguna de las cuatro alcanza 7,0/10 y ninguna de las 24
-tareas críticas llega a 5 por la misma causa repetida, que es la ausencia de garantía sobre el
-contenido que cada tarea necesita.
+Tres condiciones de cinco quedan sin cumplir. El global se queda a 0,1 punto del umbral y **no se
+redondea hacia arriba**: 66,0 × 0,30 + 83,3 × 0,25 + 98,9 × 0,20 + 90,0 × 0,10 + 60,0 × 0,10 +
+90,0 × 0,05 = 79,905, que con un decimal es 79,9. Aun cruzándolo, las condiciones 2 y 3 lo dejarían
+en FAILED: el documento está bien escrito y mal repartido, y quien más lo paga es la persona ancla
+de P1.
 
 ## Puntajes por persona
 
 | Persona | Tareas /30 | Estorba fuera | Necesidades /6 | Flujo /4 | Puntaje /10 | Percibida | Δ |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Rodrigo | 22 | 2 | 3,6 | 2 | 5,6 | 75 | −19 |
-| Milagros | 20 | 0 | 4,0 | 2 | 6,0 | 85 | −25 |
-| Carmen | 20 | 1 | 3,6 | 2 | 5,6 | 80 | −24 |
-| Aníbal | 26 | 1 | 4,8 | 2 | 6,8 | 85 | −17 |
-| **PROMEDIO** | **22,0** | **1,0** | **4,0** | **2,0** | **6,0** | **81,3** | **−21,3** |
+| Rodrigo | 22 | 4 | 2,8 | 2 | 4,8 | 78 | −30 |
+| Milagros | 26 | 1 | 4,8 | 2 | 6,8 | 85 | −17 |
+| Carmen | 22 | 1 | 4,0 | 2 | 6,0 | 85 | −25 |
+| Aníbal | 26 | 1 | 4,8 | 4 | 8,8 | 88 | 0 |
+| **PROMEDIO** | **24,0** | **1,75** | **4,1** | **2,5** | **6,6** | **84** | **−18** |
 
-`Puntaje_p = máx(0, Σ tareas_p − 2 × X_p) / 5 + Flujo_p`; `D1 = promedio × 10 = 60,0`.
-Milagros (Δ −25) y Carmen (Δ −24) superan los 20 puntos de desviación: en ambos casos falla el agente,
-no el enunciado de las tareas críticas. Detalle en `Spec/corridas/2026-08-15-iteracion-7/diagnostico.MD`.
+`Puntaje_p = máx(0, Σ tareas_p − 2 × X_p) / 5 + Flujo_p`; `D1 = 6,6 × 10 = 66,0`.
 
 ## Brechas encontradas
 
 | # | Persona o problema afectado | Brecha | Origen | Severidad |
 |---|---|---|---|---|
-| 1 | Rodrigo · P1 | El contexto de la entrega puede llegar entero declarado «no registrado»: solo el diagnóstico condiciona el cierre y ningún RF obliga a registrar decisión, esquema o estado de la familia | veredicto-rodrigo | Alta |
-| 2 | Rodrigo, Carmen · P1 | Una cama puede llegar sin diagnóstico del turno anterior: `RF-DIA-24` admite expresamente que un turno concluya sin entrega cerrada y `RF-DIA-01` solo bloquea el cierre | veredicto-rodrigo | Alta |
-| 3 | P1 | `RF-DIA-01` no alcanza al turno médico sin asignación médica vigente: una noche cubierta solo por guardia localizable puede transcurrir sin ningún diagnóstico exigible | auditoría | Alta |
-| 4 | Rodrigo | Ningún enunciado exige verificar identidad antes de registrar en el equipo compartido; `RF-IAM-01` atribuye a la identidad verificada, pero no la reclama | veredicto-rodrigo | Alta |
-| 5 | Rodrigo | Ningún RF constituye la solicitud de un estudio, de modo que el señalamiento de `RF-REG-10` puede quedar vacío para todo cultivo pedido como se pide hoy | veredicto-rodrigo | Media |
-| 6 | Milagros · P2 | `RF-ESC-08` no declara que la consulta de la cobertura clínica pueda hacerse junto a la cama, a diferencia de `RF-ESC-20` y `RF-REG-01`; es la consulta que hace ante cada escalamiento | veredicto-milagros | Alta |
-| 7 | Milagros | La indisponibilidad declarada sin delegado solo alcanza a la jefatura (`RF-ESC-33`), que de madrugada no está en la unidad | veredicto-milagros | Media |
-| 8 | Milagros, Carmen | La ausencia de medio de contacto vigente solo se le presenta al propio profesional (`RF-IAM-12`); ni quien va a escalar hacia él ni quien lo asignó se enteran | veredicto-milagros, veredicto-carmen | Media |
-| 9 | Milagros | Ningún enunciado declara el dispositivo con el que ella trabaja junto a la cama; `RF-IAM-08` habla del dispositivo personal sin decir si la alcanza | veredicto-milagros | Alta |
-| 10 | Milagros | `RF-DIA-30` la carga sin límite con todas las camas sin asignación de cuidado y `RF-DIA-37` deja cada cama en manos de la última que la declara: los dos que marcó Estorba caen dentro de su tarea 6 | veredicto-milagros | Alta |
-| 11 | Milagros | No existe para enfermería el orden de camas al iniciar el turno que `RF-DIA-39` le da al médico | veredicto-milagros | Baja |
-| 12 | Milagros · P3 | `RF-ESC-16` ordena los avisos de «un destinatario» sin declarar si la enfermera es una de ellas | veredicto-milagros | Baja |
-| 13 | Carmen | Ningún enunciado declara el formato imprimible del reflejo; `RF-TUR-28` entrega contenido e instante y la restricción de la persona es explícita | veredicto-carmen | Media |
-| 14 | Carmen | No hay forma de ver las horas acumuladas y el margen de cada profesional antes de asignarle; `RF-TUR-02` solo rechaza al guardar | veredicto-carmen | Media |
-| 15 | Carmen | Ningún RF constituye la modificación de una asignación de la programación **vigente** fuera de ausencia, permiso, intercambio o urgencia, aunque la CA-1 de `RF-TUR-04` invoque «modificación válida» | veredicto-carmen | Alta |
-| 16 | Carmen | `RF-TUR-03` no excluye de los candidatos a quien tiene una ausencia imprevista registrada: el mismo profesional retirado reaparece como elegible | veredicto-carmen | Alta |
-| 17 | Carmen | `RF-TUR-02` solo actúa sobre una regla asociada a un vínculo laboral vigente: al profesional cuyo vínculo nadie registró no hay tope que pueda infringir | auditoría | Media |
-| 18 | Carmen | No existe consulta de la agenda de un profesional a través de todas las sedes de la Red | veredicto-carmen | Baja |
-| 19 | Carmen | El cambio de responsable de una cama por segunda declaración solo se avisa al médico desplazado (`RF-DIA-35`) | veredicto-carmen | Baja |
-| 20 | Carmen | `RF-SUP-05` entrega franjas descubiertas y entregas cerradas, que por glosario son el insumo y no el indicador que su propio enunciado nombra | veredicto-carmen, auditoría | Alta |
-| 21 | Aníbal · P2 | El esquema terapéutico vigente con su día solo viaja en el paquete del escalamiento: `RF-DIA-21` lo condiciona a una asignación médica que el localizable nunca tiene | veredicto-anibal | Alta |
-| 22 | Aníbal | `RF-REG-13` no declara el dispositivo personal, a diferencia de `RF-REG-07` y `RF-REG-11`: la suspensión es el único acto remoto de su noche sin dispositivo declarado | veredicto-anibal | Media |
-| 23 | Aníbal, Milagros, Carmen · P2 | `RF-ESC-09` descansa en una «delegación activa de la jefatura» que ningún RF constituye; es el eslabón que existe para los casos que a nadie alcanzaron | veredicto-anibal, veredicto-carmen | Alta |
-| 24 | Aníbal | `RF-TUR-05` avisa el cambio de programación sin la identificación que `RF-TUR-26` sí exige en la reiteración: un aviso administrativo llega indistinguible de uno clínico | veredicto-anibal | Media |
-| 25 | Todas | `RF-ESC-08` y `RF-ESC-25` llevan entre título y enunciado una nota editorial dirigida al integrador que contradice el enunciado y deja la corrección sin cerrar | auditoría, veredicto-rodrigo, veredicto-carmen | Alta |
-| 26 | Todas | `RF-TUR-08`, `RF-DIA-39`, `RF-DIA-40`, `RF-ESC-37` y `RF-REG-13` llevan notas de proceso dentro del requerimiento: `CONVENCIONES` §2 «cero lápidas» y §10 «el documento registra el estado vigente» | auditoría | Media |
-| 27 | Carmen, Rodrigo | `RF-TUR-13` no declara qué compone un «alcance», y de esa delimitación depende íntegro el control de la coordinadora sobre los intercambios | veredicto-carmen | Alta |
-| 28 | Milagros, Carmen · P2 | `RF-ESC-23` no fija en qué orden van los demás médicos de la franja, y una cadena es por glosario una secuencia ordenada | veredicto-carmen, auditoría | Media |
-| 29 | Carmen | `RF-TUR-16` acuña «condición no operativa» frente a la «condición no editable» de `RF-TUR-28`, sin que el glosario la recoja | auditoría | Baja |
+| 1 | Rodrigo | La marca de inestabilidad o de pendiente crítico no trae autor, instante ni motivo al consultarla: sabe qué cama está marcada, no por qué | veredicto-rodrigo | Alta |
+| 2 | Rodrigo · P1 | Nada obliga a que la decisión clínica y su fundamento existan en la entrega recibida: el cierre solo exige el diagnóstico del turno | veredicto-rodrigo | Alta |
+| 3 | Rodrigo · P1 | La cama señalada sin diagnóstico del turno anterior solo se repara si el médico que ya se fue vuelve a registrarlo (RF-DIA-47) | veredicto-rodrigo | Alta |
+| 4 | Rodrigo | El médico desplazado de una cama (RF-DIA-29) no puede registrar lo que ya observó en ella | veredicto-rodrigo | Media |
+| 5 | Rodrigo | No se declara qué ocurre con la nota retenida por RF-IAM-15, ni con la escrita desde la estación al caer la red: RF-REG-02 solo cubre el registro a pie de cama | veredicto-rodrigo · auditoría | Alta |
+| 6 | Milagros · P2 | Ningún enunciado declara que pueda consultar los medios de contacto vigentes que RF-IAM-11 registra | veredicto-milagros | Alta |
+| 7 | Milagros | El cambio de responsable clínico vigente no la alcanza junto a la cama salvo que la cama quede sin ninguno (RF-ESC-41) | veredicto-milagros | Media |
+| 8 | Milagros | La indisponibilidad declarada del responsable de su cama no la alcanza: RF-ESC-33 informa a la jefatura | veredicto-milagros | Media |
+| 9 | Milagros | La solicitud de un estudio hecha a distancia no la alcanza junto a la cama, y es ella quien toma la muestra (RF-REG-14) | veredicto-milagros | Media |
+| 10 | Carmen | Ningún enunciado declara que el reflejo pueda entregarse en forma imprimible para la pared de la unidad, restricción documentada de su persona | veredicto-carmen | Alta |
+| 11 | Carmen | No se declara qué ocurre al publicar la programación mensual con franjas sin cubrir: RF-TUR-10 solo resuelve la propuesta completa | veredicto-carmen | Alta |
+| 12 | Carmen | No puede asignar directamente una franja descubierta cuyo inicio queda fuera del horizonte de urgencia (RF-TUR-44) | veredicto-carmen | Alta |
+| 13 | Carmen | No se le presenta el acumulado de horas del mes de cada profesional: solo la exclusión del candidato | veredicto-carmen | Media |
+| 14 | Carmen · Aníbal · P2 | La condición de profesional asignado sin medio de contacto vigente se presenta solo a él (RF-IAM-12): ni la jefatura ni la enfermera se enteran | veredicto-carmen · veredicto-anibal | Alta |
+| 15 | Carmen | La confirmación de lectura del rol solo se persigue en el cambio urgente (RF-TUR-25, RF-TUR-26) | veredicto-carmen | Baja |
+| 16 | Carmen · P2 | Una franja cuyo médico declaró indisponibilidad sin delegado sigue figurando cubierta en RF-TUR-07 (RF-ESC-32) | veredicto-carmen | Alta |
+| 17 | Aníbal · P2 | Nadie le comunica de qué camas queda respondiendo al iniciar su bloque: RF-TUR-49 y RF-DIA-46 van a la jefatura | veredicto-anibal | Alta |
+| 18 | Aníbal · P2 | No se entera durante la noche de que una cama pasó a ser suya: RF-DIA-36 la libera y RF-ESC-41 alcanza a enfermería | veredicto-anibal | Alta |
+| 19 | Aníbal | No puede recuperar por consulta lo que decidió el turno diurno cerrado sin entrega: RF-DIA-32 y RF-DIA-42 hablan del «médico entrante de esa cama», indefinido para un localizable | veredicto-anibal | Media |
+| 20 | Aníbal · P2 | No puede delegar cuando ningún médico está asignado a esa unidad en el intervalo (RF-ESC-30), y ningún RF ofrece otra vía de traspaso | veredicto-anibal | Alta |
+| 21 | P1 · forma | RF-DIA-02 CA-3 exige en la entrega un cultivo pendiente que la composición cerrada de «estado clínico de una cama» no comprende | auditoría | Alta |
+| 22 | Milagros · P3 | RF-ESC-16 ordena cuatro clases que no comprenden la tercera clase de aviso clínico que fija el glosario | auditoría · veredicto-milagros | Alta |
+| 23 | Rodrigo · Milagros | RF-IAM-01 y RF-IAM-15 se contradicen: IAM-15 presupone una atribución que IAM-01 impide | auditoría | Media |
+| 24 | Vocabulario | RF-DIA-23 enumera «el responsable clínico vigente de esa cama, su delegado activo» cuando el glosario ya constituye al delegado en responsable vigente | auditoría | Baja |
+| 25 | Forma | RF-TUR-42 enuncia dos respuestas: conservar la asignación de la franja y conservar la asignación médica de camas | auditoría | Media |
+| 26 | Trazabilidad | La fila «Milagros / Ver y confirmar indicaciones médicas vigentes» cita RF-ESC-13, que entrega una actualización informativa a la consulta del responsable clínico y no a la enfermera | auditoría | Media |
+| 27 | Priorización | RF-DIA-04 y RF-ESC-44 llevan MUST sin que su ausencia deje descubierta una tarea crítica ni sin resolver un problema | auditoría | Baja |
 
-Tres necesidades declaradas quedan **refutadas por escrito** y no abren brecha: el medio por el que
-sale el escalamiento (Milagros) es mecanismo y `CONVENCIONES` §5 lo excluye del RF; enterarse de
-noche de un deterioro que nadie escaló (Aníbal) queda fuera de sus seis tareas, cuya sexta es
-justamente revisar en la mañana; la interfaz idéntica y sin capacitación (Rodrigo) pertenece a
-`ReqNoFunc.MD`, como el propio agente declara.
+Dos necesidades declaradas por los agentes quedan **refutadas por escrito** y no abren brecha: que
+ningún enunciado diga qué mide cada indicador (`docs/GLOSARIO.md` define «indicador de cobertura de
+turnos» e «indicador de cumplimiento de entrega») y que ninguno defina el cambio del estado de
+atención (el glosario fija ese estado con exactamente seis valores).
 
 ## Acciones recomendadas (priorizadas)
 
-1. **Sacar las notas editoriales de `RF-ESC-08` y `RF-ESC-25`** y cerrar la decisión que discuten. Un
-   requerimiento cuyo margen contradice su cuerpo no se puede construir ni evaluar: los dos son MUST y
-   los dos cuestan hoy dos veredictos Ambiguo. Con ellos, las notas de proceso de `RF-TUR-08`,
-   `RF-DIA-39`, `RF-DIA-40`, `RF-ESC-37` y `RF-REG-13`.
-2. **Exigir el contenido de la entrega, no solo su forma.** Mientras únicamente el diagnóstico
-   condicione el cierre y `RF-DIA-24` admita el turno sin entrega cerrada, las tareas 1 y 2 de Rodrigo
-   —el corazón de P1— no pasan de 3 y su escenario sigue terminando en una llamada por WhatsApp.
-   Alcanzar también al turno cubierto solo por guardia localizable.
-3. **Declarar dónde trabaja Milagros.** Tres de sus seis tareas se detienen en el mismo punto: ningún
-   enunciado dice con qué dispositivo registra junto a la cama ni que pueda consultar allí la cobertura
-   clínica. Es un enunciado, no una capacidad nueva.
-4. **Constituir lo que otros RF invocan:** la delegación de la jefatura de `RF-ESC-09`, la solicitud de
-   estudio de `RF-REG-10` y la modificación de la programación vigente que invoca la CA-1 de
-   `RF-TUR-04`.
-5. **Cerrar los tres contratos abiertos** que hoy cuestan D3: el «alcance» de `RF-TUR-13`, el orden de
-   la cadena en `RF-ESC-23` y la elegibilidad sin reglas registradas de `RF-TUR-03`; y entregar en
-   `RF-SUP-05` el indicador que su enunciado nombra.
-6. **Poner límite a `RF-DIA-30`** y decidir el reparto de camas de enfermería, que hoy queda en manos
-   de quién tocó la pantalla al final (`RF-DIA-37`).
+1. **Devolverle a Rodrigo los cuatro Estorba que caen fuera de sus tareas.** Ocho de sus treinta
+   puntos se pierden ahí, y ninguno le compensa nada: RF-TUR-17, RF-TUR-31 y RF-TUR-33 le devuelven
+   a la coordinadora un intercambio que él ya pactó, y RF-DIA-44 lleva a la jefatura cada cama
+   estable sin decisión registrada. Decidir la tensión «autonomía de intercambio» sin dejarlo
+   colgado de una resolución individual, y acotar RF-DIA-44 a las camas marcadas, sube su puntaje
+   más que cualquier RF nuevo.
+2. **Cerrar los tres Ambiguo que le cuestan el flujo a Rodrigo.** RF-DIA-34 debe decir si el
+   señalamiento condiciona la firma o solo la informa; RF-IAM-15, qué ocurre con el acto retenido si
+   la verificación no llega; RF-REG-02, si su alcance es el registro a pie de cama o todo registro
+   clínico sin conexión. Los tres son de redacción, no de comportamiento nuevo.
+3. **Dar salida a la indisponibilidad sin delegado posible (RF-ESC-30).** Es el tramo de P2 que
+   ningún RF cubre y el único motivo por el que P2 queda en 50: en la noche habitual de Aníbal —
+   único localizable de dos UCIs— no existe delegado admisible, y el sistema solo sabe agotar la
+   cadena hasta la jefatura.
+4. Declarar la consulta de los medios de contacto vigentes por quien escala, y presentar la
+   condición de RF-IAM-12 también a la jefatura: son las dos mitades del agujero por el que hoy no
+   se ubica al médico.
+5. Corregir los cuatro hallazgos de consistencia (brechas 21 a 24) y la fila desfasada de la matriz
+   (brecha 26): D5 está en 60 con el tramo de consistencia agotado, y es la dimensión que menos
+   cuesta recuperar.
 
 ## Evidencia
 
-`Spec/corridas/2026-08-15-iteracion-7/` — `diagnostico.MD`, `corrida.json` y los cuatro
-`veredicto-‹persona›.MD`.
+`Spec/corridas/2026-08-15-iteracion-8/` — diagnóstico completo, los cuatro veredictos de persona y
+`corrida.json`.
