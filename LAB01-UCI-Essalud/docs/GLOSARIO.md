@@ -39,7 +39,7 @@ arquitectura. No contiene referencias de retorno a esos documentos.
 | Entrega de turno | Registro estructurado mediante el cual el turno saliente deja al entrante el estado, decisiones y pendientes de las camas. |
 | Episodio | Periodo de atención de un paciente en una cama, desde su apertura hasta su cierre. |
 | Equipo compartido | Dispositivo que la institución administra y sitúa en una unidad para el uso sucesivo de varios profesionales, por oposición al dispositivo personal, que pertenece a quien lo emplea. |
-| Escalamiento | Comunicación clínica trazable dirigida al responsable vigente ante deterioro o consulta que requiere respuesta. |
+| Escalamiento | Comunicación clínica trazable dirigida al responsable clínico vigente ante deterioro o consulta que requiere respuesta. |
 | Estado clínico de una cama | Conjunto cerrado de componentes con que se describe una cama —el diagnóstico, las decisiones clínicas con su fundamento, el esquema terapéutico con su día de tratamiento, el plan clínico, los pendientes críticos y el estado de la información a la familia—, distinto del contexto clínico que un escalamiento transporta; su composición no varía, y el componente ausente en el instante o el periodo al que se refiere lo integra igualmente en condición de no registrado. |
 | Estado de atención de un escalamiento | Punto en que se encuentra un escalamiento dentro de su recorrido, con exactamente los valores emitido, alcanzado, acusado, tomado, cerrado y agotado. |
 | Estudio | Examen de laboratorio o de imágenes solicitado dentro de un episodio, cuyo resultado se incorpora a ese mismo episodio cuando queda disponible. |
@@ -47,6 +47,7 @@ arquitectura. No contiene referencias de retorno a esos documentos.
 | Franja | Intervalo continuo de fecha y hora que debe tener cobertura profesional. |
 | Franja de cobertura requerida | Franja que la jefatura de una unidad declara que esa unidad debe tener cubierta durante un periodo. |
 | Guardia localizable | Turno médico sin asignación médica de camas, cuya cobertura se ejerce a distancia desde fuera de la sede. |
+| Hecho que reclama el obrar inmediato | Hecho registrado sobre una cama cuya atención por su destinatario no admite espera hasta que él consulte sus avisos pendientes, con exactamente cuatro casos —la indicación médica nueva, la suspensión de una indicación vigente, el resultado crítico y la cama que queda sin responsable clínico vigente—; es una de las tres cosas que un aviso clínico anuncia, y no comprende la solicitud de un estudio, que integra la actualización informativa. |
 | Horizonte de urgencia | Intervalo que precede al inicio de una franja y dentro del cual un cambio de la programación vigente que la alcanza es urgente. |
 | Identidad verificada vigente | Estado por el que el sistema reconoce a un profesional en un dispositivo determinado, desde que este verifica en él su identidad hasta que la sesión se cierra, la vigencia se revoca o, en un equipo compartido, otro profesional verifica en él la suya. |
 | Identificación ante el dispositivo | Acto por el que quien tiene consigo un dispositivo queda reconocido por ese dispositivo, distinto de la verificación de identidad ante el sistema y anterior a ella en el orden de uso. |
@@ -71,6 +72,7 @@ arquitectura. No contiene referencias de retorno a esos documentos.
 | Red | Agrupación de sedes y de sus unidades UCI federadas bajo una misma dirección prestacional. |
 | Reflejo de una programación | Presentación de las asignaciones de una unidad tal como regían en un instante determinado o a lo largo de un periodo cerrado, destinada a emplearse fuera del sistema, que no es editable y no constituye la programación vigente. |
 | Registro a pie de cama | Anotación clínica tomada junto a la cama, con instante de toma propio y distinto del instante en que se incorpora al episodio. |
+| Registro clínico | Anotación que un profesional produce sobre el episodio de una cama en ejercicio de su función asistencial, cualquiera sea el dispositivo en que la produzca; el registro a pie de cama es la especie que se toma junto a la cama. |
 | Relevo declarado | Acto registrado por el que un profesional con asignación vigente sobre una cama declara que otro profesional del mismo turno en esa unidad la cubre durante un intervalo comprendido en ese turno; no desplaza esa asignación ni constituye responsable clínico vigente de la cama. |
 | Responsabilidad clínica vigente | Condición de quien es responsable clínico vigente de una cama, nombrada desde el profesional y no desde la cama. |
 | Responsable clínico vigente | Profesional médico que responde por una cama en el instante consultado: lo es el delegado mientras una delegación activa alcanza esa cama; en otro caso, el profesional cuya asignación médica vigente la comprende; y a falta de ambos, el profesional médico de la guardia localizable que la programación vigente asigna a esa unidad en esa franja. |
