@@ -6,12 +6,12 @@ arquitectura. No contiene referencias de retorno a esos documentos.
 | Término | Definición |
 |---|---|
 | Aceptación de la entrega | Acto del profesional entrante por el que da por recibida una entrega cerrada; es posterior al cierre, no lo produce y no altera el contenido de la entrega. |
-| Actualización informativa | Aviso clínico que reúne los hechos registrados sobre una cama y aguarda la consulta de sus destinatarios, a diferencia del escalamiento, que reclama la respuesta de un responsable. |
+| Actualización informativa | Aviso clínico que reúne los hechos registrados sobre una cama sin reclamar la respuesta de un responsable, a diferencia del escalamiento, que la reclama. |
 | Acuse | Confirmación registrada de que un destinatario recibió un escalamiento o cambio de programación; no implica que haya tomado el caso. |
 | Ámbito de responsabilidad | Conjunto de unidades y camas por las que un profesional responde en un periodo, resultante de sus asignaciones, delegaciones y responsabilidad de jefatura vigentes en él. |
 | Asignación | Relación vigente entre un profesional y una franja de una unidad UCI. |
 | Asignación de cuidado de enfermería | Conjunto de camas de una unidad cuyo cuidado corresponde a una profesional de enfermería durante un turno. |
-| Asignación médica | Conjunto de camas de una unidad por las que un profesional médico responde durante un turno; un turno médico puede no comprender ninguna. |
+| Asignación médica | Conjunto de camas de una unidad por las que un profesional médico responde durante un turno; una cama integra a lo más una asignación médica en una misma franja, y esa asignación es uno de los dos títulos que constituyen al responsable clínico vigente de la cama. Un turno médico puede no comprender ninguna. |
 | Autorización previa vigente | Autorización otorgada por la coordinadora con alcance y periodo declarados, que cubre por anticipado los intercambios comprendidos en ella. |
 | Aviso clínico | Comunicación dirigida a un destinatario que le anuncia un escalamiento o una actualización informativa de una cama, distinta del contexto clínico que ese escalamiento transporta. |
 | Cadena de escalamiento | Secuencia ordenada de responsables a quienes se dirige un escalamiento hasta obtener toma del caso o agotar la cadena. |
@@ -21,11 +21,13 @@ arquitectura. No contiene referencias de retorno a esos documentos.
 | Cobertura simultánea | Estado de un profesional con responsabilidad clínica vigente sobre más de un servicio en la misma franja. |
 | Confirmación de ejecución | Registro por el que un profesional de enfermería declara ejecutada una indicación, con su autoría e instante. |
 | Consulta diferible | Valor de severidad que denota la consulta clínica cuya respuesta admite espera. |
-| Contexto clínico | Conjunto cerrado de datos necesarios para comprender un escalamiento sin solicitar información adicional. |
-| Delegación activa | Transferencia temporal y registrada de la responsabilidad de respuesta desde un profesional hacia otro, con inicio y fin. |
+| Contexto clínico | Conjunto cerrado de datos necesarios para comprender un escalamiento sin solicitar información adicional; su composición no varía entre escalamientos, y el componente que el episodio no contiene lo integra igualmente en condición de no registrado. |
+| Dato obligatorio de la entrega médica | Dato que la entrega médica de un turno comprende por cada cama y sin el cual esa entrega queda incompleta; es uno solo: el diagnóstico de ese turno de esa cama. |
+| Delegación activa | Transferencia temporal y registrada de la responsabilidad de respuesta entre dos profesionales médicos con cobertura vigente en la misma unidad durante su intervalo, con inicio y fin, que termina por vencimiento de ese intervalo o por revocación. |
 | Deterioro confirmado | Deterioro clínico de una cama registrado con su severidad ya determinada, por oposición a la severidad por confirmar; denota el grado de certeza del deterioro y no la urgencia de la respuesta. |
 | Deterioro inmediato | Valor de severidad que denota el deterioro clínico cuya respuesta no admite espera, por oposición a la consulta diferible; denota la urgencia de la respuesta y no el grado de certeza del deterioro. |
-| Diagnóstico vigente | Última versión firmada del diagnóstico clínico de una cama dentro de un episodio. |
+| Diagnóstico de ese turno | Versión firmada del diagnóstico clínico de una cama registrada dentro de un turno médico determinado; una cama puede no contar con ninguna en un turno dado. |
+| Diagnóstico vigente | Última versión firmada del diagnóstico clínico de una cama dentro de un episodio, cualquiera sea el turno en que se registró. |
 | Dispositivo no institucional | Dispositivo desde el que un profesional emplea el sistema sin que la institución lo administre; comprende al dispositivo personal. |
 | Dispositivo personal | Dispositivo no institucional que pertenece al profesional que lo emplea. |
 | Entrega de turno | Registro estructurado mediante el cual el turno saliente deja al entrante el estado, decisiones y pendientes de las camas. |
@@ -40,7 +42,7 @@ arquitectura. No contiene referencias de retorno a esos documentos.
 | Identidad verificada vigente | Estado por el que el sistema reconoce a un profesional en un dispositivo determinado, desde que este verifica en él su identidad hasta que la sesión se cierra o la vigencia se revoca. |
 | Identificación ante el dispositivo | Acto por el que quien tiene consigo un dispositivo queda reconocido por ese dispositivo, distinto de la verificación de identidad ante el sistema y anterior a ella en el orden de uso. |
 | Indicación | Instrucción clínica emitida por un médico y registrada con autoría e instante. |
-| Indicación médica nueva | Indicación registrada sobre una cama que aún no consta en ningún aviso clínico de esa cama. |
+| Indicación médica nueva | Indicación registrada sobre una cama que aún no ha alcanzado a quienes deben ejecutarla. |
 | Indicador de cobertura de turnos | Relación entre las franjas descubiertas y las franjas requeridas de una unidad en un periodo. |
 | Indicador de cumplimiento de entrega | Relación entre las entregas cerradas y los turnos concluidos de una unidad en un periodo. |
 | Intercambio | Permuta de sus asignaciones entre dos profesionales, que la programación vigente incorpora como un solo cambio. |
@@ -53,14 +55,19 @@ arquitectura. No contiene referencias de retorno a esos documentos.
 | Programación vigente | Única versión oficial de las asignaciones de una unidad para un periodo. |
 | Red | Agrupación de sedes y de sus unidades UCI federadas bajo una misma dirección prestacional. |
 | Registro a pie de cama | Anotación clínica tomada junto a la cama, con instante de toma propio y distinto del instante en que se incorpora al episodio. |
-| Responsable clínico vigente | Profesional médico que, según la programación o una delegación activa, responde por una unidad o cama en el instante consultado. |
+| Responsabilidad clínica vigente | Condición de quien es responsable clínico vigente de una cama, nombrada desde el profesional y no desde la cama. |
+| Responsable clínico vigente | Profesional médico que responde por una cama en el instante consultado: lo es el delegado mientras una delegación activa alcanza esa cama y, en otro caso, el profesional cuya asignación médica vigente la comprende. |
+| Resultado crítico | Resultado de un estudio cuyo valor cae fuera del rango que el laboratorio declara crítico para ese examen. |
 | Sede | Establecimiento físico al que pertenece una o más unidades UCI. |
 | Servicio | Ámbito asistencial de una sede que cuenta con cobertura médica propia; la unidad UCI federada es uno de ellos. |
 | Severidad | Clasificación de un escalamiento según la urgencia de la respuesta que exige, con exactamente tres valores —deterioro inmediato, consulta diferible y severidad por confirmar—; se dice registrada cuando quien emite el escalamiento la determina. |
-| Severidad por confirmar | Estado del escalamiento emitido sin que quien lo emitió determinara su severidad, y que dura hasta que esa severidad queda determinada. |
+| Severidad por confirmar | Valor de severidad que denota el escalamiento emitido sin que quien lo emitió la determinara, y que rige hasta que esa severidad queda determinada. |
 | Solicitud de cobertura | Pedido dirigido a un profesional para que asuma una franja determinada, pendiente de su aceptación o de su rechazo. |
+| Solicitud de cobertura vigente | Solicitud de cobertura que su destinatario no ha aceptado ni rechazado y cuyo plazo de respuesta no ha vencido. |
 | Solicitud de permiso | Pedido de un profesional para que se le autorice una ausencia en un intervalo determinado, pendiente de resolución de la coordinadora. |
-| Tendencia | Evolución de los signos vitales y de los parámetros de soporte de una cama a lo largo de un periodo, compuesta a partir de los registros del episodio. |
+| Tendencia | Evolución de los signos vitales, del balance hídrico y de los parámetros de soporte de una cama a lo largo de un periodo, compuesta a partir de los registros del episodio. |
 | Toma del caso | Compromiso explícito y registrado del profesional que asume la respuesta clínica después del acuse; está vigente —y el caso, abierto— desde ese registro hasta el registro del cierre de la atención. |
+| Turno de enfermería | Periodo durante el cual una profesional de enfermería cubre una franja de una unidad, al que corresponde una asignación de cuidado de enfermería. |
+| Turno médico | Periodo durante el cual un profesional médico cubre una franja de una unidad; comprende a lo más una asignación médica y puede no comprender ninguna. |
 | Último contacto | Instante del registro o de la consulta más reciente de un profesional sobre una cama dentro del episodio en curso; a falta de contacto anterior, es la apertura del episodio. |
 | Unidad UCI federada | Unidad lógica con identidad, camas y programación propias, adscrita a una sede e integrada a la red. |
