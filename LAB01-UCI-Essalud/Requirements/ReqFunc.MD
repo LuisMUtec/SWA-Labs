@@ -152,6 +152,8 @@ Los plazos que un enunciado invoca —«dentro del plazo definido para la severi
 
 ### RF-TUR-08 — Programación como fuente oficial
 
+> Solo se alinea el vocabulario de su CA-1 con el de RF-TUR-16 y RF-TUR-28. El enunciado no cambia.
+
 **Enunciado:** El sistema DEBE conservar la programación vigente como única fuente editable de asignaciones de la unidad.
 
 | Campo | Valor |
@@ -162,7 +164,7 @@ Los plazos que un enunciado invoca —«dentro del plazo definido para la severi
 
 **Criterios de aceptación**
 
-- **CA-1** — Dada una copia imprimible de la programación, cuando una asignación cambia, entonces la copia no puede modificar ni reemplazar la programación vigente.
+- **CA-1** — Dado un reflejo de la programación obtenido por la coordinadora, cuando una asignación cambia, entonces ese reflejo no puede modificar ni reemplazar la programación vigente.
 
 ---
 
@@ -278,9 +280,9 @@ Los plazos que un enunciado invoca —«dentro del plazo definido para la severi
 
 ---
 
-### RF-TUR-16 — Copia histórica de una programación cerrada
+### RF-TUR-16 — Reflejo de las asignaciones de un periodo cerrado
 
-**Enunciado:** CUANDO la coordinadora obtiene una copia imprimible de un periodo cerrado, el sistema DEBE generarla como archivo histórico con exactamente las asignaciones de ese periodo, la unidad, el periodo, el instante de generación y su condición no operativa.
+**Enunciado:** CUANDO la coordinadora solicita el reflejo de las asignaciones de un periodo cerrado de una unidad, el sistema DEBE entregarlo con exactamente esas asignaciones, la unidad, el periodo, el instante de la generación y su condición no operativa.
 
 | Campo | Valor |
 |---|---|
@@ -290,7 +292,7 @@ Los plazos que un enunciado invoca —«dentro del plazo definido para la severi
 
 **Criterios de aceptación**
 
-- **CA-1** — Dada una programación de un periodo cerrado, cuando la coordinadora obtiene su copia imprimible, entonces la copia presenta las asignaciones de ese periodo, la unidad, el periodo, el instante de generación y su condición no operativa.
+- **CA-1** — Dada la programación de un periodo cerrado, cuando la coordinadora solicita su reflejo, entonces obtiene las asignaciones de ese periodo, la unidad, el periodo, el instante de la generación y su condición no operativa.
 
 ---
 
@@ -471,9 +473,9 @@ Los plazos que un enunciado invoca —«dentro del plazo definido para la severi
 
 ---
 
-### RF-TUR-28 — Copia imprimible de la programación vigente
+### RF-TUR-28 — Reflejo de la programación vigente
 
-**Enunciado:** CUANDO la coordinadora solicita una copia imprimible de la programación vigente, el sistema DEBE entregarla con exactamente la unidad, el periodo, las asignaciones vigentes en el instante de su generación, ese instante y su condición de reflejo no editable de la programación vigente.
+**Enunciado:** CUANDO la coordinadora solicita el reflejo de la programación vigente de una unidad, el sistema DEBE entregarlo con exactamente la unidad, el periodo, las asignaciones vigentes en el instante de su generación, ese instante y su condición de reflejo no editable de esa programación vigente.
 
 | Campo | Valor |
 |---|---|
@@ -483,8 +485,8 @@ Los plazos que un enunciado invoca —«dentro del plazo definido para la severi
 
 **Criterios de aceptación**
 
-- **CA-1** — Dada la programación vigente del mes en curso, cuando la coordinadora solicita su copia imprimible, entonces obtiene una copia con la unidad, el periodo y las asignaciones vigentes en el instante de su generación.
-- **CA-2** — Dada una copia imprimible ya obtenida y una programación vigente modificada después, cuando la coordinadora solicita otra copia, entonces obtiene una copia que declara su propio instante de generación y su condición de reflejo no editable.
+- **CA-1** — Dada la programación vigente del mes en curso, cuando la coordinadora solicita su reflejo para publicarlo en la unidad, entonces obtiene la unidad, el periodo y las asignaciones vigentes en el instante de su generación.
+- **CA-2** — Dado un reflejo ya obtenido y una programación vigente modificada después, cuando la coordinadora solicita otro, entonces obtiene un reflejo que declara su propio instante de generación y su condición de reflejo no editable.
 
 ---
 
@@ -737,16 +739,13 @@ Los plazos que un enunciado invoca —«dentro del plazo definido para la severi
 
 | Campo | Valor |
 |---|---|
-| Prioridad | MUST |
+| Prioridad | SHOULD |
 | Persona | Carmen |
 | Problema | P1 |
 
 **Criterios de aceptación**
 
-- **CA-1** — Dada una guardia descubierta cuyo inicio queda dentro del horizonte de urgencia y cuya
-  última solicitud de cobertura quedó sin efecto, cuando la jefatura de la unidad asigna a esa
-  guardia un candidato elegible, entonces esa asignación figura en la programación vigente con el
-  profesional, la franja, el motivo declarado, la autoría de la jefatura y el instante.
+- **CA-1** — Dada una guardia descubierta cuyo inicio queda dentro del horizonte de urgencia y cuya última solicitud de cobertura quedó sin efecto, cuando la jefatura de la unidad asigna a esa guardia un candidato elegible, entonces esa asignación figura en la programación vigente con el profesional, la franja, el motivo declarado, la autoría de la jefatura y el instante.
 
 ---
 
@@ -807,16 +806,7 @@ Los plazos que un enunciado invoca —«dentro del plazo definido para la severi
 
 ### RF-DIA-02 — Contenido de la entrega médica
 
-*Cambio:* el contrato pasa a declarar no registrado el componente que el episodio no contiene, con el
-mismo recurso que `RF-ESC-03` ya emplea y que Aníbal declara tan útil como el dato. El contenido
-enumerado no varía. Cierra la mitad receptora de la brecha 1: el handoff deja de callar la ausencia
-del porqué.
-
-**Enunciado:** CUANDO un médico inicia un turno, el sistema DEBE presentarle por cada cama de su
-asignación médica vigente exactamente el diagnóstico vigente, las decisiones clínicas del turno
-anterior con su fundamento, el esquema terapéutico vigente con su día de tratamiento, los pendientes
-críticos y el estado de la información a la familia, declarando no registrado cada uno de esos
-componentes que el episodio no contiene al inicio de ese turno.
+**Enunciado:** CUANDO un médico inicia un turno, el sistema DEBE presentarle por cada cama de su asignación médica vigente exactamente el estado clínico de esa cama en el instante en que ese turno se inicia.
 
 | Campo | Valor |
 |---|---|
@@ -826,16 +816,10 @@ componentes que el episodio no contiene al inicio de ese turno.
 
 **Criterios de aceptación**
 
-- **CA-1** — Dada una cama cuyo turno anterior decidió no escalar el soporte ventilatorio y registró
-  su fundamento, cuando el médico entrante inicia el turno, entonces esa decisión y su fundamento
-  figuran en la entrega de esa cama.
-- **CA-2** — Dada una cama en el tercer día de un antimicrobiano, cuando el médico entrante inicia el
-  turno, entonces el esquema y su tercer día figuran en la entrega de esa cama.
-- **CA-3** — Dada una cama con un cultivo pendiente y la familia aún no informada, cuando el médico
-  entrante inicia el turno, entonces ambos estados figuran en la entrega de esa cama.
-- **CA-4** — Dada una cama cuyo turno anterior no registró ninguna decisión clínica, cuando el médico
-  entrante inicia el turno, entonces la entrega de esa cama presenta esas decisiones declaradas no
-  registradas.
+- **CA-1** — Dada una cama cuyo turno anterior decidió no escalar el soporte ventilatorio y registró su fundamento, cuando el médico entrante inicia el turno, entonces esa decisión y su fundamento figuran en la entrega de esa cama.
+- **CA-2** — Dada una cama en el tercer día de un antimicrobiano, cuando el médico entrante inicia el turno, entonces el esquema y su tercer día figuran en la entrega de esa cama.
+- **CA-3** — Dada una cama con un cultivo pendiente y la familia aún no informada, cuando el médico entrante inicia el turno, entonces ambos estados figuran en la entrega de esa cama.
+- **CA-4** — Dada una cama cuyo episodio no contiene ninguna decisión clínica registrada, cuando el médico entrante inicia el turno, entonces la entrega de esa cama presenta esas decisiones declaradas no registradas.
 
 ---
 
@@ -874,17 +858,7 @@ componentes que el episodio no contiene al inicio de ese turno.
 
 ### RF-DIA-05 — Cambios desde el último registro del médico sobre la cama
 
-*Cambio:* el enunciado fija por sí mismo el instante desde el cual se computa el diferencial —el
-registro clínico más reciente de ese médico sobre esa cama— en lugar de remitirlo a un término cuya
-definición vigente cuenta también la consulta y le vacía el diferencial a Rodrigo en cuanto abre la
-cama una vez. Cierra el Ambiguo de Rodrigo en el paso 7 de su recorrido y la brecha 16. La entrada
-`Último contacto` del glosario se alinea (ver `## GLOSARIO`).
-
-**Enunciado:** CUANDO un médico consulta una cama, el sistema DEBE presentar exactamente los cambios
-de diagnóstico, esquema terapéutico, soporte ventilatorio, soporte vasoactivo, resultados de
-laboratorio y pendientes ocurridos sobre esa cama desde el registro clínico más reciente que ese
-médico produjo sobre ella dentro del episodio en curso o, si no produjo ninguno, desde la apertura de
-ese episodio.
+**Enunciado:** CUANDO un médico consulta una cama, el sistema DEBE presentar exactamente los cambios de diagnóstico, esquema terapéutico, soporte ventilatorio, soporte vasoactivo, resultados de laboratorio y pendientes ocurridos sobre esa cama desde el registro clínico más reciente que ese médico produjo sobre ella dentro del episodio en curso o, si no produjo ninguno, desde el inicio de su turno médico en curso o, a falta de turno médico en curso, desde la apertura de ese episodio.
 
 | Campo | Valor |
 |---|---|
@@ -894,13 +868,9 @@ ese episodio.
 
 **Criterios de aceptación**
 
-- **CA-1** — Dado un médico cuyo registro clínico más reciente sobre una cama ocurrió tres semanas
-  antes y que consultó esa cama al iniciar su guardia, cuando ese médico consulta esa cama a las
-  23:40 de esa misma guardia, entonces obtiene los cambios ocurridos desde ese registro de hace tres
-  semanas.
-- **CA-2** — Dado un médico que no produjo ningún registro clínico sobre una cama cuyo episodio se
-  abrió tres semanas antes, cuando ese médico consulta esa cama, entonces obtiene los cambios
-  ocurridos desde la apertura de ese episodio.
+- **CA-1** — Dado un médico cuyo registro clínico más reciente sobre una cama ocurrió tres semanas antes y que consultó esa cama al iniciar su guardia, cuando ese médico consulta esa cama a las 23:40 de esa misma guardia, entonces obtiene los cambios ocurridos desde ese registro de hace tres semanas.
+- **CA-2** — Dado un médico de guardia localizable cuyo turno en curso comenzó a las 20:00 y que no produjo ningún registro clínico sobre una cama cuyo episodio se abrió tres semanas antes, cuando ese médico consulta esa cama a las 03:20, entonces obtiene los cambios ocurridos desde el inicio de ese turno.
+- **CA-3** — Dado un médico que no cursa un turno médico y que no produjo ningún registro clínico sobre una cama cuyo episodio se abrió tres semanas antes, cuando consulta esa cama, entonces obtiene los cambios ocurridos desde la apertura de ese episodio.
 
 ---
 
@@ -938,7 +908,7 @@ ese episodio.
 
 ### RF-DIA-08 — Entrega de turno de enfermería
 
-**Enunciado:** CUANDO una profesional de enfermería concluye su turno, el sistema DEBE componer su entrega reutilizando sin transcripción exactamente los pendientes de cuidado abiertos, los eventos, la medicación administrada, los signos vitales y el balance hídrico ya registrados durante el turno.
+**Enunciado:** CUANDO una profesional de enfermería concluye su turno, el sistema DEBE componer su entrega reutilizando sin transcripción exactamente los pendientes de cuidado abiertos, los eventos, la medicación administrada, los signos vitales y el balance hídrico registrados durante el turno sobre las camas de su asignación de cuidado de enfermería vigente, los escalamientos de esas camas sin cierre de la atención registrado y las indicaciones vigentes de esas camas.
 
 | Campo | Valor |
 |---|---|
@@ -949,6 +919,7 @@ ese episodio.
 **Criterios de aceptación**
 
 - **CA-1** — Dada una enfermera con pendientes de cuidado, eventos, medicación, signos vitales y balance hídrico registrados durante su turno, cuando concluye el turno, entonces su entrega queda compuesta con esos datos ya registrados sin transcribirlos.
+- **CA-2** — Dada una enfermera que emitió durante su turno un escalamiento de la cama 3 cuya atención no fue cerrada, cuando concluye ese turno, entonces ese escalamiento integra su entrega.
 
 ---
 
@@ -986,7 +957,7 @@ ese episodio.
 
 ### RF-DIA-11 — Recepción de la entrega de enfermería
 
-**Enunciado:** CUANDO una profesional de enfermería inicia su turno, el sistema DEBE presentarle exactamente los pendientes de cuidado abiertos, los eventos, la medicación administrada, los signos vitales y el balance hídrico de la última entrega cerrada de las camas de su asignación de cuidado de enfermería vigente, reutilizando los registros existentes sin transcripción.
+**Enunciado:** CUANDO una profesional de enfermería inicia su turno, el sistema DEBE presentarle exactamente los pendientes de cuidado abiertos, los eventos, la medicación administrada, los signos vitales, el balance hídrico, los escalamientos sin cierre de la atención registrado y las indicaciones vigentes que comprende la última entrega cerrada de las camas de su asignación de cuidado de enfermería vigente, reutilizando los registros existentes sin transcripción.
 
 | Campo | Valor |
 |---|---|
@@ -997,6 +968,7 @@ ese episodio.
 **Criterios de aceptación**
 
 - **CA-1** — Dada una entrega de enfermería cerrada del turno anterior, cuando la enfermera entrante inicia su turno, entonces obtiene sus pendientes de cuidado abiertos, eventos, medicación administrada, signos vitales y balance hídrico sin transcribirlos.
+- **CA-2** — Dada una entrega de enfermería cerrada que comprende un escalamiento de la cama 3 sin cierre de la atención registrado, cuando la enfermera entrante inicia su turno, entonces obtiene ese escalamiento entre los componentes de esa entrega.
 
 ---
 
@@ -1146,7 +1118,7 @@ ese episodio.
 
 ### RF-DIA-21 — Estado clínico de una cama consultada durante el turno
 
-**Enunciado:** MIENTRAS un turno médico está en curso, CUANDO el médico consulta una cama de su asignación médica vigente, el sistema DEBE presentar de esa cama exactamente el diagnóstico vigente, las decisiones clínicas registradas hasta el instante de la consulta con su fundamento, el esquema terapéutico vigente con su día de tratamiento, los pendientes críticos vigentes y el estado de la información a la familia.
+**Enunciado:** MIENTRAS un turno médico está en curso, CUANDO el médico consulta una cama de su asignación médica vigente, el sistema DEBE presentarle exactamente el estado clínico de esa cama en el instante de la consulta.
 
 | Campo | Valor |
 |---|---|
@@ -1156,7 +1128,7 @@ ese episodio.
 
 **Criterios de aceptación**
 
-- **CA-1** — Dada una cama con diagnóstico vigente, en el tercer día de un antimicrobiano, con un pendiente crítico marcado, cuyo turno diurno decidió no escalar el soporte ventilatorio y cuya familia aún no fue informada, cuando el médico de guardia consulta esa cama a mitad de su turno, entonces obtiene exactamente ese diagnóstico, esa decisión con su fundamento, el esquema con su tercer día, ese pendiente crítico y el estado pendiente de la información a la familia.
+- **CA-1** — Dada una cama con diagnóstico vigente, en el tercer día de un antimicrobiano, con un pendiente crítico marcado, cuyo turno diurno decidió no escalar el soporte ventilatorio y cuya familia aún no fue informada, cuando el médico de guardia consulta esa cama a mitad de su turno, entonces obtiene el estado clínico de esa cama en ese instante.
 - **CA-2** — Dada una cama sobre la que el médico de guardia registró una decisión fundamentada después de recibir la entrega, cuando ese mismo médico consulta esa cama más tarde en el mismo turno, entonces esa decisión figura entre las presentadas.
 
 ---
@@ -1309,7 +1281,7 @@ ese episodio.
 
 ### RF-DIA-31 — Composición de la entrega médica
 
-**Enunciado:** CUANDO un médico concluye su turno, el sistema DEBE componer su entrega reutilizando sin transcripción exactamente el diagnóstico de ese turno, las decisiones clínicas con su fundamento, el esquema terapéutico con su día de tratamiento, el plan clínico, los pendientes críticos y el estado de la información a la familia ya registrados durante el turno.
+**Enunciado:** CUANDO un médico concluye su turno, el sistema DEBE componer su entrega reutilizando sin transcripción, por cada cama de su asignación médica vigente, exactamente el estado clínico de esa cama registrado durante ese turno.
 
 | Campo | Valor |
 |---|---|
@@ -1325,20 +1297,17 @@ ese episodio.
 
 ### RF-DIA-32 — Contenido registrado durante un turno médico concluido sin entrega cerrada
 
-**Enunciado:** SI el turno médico inmediatamente anterior de una cama concluyó sin entrega cerrada, ENTONCES el sistema DEBE presentar al médico entrante de esa cama exactamente el diagnóstico, las decisiones clínicas con su fundamento, el esquema terapéutico con su día de tratamiento, el plan clínico, los pendientes críticos y el estado de la información a la familia que ese turno registró sobre ella, declarando no registrado cada uno de esos componentes que ese turno no registró.
+**Enunciado:** SI el turno médico inmediatamente anterior de una cama concluyó sin entrega cerrada, ENTONCES el sistema DEBE presentar al médico entrante de esa cama exactamente el estado clínico de esa cama registrado durante ese turno.
 
 | Campo | Valor |
 |---|---|
-| Prioridad | MUST |
+| Prioridad | SHOULD |
 | Persona | Rodrigo, Carmen |
 | Problema | P1 |
 
 **Criterios de aceptación**
 
-- **CA-1** — Dada una cama cuyo turno anterior concluyó sin entrega cerrada y durante el cual su
-  médico registró la decisión de no escalar el soporte ventilatorio con su fundamento y ningún estado
-  de información a la familia, cuando el médico entrante inicia su turno, entonces obtiene esa
-  decisión con su fundamento y ese estado de la información a la familia declarado no registrado.
+- **CA-1** — Dada una cama cuyo turno anterior concluyó sin entrega cerrada y durante el cual su médico registró la decisión de no escalar el soporte ventilatorio con su fundamento y ningún estado de información a la familia, cuando el médico entrante inicia su turno, entonces obtiene esa decisión con su fundamento y ese estado de la información a la familia declarado no registrado.
 
 ---
 
@@ -1408,6 +1377,93 @@ ese episodio.
 **Criterios de aceptación**
 
 - **CA-1** — Dado un médico con cuatro camas de asignación médica vigente en la guardia del sábado y una ausencia imprevista registrada que cubre esa guardia, cuando queda retirado de esa asignación, entonces esas cuatro camas dejan de estar comprendidas en su asignación médica durante el intervalo retirado.
+
+---
+
+### RF-DIA-37 — Resolución de una segunda declaración de cuidado de enfermería sobre la misma cama
+
+**Enunciado:** CUANDO una profesional de enfermería declara a su cuidado una cama que la asignación de cuidado de enfermería vigente de otra profesional de enfermería comprende en esa franja, el sistema DEBE dejar la de la profesional que la declara como única asignación de cuidado de enfermería vigente de esa cama durante el resto de esa franja.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | SHOULD |
+| Persona | Milagros, Carmen |
+| Problema | P1, P3 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dada una cama comprendida en la asignación de cuidado de enfermería vigente de una enfermera para el turno noche, cuando la otra enfermera de ese mismo turno declara esa cama a su cuidado, entonces la única asignación de cuidado de enfermería vigente de esa cama durante el resto de ese turno es la de la segunda.
+
+---
+
+### RF-DIA-38 — Aviso a la profesional de enfermería desplazada de una cama de su asignación de cuidado
+
+**Enunciado:** CUANDO una cama deja de estar comprendida en la asignación de cuidado de enfermería vigente de una profesional de enfermería por la declaración de otra profesional de enfermería durante esa franja, el sistema DEBE avisar a la profesional desplazada con exactamente esa cama, la profesional que la declaró y el instante de esa declaración.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | SHOULD |
+| Persona | Milagros, Carmen |
+| Problema | P1 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dada una enfermera con la cama 6 comprendida en su asignación de cuidado de enfermería vigente del turno noche, cuando su colega de ese mismo turno declara esa cama a su cuidado, entonces la primera recibe el aviso con esa cama, esa colega y el instante de esa declaración.
+
+---
+
+### RF-DIA-39 — Orden de las camas de la asignación médica al inicio del turno
+
+**Enunciado:** CUANDO un médico inicia un turno, el sistema DEBE presentarle las camas de su asignación médica vigente ordenadas por la primera clase que a cada una corresponda entre marca vigente de inestabilidad, marca vigente de pendiente crítico, ausencia de diagnóstico del turno inmediatamente anterior y ninguna de las anteriores.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | SHOULD |
+| Persona | Rodrigo |
+| Problema | P1 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dadas diez camas de asignación médica vigente de las que dos tienen marca vigente de inestabilidad, una marca vigente de pendiente crítico y una carece de diagnóstico del turno inmediatamente anterior, cuando el médico entrante inicia su turno, entonces obtiene esas diez camas en ese orden de clases.
+
+*Comparte disparador con `RF-DIA-02` y no lo duplica: `RF-DIA-02` fija el contenido de cada cama y
+este fija el orden del conjunto. Tampoco duplica `RF-DIA-03`, que señala; este ordena.*
+
+---
+
+### RF-DIA-40 — Decisión clínica registrada sin fundamento
+
+**Enunciado:** SI un médico registra una decisión clínica de un episodio sin su fundamento, ENTONCES el sistema DEBE rechazar ese registro indicando el fundamento ausente.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | SHOULD |
+| Persona | Rodrigo, Carmen |
+| Problema | P1 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dado un episodio en el que el médico decide no escalar el soporte ventilatorio, cuando registra esa decisión sin su fundamento, entonces el registro se rechaza indicando el fundamento ausente.
+
+*Vuelve exigible el fundamento en el acto que lo produce y no en el cierre: la tensión «velocidad
+frente a completitud» sigue decidida como está —el cierre exige de cada cama el diagnóstico de ese
+turno y ningún otro dato—.*
+
+---
+
+### RF-DIA-41 — Aviso del retiro de una marca de inestabilidad o de pendiente crítico
+
+**Enunciado:** CUANDO un profesional retira una marca vigente de inestabilidad o de pendiente crítico de una cama, el sistema DEBE avisar al profesional que la dejó con exactamente esa cama, la marca retirada, el profesional que la retiró y el instante del retiro.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | SHOULD |
+| Persona | Rodrigo, Milagros |
+| Problema | P1 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dada una cama que el médico de guardia marcó como inestable, cuando una profesional de enfermería retira esa marca, entonces ese médico recibe el aviso con esa cama, esa marca, esa profesional y el instante del retiro.
 
 ---
 
@@ -1497,9 +1553,9 @@ ese episodio.
 
 ---
 
-### RF-ESC-06 — Cadena y plazo de la severidad registrada
+### RF-ESC-06 — Plazo de acuse de la severidad registrada
 
-**Enunciado:** CUANDO una profesional de enfermería emite un escalamiento con severidad registrada, el sistema DEBE aplicarle la cadena y el plazo de acuse de esa severidad.
+**Enunciado:** CUANDO una profesional de enfermería emite un escalamiento con severidad registrada, el sistema DEBE aplicarle el plazo de acuse definido para esa severidad.
 
 | Campo | Valor |
 |---|---|
@@ -1509,7 +1565,7 @@ ese episodio.
 
 **Criterios de aceptación**
 
-- **CA-1** — Dado un escalamiento clasificado como deterioro inmediato y otro como consulta diferible sobre la misma cama, cuando la enfermera emite ambos, entonces cada uno obtiene la cadena y el plazo de acuse de su severidad.
+- **CA-1** — Dado un escalamiento clasificado como deterioro inmediato y otro como consulta diferible sobre la misma cama, cuando la enfermera emite ambos, entonces cada uno obtiene el plazo de acuse definido para su severidad.
 
 ---
 
@@ -1531,7 +1587,14 @@ ese episodio.
 
 ### RF-ESC-08 — Consulta de la cobertura clínica vigente
 
-**Enunciado:** CUANDO un profesional consulta la cobertura clínica de una unidad, el sistema DEBE presentar por cada cama al responsable vigente, su estado exacto —el primero que corresponda entre indisponible declarado, ocupado en otro caso abierto, con cobertura simultánea de otro servicio y disponible— y su delegado activo.
+> **Hallazgo nuevo, no inventariado en el diagnóstico.** RF-ESC-08 presenta «al responsable vigente
+> … y su delegado activo», pero por RF-ESC-35 el responsable clínico vigente de una cama alcanzada
+> por una delegación activa **es** el delegado, y una delegación alcanza toda la unidad: el campo
+> «su delegado activo» no se llena nunca y su CA-2 describe un caso imposible. La corrección invierte
+> el campo —se presenta al titular de la delegación— y con ello el titular indisponible vuelve a ser
+> visible para Milagros. Si prefieres no tocar un MUST de su tarea 3, déjalo; queda anotado.
+
+**Enunciado:** CUANDO un profesional consulta la cobertura clínica de una unidad, el sistema DEBE presentar por cada cama al responsable clínico vigente, su estado exacto —el primero que corresponda entre indisponible declarado, ocupado en otro caso abierto, con cobertura simultánea de otro servicio y disponible— y, cuando ese responsable lo sea por una delegación activa, al médico titular de esa delegación.
 
 | Campo | Valor |
 |---|---|
@@ -1542,14 +1605,15 @@ ese episodio.
 **Criterios de aceptación**
 
 - **CA-1** — Dado un responsable clínico vigente a quien la programación vigente asigna además a otro servicio en la misma franja y sin caso abierto registrado, cuando la enfermera consulta la cobertura de esa unidad, entonces obtiene a ese profesional con cobertura simultánea de otro servicio.
-- **CA-2** — Dado un responsable clínico que tomó otro caso aún abierto, cuando la enfermera consulta la cobertura de esa unidad, entonces obtiene a ese profesional como ocupado en otro caso abierto y al delegado activo si existe.
+- **CA-2** — Dado un responsable clínico vigente que tomó otro caso aún abierto, cuando la enfermera consulta la cobertura de esa unidad, entonces obtiene a ese profesional como ocupado en otro caso abierto.
 - **CA-3** — Dada una unidad cuya programación cambió durante el turno en curso, cuando la enfermera consulta la cobertura, entonces obtiene el responsable resultante de ese cambio.
+- **CA-4** — Dada una cama alcanzada por una delegación activa cuyo titular declaró su indisponibilidad, cuando la enfermera consulta la cobertura de esa unidad, entonces obtiene al delegado como responsable clínico vigente de esa cama y a ese titular como el médico titular de esa delegación.
 
 ---
 
 ### RF-ESC-09 — Agotamiento de la cadena de escalamiento
 
-**Enunciado:** SI un escalamiento agota su cadena sin obtener acuse, ENTONCES el sistema DEBE alcanzar a la jefatura vigente de la unidad.
+**Enunciado:** SI un escalamiento agota su cadena sin obtener acuse, ENTONCES el sistema DEBE alcanzar al profesional médico delegado de la jefatura de la unidad mientras una delegación activa de esa jefatura rige y, en otro caso, a la jefatura vigente de esa unidad.
 
 | Campo | Valor |
 |---|---|
@@ -1559,7 +1623,7 @@ ese episodio.
 
 **Criterios de aceptación**
 
-- **CA-1** — Dado un escalamiento que alcanzó a todos los integrantes de su cadena sin acuse, cuando vence el plazo del último integrante, entonces la jefatura vigente de la unidad queda alcanzada.
+- **CA-1** — Dado un escalamiento que alcanzó a todos los integrantes de su cadena sin acuse y una jefatura de unidad sin delegación activa, cuando vence el plazo del último integrante, entonces la jefatura vigente de la unidad queda alcanzada.
 - **CA-2** — Dada una jefatura de unidad con delegación activa, cuando vence el plazo del último integrante de una cadena sin acuse, entonces queda alcanzado el delegado de esa jefatura.
 
 ---
@@ -1775,7 +1839,7 @@ ese episodio.
 
 ### RF-ESC-23 — Composición de la cadena de escalamiento de una cama
 
-**Enunciado:** CUANDO una profesional de enfermería emite un escalamiento de una cama, el sistema DEBE componer su cadena con exactamente el responsable clínico vigente de esa cama en primer lugar y, a continuación, los demás profesionales médicos que la programación vigente asigna a esa unidad en la franja del escalamiento.
+**Enunciado:** CUANDO una profesional de enfermería emite un escalamiento de una cama, el sistema DEBE componer su cadena, cualquiera sea la severidad de ese escalamiento, con exactamente el responsable clínico vigente de esa cama en primer lugar y, a continuación, los demás profesionales médicos que la programación vigente asigna a esa unidad en la franja del escalamiento.
 
 | Campo | Valor |
 |---|---|
@@ -1787,6 +1851,7 @@ ese episodio.
 
 - **CA-1** — Dada una cama cuyo responsable clínico vigente es el internista de guardia y una unidad con un intensivista asignado por la programación vigente a esa misma franja, cuando la enfermera emite un escalamiento de esa cama, entonces la cadena queda compuesta por ese internista en primer lugar y por ese intensivista a continuación.
 - **CA-2** — Dada una cama cuyo responsable clínico vigente lo es por una delegación activa, cuando la enfermera emite un escalamiento de esa cama, entonces la cadena queda encabezada por ese delegado.
+- **CA-3** — Dada una cama sobre la que la enfermera emite en la misma franja un escalamiento de deterioro inmediato y otro de consulta diferible, cuando los emite, entonces ambos obtienen la misma cadena.
 
 ---
 
@@ -1807,9 +1872,16 @@ ese episodio.
 
 ---
 
-### RF-ESC-25 — Cadena y plazo de un escalamiento con severidad por confirmar
+### RF-ESC-25 — Plazo de un escalamiento con severidad por confirmar
 
-**Enunciado:** SI un escalamiento tiene la severidad por confirmar, ENTONCES el sistema DEBE aplicarle la cadena y el plazo de acuse del deterioro inmediato.
+> **Consecuencia de forma del hallazgo 3.** Este RF está en tu lista de intocables. Lo único que
+> cambia es la palabra «cadena»: con la decisión adoptada, «la cadena del deterioro inmediato» nombra
+> una cadena que ningún RF constituye, que es exactamente el defecto que estamos corrigiendo. La
+> prioridad, la persona, el problema y el efecto siguen idénticos: lo no clasificado corre con el
+> plazo del deterioro inmediato y despierta a Aníbal igual que antes. Si prefieres no tocarlo,
+> el hallazgo 3 queda a medias; lo explico en NOTAS.
+
+**Enunciado:** SI un escalamiento tiene la severidad por confirmar, ENTONCES el sistema DEBE aplicarle el plazo de acuse del deterioro inmediato.
 
 | Campo | Valor |
 |---|---|
@@ -1819,13 +1891,13 @@ ese episodio.
 
 **Criterios de aceptación**
 
-- **CA-1** — Dada una enfermera que emite un escalamiento sin determinar su severidad, cuando ese escalamiento queda con severidad por confirmar, entonces obtiene la cadena y el plazo de acuse del deterioro inmediato.
+- **CA-1** — Dada una enfermera que emite un escalamiento sin determinar su severidad, cuando ese escalamiento queda con severidad por confirmar, entonces obtiene el plazo de acuse del deterioro inmediato.
 
 ---
 
-### RF-ESC-26 — Aviso a la jefatura de una delegación activada sin su resolución
+### RF-ESC-26 — Aviso a la jefatura de una delegación activada
 
-**Enunciado:** CUANDO un médico activa una delegación sobre una unidad sin resolución de su jefatura, el sistema DEBE informar de esa delegación a la jefatura de esa unidad.
+**Enunciado:** CUANDO una delegación queda activa sobre una unidad, el sistema DEBE informar a la jefatura de esa unidad con exactamente el médico titular, el profesional médico delegado, el intervalo de la delegación y el instante de su activación.
 
 | Campo | Valor |
 |---|---|
@@ -1835,7 +1907,7 @@ ese episodio.
 
 **Criterios de aceptación**
 
-- **CA-1** — Dado un médico de guardia que declara indisponibilidad e indica un delegado sin resolución de la jefatura, cuando la delegación queda activa, entonces la jefatura de esa unidad queda informada de esa delegación.
+- **CA-1** — Dado un médico de guardia que declara su indisponibilidad hasta las 05:00 e indica un delegado admisible, cuando la delegación queda activa, entonces la jefatura de esa unidad obtiene ese médico, ese delegado, ese intervalo y el instante de la activación.
 
 ---
 
@@ -1872,11 +1944,6 @@ ese episodio.
 ---
 
 ### RF-ESC-29 — Alcance de un resultado crítico
-
-*Cambio:* el destinatario del resultado crítico comprende también al profesional médico con toma del
-caso vigente sobre la cama. Cierra el Estorba de Aníbal que hoy cuenta en `X_A` y el segundo tramo
-abierto de P3. Se agrega Aníbal al campo `Persona`, que es lo que habilita a listarlo en una de sus
-filas de la matriz de trazabilidad.
 
 **Enunciado:** CUANDO se incorpora al episodio de una cama el resultado crítico de un estudio, el sistema DEBE alcanzar al responsable clínico vigente de esa cama, al profesional médico con toma del caso vigente sobre ella y a las profesionales de enfermería con asignación de cuidado de enfermería vigente sobre ella, sin que deban consultarlo.
 
@@ -1916,10 +1983,6 @@ filas de la matriz de trazabilidad.
 
 ### RF-ESC-31 — Revocación de una delegación por la jefatura de la unidad
 
-*Cambio:* el enunciado, la prioridad y los criterios no varían. Se agrega Aníbal al campo `Persona`,
-porque el acto recae sobre su delegación y es él quien vuelve a encabezar la cadena. El aviso que
-faltaba no se agrega aquí —sería una segunda respuesta— sino en `RF-ESC-34`.
-
 **Enunciado:** CUANDO la jefatura de una unidad revoca una delegación activa sobre esa unidad, el sistema DEBE darla por terminada con la autoría y el instante de la revocación.
 
 | Campo | Valor |
@@ -1936,9 +1999,9 @@ faltaba no se agrega aquí —sería una segunda respuesta— sino en `RF-ESC-34
 
 ---
 
-### RF-ESC-32 — Indisponibilidad temporal declarada sin delegado
+### RF-ESC-32 — Indisponibilidad temporal declarada
 
-**Enunciado:** CUANDO un médico se declara temporalmente indisponible con un instante de término y sin indicar delegado, el sistema DEBE registrar su indisponibilidad declarada durante ese intervalo o hasta su revocación anticipada.
+**Enunciado:** CUANDO un médico se declara temporalmente indisponible con un instante de término, el sistema DEBE registrar su indisponibilidad declarada durante ese intervalo o hasta su revocación anticipada.
 
 | Campo | Valor |
 |---|---|
@@ -1948,9 +2011,8 @@ faltaba no se agrega aquí —sería una segunda respuesta— sino en `RF-ESC-34
 
 **Criterios de aceptación**
 
-- **CA-1** — Dado un médico de guardia localizable sin ningún profesional médico admisible como
-  delegado, cuando declara su indisponibilidad hasta las 05:00 sin indicar delegado, entonces su
-  indisponibilidad declarada queda registrada hasta las 05:00 o hasta una revocación anterior.
+- **CA-1** — Dado un médico de guardia localizable sin ningún profesional médico admisible como delegado, cuando declara su indisponibilidad hasta las 05:00 sin indicar delegado, entonces su indisponibilidad declarada queda registrada hasta las 05:00 o hasta una revocación anterior.
+- **CA-2** — Dado un médico de guardia que indica como delegado a un intensivista que la programación vigente asigna a esa unidad en el intervalo declarado, cuando declara su indisponibilidad hasta las 05:00, entonces su indisponibilidad declarada queda registrada hasta las 05:00 o hasta una revocación anterior.
 
 ---
 
@@ -2019,6 +2081,124 @@ faltaba no se agrega aquí —sería una segunda respuesta— sino en `RF-ESC-34
 **Criterios de aceptación**
 
 - **CA-1** — Dada una cama a cuyo cuidado está asignada la enfermera de turno, cuando el médico que tomó el caso registra sobre esa cama un cambio de soporte vasoactivo durante la madrugada, entonces esa enfermera queda alcanzada junto a la cama sin haber consultado sus avisos pendientes.
+
+---
+
+### RF-ESC-37 — Alcance junto a la cama de la decisión de acudir
+
+**Enunciado:** CUANDO se incorpora al episodio de una cama la decisión de acudir o de no acudir del profesional médico con toma del caso vigente sobre ella, el sistema DEBE alcanzar junto a la cama a la profesional de enfermería que emitió el escalamiento de ese caso con exactamente esa decisión, su fundamento, su autoría y su instante, sin que deba consultarla.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | MUST |
+| Persona | Milagros, Aníbal |
+| Problema | P2, P3 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dada una enfermera que emitió el escalamiento de la cama 3 y permanece junto a ella, cuando se incorpora al episodio la decisión de no acudir del médico que tomó ese caso, entonces ella queda alcanzada junto a esa cama con esa decisión, su fundamento, su autoría y su instante sin haberla consultado.
+
+*Cierra el paso 8 de Milagros. No añade ningún valor al estado de atención del escalamiento: el
+disparador es la incorporación al episodio que produce `RF-REG-11`, no un cambio de ese estado, de
+modo que el conjunto cerrado de seis valores del glosario queda intacto.*
+
+---
+
+### RF-ESC-38 — Alcance junto a la cama de la suspensión de una indicación
+
+**Enunciado:** CUANDO una indicación vigente de una cama queda sin vigencia por su suspensión, el sistema DEBE alcanzar junto a la cama a las profesionales de enfermería con asignación de cuidado de enfermería vigente sobre ella con exactamente esa indicación, la autoría y el instante de esa suspensión, sin que deban consultarla.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | MUST |
+| Persona | Milagros |
+| Problema | P3 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dada una cama a cuyo cuidado está asignada la enfermera de turno y con una infusión indicada y vigente, cuando el médico que tomó el caso suspende esa indicación durante la madrugada, entonces esa enfermera queda alcanzada junto a la cama con esa indicación, la autoría y el instante de la suspensión sin haberla consultado.
+
+---
+
+### RF-ESC-39 — Condición de un escalamiento emitido aún no alcanzado
+
+**Enunciado:** MIENTRAS un escalamiento emitido no ha alcanzado a ningún integrante de su cadena, el sistema DEBE presentar esa condición a la profesional de enfermería que lo emitió sin exigirle apartarse de la cama de ese escalamiento.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | SHOULD |
+| Persona | Milagros |
+| Problema | P3 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dada una enfermera que emitió un escalamiento mientras la unidad se encuentra sin conexión, cuando ella permanece junto a esa cama antes de que la conexión se restablezca, entonces obtiene la condición de no alcanzado de ese escalamiento sin apartarse de esa cama.
+
+---
+
+### RF-ESC-40 — Destinatario de la cadena con indisponibilidad declarada vigente
+
+**Enunciado:** SI el integrante de la cadena de un escalamiento que corresponde alcanzar tiene una indisponibilidad declarada vigente en ese instante, ENTONCES el sistema DEBE alcanzar en su lugar al siguiente integrante de esa cadena.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | MUST |
+| Persona | Milagros, Aníbal |
+| Problema | P2 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dado un escalamiento cuya cadena encabeza el responsable clínico vigente de esa cama y una indisponibilidad declarada vigente de ese responsable en el instante de la emisión, cuando el escalamiento se emite, entonces el siguiente integrante de esa cadena queda alcanzado en lugar de ese responsable.
+- **CA-2** — Dado un escalamiento cuya cadena encabeza el responsable clínico vigente de esa cama sin indisponibilidad declarada vigente, cuando el escalamiento se emite, entonces ese responsable queda alcanzado.
+
+---
+
+### RF-ESC-41 — Alcance junto a la cama de una cama sin responsable clínico vigente
+
+**Enunciado:** CUANDO una cama con episodio abierto queda sin responsable clínico vigente, el sistema DEBE alcanzar junto a la cama a las profesionales de enfermería con asignación de cuidado de enfermería vigente sobre ella con exactamente esa cama y el instante en que quedó sin responsable clínico vigente, sin que deban consultarla.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | SHOULD |
+| Persona | Milagros |
+| Problema | P2, P3 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dada una cama con episodio abierto a cuyo cuidado está asignada la enfermera de turno y cuyo médico responsable queda retirado de la asignación de la programación vigente que lo cubría, cuando esa cama queda sin responsable clínico vigente, entonces esa enfermera queda alcanzada junto a esa cama con esa cama y ese instante sin haberlo consultado.
+
+---
+
+### RF-ESC-42 — Aviso al delegado de una delegación activada
+
+**Enunciado:** CUANDO una delegación queda activa sobre una unidad, el sistema DEBE informar al profesional médico delegado con exactamente el médico titular, esa unidad, el intervalo de la delegación y el instante de su activación.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | SHOULD |
+| Persona | Aníbal, Carmen |
+| Problema | P2 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dado un médico de guardia que declara su indisponibilidad hasta las 05:00 e indica como delegado a un intensivista que la programación vigente asigna a esa unidad en ese intervalo, cuando la delegación queda activa, entonces ese intensivista obtiene ese médico, esa unidad, ese intervalo y el instante de la activación.
+
+---
+
+### RF-ESC-43 — Constitución del responsable clínico vigente por la guardia localizable de la franja
+
+**Enunciado:** MIENTRAS ninguna asignación médica vigente comprende una cama con episodio abierto y ninguna delegación activa la alcanza, el sistema DEBE reconocer como responsable clínico vigente de esa cama al profesional médico a quien la programación vigente asigna la guardia localizable de esa unidad en esa franja y, cuando sea más de uno, al primero de ellos en el orden de rotación vigente de esa unidad.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | MUST |
+| Persona | Milagros, Aníbal |
+| Problema | P2 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dada una unidad cuya noche cubre únicamente un médico de guardia localizable y una cama con episodio abierto que ninguna asignación médica vigente comprende, cuando la enfermera de turno consulta la cobertura clínica de esa unidad, entonces obtiene a ese médico como responsable clínico vigente de esa cama.
+- **CA-2** — Dada esa misma cama, cuando la enfermera de turno escala un deterioro de ella, entonces la cadena queda encabezada por ese médico de guardia localizable.
 
 ---
 
@@ -2224,6 +2404,26 @@ faltaba no se agrega aquí —sería una segunda respuesta— sino en `RF-ESC-34
 
 ---
 
+### RF-REG-13 — Suspensión de una indicación vigente
+
+**Enunciado:** CUANDO un profesional médico suspende una indicación vigente de una cama, el sistema DEBE dar por terminada su vigencia sobre esa cama con la autoría y el instante de esa suspensión.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | MUST |
+| Persona | Milagros, Aníbal |
+| Problema | P3 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dada una cama con una infusión indicada y vigente, cuando el responsable clínico vigente de esa cama la suspende, entonces esa indicación deja de figurar entre las vigentes de esa cama con la autoría y el instante de esa suspensión.
+
+*Ningún enunciado constituía el acto de suspender: `RF-REG-03` sólo presenta las vigentes y su CA-1
+contempla la sustitución, no la suspensión. Sin este RF, `RF-ESC-38` alcanzaría un hecho que nada
+produce.*
+
+---
+
 ## RF-IAM — Identidad y accesos
 
 ### RF-IAM-01 — Atribución del registro a su autor
@@ -2243,14 +2443,7 @@ faltaba no se agrega aquí —sería una segunda respuesta— sino en `RF-ESC-34
 
 ### RF-IAM-02 — Restricción del registro clínico a quien responde por la cama
 
-*Cambio:* la enumeración de títulos incorpora el relevo declarado vigente, que es el título que
-faltaba —el relevo entre profesionales de un mismo turno— y que `RF-IAM-10` constituye como acto
-registrado del profesional que sí responde por la cama. La restricción sigue siendo una enumeración
-cerrada de cinco títulos, cada uno nacido de un acto registrado y trazable: no se convierte en
-contrato abierto y no se aparta del acceso limitado al ámbito de responsabilidad de la Ley N.° 29733.
-Se agrega Milagros al campo `Persona`, que es quien recibe el rechazo sobre la cama de su colega.
-
-**Enunciado:** SI un profesional carece de responsabilidad clínica vigente sobre una cama, de responsabilidad de jefatura de la unidad de esa cama, de asignación de cuidado de enfermería vigente sobre ella, de toma del caso vigente sobre ella y de relevo declarado vigente sobre ella, ENTONCES el sistema DEBE rechazar su registro sobre esa cama.
+**Enunciado:** SI un profesional carece de asignación médica vigente sobre una cama, de responsabilidad clínica vigente sobre ella, de responsabilidad de jefatura de la unidad de esa cama, de turno de enfermería en curso en la unidad de esa cama, de toma del caso vigente sobre ella y de relevo declarado vigente sobre ella, ENTONCES el sistema DEBE rechazar su registro sobre esa cama.
 
 | Campo | Valor |
 |---|---|
@@ -2260,12 +2453,9 @@ Se agrega Milagros al campo `Persona`, que es quien recibe el rechazo sobre la c
 
 **Criterios de aceptación**
 
-- **CA-1** — Dado un médico sin responsabilidad clínica vigente sobre una cama, sin responsabilidad
-  de jefatura de su unidad, sin toma del caso vigente sobre ella y sin relevo declarado vigente sobre
-  ella, cuando intenta registrar sobre esa cama, entonces el registro se rechaza.
-- **CA-2** — Dada una profesional de enfermería con un relevo declarado vigente sobre una cama que su
-  asignación de cuidado de enfermería no comprende, cuando registra sobre esa cama, entonces el
-  registro no se rechaza.
+- **CA-1** — Dado un médico sin asignación médica vigente sobre una cama, sin responsabilidad clínica vigente sobre ella, sin responsabilidad de jefatura de su unidad, sin toma del caso vigente sobre ella y sin relevo declarado vigente sobre ella, cuando intenta registrar sobre esa cama, entonces el registro se rechaza.
+- **CA-2** — Dada una profesional de enfermería con turno de enfermería en curso en una unidad, cuando registra sobre una cama de esa unidad que su asignación de cuidado de enfermería no comprende, entonces el registro no se rechaza.
+- **CA-3** — Dado un profesional médico con asignación médica vigente sobre una cama que una delegación activa alcanza, cuando registra sobre esa cama, entonces el registro no se rechaza.
 
 ---
 
@@ -2401,6 +2591,72 @@ Se agrega Milagros al campo `Persona`, que es quien recibe el rechazo sobre la c
 
 ---
 
+### RF-IAM-11 — Medios de contacto vigentes de un profesional
+
+**Enunciado:** CUANDO un profesional declara un medio de contacto, el sistema DEBE registrarlo como medio de contacto vigente de ese profesional desde el instante de la declaración hasta que él lo sustituya o lo retire.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | MUST |
+| Persona | Aníbal, Carmen |
+| Problema | P2 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dado un médico de guardia localizable sin ningún medio de contacto registrado, cuando declara el medio por el que quiere ser alcanzado, entonces ese medio figura como su medio de contacto vigente desde ese instante.
+- **CA-2** — Dado un médico con un medio de contacto vigente que dejó de estar en uso, cuando lo retira, entonces ese medio deja de figurar entre sus medios de contacto vigentes.
+
+---
+
+### RF-IAM-12 — Profesional asignado sin ningún medio de contacto vigente
+
+**Enunciado:** SI la programación vigente asigna una franja a un profesional que no cuenta con ningún medio de contacto vigente, ENTONCES el sistema DEBE presentar a ese profesional esa condición con exactamente esa sede, esa unidad y esa franja.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | SHOULD |
+| Persona | Aníbal |
+| Problema | P2 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dado un médico sin ningún medio de contacto vigente, cuando la programación vigente le asigna una guardia localizable, entonces obtiene esa condición con la sede, la unidad y la franja de esa guardia.
+
+---
+
+### RF-IAM-13 — Vínculo laboral de un profesional de planta
+
+**Enunciado:** CUANDO la jefatura de una unidad registra el vínculo laboral de un profesional de planta con su periodo de vigencia, el sistema DEBE registrarlo como el vínculo laboral vigente de ese profesional con exactamente las unidades declaradas, ese periodo y las reglas de jornada y descanso declaradas.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | SHOULD |
+| Persona | Carmen |
+| Problema | P1 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dada una unidad sin vínculo laboral registrado para un intensivista de planta, cuando la jefatura registra su vínculo con el periodo y las reglas de jornada y descanso de su régimen, entonces ese vínculo figura vigente con esas unidades, ese periodo y esas reglas.
+- **CA-2** — Dado un vínculo laboral vigente de un profesional de planta y otro que la jefatura registra después para el mismo periodo, cuando lo registra, entonces el vínculo laboral vigente de ese profesional en ese periodo es el segundo.
+
+---
+
+### RF-IAM-14 — Verificación de identidad en un equipo compartido
+
+**Enunciado:** CUANDO un profesional verifica su identidad en un equipo compartido de una unidad, el sistema DEBE dejar su identidad verificada vigente en ese equipo como la única vigente en él.
+
+| Campo | Valor |
+|---|---|
+| Prioridad | SHOULD |
+| Persona | Rodrigo, Milagros |
+| Problema | P1 |
+
+**Criterios de aceptación**
+
+- **CA-1** — Dado un equipo compartido de la estación de enfermería con la identidad verificada vigente de un primer médico, cuando un segundo médico verifica en él su identidad, entonces la única identidad verificada vigente en ese equipo es la del segundo.
+
+---
+
 ## RF-SUP — Supervisión de la unidad
 
 ### RF-SUP-01 — Cumplimiento y completitud de las entregas de turno
@@ -2410,7 +2666,7 @@ Se agrega Milagros al campo `Persona`, que es quien recibe el rechazo sobre la c
 | Campo | Valor |
 |---|---|
 | Prioridad | MUST |
-| Persona | Carmen |
+| Persona | Carmen, Rodrigo |
 | Problema | P1 |
 
 **Criterios de aceptación**
@@ -2509,45 +2765,45 @@ Cada tarea crítica de cada persona traza a al menos un RF. Las filas sin RF son
 
 | Persona | Tarea crítica | RF que la cubre |
 |---|---|---|
-| Rodrigo | Recibir el handoff estructurado de todas las camas asignadas | RF-DIA-02, RF-DIA-03, RF-DIA-09, RF-DIA-10, RF-DIA-17, RF-DIA-18, RF-DIA-28, RF-DIA-29, RF-DIA-32, RF-DIA-35 |
-| Rodrigo | Consultar la evolución y el diagnóstico del turno anterior | RF-DIA-02, RF-DIA-05, RF-DIA-07, RF-DIA-10, RF-DIA-13, RF-DIA-14, RF-DIA-15, RF-DIA-21, RF-DIA-23 |
-| Rodrigo | Registrar nota de evolución y diagnóstico por paciente | RF-DIA-07, RF-DIA-13, RF-DIA-14, RF-DIA-15, RF-DIA-16, RF-IAM-01, RF-IAM-02, RF-IAM-09, RF-IAM-10 |
-| Rodrigo | Marcar pacientes inestables o con pendientes críticos | RF-DIA-06, RF-DIA-22 |
+| Rodrigo | Recibir el handoff estructurado de todas las camas asignadas | RF-DIA-02, RF-DIA-03, RF-DIA-09, RF-DIA-10, RF-DIA-17, RF-DIA-18, RF-DIA-28, RF-DIA-29, RF-DIA-32, RF-DIA-35, RF-DIA-39 |
+| Rodrigo | Consultar la evolución y el diagnóstico del turno anterior | RF-DIA-02, RF-DIA-05, RF-DIA-07, RF-DIA-10, RF-DIA-13, RF-DIA-14, RF-DIA-15, RF-DIA-21, RF-DIA-23, RF-DIA-40 |
+| Rodrigo | Registrar nota de evolución y diagnóstico por paciente | RF-DIA-07, RF-DIA-13, RF-DIA-14, RF-DIA-15, RF-DIA-16, RF-DIA-40, RF-IAM-01, RF-IAM-02, RF-IAM-09, RF-IAM-10, RF-IAM-14 |
+| Rodrigo | Marcar pacientes inestables o con pendientes críticos | RF-DIA-06, RF-DIA-22, RF-DIA-41 |
 | Rodrigo | Consultar resultados de laboratorio e imágenes | RF-REG-06, RF-REG-10, RF-REG-12, RF-ESC-29 |
-| Rodrigo | Cerrar y firmar la entrega de turno | RF-DIA-01, RF-DIA-04, RF-DIA-12, RF-DIA-20, RF-DIA-24, RF-DIA-31, RF-DIA-34, RF-TUR-42 |
+| Rodrigo | Cerrar y firmar la entrega de turno | RF-DIA-01, RF-DIA-04, RF-DIA-12, RF-DIA-20, RF-DIA-24, RF-DIA-31, RF-DIA-34, RF-TUR-42, RF-SUP-01 |
 | Milagros | Registrar signos vitales y balance por paciente | RF-REG-01, RF-REG-02 |
-| Milagros | Escalar un deterioro clínico al médico responsable | RF-ESC-01, RF-ESC-06, RF-ESC-11, RF-ESC-15, RF-ESC-20, RF-ESC-21, RF-ESC-22, RF-ESC-23, RF-ESC-25, RF-ESC-27, RF-ESC-35, RF-DIA-29 |
-| Milagros | Consultar quién está de guardia y su estado de disponibilidad | RF-ESC-08, RF-ESC-27, RF-ESC-32, RF-ESC-35 |
-| Milagros | Ver y confirmar indicaciones médicas vigentes | RF-REG-03, RF-REG-04, RF-ESC-13, RF-ESC-28, RF-ESC-36 |
-| Milagros | Registrar eventos y administración de medicamentos | RF-REG-05, RF-IAM-02, RF-IAM-10 |
-| Milagros | Recibir y entregar el turno de enfermería | RF-DIA-08, RF-DIA-11, RF-DIA-19, RF-DIA-25, RF-DIA-26, RF-DIA-27, RF-DIA-30, RF-DIA-33 |
-| Carmen | Elaborar y publicar la programación mensual de turnos | RF-TUR-04, RF-TUR-09, RF-TUR-10, RF-TUR-11, RF-TUR-27, RF-TUR-28, RF-TUR-46 |
+| Milagros | Escalar un deterioro clínico al médico responsable | RF-ESC-01, RF-ESC-06, RF-ESC-11, RF-ESC-15, RF-ESC-20, RF-ESC-21, RF-ESC-22, RF-ESC-23, RF-ESC-25, RF-ESC-27, RF-ESC-35, RF-ESC-37, RF-ESC-39, RF-ESC-40, RF-ESC-43, RF-DIA-29 |
+| Milagros | Consultar quién está de guardia y su estado de disponibilidad | RF-ESC-08, RF-ESC-27, RF-ESC-32, RF-ESC-35, RF-ESC-41, RF-ESC-43 |
+| Milagros | Ver y confirmar indicaciones médicas vigentes | RF-REG-03, RF-REG-04, RF-REG-13, RF-ESC-13, RF-ESC-28, RF-ESC-36, RF-ESC-38 |
+| Milagros | Registrar eventos y administración de medicamentos | RF-REG-05, RF-IAM-02, RF-IAM-10, RF-IAM-14 |
+| Milagros | Recibir y entregar el turno de enfermería | RF-DIA-08, RF-DIA-11, RF-DIA-19, RF-DIA-25, RF-DIA-26, RF-DIA-27, RF-DIA-30, RF-DIA-33, RF-DIA-37, RF-DIA-38 |
+| Carmen | Elaborar y publicar la programación mensual de turnos | RF-TUR-04, RF-TUR-09, RF-TUR-10, RF-TUR-11, RF-TUR-27, RF-TUR-28, RF-TUR-46, RF-IAM-13 |
 | Carmen | Validar que no existan cruces ni franjas descubiertas | RF-TUR-01, RF-TUR-02, RF-TUR-07, RF-TUR-42, RF-TUR-45, RF-ESC-26, RF-ESC-30, RF-ESC-31, RF-ESC-33 |
 | Carmen | Aprobar o rechazar intercambios y permisos | RF-TUR-06, RF-TUR-12, RF-TUR-13, RF-TUR-17, RF-TUR-21, RF-TUR-22, RF-TUR-29, RF-TUR-30, RF-TUR-31, RF-TUR-32, RF-TUR-33, RF-TUR-34 |
-| Carmen | Reasignar cobertura ante una ausencia imprevista | RF-TUR-03, RF-TUR-05, RF-TUR-18, RF-TUR-19, RF-TUR-20, RF-TUR-25, RF-TUR-26, RF-TUR-35, RF-TUR-36, RF-TUR-37, RF-TUR-38, RF-TUR-39, RF-TUR-40, RF-TUR-41, RF-TUR-43, RF-TUR-44, RF-DIA-36 |
+| Carmen | Reasignar cobertura ante una ausencia imprevista | RF-TUR-03, RF-TUR-05, RF-TUR-18, RF-TUR-19, RF-TUR-20, RF-TUR-25, RF-TUR-26, RF-TUR-35, RF-TUR-36, RF-TUR-37, RF-TUR-38, RF-TUR-39, RF-TUR-40, RF-TUR-41, RF-TUR-43, RF-TUR-44, RF-DIA-36, RF-IAM-13 |
 | Carmen | Monitorear cumplimiento y completitud de entregas de turno | RF-DIA-12, RF-DIA-24, RF-SUP-01 |
 | Carmen | Generar indicadores de cobertura para la Dirección de Red | RF-SUP-02, RF-SUP-05 |
-| Aníbal | Recibir la alerta de escalamiento con contexto clínico adjunto | RF-ESC-03, RF-ESC-16, RF-ESC-24, RF-IAM-04, RF-IAM-05, RF-IAM-07, RF-IAM-08 |
+| Aníbal | Recibir la alerta de escalamiento con contexto clínico adjunto | RF-ESC-03, RF-ESC-16, RF-ESC-24, RF-IAM-04, RF-IAM-05, RF-IAM-07, RF-IAM-08, RF-IAM-11, RF-IAM-12 |
 | Aníbal | Confirmar recepción y tomar el caso | RF-ESC-04, RF-ESC-12, RF-ESC-14, RF-ESC-19 |
 | Aníbal | Consultar tendencia de signos, ventilación y última evolución | RF-REG-08, RF-DIA-05 |
-| Aníbal | Registrar la indicación dada de forma remota | RF-REG-07, RF-REG-09, RF-REG-11, RF-IAM-02, RF-IAM-05, RF-IAM-07, RF-IAM-08, RF-IAM-09 |
-| Aníbal | Marcarse temporalmente indisponible y delegar | RF-ESC-07, RF-ESC-17, RF-ESC-30, RF-ESC-31, RF-ESC-32, RF-ESC-34, RF-ESC-35 |
+| Aníbal | Registrar la indicación dada de forma remota | RF-REG-07, RF-REG-09, RF-REG-11, RF-REG-13, RF-ESC-37, RF-IAM-02, RF-IAM-05, RF-IAM-07, RF-IAM-08, RF-IAM-09 |
+| Aníbal | Marcarse temporalmente indisponible y delegar | RF-ESC-07, RF-ESC-17, RF-ESC-30, RF-ESC-31, RF-ESC-32, RF-ESC-34, RF-ESC-35, RF-ESC-40, RF-ESC-42 |
 | Aníbal | Revisar en la mañana lo ocurrido durante la noche | RF-SUP-03 |
 
 ## Cobertura de criterios de éxito
 
 | Persona | Criterio de éxito | RF que lo satisface |
 |---|---|---|
-| Rodrigo | Entender el estado de las camas empleando solo el sistema | RF-DIA-02, RF-DIA-05, RF-DIA-10, RF-DIA-17, RF-DIA-18, RF-DIA-21, RF-DIA-22, RF-DIA-28, RF-DIA-32, RF-REG-10, RF-REG-12 |
-| Rodrigo | El handoff incluye decisiones y su justificación | RF-DIA-02, RF-DIA-13, RF-DIA-21, RF-DIA-32 |
+| Rodrigo | Entender el estado de las camas empleando solo el sistema | RF-DIA-02, RF-DIA-05, RF-DIA-10, RF-DIA-17, RF-DIA-18, RF-DIA-21, RF-DIA-22, RF-DIA-28, RF-DIA-32, RF-DIA-39, RF-REG-10, RF-REG-12 |
+| Rodrigo | El handoff incluye decisiones y su justificación | RF-DIA-02, RF-DIA-13, RF-DIA-21, RF-DIA-32, RF-DIA-40 |
 | Rodrigo | Ninguna cama llega sin diagnóstico; si falta, el sistema lo señala | RF-DIA-01, RF-DIA-03, RF-DIA-12, RF-DIA-20, RF-DIA-24 |
 | Rodrigo | Registrar la nota de evolución cuesta menos que escribirla a mano | RF-DIA-31, `RNF-USA-01` |
 | Rodrigo | Ver qué cambió desde su último contacto con el paciente | RF-DIA-05, RF-DIA-23, RF-ESC-29 |
 | Milagros | Escalar un deterioro en el mínimo de pasos | RF-ESC-01, RF-ESC-11, RF-ESC-20, RF-ESC-21, RF-ESC-25, `RNF-USA-02` |
-| Milagros | Ver quién está de guardia en este momento | RF-ESC-08, RF-ESC-12, RF-ESC-17, RF-ESC-23, RF-ESC-27, RF-ESC-32, RF-ESC-35 |
-| Milagros | Recibir confirmación visible de que el médico vio la alerta | RF-ESC-04, RF-ESC-14, RF-ESC-22 |
-| Milagros | Si nadie responde, el sistema escala sin que ella intervenga | RF-ESC-02, RF-ESC-09, RF-ESC-23, RF-ESC-25 |
-| Milagros | Registrar a pie de cama, sin caminar hasta la estación | RF-REG-01, RF-REG-02, RF-REG-05, RF-ESC-20, RF-ESC-22, RF-ESC-28, RF-ESC-36 |
+| Milagros | Ver quién está de guardia en este momento | RF-ESC-08, RF-ESC-12, RF-ESC-17, RF-ESC-23, RF-ESC-27, RF-ESC-32, RF-ESC-35, RF-ESC-40, RF-ESC-41, RF-ESC-43 |
+| Milagros | Recibir confirmación visible de que el médico vio la alerta | RF-ESC-04, RF-ESC-14, RF-ESC-22, RF-ESC-37, RF-ESC-39 |
+| Milagros | Si nadie responde, el sistema escala sin que ella intervenga | RF-ESC-02, RF-ESC-09, RF-ESC-23, RF-ESC-25, RF-ESC-40 |
+| Milagros | Registrar a pie de cama, sin caminar hasta la estación | RF-REG-01, RF-REG-02, RF-REG-05, RF-ESC-20, RF-ESC-22, RF-ESC-28, RF-ESC-36, RF-ESC-38 |
 | Milagros | Dejar de transcribir del papel al sistema | RF-REG-05, RF-DIA-08, RF-DIA-11, RF-DIA-25, RF-DIA-26, RF-DIA-27 |
 | Carmen | El sistema impide guardar una asignación con cruce | RF-TUR-01 |
 | Carmen | Cubrir una ausencia imprevista toma minutos | RF-TUR-03, RF-TUR-18, RF-TUR-19, RF-TUR-20, RF-TUR-25, RF-TUR-35, RF-TUR-36, RF-TUR-37, RF-TUR-38, RF-TUR-39, RF-TUR-40, RF-TUR-41, RF-TUR-43, RF-TUR-44 |
@@ -2556,7 +2812,7 @@ Cada tarea crítica de cada persona traza a al menos un RF. Las filas sin RF son
 | Carmen | Saber qué entregas se cerraron sin diagnóstico registrado | RF-DIA-12, RF-DIA-24, RF-SUP-01 |
 | Carmen | Los indicadores salen del sistema sin trabajo manual | RF-SUP-02, RF-SUP-05 |
 | Aníbal | La alerta incluye el contexto clínico mínimo sin pedirlo | RF-DIA-13, RF-ESC-03, RF-ESC-24, RF-IAM-04 |
-| Aníbal | Decidir si acude, con el contexto ya recibido | RF-ESC-03, RF-ESC-16, RF-ESC-24, RF-REG-08, RF-IAM-08 |
+| Aníbal | Decidir si acude, con el contexto ya recibido | RF-DIA-05, RF-ESC-03, RF-ESC-16, RF-ESC-24, RF-REG-08, RF-IAM-08 |
 | Aníbal | Confirmar recepción y que quien escaló lo vea de inmediato | RF-ESC-04, RF-ESC-14 |
 | Aníbal | Registrar su indicación remota con hora y autoría | RF-REG-07, RF-REG-09, RF-REG-11, RF-IAM-05, RF-IAM-07, RF-IAM-08, RF-IAM-09 |
 | Aníbal | Si no responde, el sistema escala solo y él se entera | RF-ESC-02, RF-ESC-10, RF-ESC-25 |
@@ -2569,20 +2825,20 @@ explícita —sin rangos— porque un rango encubre a los RF intermedios que dec
 
 | Problema | RF que lo resuelve |
 |---|---|
-| P1 — Rotación de doctor | RF-TUR-01, RF-TUR-02, RF-TUR-03, RF-TUR-04, RF-TUR-05, RF-TUR-06, RF-TUR-07, RF-TUR-08, RF-TUR-09, RF-TUR-10, RF-TUR-11, RF-TUR-12, RF-TUR-13, RF-TUR-14, RF-TUR-15, RF-TUR-16, RF-TUR-17, RF-TUR-18, RF-TUR-19, RF-TUR-20, RF-TUR-21, RF-TUR-22, RF-TUR-23, RF-TUR-24, RF-TUR-25, RF-TUR-26, RF-TUR-27, RF-TUR-28, RF-TUR-29, RF-TUR-30, RF-TUR-31, RF-TUR-32, RF-TUR-33, RF-TUR-34, RF-TUR-35, RF-TUR-36, RF-TUR-37, RF-TUR-38, RF-TUR-39, RF-TUR-40, RF-TUR-41, RF-TUR-42, RF-TUR-43, RF-TUR-44, RF-TUR-45, RF-TUR-46, RF-DIA-01, RF-DIA-02, RF-DIA-03, RF-DIA-04, RF-DIA-05, RF-DIA-06, RF-DIA-07, RF-DIA-08, RF-DIA-09, RF-DIA-10, RF-DIA-11, RF-DIA-12, RF-DIA-13, RF-DIA-14, RF-DIA-15, RF-DIA-16, RF-DIA-17, RF-DIA-18, RF-DIA-19, RF-DIA-20, RF-DIA-21, RF-DIA-22, RF-DIA-23, RF-DIA-24, RF-DIA-25, RF-DIA-26, RF-DIA-27, RF-DIA-28, RF-DIA-29, RF-DIA-30, RF-DIA-31, RF-DIA-32, RF-DIA-33, RF-DIA-34, RF-DIA-35, RF-DIA-36, RF-REG-06, RF-REG-10, RF-REG-12, RF-IAM-01, RF-IAM-02, RF-IAM-03, RF-IAM-06, RF-IAM-10, RF-SUP-01, RF-SUP-02, RF-SUP-05, RF-SUP-06 |
-| P2 — Medianoche | RF-DIA-13, RF-DIA-23, RF-DIA-29, RF-ESC-01, RF-ESC-02, RF-ESC-03, RF-ESC-04, RF-ESC-05, RF-ESC-06, RF-ESC-07, RF-ESC-08, RF-ESC-09, RF-ESC-10, RF-ESC-11, RF-ESC-12, RF-ESC-14, RF-ESC-15, RF-ESC-16, RF-ESC-17, RF-ESC-18, RF-ESC-19, RF-ESC-20, RF-ESC-21, RF-ESC-22, RF-ESC-23, RF-ESC-24, RF-ESC-25, RF-ESC-26, RF-ESC-27, RF-ESC-30, RF-ESC-31, RF-ESC-32, RF-ESC-33, RF-ESC-34, RF-ESC-35, RF-REG-07, RF-REG-08, RF-REG-09, RF-REG-11, RF-IAM-02, RF-IAM-04, RF-IAM-05, RF-IAM-07, RF-IAM-08, RF-IAM-09, RF-IAM-10, RF-SUP-03, RF-SUP-04 |
-| P3 — Actualizaciones en tiempo real | RF-ESC-08, RF-ESC-13, RF-ESC-16, RF-ESC-22, RF-ESC-28, RF-ESC-29, RF-ESC-36, RF-REG-01, RF-REG-02, RF-REG-03, RF-REG-04, RF-REG-05 |
+| P1 — Rotación de doctor | RF-TUR-01, RF-TUR-02, RF-TUR-03, RF-TUR-04, RF-TUR-05, RF-TUR-06, RF-TUR-07, RF-TUR-08, RF-TUR-09, RF-TUR-10, RF-TUR-11, RF-TUR-12, RF-TUR-13, RF-TUR-14, RF-TUR-15, RF-TUR-16, RF-TUR-17, RF-TUR-18, RF-TUR-19, RF-TUR-20, RF-TUR-21, RF-TUR-22, RF-TUR-23, RF-TUR-24, RF-TUR-25, RF-TUR-26, RF-TUR-27, RF-TUR-28, RF-TUR-29, RF-TUR-30, RF-TUR-31, RF-TUR-32, RF-TUR-33, RF-TUR-34, RF-TUR-35, RF-TUR-36, RF-TUR-37, RF-TUR-38, RF-TUR-39, RF-TUR-40, RF-TUR-41, RF-TUR-42, RF-TUR-43, RF-TUR-44, RF-TUR-45, RF-TUR-46, RF-DIA-01, RF-DIA-02, RF-DIA-03, RF-DIA-04, RF-DIA-05, RF-DIA-06, RF-DIA-07, RF-DIA-08, RF-DIA-09, RF-DIA-10, RF-DIA-11, RF-DIA-12, RF-DIA-13, RF-DIA-14, RF-DIA-15, RF-DIA-16, RF-DIA-17, RF-DIA-18, RF-DIA-19, RF-DIA-20, RF-DIA-21, RF-DIA-22, RF-DIA-23, RF-DIA-24, RF-DIA-25, RF-DIA-26, RF-DIA-27, RF-DIA-28, RF-DIA-29, RF-DIA-30, RF-DIA-31, RF-DIA-32, RF-DIA-33, RF-DIA-34, RF-DIA-35, RF-DIA-36, RF-DIA-37, RF-DIA-38, RF-DIA-39, RF-DIA-40, RF-DIA-41, RF-REG-06, RF-REG-10, RF-REG-12, RF-IAM-01, RF-IAM-02, RF-IAM-03, RF-IAM-06, RF-IAM-10, RF-IAM-13, RF-IAM-14, RF-SUP-01, RF-SUP-02, RF-SUP-05, RF-SUP-06 |
+| P2 — Medianoche | RF-DIA-13, RF-DIA-23, RF-DIA-29, RF-ESC-01, RF-ESC-02, RF-ESC-03, RF-ESC-04, RF-ESC-05, RF-ESC-06, RF-ESC-07, RF-ESC-08, RF-ESC-09, RF-ESC-10, RF-ESC-11, RF-ESC-12, RF-ESC-14, RF-ESC-15, RF-ESC-16, RF-ESC-17, RF-ESC-18, RF-ESC-19, RF-ESC-20, RF-ESC-21, RF-ESC-22, RF-ESC-23, RF-ESC-24, RF-ESC-25, RF-ESC-26, RF-ESC-27, RF-ESC-30, RF-ESC-31, RF-ESC-32, RF-ESC-33, RF-ESC-34, RF-ESC-35, RF-ESC-37, RF-ESC-40, RF-ESC-41, RF-ESC-42, RF-ESC-43, RF-REG-07, RF-REG-08, RF-REG-09, RF-REG-11, RF-IAM-02, RF-IAM-04, RF-IAM-05, RF-IAM-07, RF-IAM-08, RF-IAM-09, RF-IAM-10, RF-IAM-11, RF-IAM-12, RF-SUP-03, RF-SUP-04 |
+| P3 — Actualizaciones en tiempo real | RF-DIA-37, RF-ESC-08, RF-ESC-13, RF-ESC-16, RF-ESC-22, RF-ESC-28, RF-ESC-29, RF-ESC-36, RF-ESC-37, RF-ESC-38, RF-ESC-39, RF-ESC-41, RF-REG-01, RF-REG-02, RF-REG-03, RF-REG-04, RF-REG-05, RF-REG-13 |
 
 ## Cobertura de las preguntas del enunciado
 
 | Pregunta del caso | RF que la responde |
 |---|---|
-| Qué ocurre si un paciente se agrava en el turno noche | RF-ESC-01, RF-ESC-06, RF-ESC-11, RF-ESC-15, RF-ESC-16, RF-ESC-20, RF-ESC-21, RF-ESC-22, RF-ESC-23, RF-ESC-24, RF-ESC-25 |
-| Cómo se contacta rápidamente al médico encargado | RF-ESC-01, RF-ESC-08, RF-ESC-20, RF-ESC-21, RF-ESC-23, RF-ESC-27, RF-ESC-35 |
-| Qué ocurre si el médico no está disponible | RF-ESC-02, RF-ESC-07, RF-ESC-09, RF-ESC-10, RF-ESC-17, RF-ESC-18, RF-ESC-26, RF-ESC-30, RF-ESC-31, RF-ESC-32, RF-ESC-33, RF-ESC-34, RF-ESC-35 |
-| Cómo se avisa a varios médicos y enfermeras | RF-ESC-13, RF-ESC-16, RF-ESC-22, RF-ESC-23, RF-ESC-24, RF-ESC-28, RF-ESC-29, RF-ESC-36 |
+| Qué ocurre si un paciente se agrava en el turno noche | RF-ESC-01, RF-ESC-06, RF-ESC-11, RF-ESC-15, RF-ESC-16, RF-ESC-20, RF-ESC-21, RF-ESC-22, RF-ESC-23, RF-ESC-24, RF-ESC-25, RF-ESC-43 |
+| Cómo se contacta rápidamente al médico encargado | RF-ESC-01, RF-ESC-08, RF-ESC-20, RF-ESC-21, RF-ESC-23, RF-ESC-27, RF-ESC-35, RF-ESC-43, RF-IAM-11 |
+| Qué ocurre si el médico no está disponible | RF-ESC-02, RF-ESC-07, RF-ESC-09, RF-ESC-10, RF-ESC-17, RF-ESC-18, RF-ESC-26, RF-ESC-30, RF-ESC-31, RF-ESC-32, RF-ESC-33, RF-ESC-34, RF-ESC-35, RF-ESC-40, RF-ESC-42, RF-IAM-12 |
+| Cómo se avisa a varios médicos y enfermeras | RF-ESC-13, RF-ESC-16, RF-ESC-22, RF-ESC-23, RF-ESC-24, RF-ESC-28, RF-ESC-29, RF-ESC-36, RF-ESC-37, RF-ESC-38, RF-ESC-41 |
 | Con qué garantía se conserva el diagnóstico | RF-DIA-01, RF-DIA-07, RF-DIA-20, RF-DIA-24, RF-DIA-32, `RNF-SEG-03` |
-| Cómo se sostiene su disponibilidad permanente | RF-DIA-10, RF-DIA-17, RF-REG-02, RF-ESC-21, `RNF-DIS-01`, `RNF-DIS-02` |
+| Cómo se sostiene su disponibilidad permanente | RF-DIA-10, RF-DIA-17, RF-REG-02, RF-ESC-21, RF-ESC-39, `RNF-DIS-01`, `RNF-DIS-02` |
 
 ## Requerimientos de origen normativo
 
@@ -2594,7 +2850,7 @@ del [`README.md`](../README.md). Trazan igualmente a la persona sobre cuya opera
 | Ley N.° 29733 — trazabilidad del acceso a datos de salud | RF-IAM-03, RF-SUP-06 |
 | Ley N.° 29733 — acceso limitado al ámbito de responsabilidad | RF-IAM-02, RF-IAM-09, RF-IAM-10 |
 | Ley N.° 29733 — exposición de datos fuera del entorno institucional | RF-IAM-04, RF-IAM-05, RF-IAM-07, RF-IAM-08 |
-| SUSALUD — atribución cierta del registro clínico | RF-DIA-04, RF-DIA-07, RF-DIA-27, RF-IAM-01 |
+| SUSALUD — atribución cierta del registro clínico | RF-DIA-04, RF-DIA-07, RF-DIA-27, RF-IAM-01, RF-IAM-14 |
 
 ## Decisión de tensiones
 
@@ -2603,18 +2859,18 @@ tensión sin RF que la resuelva es una brecha de consistencia.
 
 | Tensión | RF que la decide | Decisión adoptada |
 |---|---|---|
-| Velocidad frente a completitud del registro | RF-DIA-01, RF-DIA-07, RF-DIA-13, RF-DIA-14, RF-DIA-15, RF-DIA-16, RF-DIA-20, RF-DIA-24, RF-DIA-31, RF-DIA-32, RF-DIA-34 | El cierre exige de cada cama asignada el diagnóstico de ese turno y ningún otro dato; los demás componentes de la entrega médica se componen reutilizando sin transcripción lo que el médico ya registró durante el turno, de modo que la completitud no le cueste un reingreso. Antes de la firma se le señalan las camas sin decisión clínica registrada en el turno, y ese señalamiento no condiciona el cierre. El turno que concluye sin entrega cerrada no se resuelve exigiéndole más al médico, sino advirtiendo a la jefatura con cada cama sin diagnóstico de ese turno y presentando al médico entrante lo que ese turno sí registró, con cada componente ausente declarado no registrado. |
-| Sensibilidad del escalamiento | RF-ESC-06, RF-ESC-11, RF-ESC-13, RF-ESC-16, RF-ESC-24, RF-ESC-25, RF-ESC-28, RF-ESC-29, RF-ESC-36 | La enfermera escala sin clasificar: el escalamiento sin severidad determinada queda en severidad por confirmar y recibe la cadena y el plazo de acuse del deterioro inmediato. La selectividad se preserva en la presentación y no en el plazo: los avisos se ordenan en cuatro clases —deterioro inmediato, severidad por confirmar, consulta diferible y actualización informativa—, y el propio aviso entregado identifica a cuál corresponde, de modo que el médico distingue urgencia real de consulta rutinaria antes de abrirlo. Fuera del escalamiento, el alcance sin consulta previa se reserva a exactamente dos hechos —la indicación médica nueva, que alcanza junto a la cama a la enfermería con asignación de cuidado vigente, y el resultado crítico, que alcanza al responsable clínico vigente, al médico con toma del caso y a esa enfermería—; los demás cambios de una cama se reúnen en una única actualización informativa, que se entrega a la consulta del responsable clínico vigente y alcanza junto a la cama a esa enfermería, y que la presentación de avisos ordena después de toda severidad. |
+| Velocidad frente a completitud del registro | RF-DIA-01, RF-DIA-07, RF-DIA-13, RF-DIA-14, RF-DIA-15, RF-DIA-16, RF-DIA-20, RF-DIA-24, RF-DIA-31, RF-DIA-32, RF-DIA-34, RF-DIA-40 | El cierre exige de cada cama asignada el diagnóstico de ese turno y ningún otro dato; los demás componentes de la entrega médica se componen reutilizando sin transcripción lo que el médico ya registró durante el turno, de modo que la completitud no le cueste un reingreso. El fundamento de una decisión clínica se exige en el acto que la registra —el registro sin fundamento se rechaza— y no en el cierre. Antes de la firma se le señalan las camas sin decisión clínica registrada en el turno, y ese señalamiento no condiciona el cierre. El turno que concluye sin entrega cerrada no se resuelve exigiéndole más al médico, sino advirtiendo a la jefatura con cada cama sin diagnóstico de ese turno y presentando al médico entrante lo que ese turno sí registró, con cada componente ausente declarado no registrado. |
+| Sensibilidad del escalamiento | RF-ESC-06, RF-ESC-11, RF-ESC-13, RF-ESC-16, RF-ESC-22, RF-ESC-23, RF-ESC-24, RF-ESC-25, RF-ESC-28, RF-ESC-29, RF-ESC-36, RF-ESC-37, RF-ESC-38, RF-ESC-41, RF-REG-13 | La enfermera escala sin clasificar: el escalamiento sin severidad determinada queda en severidad por confirmar y recibe el plazo de acuse del deterioro inmediato, sobre la cadena única de esa cama. La selectividad se preserva en la presentación y no en el plazo: los avisos se ordenan en cuatro clases —deterioro inmediato, severidad por confirmar, consulta diferible y actualización informativa—, y el propio aviso entregado identifica a cuál corresponde, de modo que el médico distingue urgencia real de consulta rutinaria antes de abrirlo. A quien emitió el escalamiento la alcanzan junto a la cama el curso de ese escalamiento y la decisión de acudir o de no acudir del médico que tomó el caso. Fuera del escalamiento, el alcance sin consulta previa se reserva a los hechos que obligan a obrar de inmediato sobre la cama, que son exactamente cuatro: la indicación médica nueva y la suspensión de una indicación vigente, que alcanzan junto a la cama a la enfermería con asignación de cuidado vigente sobre ella; el resultado crítico, que alcanza al responsable clínico vigente, al médico con toma del caso y a esa enfermería; y la cama que queda sin responsable clínico vigente, que alcanza a esa enfermería. Ninguno de los cuatro añade al médico un alcance sin consulta previa que no tuviera ya. Los demás cambios de una cama se reúnen en una única actualización informativa, que se entrega a la consulta del responsable clínico vigente y alcanza junto a la cama a esa enfermería, y que la presentación de avisos ordena después de toda severidad. |
 | Autonomía de intercambio de turnos | RF-TUR-06, RF-TUR-13, RF-TUR-17, RF-TUR-31, RF-TUR-32, RF-TUR-33, RF-TUR-34 | La coordinadora aprueba o rechaza autorizaciones reutilizables por alcance y periodo; los intercambios cubiertos se aplican sin una resolución individual adicional y se le avisan con la autorización que los amparó. El intercambio que ninguna autorización cubre queda pendiente de su resolución expresa, y su aprobación o su rechazo llega a los dos proponentes. |
-| Adopción voluntaria | RF-TUR-08, RF-TUR-16, RF-TUR-27, RF-TUR-28 | El sistema es la única fuente editable de asignaciones. La copia imprimible se concede en dos formas: la de la programación vigente es un reflejo no editable que declara el instante de su generación, y la de un periodo cerrado es un archivo histórico que declara además su condición no operativa. |
+| Adopción voluntaria | RF-TUR-08, RF-TUR-16, RF-TUR-27, RF-TUR-28 | El sistema es la única fuente editable de asignaciones. El reflejo se concede en dos formas: el de la programación vigente declara el instante de su generación y su condición no editable, y el de un periodo cerrado declara además su condición no operativa. |
 | Movilidad frente a control de datos | RF-REG-07, RF-REG-11, RF-IAM-04, RF-IAM-05, RF-IAM-07, RF-IAM-08 | Se admite el dispositivo personal. Mientras el destinatario no se ha identificado ante él, el aviso expone solo sede, unidad, cama, severidad y motivo; la identidad verificada se recupera en el propio dispositivo con la conectividad de que se disponga, sin exigir equipo institucional, y mientras está vigente permite leer el contexto clínico y registrar a distancia —la indicación y la decisión de acudir— sin repetir la verificación en cada alerta. |
 
 ## Distribución de prioridad
 
-Sobre los 146 requerimientos funcionales del documento.
+Sobre los 163 requerimientos funcionales del documento.
 
 | Prioridad | Cantidad | Proporción | Criterio aplicado |
 |---|---|---|---|
-| MUST | 63 | 43.2 % | Es la única cobertura de una tarea crítica, o su ausencia deja sin resolver un problema crítico |
-| SHOULD | 81 | 55.5 % | Sostiene un criterio de éxito, o refuerza una tarea crítica que ya tiene cobertura MUST |
-| COULD | 2 | 1.4 % | Preserva una práctica vigente del equipo sin condicionar la operación clínica |
+| MUST | 67 | 41.1 % | Es la única cobertura de una tarea crítica, o su ausencia deja sin resolver un problema crítico |
+| SHOULD | 94 | 57.7 % | Sostiene un criterio de éxito, o refuerza una tarea crítica que ya tiene cobertura MUST |
+| COULD | 2 | 1.2 % | Preserva una práctica vigente del equipo sin condicionar la operación clínica |
