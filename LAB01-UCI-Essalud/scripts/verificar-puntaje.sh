@@ -52,7 +52,7 @@ command -v jq >/dev/null 2>&1 || {
 # cuantas haya.
 if [ -z "$ARCHIVOS" ]; then
   ARCHIVOS="$(find Spec/corridas -mindepth 2 -maxdepth 2 -name 'corrida.json' \
-                -not -name '_*' 2>/dev/null | sort)"
+                -not -name '_*' 2>/dev/null | sort -V)"
 fi
 ARCHIVOS="$(printf '%s' "$ARCHIVOS" | grep -v '^$')"
 N_ARCHIVOS="$([ -z "$ARCHIVOS" ] && echo 0 || printf '%s\n' "$ARCHIVOS" | grep -c '')"
