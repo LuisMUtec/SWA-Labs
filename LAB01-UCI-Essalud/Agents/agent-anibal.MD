@@ -51,7 +51,7 @@ enfermera va y viene entre el monitor, el kardex y el teléfono: once minutos.
 | 2 | Confirmar recepción y tomar el caso | Crítica |
 | 3 | Consultar tendencia de signos, ventilación y última evolución | Alta |
 | 4 | Registrar la indicación dada de forma remota | Alta |
-| 5 | Marcarte temporalmente indisponible y delegar | Alta |
+| 5 | Marcarse temporalmente indisponible y delegar | Alta |
 | 6 | Revisar en la mañana lo ocurrido durante la noche | Media |
 
 Estas seis tareas se copian de [`../Personas/Anibal.MD`](../Personas/Anibal.MD), su única dueña. Si

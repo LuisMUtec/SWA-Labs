@@ -50,7 +50,7 @@ escalamiento— se fijan aquí, en `RNF-PER-03`.
 | Fuente | Profesional clínico que inicia turno |
 | Estímulo | Abre la aplicación en el equipo de la estación o en el dispositivo a pie de cama |
 | Artefacto | Aplicación cliente |
-| Entorno | Operación normal, 10 M sedes registradas, `[SUPUESTO: 2 % de las sedes con actividad concurrente en la ventana de cambio de turno]` |
+| Entorno | Operación normal, 10 M unidades UCI federadas registradas y hasta 200 000 activas durante la ventana de cambio de turno |
 | Respuesta | Se presenta la unidad del profesional con sus camas asignadas, en estado operable |
 | Medida | p95 inferior a 1 s |
 
@@ -76,7 +76,7 @@ escalamiento— se fijan aquí, en `RNF-PER-03`.
 | Fuente | Profesional de enfermería a pie de cama |
 | Estímulo | Emite un escalamiento clasificado como deterioro que exige respuesta inmediata |
 | Artefacto | Servicio de escalamiento y aplicación cliente del destinatario |
-| Entorno | Turno noche, destinatario fuera de la sede sobre enlace móvil de calidad variable, 10 M sedes registradas |
+| Entorno | Turno noche, destinatario fuera de la sede sobre enlace móvil de calidad variable, 10 M unidades UCI federadas registradas |
 | Respuesta | El escalamiento queda disponible en el dispositivo del destinatario con su contexto clínico adjunto |
 | Medida | p95 inferior a 15 s desde la emisión. El plazo de acuse antes de avanzar en la cadena es de 90 s para el deterioro inmediato y de 15 min para la consulta diferible |
 
@@ -89,7 +89,7 @@ escalamiento— se fijan aquí, en `RNF-PER-03`.
 | Fuente | Médico del turno entrante |
 | Estímulo | Solicita la entrega de turno de las camas que recibe |
 | Artefacto | Aplicación cliente y servicio de diagnósticos |
-| Entorno | Ventana de cambio de turno, 10 M sedes registradas, `[SUPUESTO: 2 % concurrentes en esa ventana]` |
+| Entorno | Ventana de cambio de turno, 10 M unidades UCI federadas registradas y hasta 200 000 activas en esa ventana |
 | Respuesta | Se entrega el diagnóstico vigente de cada cama con las decisiones del turno anterior |
 | Medida | p95 inferior a 1 s por cama, para unidades de hasta 20 camas |
 
@@ -155,13 +155,9 @@ escalamiento— se fijan aquí, en `RNF-PER-03`.
 
 ## RNF-ESC — Escalabilidad
 
-Las cifras de escalamiento del enunciado son **entorno**, no requerimientos por sí solas: cada una se
-enuncia dentro de un escenario con su respuesta y su medida.
-
-`[ACLARAR: qué cuenta como «hospital» en la meta de 10 M a dos años. Perú registra del orden de miles
-de establecimientos de salud, de modo que la cifra no admite lectura literal como sedes hospitalarias.
-Las lecturas posibles —camas, pacientes atendidos, dispositivos conectados— conducen a entornos de
-carga distintos.]`
+Las cifras de escalamiento del enunciado son **entorno**, no requerimientos por sí solas. Conforme a
+`docs/DECISIONES-ITERACION-2.md`, una unidad UCI federada es una unidad lógica con identidad, camas y
+programación propias; no equivale a un hospital físico.
 
 ### RNF-ESC-01 — Carga al lanzamiento
 
@@ -170,9 +166,9 @@ carga distintos.]`
 | Fuente | Conjunto de las sedes incorporadas al piloto |
 | Estímulo | Operan de forma concurrente en la ventana de cambio de turno |
 | Artefacto | Sistema completo |
-| Entorno | 1 K sedes registradas, región de Lima y sus distritos |
+| Entorno | 1 K unidades UCI federadas registradas, región de Lima y sus distritos |
 | Respuesta | El sistema atiende la operación sin degradar los umbrales de `RNF-PER-01`, `RNF-PER-03` ni `RNF-PER-04` |
-| Medida | Los umbrales de rendimiento se mantienen en p95 con 1 K sedes registradas |
+| Medida | Los umbrales de rendimiento se mantienen en p95 con 1 K unidades UCI federadas registradas |
 
 **Origen:** enunciado del caso, requerimientos de escalamiento.
 
@@ -183,9 +179,9 @@ carga distintos.]`
 | Fuente | Conjunto de las sedes incorporadas tras la expansión a seis meses |
 | Estímulo | Operan de forma concurrente en la ventana de cambio de turno |
 | Artefacto | Sistema completo |
-| Entorno | 100 K sedes registradas, incorporación de regiones adicionales |
+| Entorno | 100 K unidades UCI federadas registradas, incorporación de regiones adicionales |
 | Respuesta | El sistema atiende la operación sin degradar los umbrales de rendimiento y sin reescritura de sus componentes |
-| Medida | Los umbrales de rendimiento se mantienen en p95 con 100 K sedes registradas; la incorporación de una región adicional no exige detener la operación de las regiones ya activas |
+| Medida | Los umbrales de rendimiento se mantienen en p95 con 100 K unidades UCI federadas registradas; la incorporación de una región adicional no exige detener la operación de las regiones ya activas |
 
 **Origen:** enunciado del caso, requerimientos de escalamiento.
 
@@ -193,12 +189,12 @@ carga distintos.]`
 
 | Parte | Contenido |
 |---|---|
-| Fuente | Conjunto de las sedes incorporadas al cabo de dos años |
+| Fuente | Conjunto de las unidades UCI federadas incorporadas al cabo de dos años |
 | Estímulo | Operan de forma concurrente en la ventana de cambio de turno |
 | Artefacto | Sistema completo |
-| Entorno | 10 M sedes registradas, `[SUPUESTO: la cifra se interpreta como unidades de cuidados intensivos federadas y no como establecimientos hospitalarios, según el ACLARAR abierto al inicio de esta sección]` |
+| Entorno | 10 M unidades UCI federadas registradas y hasta 200 000 activas en la ventana de cambio de turno |
 | Respuesta | El sistema atiende la operación sin degradar los umbrales de rendimiento |
-| Medida | Los umbrales de rendimiento se mantienen en p95 con 10 M sedes registradas |
+| Medida | Los umbrales de rendimiento se mantienen en p95 con 10 M unidades UCI federadas registradas |
 
 **Origen:** enunciado del caso, requerimientos de escalamiento.
 
@@ -253,8 +249,8 @@ carga distintos.]`
 | Estímulo | Solicita conocer qué datos suyos existen y quién accedió a ellos |
 | Artefacto | Servicio de trazabilidad de accesos y registro clínico |
 | Entorno | Operación normal, episodio cerrado o en curso |
-| Respuesta | Se entrega la relación de datos del episodio y de los accesos registrados sobre él |
-| Medida | La solicitud se atiende dentro del plazo legal aplicable. `[ACLARAR: qué plazo de atención fija la autoridad para una solicitud de acceso sobre datos de salud, y si el ejercicio del derecho se canaliza por el sistema o por la vía administrativa de la institución.]` |
+| Respuesta | La solicitud se registra, se deriva al responsable institucional de datos personales y se entrega la relación de datos del episodio y de sus accesos por un canal autenticado |
+| Medida | Respuesta en un máximo de 20 días contados desde el día siguiente de la presentación; una sola ampliación de hasta 20 días adicionales requiere justificación comunicada dentro del plazo inicial |
 
 **Origen:** Ley N.° 29733, derechos del titular de datos personales.
 
@@ -343,8 +339,8 @@ carga distintos.]`
 | Estímulo | Solicita o remite información clínica de un episodio de cuidados intensivos |
 | Artefacto | Servicio de intercambio clínico |
 | Entorno | Operación normal, episodio con diagnóstico vigente registrado |
-| Respuesta | La información se intercambia en el formato y con la semántica que el marco nacional establece |
-| Medida | El 100 % de los episodios cerrados resulta intercambiable sin transformación manual. `[ACLARAR: qué perfil de intercambio y qué catálogo de codificación exige el marco de la Ley N.° 30024 para el dominio de cuidados intensivos.]` |
+| Respuesta | La información se intercambia conforme al perfil CorePE v0.1 de MINSA basado en HL7 FHIR R4 e IPS Perú, registrando la versión del perfil y los catálogos aplicados |
+| Medida | El 100 % de los episodios cerrados valida contra la versión registrada del perfil y sus catálogos sin transformación manual |
 
 **Origen:** Ley N.° 30024, interoperabilidad de la historia clínica electrónica a nivel nacional.
 
@@ -406,14 +402,15 @@ carga distintos.]`
 | Dos años con 10 M sedes | `RNF-ESC-03` |
 | Diagnóstico disponible en todo momento | `RNF-PER-04`, `RNF-DIS-03`, `RNF-DIS-04` |
 
-## Cuestiones abiertas
+## Decisiones y supuestos vigentes
 
-| Marcador | Dónde | Qué condiciona |
+Las decisiones cerradas se fundamentan en [`docs/DECISIONES-ITERACION-2.md`](../docs/DECISIONES-ITERACION-2.md).
+
+| Condición | Dónde | Qué fija |
 |---|---|---|
-| `[ACLARAR]` unidad de la meta de 10 M | `RNF-ESC` | El entorno de carga de los tres escenarios de escalabilidad |
-| `[ACLARAR]` plazo legal de atención al titular | `RNF-SEG-04` | La medida del escenario de derechos del titular |
-| `[ACLARAR]` perfil de intercambio de la Ley N.° 30024 | `RNF-INT-01` | El formato y el catálogo del intercambio clínico |
-| `[SUPUESTO]` 2 % de sedes concurrentes en el cambio de turno | `RNF-PER-01`, `RNF-PER-04` | El entorno de carga de los escenarios de rendimiento |
+| 10 M unidades UCI federadas, 2 % concurrentes | `RNF-PER-01`, `RNF-PER-04`, `RNF-ESC-03` | El entorno máximo de carga y 200 000 unidades activas |
+| Respuesta al derecho de acceso en 20 días, ampliable una vez | `RNF-SEG-04` | La medida y el canal institucional del derecho del titular |
+| CorePE v0.1, HL7 FHIR R4 e IPS Perú | `RNF-INT-01` | La línea base versionada del intercambio con RENHICE |
 | `[SUPUESTO]` plazos de acuse de 90 s y 15 min | `RNF-PER-03` | El umbral que `RF-ESC-02` y `RF-ESC-06` invocan sin fijar |
 | `[SUPUESTO]` interrupción tolerable de 4 h a pie de cama | `RNF-DIS-04` | El alcance de la operación sin conectividad |
 | `[SUPUESTO]` umbrales de esfuerzo de 3 min y 30 s | `RNF-USA-01`, `RNF-USA-02` | El contrapeso de usabilidad de `RF-DIA-01` y `RF-ESC-01` |

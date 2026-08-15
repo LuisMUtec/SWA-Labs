@@ -2,7 +2,7 @@
 
 Arquitectura de Software · UTEC · 2026-II · **20 ptos**
 
-Enunciado completo: [`docs/LAB-01-ARQ-2026.2.md`](docs/LAB-01-ARQ-2026.2.md)
+Enunciado vigente: [`docs/V2-LAB-01-ARQ-2026.2.md`](docs/V2-LAB-01-ARQ-2026.2.md)
 
 ## Equipo
 
@@ -144,6 +144,8 @@ declara su parte:
 | Cómo se agrega y se puntúa | [`Spec/Eval-Spec.MD`](Spec/Eval-Spec.MD) | rúbrica D1–D6, pesos, techos duros y condiciones del veredicto |
 | Qué deja escrito una corrida | [`Spec/corridas/_ESQUEMA.MD`](Spec/corridas/_ESQUEMA.MD) | estructura de la salida y archivos que puede tocar |
 | La forma exigida a un RF | [`docs/CONVENCIONES.md`](docs/CONVENCIONES.md) | patrones EARS, criterios de aceptación, trazabilidad |
+| Los términos del dominio | [`docs/GLOSARIO.md`](docs/GLOSARIO.md) | significado único de los conceptos compartidos |
+| Las decisiones de la iteración | [`docs/DECISIONES-ITERACION-2.md`](docs/DECISIONES-ITERACION-2.md) | cierre explícito de jornada, escala, derechos, RENHICE y adopción |
 
 ### Cómo se ejecuta una corrida
 
@@ -172,7 +174,7 @@ Resultado del agente [`Spec/Eval-Spec.MD`](Spec/Eval-Spec.MD): **58,7 %**
 
 ```
 README.md              # Este archivo: problema, usuarios/clientes y evaluación
-/docs                  # Enunciado del caso de estudio y convenciones de redacción
+/docs                  # Enunciados, convenciones, glosario y decisiones
 /Personas              # Un MD por persona / usuario modelo
 /Requirements          # ReqFunc.MD y ReqNoFunc.MD
 /Agents                # Un agente por persona, más el estándar que comparten

@@ -7,7 +7,7 @@ role: ‹rol, idéntico al encabezado de la persona›
 # Agente: ‹Nombre Apellido› — ‹rol›
 
 > Plantilla normativa de un agente de persona. Las secciones van en este orden y ninguna se omite.
-> Las nueve primeras se derivan de la persona; el bloque final —«Tarea», «Formato de salida» y
+> Las siete primeras se derivan de la persona; el bloque final —«Tarea», «Formato de salida» y
 > «Reglas»— se copia **literalmente** y solo cambia el nombre.
 
 ## Identidad
