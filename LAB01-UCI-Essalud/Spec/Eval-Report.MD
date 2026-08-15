@@ -2,109 +2,100 @@
 
 | | |
 |---|---|
-| Corrida | 2026-08-15-iteracion-5 |
-| Rama | `eval/iteracion-5` |
+| Corrida | 2026-08-15-iteracion-6 |
+| Rama | `eval/iteracion-6` |
 | Modelo | claude-opus-5 |
-| Evaluado | `Requirements/ReqFunc.MD` @ `be8c4ed` |
+| Evaluado | `Requirements/ReqFunc.MD` @ `4b277e9` |
 | Rúbrica | `Spec/Eval-Spec.MD` @ `b492237` |
 | Personas | `Personas/` @ `6340172` |
 | Agentes | `Agents/` @ `34877c7` |
 | Instrumento modificado | no |
 
-## Puntaje global: 68,9 %
+## Puntaje global: 71,5 %
 
 | Dimensión | Puntaje | Peso | Aporte |
 |---|---:|---:|---:|
-| D1 Satisfacción de las personas | 41,0 | 30 % | 12,300 |
+| D1 Satisfacción de las personas | 49,0 | 30 % | 14,700 |
 | D2 Cobertura de problemas críticos | 66,7 | 25 % | 16,675 |
-| D3 Verificabilidad y forma | 98,4 | 20 % | 19,680 |
+| D3 Verificabilidad y forma | 97,9 | 20 % | 19,580 |
 | D4 Trazabilidad | 100,0 | 10 % | 10,000 |
 | D5 Consistencia y tensiones | 60,0 | 10 % | 6,000 |
-| D6 Priorización | 85,0 | 5 % | 4,250 |
-
-Suma de los aportes: 12,300 + 16,675 + 19,680 + 10,000 + 6,000 + 4,250 = **68,905 → 68,9 %**.
+| D6 Priorización | 90,0 | 5 % | 4,500 |
+| **Suma de aportes** | | | **71,455 → 71,5** |
 
 ## Veredicto: FAILED
 
 | # | Condición | Umbral | Obtenido | Cumple |
 |---|---|---:|---:|:---:|
-| 1 | Puntaje global | ≥ 80,0 % | 68,9 % | ✗ |
-| 2 | D1 | ≥ 80,0 | 41,0 | ✗ |
-| 3 | Persona más baja | ≥ 7,0/10 | 2,8 | ✗ |
-| 4 | D2 | ≥ 80,0 | 66,7 | ✗ |
-| 5 | Controles de `verificar.sh` | 9/9 | 9/9 | ✓ |
+| 1 | Puntaje global | ≥ 80,0 % | 71,5 % | no |
+| 2 | D1 | ≥ 80,0 | 49,0 | no |
+| 3 | Persona más baja | ≥ 7,0/10 | 3,2 | no |
+| 4 | D2 | ≥ 80,0 | 66,7 | no |
+| 5 | Controles de `verificar.sh` | 9/9 | 9/9 | sí |
 
 ## Puntajes por persona
 
 | Persona | Tareas /30 | Estorba fuera | Necesidades /6 | Flujo /4 | Puntaje /10 | Percibida | Δ |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Rodrigo | 20 | 3 | 2,8 | 0 | 2,8 | 78 | +50 |
-| Milagros | 22 | 3 | 3,2 | 2 | 5,2 | 80 | +28 |
-| Carmen | 18 | 0 | 3,6 | 0 | 3,6 | 75 | +39 |
-| Aníbal | 20 | 3 | 2,8 | 2 | 4,8 | 80 | +32 |
-| **PROMEDIO** | **20,0** | **2,25** | **3,1** | **1,0** | **4,1** | **78,3** | **+37,3** |
+| Rodrigo | 20 | 4 | 2,4 | 2 | 4,4 | 78 | 34 |
+| Milagros | 20 | 2 | 3,2 | 0 | 3,2 | 80 | 48 |
+| Carmen | 22 | 2 | 3,6 | 2 | 5,6 | 82 | 26 |
+| Aníbal | 24 | 1 | 4,4 | 2 | 6,4 | 80 | 16 |
+| **PROMEDIO** | **21,5** | **2,25** | **3,4** | **1,5** | **4,9** | **80** | **31** |
 
-La forma de la falla está en las tres últimas columnas. El documento es formalmente sólido —98,4 % de
-RF conformes, trazabilidad completa, cinco tensiones decididas— y aun así ninguna persona llega a la
-mitad de su escala. Ninguna de las 24 tareas críticas quedó descubierta, pero solo cuatro llegaron a
-**cubierta**: las otras veinte están **incompletas** y una es apenas **aparente**. Dos de los cuatro
-recorridos se interrumpen en un paso que ningún RF sostiene. La desviación entre lo autoinformado y
-lo computado supera el umbral de 20 puntos en las cuatro personas y siempre en el mismo sentido: los
-agentes describen la falla con precisión y no la descuentan al puntuarse. Prevalece el valor
-computado.
+La forma es sólida y la satisfacción no la sigue. Los 146 RF están bien escritos, trazados y
+priorizados —D3 97,9, D4 100, D6 90—, y aun así ninguna persona llega a 7/10. La distancia la
+producen tres cosas: el escenario de Milagros se corta antes del final, nueve requerimientos estorban
+a una persona fuera de sus tareas críticas y diecisiete de las veinticuatro tareas quedan incompletas
+por un comportamiento que el conjunto no declara. Tres de los cuatro agentes se autoinforman más de
+20 puntos por encima de lo computado; prevalece el cómputo.
 
 ## Brechas encontradas
 
-Las 39 brechas, con origen y severidad, están en
-[`corridas/2026-08-15-iteracion-5/diagnostico.MD`](corridas/2026-08-15-iteracion-5/diagnostico.MD).
-Aquí las de severidad alta.
+Las treinta brechas, con su origen y severidad, están en
+[`Spec/corridas/2026-08-15-iteracion-6/diagnostico.MD`](corridas/2026-08-15-iteracion-6/diagnostico.MD).
+Las de severidad alta:
 
 | # | Persona o problema afectado | Brecha | Origen | Severidad |
 |---|---|---|---|---|
-| 1 | Rodrigo · P1 | Ningún RF obliga a registrar la decisión clínica y su fundamento; RF-DIA-01 condiciona el cierre solo al diagnóstico | veredicto-rodrigo | Alta |
-| 2 | Rodrigo · P1 | Un turno puede concluir sin cerrar su entrega y ningún RF devuelve el contexto de la cama: corte del recorrido de Rodrigo y tramo que baja P1 a 50 | veredicto-rodrigo · auditoría | Alta |
-| 3 | Milagros | Enfermería carece del equivalente de RF-DIA-17 para la entrega no cerrada | veredicto-milagros | Alta |
-| 4 | Carmen | Ningún RF permite asignar directamente sobre la programación vigente cuando nadie acepta la cobertura: corte del recorrido de Carmen | veredicto-carmen | Alta |
-| 5 | Carmen | RF-TUR-09 presupone «las franjas de cobertura requeridas» sin que ningún RF las constituya | veredicto-carmen | Alta |
-| 6 | Aníbal · Milagros | El «ámbito de responsabilidad» de RF-SUP-03 no queda constituido para la guardia localizable ni para enfermería | veredicto-anibal · veredicto-milagros · auditoría | Alta |
-| 7 | Aníbal · P2 | No hay enunciado para declararse indisponible cuando ningún delegado resulta admisible | veredicto-anibal | Alta |
-| 8 | Aníbal · P2 | Ningún RF comunica al titular el vencimiento o la revocación de su delegación | veredicto-anibal | Alta |
-| 9 | Aníbal · P3 | RF-ESC-29 no alcanza al médico con toma del caso vigente | veredicto-anibal | Alta |
-| 10 | Milagros · Aníbal · P3 | RF-ESC-13 no declara si la actualización informativa alcanza sin consulta previa: tramo que baja P3 a 50 | veredicto-milagros · veredicto-anibal | Alta |
-| 11 | Rodrigo · Milagros | RF-IAM-02 rechaza el registro sobre una cama fuera de la asignación propia sin escalamiento de por medio | veredicto-rodrigo · veredicto-milagros | Alta |
-| 12 | Rodrigo · Carmen | RF-DIA-18 («exactamente») contradice RF-DIA-28, que agrega toda cama huérfana a la misma asignación | auditoría · veredicto-rodrigo | Alta |
-| 13 | Rodrigo · Carmen | RF-DIA-29 no decide en el enunciado la segunda declaración sobre una cama; su criterio desplaza al primer médico sin avisarle | auditoría · veredicto-carmen | Alta |
-| 14 | Rodrigo | RF-IAM-06 constituye y extingue la responsabilidad clínica por una vía distinta de RF-ESC-27 y contra RF-TUR-42 | auditoría · veredicto-rodrigo | Alta |
-| 15 | Aníbal | RF-TUR-01, leído con el glosario, rechazaría la guardia localizable simultánea en dos sedes que la persona declara vigente | veredicto-anibal · auditoría | Alta |
-| 16 | Rodrigo | El diferencial de RF-DIA-05 se vacía en cuanto consulta la cama una vez: el glosario cuenta la consulta como contacto | veredicto-rodrigo · auditoría | Alta |
+| 1 | Milagros · P3 | La decisión de acudir se incorpora al episodio por RF-REG-11 y ningún RF la hace llegar a quien escaló: corta su escenario en el paso 8 | veredicto-milagros | Alta |
+| 2 | Milagros · P3 | La suspensión o el cambio de una indicación vigente no la alcanza junto a la cama; RF-ESC-28 sólo declara la indicación nueva | veredicto-milagros · auditoría | Alta |
+| 3 | Milagros · P2 | Una noche cubierta sólo por guardia localizable deja las camas sin responsable clínico vigente (RF-DIA-28 CA-2), y RF-ESC-01, RF-ESC-08 y RF-ESC-23 lo presuponen | veredicto-milagros · auditoría | Alta |
+| 4 | P2 | La indisponibilidad declarada no altera la cadena: por RF-ESC-27 y RF-ESC-23 el indisponible sigue encabezándola y quema un plazo entero | auditoría · veredicto-milagros | Alta |
+| 5 | Aníbal · P2 | No existe indisponibilidad registrada cuando sí se indica delegado; RF-ESC-08 enumera un estado que nadie constituye y RF-ESC-31 devuelve al titular a la cabeza de la cadena | veredicto-anibal | Alta |
+| 6 | Carmen · P2 | La indisponibilidad sin delegado no devuelve la franja a las descubiertas de RF-TUR-07 ni la habilita para RF-TUR-44 | veredicto-carmen | Alta |
+| 7 | P2 | RF-ESC-09 termina la cadena en la jefatura y ningún RF declara qué ocurre si ella tampoco acusa | veredicto-milagros · auditoría | Alta |
+| 8 | Aníbal · P2 | RF-ESC-06 aplica la cadena de la severidad y RF-ESC-23 la compone sin mirarla: contradicción entre dos RF | veredicto-anibal · auditoría | Alta |
+| 9 | Rodrigo · P1 | La atribución del registro en la PC compartida no la declara ningún RF; RF-IAM-08 sólo cubre el dispositivo personal | veredicto-rodrigo | Alta |
+| 10 | Milagros · P2 | No puede registrar ni escalar sobre la cama de su colega sin un relevo declarado previo (RF-IAM-02, RF-IAM-10) | veredicto-milagros | Alta |
+| 11 | Milagros · P3 | Nada la alcanza junto a la cama cuando su cama se queda sin responsable clínico vigente | veredicto-milagros | Alta |
+| 12 | Carmen · P1 | El vínculo laboral y las reglas de jornada del personal de planta no los constituye ningún RF; RF-IAM-06 sólo cubre al rotante | veredicto-carmen | Alta |
+| 13 | ReqFunc.MD | Cinco RF conservan un bloque «*Cambio:*» que narra la historia de la iteración y cita la evaluación; RF-DIA-05 remite a una sección `## GLOSARIO` inexistente | auditoría | Alta |
 
 ## Acciones recomendadas (priorizadas)
 
-1. **Cerrar los dos cortes de recorrido**, que son lo que más hunde D1. Para Rodrigo: un RF que
-   declare qué obtiene el médico entrante cuando el turno anterior concluyó sin entrega cerrada, y
-   RF-DIA-17 elevado a MUST. Para Carmen: un RF que le permita asignar directamente a un profesional
-   sobre la programación vigente cuando la solicitud vence o la lista de candidatos se agota.
-2. **Hacer exigible el contenido del handoff.** RF-DIA-02 promete decisiones con su fundamento,
-   esquema con su día y estado de la familia, y ningún RF obliga a registrarlos. Mientras el cierre
-   dependa solo del diagnóstico, el handoff seguirá siendo lo que el saliente quiera dejar — que es
-   literalmente el problema P1.
-3. **Deshacer la contradicción triple sobre la asignación médica**: RF-DIA-18 «exactamente» frente a
-   RF-DIA-28; RF-DIA-29 sin regla de resolución en el enunciado y sin aviso al desplazado; RF-IAM-06
-   constituyendo la responsabilidad clínica por un segundo camino, contra RF-TUR-42.
-4. **Constituir el «ámbito de responsabilidad»** para el médico de guardia localizable y para la
-   asignación de cuidado de enfermería, o desdoblar RF-SUP-03: hoy es el único RF de la tarea 6 de
-   Aníbal y el glosario lo deja sin alcance.
-5. **Decidir la entrega de la actualización informativa** (RF-ESC-13) con el vocabulario de RF-ESC-22,
-   28 y 29 —«alcanzar sin que deban consultarlo», o su negación explícita— y extender RF-ESC-29 al
-   médico con toma del caso vigente. Son los dos tramos que mantienen P3 en 50.
-6. **Abrir el registro a quien cubre sin ser titular** (RF-IAM-02): el médico llamado a una cama ajena
-   y la enfermera que cubre a su colega vuelven hoy al papel, que es la fuga por donde se degrada
-   todo el registro que la Red exige.
-7. **Completar la delegación** (RF-ESC-07, RF-ESC-30, RF-ESC-31): indisponibilidad sin delegado
-   admisible, revocación por el propio titular y aviso del retorno de la responsabilidad a su nombre.
+1. **Cerrar el corte de Milagros.** Un RF que haga llegar a quien emitió el escalamiento la decisión
+   de acudir o de no acudir que RF-REG-11 ya incorpora al episodio. Es el único flujo interrumpido de
+   la corrida y vale por sí solo 2 de los 4 puntos de flujo de su persona.
+2. **Constituir la indisponibilidad como estado que la cadena mira.** Un RF que registre la
+   indisponibilidad declarada también cuando hay delegado, y otro que la haga desplazar al declarado
+   indisponible de la cabeza de la cadena. Cierra las brechas 4, 5 y 6 y desbloquea el tramo de P2 que
+   hoy vale 50.
+3. **Resolver la contradicción RF-ESC-06 ↔ RF-ESC-23** declarando si la cadena depende de la
+   severidad o si sólo el plazo lo hace. Es el Ambiguo que le cuesta a Aníbal sus 2 puntos de flujo.
+4. **Declarar la verificación de identidad en el equipo compartido.** RF-IAM-08 la constituye sólo en
+   el dispositivo personal; es el par de Ambiguos que le cuesta a Rodrigo sus 2 puntos de flujo y la
+   restricción explícita de su persona.
+5. **Constituir el vínculo laboral y las reglas de jornada del personal de planta**, de los que
+   dependen RF-TUR-02 y RF-TUR-03. Es el único Ambiguo del recorrido de Carmen.
+6. **Retirar de `ReqFunc.MD` los cinco bloques «*Cambio:*»** y la referencia rota a `## GLOSARIO`: el
+   documento no registra cómo se llegó al enunciado vigente ni habla de la rúbrica que lo mide.
+7. **Revisar los nueve RF que estorban fuera de tarea** —RF-TUR-17, RF-TUR-31, RF-TUR-44 y RF-SUP-01
+   para Rodrigo; RF-TUR-28 y RF-DIA-36 para Milagros; RF-DIA-29 y RF-ESC-32 para Carmen; RF-ESC-25
+   para Aníbal—. Cuestan 18 de los 30 puntos de tarea que la corrida descuenta.
 
 ## Evidencia
 
-[`Spec/corridas/2026-08-15-iteracion-5/`](corridas/2026-08-15-iteracion-5/) — `diagnostico.MD` con las
-tablas de evidencia y la aritmética desarrollada, `corrida.json`, `controles.txt` y los cuatro
-veredictos de persona.
+[`Spec/corridas/2026-08-15-iteracion-6/`](corridas/2026-08-15-iteracion-6/) — diagnóstico con la
+matriz de veredictos de los 146 RF, la matriz de cobertura de las 24 tareas, la aritmética de D1 a D6
+desarrollada, las treinta brechas y los cuatro veredictos de persona.

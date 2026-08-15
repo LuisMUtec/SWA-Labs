@@ -14,6 +14,7 @@ Responde la pregunta que ningún reporte individual responde, porque cada corrid
 | 2026-08-14 | 2026-08-14-iteracion-3 | `f50cf90` | `b492237` | — | 29,0 | 50,0 | 93,8 | 90,0 | 60,0 | 80,0 | 59,0 | FAILED |
 | 2026-08-14 | 2026-08-14-iteracion-4 | `f4cc4cf` | `b492237` | — | 48,0 | 50,0 | 97,5 | 80,0 | 60,0 | 85,0 | 64,7 | FAILED |
 | 2026-08-15 | 2026-08-15-iteracion-5 | `be8c4ed` | `b492237` | — | 41,0 | 66,7 | 98,4 | 100,0 | 60,0 | 85,0 | 68,9 | FAILED |
+| 2026-08-15 | 2026-08-15-iteracion-6 | `4b277e9` | `b492237` | — | 49,0 | 66,7 | 97,9 | 100,0 | 60,0 | 90,0 | 71,5 | FAILED |
 
 ## Cómo se lee
 
