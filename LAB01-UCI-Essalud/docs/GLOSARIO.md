@@ -8,11 +8,13 @@ arquitectura. No contiene referencias de retorno a esos documentos.
 | Aceptación de la entrega | Acto del profesional entrante por el que da por recibida una entrega cerrada; es posterior al cierre, no lo produce y no altera el contenido de la entrega. |
 | Actualización informativa | Aviso clínico que reúne los hechos registrados sobre una cama sin reclamar la respuesta de un responsable, a diferencia del escalamiento, que la reclama. |
 | Acuse | Confirmación registrada de que un destinatario recibió un escalamiento o cambio de programación; no implica que haya tomado el caso. |
+| Alcance de una autorización de intercambio | Delimitación de los intercambios que una autorización previa comprende, compuesta por la unidad de las asignaciones intercambiadas y el tipo de franja al que pertenecen, y por ningún otro elemento. |
 | Alcance sin consulta previa | Forma de entrega de un aviso clínico por la que su destinatario queda alcanzado donde se encuentra, sin haberlo consultado. |
 | Ámbito de responsabilidad | Conjunto de unidades y camas por las que un profesional responde en un periodo, resultante de los turnos, asignaciones médicas, asignaciones de cuidado de enfermería, delegaciones activas y responsabilidad de jefatura que tuvo vigentes en él; un turno comprende la unidad de su franja aunque no comprenda ninguna asignación de camas. |
 | Asignación | Relación vigente entre un profesional y una franja de una unidad UCI. |
 | Asignación de cuidado de enfermería | Conjunto de camas de una unidad cuyo cuidado corresponde a una profesional de enfermería durante un turno; una cama integra a lo más una asignación de cuidado de enfermería en una misma franja. |
 | Asignación médica | Conjunto de camas de una unidad por las que un profesional médico responde durante un turno, que un turno médico puede no comprender; una cama integra a lo más una asignación médica en una misma franja, y esa asignación es uno de los títulos que constituyen al responsable clínico vigente de la cama. |
+| Ausencia imprevista | Impedimento sobrevenido de un profesional para cubrir un intervalo que ya tiene asignado, por oposición al permiso vigente, que se autoriza por anticipado. |
 | Autorización previa vigente | Autorización otorgada por la coordinadora con alcance y periodo declarados, que cubre por anticipado los intercambios comprendidos en ella. |
 | Aviso clínico | Comunicación dirigida a un destinatario que le anuncia un escalamiento, una actualización informativa de una cama o un hecho de esa cama que reclama su obrar inmediato, distinta del contexto clínico que ese escalamiento transporta; se entrega en una de dos formas, el alcance sin consulta previa y la entrega a la consulta. |
 | Cadena de escalamiento | Secuencia ordenada de responsables a quienes se dirige un escalamiento hasta obtener toma del caso o agotar la cadena; a una cama en una franja le corresponde una sola cadena, cualquiera sea la severidad del escalamiento. |
@@ -26,10 +28,10 @@ arquitectura. No contiene referencias de retorno a esos documentos.
 | Cruce de turnos | Coincidencia en una misma franja de dos turnos presenciales de un mismo profesional en sedes distintas o en una misma unidad; los turnos presenciales de servicios distintos de una misma sede y la guardia localizable, cuya cobertura se ejerce a distancia, no lo constituyen. |
 | Dato obligatorio de la entrega médica | Dato que la entrega médica de un turno comprende por cada cama y sin el cual esa entrega queda incompleta; es uno solo: el diagnóstico de ese turno de esa cama. |
 | Decisión de acudir | Resolución del profesional médico con toma del caso vigente sobre una cama por la que declara si concurre o no a la sede de esa cama para atender ese caso, registrada con su fundamento, su autoría y su instante. |
-| Delegación activa | Transferencia temporal y registrada de la responsabilidad de respuesta entre dos profesionales médicos con cobertura vigente en la misma unidad durante su intervalo, con inicio y fin, que termina por vencimiento de ese intervalo o por revocación. |
+| Delegación activa | Transferencia temporal y registrada, con inicio y fin, de la responsabilidad de respuesta de un profesional médico sobre las camas que cubre o de la responsabilidad de jefatura de una unidad, en favor de otro profesional médico a quien la programación vigente asigna esa unidad durante ese intervalo, que termina por vencimiento de ese intervalo o por revocación. |
 | Deterioro confirmado | Deterioro clínico de una cama registrado con su severidad ya determinada, por oposición a la severidad por confirmar; denota el grado de certeza del deterioro y no la urgencia de la respuesta. |
 | Deterioro inmediato | Valor de severidad que denota el deterioro clínico cuya respuesta no admite espera, por oposición a la consulta diferible; denota la urgencia de la respuesta y no el grado de certeza del deterioro. |
-| Diagnóstico de ese turno | Versión firmada del diagnóstico clínico de una cama registrada dentro de un turno médico determinado; una cama puede no contar con ninguna en un turno dado. |
+| Diagnóstico de ese turno | Versión firmada del diagnóstico clínico de una cama atribuida a un turno médico determinado, registrada dentro de ese turno o después de concluido este mientras su entrega no esté cerrada; una cama puede no contar con ninguna en un turno dado. |
 | Diagnóstico vigente | Última versión firmada del diagnóstico clínico de una cama dentro de un episodio, cualquiera sea el turno en que se registró. |
 | Dispositivo no institucional | Dispositivo desde el que un profesional emplea el sistema sin que la institución lo administre; comprende al dispositivo personal. |
 | Dispositivo personal | Dispositivo no institucional que pertenece al profesional que lo emplea. |
@@ -57,6 +59,7 @@ arquitectura. No contiene referencias de retorno a esos documentos.
 | Jefatura de la unidad | Profesional que responde por la conducción de una unidad UCI federada, último destinatario de su cadena de escalamiento y cuya responsabilidad admite delegación activa. |
 | Marca de inestabilidad o de pendiente crítico | Señal que un profesional deja sobre una cama y que permanece vigente hasta que un profesional la retira. |
 | Medio de contacto vigente | Vía declarada por un profesional por la que el sistema puede alcanzarlo cuando no está empleando el sistema; rige desde su declaración hasta que ese profesional la sustituye o la retira. |
+| Orden de rotación vigente | Precedencia entre los profesionales de una unidad que rige en un periodo determinado; una unidad puede no contar con ninguno en un periodo dado. |
 | Pendiente de cuidado | Tarea de enfermería registrada sobre una cama, abierta desde su registro hasta que una profesional de enfermería la da por resuelta. |
 | Periodo cerrado | Periodo de una unidad cuya última franja ya concluyó. |
 | Permiso vigente | Ausencia autorizada cuyo intervalo impide asignar al profesional a una franja coincidente. |
@@ -66,7 +69,7 @@ arquitectura. No contiene referencias de retorno a esos documentos.
 | Profesional rotante | Profesional que la Red asigna por periodos determinados a las unidades de la Red, por oposición al profesional de planta. |
 | Programación vigente | Única versión oficial de las asignaciones de una unidad para un periodo. |
 | Red | Agrupación de sedes y de sus unidades UCI federadas bajo una misma dirección prestacional. |
-| Reflejo de una programación | Presentación de las asignaciones de una unidad tal como regían en un instante determinado, destinada a emplearse fuera del sistema, que no es editable y no constituye la programación vigente. |
+| Reflejo de una programación | Presentación de las asignaciones de una unidad tal como regían en un instante determinado o a lo largo de un periodo cerrado, destinada a emplearse fuera del sistema, que no es editable y no constituye la programación vigente. |
 | Registro a pie de cama | Anotación clínica tomada junto a la cama, con instante de toma propio y distinto del instante en que se incorpora al episodio. |
 | Relevo declarado | Acto registrado por el que un profesional con asignación vigente sobre una cama declara que otro profesional del mismo turno en esa unidad la cubre durante un intervalo comprendido en ese turno; no desplaza esa asignación ni constituye responsable clínico vigente de la cama. |
 | Responsabilidad clínica vigente | Condición de quien es responsable clínico vigente de una cama, nombrada desde el profesional y no desde la cama. |
@@ -79,8 +82,10 @@ arquitectura. No contiene referencias de retorno a esos documentos.
 | Solicitud de cobertura | Pedido dirigido a un profesional para que asuma una franja determinada, pendiente de su aceptación o de su rechazo. |
 | Solicitud de cobertura vigente | Solicitud de cobertura que su destinatario no ha aceptado ni rechazado y cuyo plazo de respuesta no ha vencido. |
 | Solicitud de permiso | Pedido de un profesional para que se le autorice una ausencia en un intervalo determinado, pendiente de resolución de la coordinadora. |
+| Solicitud de un estudio | Pedido de un estudio registrado dentro de un episodio con su autoría e instante, anterior a la incorporación del resultado de ese estudio a ese mismo episodio. |
 | Suspensión de una indicación | Acto por el que un profesional médico da por terminada la vigencia de una indicación de una cama sin sustituirla por otra, distinto de la sustitución, que la reemplaza por una indicación nueva. |
 | Tendencia | Evolución de los signos vitales, del balance hídrico y de los parámetros de soporte de una cama a lo largo de un periodo, compuesta a partir de los registros del episodio. |
+| Tipo de franja | Clase que reúne las franjas de una unidad que comparten el mismo horario diario; dos franjas de días distintos con ese mismo horario son del mismo tipo. |
 | Toma del caso | Compromiso explícito y registrado del profesional que asume la respuesta clínica después del acuse; está vigente —y el caso, abierto— desde ese registro hasta el registro del cierre de la atención. |
 | Turno de enfermería | Periodo durante el cual una profesional de enfermería cubre una franja de una unidad, al que corresponde una asignación de cuidado de enfermería. |
 | Turno médico | Periodo durante el cual un profesional médico cubre una franja de una unidad; comprende a lo más una asignación médica y puede no comprender ninguna. |
