@@ -36,8 +36,10 @@ Forma: [`docs/CONVENCIONES.md`](../docs/CONVENCIONES.md), sección 7.
 | Interoperabilidad | `RNF-INT` |
 | Observabilidad | `RNF-OBS` |
 
-Los plazos que [`ReqFunc.MD`](ReqFunc.MD) invoca sin fijar —el plazo de acuse de cada severidad de
-escalamiento— se fijan aquí, en `RNF-PER-03`.
+Los plazos y horizontes que [`ReqFunc.MD`](ReqFunc.MD) invoca sin fijar se fijan aquí: el plazo de
+acuse de cada severidad de escalamiento, en `RNF-PER-03`; el horizonte de urgencia de un cambio de
+programación y el plazo de reiteración a quien no confirma su lectura, en `RNF-PER-05`; y el plazo de
+respuesta a una solicitud de cobertura, en `RNF-PER-06`.
 
 ---
 
@@ -95,6 +97,32 @@ escalamiento— se fijan aquí, en `RNF-PER-03`.
 
 **Origen:** enunciado del caso, meta de disponibilidad del diagnóstico para el turno siguiente.
 
+### RNF-PER-05 — Horizonte de urgencia de un cambio de programación
+
+| Parte | Contenido |
+|---|---|
+| Fuente | Coordinadora de programación de la unidad |
+| Estímulo | Incorpora a la programación vigente un cambio que alcanza una franja próxima a iniciarse |
+| Artefacto | Servicio de programación y aplicación cliente de los profesionales afectados |
+| Entorno | Viernes por la tarde fuera del horario administrativo, profesionales afectados fuera de la sede sobre enlace móvil de calidad variable, 10 M unidades UCI federadas registradas y hasta 200 000 activas |
+| Respuesta | El cambio queda clasificado como urgente y la confirmación de lectura de cada profesional afectado, o su ausencia, queda disponible para la coordinadora |
+| Medida | El horizonte de urgencia es de 48 h, contadas desde la incorporación del cambio hasta el inicio de la franja que alcanza. La reiteración a quien no confirmó la lectura se emite a las 2 h sin confirmación, y a los 30 min cuando restan menos de 6 h para el inicio de esa franja |
+
+**Origen:** enunciado del caso, problema crítico de rotación de doctor, y el escenario de reasignación documentado en `Personas/Carmen.MD`; fija el horizonte y el plazo que `RF-TUR-25`, `RF-TUR-26` y `RF-TUR-38` invocan sin definir. `[SUPUESTO: ni el horizonte de 48 h ni los plazos de reiteración de 2 h y 30 min constan en el enunciado; las 48 h cubren el peor caso de reasignación documentado —una guardia que empieza en 27 h, avisada un viernes por la tarde—, y la reiteración se acorta a 30 min dentro de las 6 h previas al inicio de la franja para que un cambio publicado con poco margen alcance varias veces al profesional antes de que esa franja comience.]`
+
+### RNF-PER-06 — Plazo de respuesta a una solicitud de cobertura
+
+| Parte | Contenido |
+|---|---|
+| Fuente | Candidato elegible al que se dirigió una solicitud de cobertura |
+| Estímulo | Transcurre el plazo sin que acepte ni rechace la cobertura |
+| Artefacto | Servicio de programación y aplicación cliente de la coordinadora |
+| Entorno | Franja descubierta por una ausencia imprevista, candidato fuera de la sede sobre enlace móvil de calidad variable, 10 M unidades UCI federadas registradas y hasta 200 000 activas |
+| Respuesta | La solicitud queda sin efecto y la coordinadora obtiene el vencimiento con el candidato que no respondió |
+| Medida | El plazo de respuesta es de 30 min cuando restan menos de 6 h para el inicio de la franja, de 2 h cuando ese inicio queda dentro del horizonte de urgencia de `RNF-PER-05` y a 6 h o más, y de 24 h cuando queda fuera de ese horizonte |
+
+**Origen:** enunciado del caso, problema crítico de rotación de doctor; fija el plazo que `RF-TUR-39` y `RF-TUR-40` invocan sin definir. `[SUPUESTO: los plazos de 30 min, 2 h y 24 h no constan en el enunciado; se gradúan por el tiempo que resta hasta el inicio de la franja para que la coordinadora agote candidatos sucesivos antes de que comience —más de diez intentos en el caso de 27 h— sin retirar en minutos la solicitud de un candidato que descansa cuando la franja aún está a dos días. El tramo de 6 h y los plazos de 2 h y 30 min son los mismos del horizonte de urgencia, para que la programación no maneje dos escalas de tiempo distintas.]`
+
 ---
 
 ## RNF-DIS — Disponibilidad
@@ -130,7 +158,7 @@ escalamiento— se fijan aquí, en `RNF-PER-03`.
 | Parte | Contenido |
 |---|---|
 | Fuente | Falla de infraestructura |
-| Estímulo | Un nodo que recibió una confirmación de entrega de turno deja de responder inmediatamente después |
+| Estímulo | Un nodo que recibió el cierre de una entrega de turno deja de responder inmediatamente después |
 | Artefacto | Servicio de diagnósticos |
 | Entorno | Cualquier estado de carga, incluida la ventana de cambio de turno |
 | Respuesta | El diagnóstico confirmado permanece recuperable y legible para el turno entrante |
@@ -414,3 +442,5 @@ Las decisiones cerradas se fundamentan en [`docs/DECISIONES-ITERACION-2.md`](../
 | `[SUPUESTO]` plazos de acuse de 90 s y 15 min | `RNF-PER-03` | El umbral que `RF-ESC-02` y `RF-ESC-06` invocan sin fijar |
 | `[SUPUESTO]` interrupción tolerable de 4 h a pie de cama | `RNF-DIS-04` | El alcance de la operación sin conectividad |
 | `[SUPUESTO]` umbrales de esfuerzo de 3 min y 30 s | `RNF-USA-01`, `RNF-USA-02` | El contrapeso de usabilidad de `RF-DIA-01` y `RF-ESC-01` |
+| `[SUPUESTO]` horizonte de urgencia de 48 h y reiteración a las 2 h, o a los 30 min dentro de las 6 h previas | `RNF-PER-05` | El horizonte y el plazo que `RF-TUR-25`, `RF-TUR-26` y `RF-TUR-38` invocan sin fijar |
+| `[SUPUESTO]` plazos de respuesta de 30 min, 2 h y 24 h según el tiempo que resta hasta la franja | `RNF-PER-06` | El plazo que `RF-TUR-39` y `RF-TUR-40` invocan sin fijar |
