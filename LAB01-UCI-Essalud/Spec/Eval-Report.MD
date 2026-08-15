@@ -2,120 +2,105 @@
 
 | | |
 |---|---|
-| Corrida | 2026-08-14-iteracion-3 |
-| Rama | `eval/iteracion-3` |
+| Corrida | 2026-08-14-iteracion-4 |
+| Rama | `eval/iteracion-4` |
 | Modelo | claude-opus-5 |
-| Evaluado | `Requirements/ReqFunc.MD` @ `f50cf90` |
+| Evaluado | `Requirements/ReqFunc.MD` @ `f4cc4cf` |
 | Rúbrica | `Spec/Eval-Spec.MD` @ `b492237` |
 | Personas | `Personas/` @ `6340172` |
 | Agentes | `Agents/` @ `34877c7` |
 | Instrumento modificado | no |
 
-## Puntaje global: 59,0 %
+## Puntaje global: 64,7 %
 
 | Dimensión | Puntaje | Peso | Aporte |
 |---|---:|---:|---:|
-| D1 Satisfacción de las personas | 29,0 | 30 % | 8,70 |
+| D1 Satisfacción de las personas | 48,0 | 30 % | 14,40 |
 | D2 Cobertura de problemas críticos | 50,0 | 25 % | 12,50 |
-| D3 Verificabilidad y forma | 93,8 | 20 % | 18,76 |
-| D4 Trazabilidad | 90,0 | 10 % | 9,00 |
+| D3 Verificabilidad y forma | 97,5 | 20 % | 19,50 |
+| D4 Trazabilidad | 80,0 | 10 % | 8,00 |
 | D5 Consistencia y tensiones | 60,0 | 10 % | 6,00 |
-| D6 Priorización | 80,0 | 5 % | 4,00 |
-| **Suma de aportes** | | | **58,96 → 59,0** |
+| D6 Priorización | 85,0 | 5 % | 4,25 |
+| **Global** | | | **64,65 → 64,7** |
 
 ## Veredicto: FAILED
 
 | # | Condición | Umbral | Obtenido | Cumple |
 |---|---|---:|---:|:---:|
-| 1 | Puntaje global | ≥ 80,0 % | 59,0 % | ✗ |
-| 2 | D1 | ≥ 80,0 | 29,0 | ✗ |
-| 3 | Persona más baja | ≥ 7,0/10 | 2,0 | ✗ |
-| 4 | D2 | ≥ 80,0 | 50,0 | ✗ |
-| 5 | Controles de `verificar.sh` | 9/9 | 9/9 | ✓ |
-
-El documento está bien escrito y mal repartido. La forma es sólida —76 de 81 RF conformes, los ocho
-controles mecánicos en verde, las cinco tensiones decididas, ningún huérfano y ningún RNF infiltrado—
-y sin embargo ninguna de las cuatro personas recorre su escenario clave de extremo a extremo. Esa es
-la distancia entre 93,8 en D3 y 29,0 en D1: los requerimientos declaran muy bien lo que declaran, y
-lo que falta es el acto que los enlaza.
+| 1 | Puntaje global | ≥ 80,0 % | 64,7 % | no |
+| 2 | D1 | ≥ 80,0 | 48,0 | no |
+| 3 | Persona más baja | ≥ 7,0/10 | 4,4 | no |
+| 4 | D2 | ≥ 80,0 | 50,0 | no |
+| 5 | Controles de `verificar.sh` | 9/9 | 9/9 | sí |
 
 ## Puntajes por persona
 
 | Persona | Tareas /30 | Estorba fuera | Necesidades /6 | Flujo /4 | Puntaje /10 | Percibida | Δ |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Rodrigo | 20 | 1 | 3,6 | 0 | 3,6 | 70 | −34 |
-| Milagros | 16 | 3 | 2,0 | 0 | 2,0 | 70 | −50 |
-| Carmen | 14 | 2 | 2,0 | 0 | 2,0 | 70 | −50 |
-| Aníbal | 22 | 1 | 4,0 | 0 | 4,0 | 78 | −38 |
-| **PROMEDIO** | **18** | **1,75** | **2,9** | **0** | **2,9** | **72** | **−43** |
+| Rodrigo | 20 | 4 | 2,4 | 2 | 4,4 | 70 | 26 |
+| Milagros | 20 | 2 | 3,2 | 2 | 5,2 | 78 | 26 |
+| Carmen | 20 | 3 | 2,8 | 2 | 4,8 | 70 | 22 |
+| Aníbal | 20 | 3 | 2,8 | 2 | 4,8 | 80 | 32 |
+| **PROMEDIO** | **20** | **3** | **2,8** | **2** | **4,8** | **74,5** | **26,5** |
 
-Las cuatro desviaciones superan el umbral de 20 puntos y las cuatro tienen el mismo signo: la
-cobertura percibida está por encima de la computada. Prevalece el valor computado. La coincidencia de
-las cuatro lecturas —producidas en aislamiento— descarta que el problema esté en el enunciado de las
-tareas críticas: si lo estuviera, la desviación se concentraría en una persona. El autoinforme mide
-qué proporción de los RF le sirve al agente; la rúbrica mide si sus seis tareas quedan cubiertas y si
-su escenario se recorre entero.
+Ninguna de las 24 tareas críticas queda descubierta y ninguna llega a 5 salvo cinco: los
+requerimientos abordan todo y no terminan casi nada. Las cuatro coberturas percibidas superan lo
+computado por más del umbral de 20 puntos; prevalece el valor computado en los cuatro casos.
 
-**Los cuatro flujos quedaron en 0**, y en los cuatro casos por el mismo motivo: un paso del escenario
-clave que ningún RF sostiene.
+## Estado de los problemas críticos
 
-| Persona | Paso exacto |
-|---|---|
-| Rodrigo | 23:40, la cama 6 se descompensa: ningún RF permite volver a abrir la decisión fundamentada, el esquema con su día y el estado de la familia fuera del inicio de turno |
-| Milagros | 02:15, decide escalar: ningún RF declara el acto de emisión. Y la indicación remota de las 02:40 le llega sin aviso |
-| Carmen | Viernes 15:40, asigna al reemplazo: ningún RF declara que el candidato acepte antes de quedar asignado, y sigue llamando por teléfono |
-| Aníbal | 03:20, indicó noradrenalina: ningún RF le devuelve la confirmación de ejecución que RF-REG-04 registra |
+| Problema | Puntos | Tramo sin RF |
+|---|---:|---|
+| P1 — Rotación de doctor | 50 | La cadena entera cuelga de la asignación médica de camas que solo RF-DIA-18 produce y que el enunciado pone en una coordinadora de jornada 08:00–16:00; ningún RF declara qué ocurre sin ella |
+| P2 — Medianoche | 50 | Ningún RF declara el acto por el que una cama adquiere su responsable clínico vigente, que es el destinatario entero de RF-ESC-01 y el primer eslabón de RF-ESC-23 |
+| P3 — Actualizaciones en tiempo real | 50 | El único RF que alcanza a varios destinatarios, RF-ESC-13, declara que la actualización aguarda la consulta de sus destinatarios: no notifica, espera |
 
 ## Brechas encontradas
 
-44 brechas abiertas; el detalle completo, con su severidad y su origen, está en
-`Spec/corridas/2026-08-14-iteracion-3/diagnostico.MD`. Las nueve críticas:
+Las 44 filas completas están en `Spec/corridas/2026-08-14-iteracion-4/diagnostico.MD`. Las críticas:
 
 | # | Persona o problema afectado | Brecha | Origen | Severidad |
-|---:|---|---|---|---|
-| 1 | Rodrigo, Carmen · P1 | Ningún RF declara cómo se asignan las camas a un médico: RF-DIA-01, RF-DIA-02, RF-DIA-10 y RF-IAM-02 dan ese estado por existente y la programación asigna franjas, no camas | veredicto-rodrigo, veredicto-carmen, auditoría | Crítica |
-| 2 | Rodrigo · P1 | No hay consulta a demanda del bloque de decisión, esquema y familia en medio del turno | veredicto-rodrigo | Crítica |
-| 7 | Milagros · P2 | Ningún RF declara el acto de emisión del escalamiento ni desde qué dispositivo | veredicto-milagros, auditoría | Crítica |
-| 13 | Milagros · P3 | Ningún RF avisa de una indicación médica nueva: la lista de RF-ESC-13 no la contempla | veredicto-milagros, auditoría | Crítica |
-| 15 | Carmen · P1 | Ningún RF declara que alguien pueda consultar la programación vigente | veredicto-carmen | Crítica |
-| 25 | Aníbal, Milagros · P2 | Ningún RF declara cómo se obtiene o renueva la identidad verificada en el celular a las 03:20; sin ella RF-IAM-07 devuelve el flujo al teléfono | veredicto-anibal, veredicto-milagros | Crítica |
-| 27 | Aníbal, Rodrigo · P2 | RF-IAM-02 no declara si tomar un caso por avance de cadena habilita a registrar sobre esa cama | veredicto-anibal, veredicto-rodrigo, veredicto-milagros | Crítica |
-| 32 | P1 | Ningún RF declara qué acto produce una «entrega confirmada», condición de RF-DIA-10 y RF-DIA-17, mientras conviven firma, aceptación, cierre y entrega confirmada | auditoría, veredicto-rodrigo | Crítica |
-| 44 | Las cuatro | Cinco coberturas únicas de tarea crítica están en SHOULD —RF-DIA-05, RF-DIA-08, RF-REG-08, RF-SUP-02, RF-SUP-03— con 60 MUST asignados al resto | auditoría, los cuatro veredictos | Alta |
-
-Ninguna brecha proviene de un control mecánico: los ocho controles de forma y estructura devuelven
-vacío. Todas salen de los cuatro veredictos o de la auditoría, que es donde vive lo que un script no
-puede ver.
+|---|---|---|---|---|
+| 1 | Milagros, Carmen, Rodrigo · P2 | Ningún RF declara cómo una cama adquiere su responsable clínico vigente; RF-ESC-01, RF-ESC-08 y RF-ESC-23 lo presuponen | `veredicto-milagros`, `veredicto-carmen`, `veredicto-rodrigo` | Crítica |
+| 2 | Rodrigo, Carmen · P1 | RF-DIA-18 y RF-DIA-19 ponen la asignación de camas de cada turno de las 24 horas en la coordinadora y ningún RF declara la vía alterna cuando no ocurrió | `veredicto-carmen`, `veredicto-rodrigo`, `auditoría` | Crítica |
+| 3 | Milagros, Aníbal, Rodrigo · P3 | Ningún RF alcanza proactivamente a médicos y enfermeras ante una indicación nueva o un resultado crítico | `veredicto-milagros`, `veredicto-anibal`, `auditoría` | Crítica |
+| 4 | Carmen · P1 | Ningún RF permite cerrar por autoridad una franja descubierta si ningún candidato acepta | `veredicto-carmen` | Crítica |
+| 5 | Carmen · P1 | RF-TUR-35 contradice a RF-TUR-39 y a RF-TUR-01 sobre la misma aceptación de cobertura | `auditoría`, `veredicto-carmen` | Alta |
+| 8 | Rodrigo · P1 | Ningún RF declara que la entrega médica se componga sin transcripción, como RF-DIA-08 y RF-DIA-11 sí declaran para enfermería | `veredicto-rodrigo` | Alta |
+| 16 | Carmen · P1 | Ningún RF declara quién define el patrón de cobertura requerido de la unidad | `veredicto-carmen` | Alta |
+| 17 | Carmen · P1 | Ningún RF declara de dónde salen las reglas de jornada y descanso que RF-TUR-02 y RF-TUR-03 invocan | `veredicto-carmen` | Alta |
 
 ## Acciones recomendadas (priorizadas)
 
-1. **Declarar los actos que el documento presupone.** Cuatro estados sostienen la mitad de los
-   enunciados y ninguno tiene RF que los produzca: la asignación de camas a un médico y a una
-   enfermera, la «entrega confirmada», el pendiente de cuidado de enfermería y la composición de la
-   cadena de escalamiento. Sin ellos, RF-DIA-01, RF-DIA-02, RF-DIA-10, RF-DIA-17, RF-DIA-08,
-   RF-DIA-11, RF-IAM-02, RF-ESC-01 y RF-ESC-09 arrancan de un supuesto. Es la corrección que más sube
-   D1 y D2 a la vez.
-2. **Cerrar los cuatro pasos que interrumpen los escenarios clave**: consulta a demanda del bloque
-   clínico fuera del inicio de turno (Rodrigo), acto de emisión del escalamiento a pie de cama y aviso
-   de indicación nueva (Milagros), aceptación del candidato antes de la asignación (Carmen), y retorno
-   al indicador de la confirmación de ejecución (Aníbal). Cada uno vale 4 puntos de 10 en su persona.
-3. **Declarar la recuperación de la identidad verificada en el dispositivo personal** y qué se expone
-   en pantalla bloqueada cuando la identidad está vigente. Hoy RF-IAM-07 corta el contexto sin ruta de
-   salida declarada y devuelve el escalamiento al teléfono, que es la falla que P2 nombra.
-4. **Hacer visible la programación vigente**: un RF que declare su consulta y otro que declare la copia
-   imprimible del periodo en curso. Sin ellos, RF-TUR-08 convierte al sistema en fuente única de un rol
-   que nadie puede leer, y la foto por WhatsApp sobrevive con las tres versiones que el sistema venía a
-   eliminar.
-5. **Corregir los cinco RF no conformes de D3** —RF-ESC-06 y RF-REG-06 enuncian dos respuestas;
-   RF-REG-02, RF-REG-08 y RF-SUP-02 tienen criterios que amplían su contrato— y **reparar la fila P2 de
-   la matriz de cobertura de problemas**, que incluye RF-ESC-13 (declara P3) y omite RF-DIA-13
-   (declara P2).
-6. **Rehacer el gradiente de prioridad.** Bajar a SHOULD los cuatro MUST no justificados —RF-TUR-08,
-   RF-TUR-21, RF-TUR-25, RF-DIA-16— y subir a MUST las coberturas únicas de tarea crítica que hoy son
-   SHOULD. Resolver antes el duplicado RF-TUR-03 / RF-TUR-21 y definir «cambio urgente», del que
-   dependen RF-TUR-25 y RF-TUR-26.
+1. **Declarar el responsable clínico vigente.** Escribir el RF que constituye, para cada cama y
+   franja, el profesional médico que responde por ella derivándolo de la programación vigente, y
+   reconciliarlo con la enumeración de RF-IAM-02, que hoy lo trata como cosa distinta de la asignación
+   médica. Es el eslabón que le falta a P2, a la tarea 2 y a la tarea 3 de Milagros y al paso 8 del
+   escenario de Rodrigo, y lo declararon tres agentes por separado.
+2. **Sacar la asignación de camas del horario administrativo.** RF-DIA-18 y RF-DIA-19 son la
+   precondición silenciosa de RF-DIA-01, RF-DIA-02, RF-DIA-21 y RF-IAM-02, y hoy dependen de una
+   persona que a las 19:00 de un sábado no está. Hace falta un RF de borde que declare qué ocurre
+   cuando un turno inicia sin asignación registrada.
+3. **Convertir la actualización informativa en alcance.** RF-ESC-13 es el único RF de P3 para varios
+   destinatarios y su enunciado dice que aguarda la consulta. Declarar el alcance proactivo de la
+   indicación nueva y del resultado crítico a las enfermeras asignadas y al responsable médico, como
+   RF-ESC-22 ya lo declara para quien emitió un escalamiento.
+4. **Cerrar el circuito de cobertura de Carmen.** Un RF que le permita asignar por autoridad una
+   franja descubierta sin aceptación del candidato, y la condición que falta en el enunciado de
+   RF-TUR-35 para que deje de contradecir a RF-TUR-01 y a RF-TUR-39.
+5. **Declarar los insumos que hoy se presuponen:** el patrón de cobertura requerido de la unidad
+   (RF-TUR-09), las reglas de jornada y el vínculo laboral vigente (RF-TUR-02, RF-TUR-03), la
+   incorporación del resultado de un estudio al episodio (RF-REG-06) y el alcance de la autorización
+   reutilizable (RF-TUR-13).
+6. **Equilibrar la tensión de adopción.** Declarar para la entrega médica la composición sin
+   transcripción que RF-DIA-08 y RF-DIA-11 ya declaran para enfermería: hoy la tensión «Adopción
+   voluntaria» está decidida a favor de Milagros y de la programación, y en contra de Rodrigo, que es
+   la persona ancla de P1.
+7. **Limpiar forma y consistencia:** los tres RF no conformes en D3 (RF-TUR-16, RF-TUR-39, RF-DIA-02),
+   la lápida de RF-TUR-20, el duplicado encubierto RF-DIA-02 / RF-DIA-21, las dos filas de matriz
+   desfasadas y los tres MUST no reservados (RF-DIA-03, RF-DIA-05, RF-ESC-19).
 
 ## Evidencia
 
-`Spec/corridas/2026-08-14-iteracion-3/` — diagnóstico completo, los cuatro veredictos de persona,
-`corrida.json` y la salida literal de los controles.
+`Spec/corridas/2026-08-14-iteracion-4/` — diagnóstico completo, los cuatro veredictos de persona,
+`corrida.json` y la salida de los controles.
