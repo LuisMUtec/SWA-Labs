@@ -17,6 +17,3 @@ Luis Maquera · Johar Barzola · Fernando Aguilar
 El enunciado pide un % y no fija umbral: **it9 = 80,9 %**. El `FAILED` es el veredicto de nuestra
 rúbrica, más estricta —cinco condiciones a la vez—. it9 cumple tres y falla las dos de personas:
 D1 63,0 (umbral 80) y persona más baja 4,8/10 (umbral 7,0).
-
-**El cuello de botella es D1, la satisfacción de las personas — nunca la forma:** D3 y D4 sobre 90
-desde it5.
