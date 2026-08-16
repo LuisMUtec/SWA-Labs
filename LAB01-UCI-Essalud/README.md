@@ -166,7 +166,47 @@ Corregir `ReqFunc.MD` es trabajo de otra rama, y se comprueba con una corrida po
 [`Spec/HISTORIAL.MD`](Spec/HISTORIAL.MD) deja comparar con esta. Medir y corregir en la misma
 ejecución destruye la medición, porque quien corrige ya conoce la vara.
 
-Resultado del agente [`Spec/Eval-Spec.MD`](Spec/Eval-Spec.MD): **72,7 %**
+### Resultado de las once corridas
+
+Se ejecutaron **once corridas** sobre estados sucesivos de `ReqFunc.MD`. El registro completo, con las
+seis dimensiones sin ponderar de cada una, está en [`Spec/HISTORIAL.MD`](Spec/HISTORIAL.MD).
+
+| Corrida | Global | Promedio personas | Brechas | Veredicto |
+|---|---:|---:|---:|:---:|
+| it1 (additional-v2) | 58,7 % | 6,1/10 | 14 | FAILED |
+| it2 | 71,4 % | 4,2/10 | 17 | FAILED |
+| it3 | 59,0 % | 2,9/10 | 44 | FAILED |
+| it4 | 64,7 % | 4,8/10 | 44 | FAILED |
+| it5 | 68,9 % | 4,1/10 | 39 | FAILED |
+| it6 | 71,5 % | 4,9/10 | 30 | FAILED |
+| it7 | 77,8 % | 6,0/10 | 29 | FAILED |
+| it8 | 79,9 % | 6,6/10 | 27 | FAILED |
+| **it9** | **80,9 %** | 6,3/10 | **22** | FAILED |
+| it10 | 77,4 % | 5,4/10 | 29 | FAILED |
+| it11 | 72,7 % | 5,2/10 | 20 | FAILED |
+
+**La iteración más exitosa fue la 9**, y es el estado que este repositorio reivindica como mejor
+resultado alcanzado:
+
+- **80,9 % global** — la única corrida que atraviesa el umbral de 80,0 % de la condición 1 de
+  [`Spec/Eval-Spec.MD`](Spec/Eval-Spec.MD).
+- **22 brechas abiertas**, el mínimo de toda la serie junto con it11.
+- Cierra la progresión monótona it6 → it7 → it8 → it9 (71,5 → 77,8 → 79,9 → 80,9), que es el tramo en
+  que las correcciones de `ReqFunc.MD` se tradujeron en puntaje sin contrapartida.
+
+Las dos corridas siguientes **retroceden** (it10 77,4 %, it11 72,7 %): las correcciones que buscaban
+levantar D1 abrieron brechas nuevas en D2 y D5 más rápido de lo que cerraban las de D1. Por eso it9 —y
+no la última corrida— es el punto alto de la serie.
+
+Ninguna corrida obtiene `PASSED`, porque el veredicto de esta rúbrica exige **cinco** condiciones
+simultáneas y no solo el porcentaje global. it9 es la que más cerca queda: cumple **tres de las cinco**
+—global 80,9 % ≥ 80,0, D2 83,3 ≥ 80,0 y los nueve controles en verde— y falla las dos que dependen de
+las personas: D1 = 63,0 frente al umbral de 80,0, y la persona más baja en 4,8/10 (Rodrigo) frente al
+umbral de 7,0. El cuello de botella de toda la serie es **D1, la satisfacción de las personas** — nunca
+D3 ni D4, que desde it5 se sostienen por encima de 90.
+
+Resultado del agente [`Spec/Eval-Spec.MD`](Spec/Eval-Spec.MD): **80,9 %** (it9, mejor corrida) ·
+**72,7 %** (it11, última corrida, publicada en [`Spec/Eval-Report.MD`](Spec/Eval-Report.MD))
 
 ---
 
