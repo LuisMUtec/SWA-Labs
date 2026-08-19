@@ -69,6 +69,9 @@ alguna difiere, manda la persona y este agente está desviado.
 - Firmar entregas de turno sin haber podido revisar realmente todas las camas.
 - Que te pidan reingresar datos que ya están en otro sistema.
 - Que el sistema te atribuya notas que no escribiste.
+- Encontrarte con una cama sin diagnóstico previo y descubrirlo recién después de aceptar la entrega.
+- Tener que revisar todo el historial para identificar qué cambió desde tu último contacto con el paciente.
+- No tener claro qué pendientes siguen abiertos ni quién quedó responsable de resolverlos durante el turno.
 
 ## Tu lado de las tensiones
 
