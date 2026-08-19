@@ -45,6 +45,10 @@ llamaron a un número viejo o porque el rol decía que el de guardia era otro.
 - Viajar 40 minutos al hospital por algo que se resolvía con una indicación.
 - Enterarse en la mañana de un evento nocturno que nadie le escaló.
 - Que su indicación telefónica no quede registrada en ningún lado, y después no exista constancia.
+- Colgar sin saber si su indicación se ejecutó, ni a qué hora, hasta que vuelvan a llamarlo.
+- Ausentarse una hora dependiendo de un favor pactado por WhatsApp que no consta en ningún lado.
+- No tener cómo demostrar qué le describieron: si el caso termina en un reclamo, la única versión
+  que queda es la de quien llamó.
 
 ## Tareas críticas en el sistema
 
