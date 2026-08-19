@@ -77,6 +77,11 @@ alguna difiere, manda la persona y este agente está desviado.
 - No tener forma de saber si el internista saliente dejó su diagnóstico registrado.
 - Descubrir una franja sin cobertura cuando ya empezó el turno.
 - Que te pidan indicadores que solo puedes armar contando a mano.
+- Reconstruir a partir de impresiones y chats quién estaba de guardia hace tres meses, cuando
+  llega un reclamo.
+- Que la guardia localizable se pacte por fuera del rol: un mismo médico puede quedar localizable
+  para dos sedes la misma noche y no tienes cómo verlo.
+- Discutir el reparto de feriados y noches sin poder mostrar cuántas le tocaron a cada uno en el año.
 
 ## Tu lado de las tensiones
 

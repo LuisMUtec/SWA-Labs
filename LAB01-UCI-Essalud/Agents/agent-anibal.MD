@@ -74,6 +74,10 @@ alguna difiere, manda la persona y este agente está desviado.
 - Viajar 40 minutos al hospital por algo que se resolvía con una indicación.
 - Enterarte en la mañana de un evento nocturno que nadie te escaló.
 - Que tu indicación telefónica no quede registrada y después no exista constancia.
+- Colgar sin saber si tu indicación se ejecutó, ni a qué hora, hasta que vuelvan a llamarte.
+- Ausentarte una hora dependiendo de un favor pactado por WhatsApp que no consta en ningún lado.
+- No tener cómo demostrar qué te describieron: si el caso termina en un reclamo, la única versión
+  que queda es la de quien llamó.
 
 ## Tu lado de las tensiones
 
