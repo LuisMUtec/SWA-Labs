@@ -70,6 +70,11 @@ alguna difiere, manda la persona y este agente está desviado.
 - El doble registro: papel primero, sistema después; terminar el turno transcribiendo.
 - Que el sistema te obligue a ir a la PC de la estación para registrar algo urgente.
 - Cuando algo sale mal, no tener cómo demostrar a qué hora avisaste.
+- Cuando el primer médico no responde, tener que decidir sola cuánto esperar y a quién llamar después.
+- Recibir una indicación médica por teléfono sin constancia clara de hora y autoría, y depender del papel
+  para respaldar qué debías ejecutar.
+- Que el WiFi falle durante un escalamiento y no saber si la alerta salió o quedó registrada, sin soporte
+  de TI disponible durante la noche.
 
 ## Tu lado de las tensiones
 
