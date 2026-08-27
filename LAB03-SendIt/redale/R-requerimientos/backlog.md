@@ -52,9 +52,10 @@ razonamiento que un título no puede cargar vive en [`insumos.md`](insumos.md); 
 | RF-114 | el sistema recibirá la respuesta del desafío del propio receptor, sin que quien atiende pueda leerla ni digitarla - Elena | Elena | BR-09 | P0 |
 | RF-94 | el sistema no volverá a entregar un código ya emitido, ni siquiera al emisor que lo perdió - Rosa | Rosa | BR-08 | P0 |
 | RF-110 | el sistema permitirá al emisor cancelar un giro cuyo código se perdió, mientras nadie lo haya cobrado - Rosa | Rosa | BR-12 | P0 |
-| RF-117 | el sistema permitirá rehacer ese giro conservando la cotización y sin volver a cobrar la comisión - Rosa | Rosa | BR-07 | P0 |
+| RF-117 | el sistema permitirá rehacer ese giro al mismo receptor, conservando la cotización y sin volver a cobrar la comisión - Rosa | Rosa | BR-07 | P0 |
+| RF-123 | el sistema volverá a correr sobre el giro rehecho los mismos controles que sobre uno nuevo - Kevin | Kevin | BR-06 | P0 |
 | RF-12 | el sistema comprobará la respuesta del desafío sin mostrarla a quien atiende el mostrador - Kevin | Kevin | BR-09 | P0 |
-| RF-13 | el sistema exigirá, antes de registrar la recepción del efectivo, la autorización de un segundo rol para un giro sobre el umbral reforzado - Kevin | Kevin | BR-05 | P0 |
+| RF-13 | el sistema exigirá la autorización de un segundo rol antes de que el operario reciba el efectivo de un giro sobre el umbral reforzado - Kevin | Kevin | BR-05 | P0 |
 | RF-14 | el sistema avisará al emisor por llamada o mensaje de texto que su devolución está disponible y en qué punto retirarla - Rosa | Rosa | BR-12 | P0 |
 
 ### La frontera
@@ -100,7 +101,7 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-72 | el sistema devolverá en el punto de atención que el emisor elija - Rosa | Rosa | BR-12 | P0 |
 | RF-73 | el sistema informará al emisor el plazo de una eventual devolución antes de que entregue el efectivo - Rosa | Rosa | BR-12 | P0 |
 | RF-96 | el sistema informará al emisor cuánto puede durar como máximo una revisión, antes de que entregue el efectivo - Rosa | Rosa | BR-06 | P0 |
-| RF-115 | el sistema informará al emisor, antes de que entregue el efectivo, dentro de cuánto le avisará si su giro queda retenido - Rosa | Rosa | BR-06 | P0 |
+| RF-115 | el sistema informará al emisor, antes de que entregue el efectivo, dentro de cuánto le avisará si su giro queda retenido, y ese plazo no excederá `[ASSUMPTION: 1 hora]` - Rosa | Rosa | BR-06 | P0 |
 | RF-89 | el sistema mantendrá disponible la devolución no retirada hasta el plazo de prescripción del giro - Rosa | Rosa | BR-12 | P2 |
 | RF-74 | el sistema devolverá también la comisión cobrada cuando el giro no llegó a pagarse - Rosa | Rosa | BR-12 | P0 |
 | RF-33 | el sistema permitirá liberar un giro retenido únicamente al rol de cumplimiento - Kevin | Kevin | BR-06 | P0 |
@@ -114,11 +115,12 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 |---|---|---|---|---|
 | RF-34 | el sistema exigirá el código del giro para autorizar un pago - Elena | Elena | BR-09 | P0 |
 | RF-85 | el sistema exigirá un documento de identidad cuyo titular coincida con el receptor designado - Elena | Elena | BR-09 | P0 |
-| RF-86 | el sistema exigirá que el documento del receptor esté vigente - Elena | Elena | BR-09 | P0 |
+| RF-86 | el sistema exigirá que el documento del receptor esté vigente, salvo cuando RF-122 lo releva - Elena | Elena | BR-09 | P0 |
 | RF-68 | el sistema exigirá al emisor registrar al crear el giro una pregunta acordada con el receptor, y su respuesta - Rosa | Rosa | BR-09 | P0 |
 | RF-101 | el sistema no transmitirá a nadie la respuesta del desafío, ni siquiera a quien registró la pregunta - Rosa | Rosa | BR-09 | P0 |
 | RF-102 | el sistema impedirá que el punto de atención cobre al receptor por recibir su dinero - Elena | Elena | BR-01 | P0 |
 | RF-69 | el sistema entregará al receptor por llamada o mensaje de texto la pregunta del desafío cuando no tiene documento vigente - Elena | Elena | BR-09 | P0 |
+| RF-122 | el sistema autorizará el pago con documento vencido cuando el receptor responde correctamente el desafío - Elena | Elena | BR-09 | P0 |
 | RF-82 | el sistema limitará a un número acotado los intentos de responder el desafío de un giro - Kevin | Kevin | BR-09 | P0 |
 | RF-103 | el sistema devolverá al emisor el giro cuyos intentos de desafío se agotaron - Kevin | Kevin | BR-09 | P0 |
 | RF-83 | el sistema caducará la respuesta del desafío junto con el giro que la lleva - Kevin | Kevin | BR-09 | P0 |
@@ -135,12 +137,13 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-105 | el sistema no cambiará el punto de atención elegido sin la respuesta del emisor - Rosa | Rosa | BR-02 | P0 |
 | RF-111 | el sistema devolverá al emisor el giro cuyo punto no puede pagar y cuya respuesta no llega dentro del plazo que le informó RF-116 - Rosa | Rosa | BR-12 | P0 |
 | RF-116 | el sistema informará al emisor, al ofrecerle otro punto de atención, dentro de cuánto debe responder - Rosa | Rosa | BR-11 | P0 |
-| RF-39 | el sistema entregará al operario, ante cada giro que no puede pagar ni crear, la razón en términos que pueda repetirle a quien está delante - Kevin | Kevin | BR-16 | P0 |
+| RF-39 | el sistema entregará al operario, ante cada giro que no puede pagar ni crear, una salida concreta que ofrecerle a quien está delante - Kevin | Kevin | BR-16 | P0 |
 | RF-40 | el sistema omitirá al operario el motivo de un rechazo cuando revelarlo esté prohibido - Kevin | Kevin | BR-16 | P0 |
 | RF-25 | el sistema avisará al receptor que hay un giro a su nombre por llamada o mensaje de texto - Elena | Elena | BR-09 | P0 |
 | RF-41 | el sistema informará al receptor por llamada o mensaje de texto, antes de que viaje, el monto que cobrará - Elena | Elena | BR-09 | P0 |
 | RF-75 | el sistema informará al receptor por llamada o mensaje de texto si el punto elegido puede pagarle - Elena | Elena | BR-11 | P0 |
 | RF-109 | el sistema volverá a avisar al receptor si el punto elegido deja de poder pagarle - Elena | Elena | BR-11 | P0 |
+| RF-124 | el sistema informará al receptor a qué otro punto de atención puede ir cuando el elegido deja de poder pagarle - Elena | Elena | BR-11 | P0 |
 | RF-76 | el sistema registrará el efectivo que cada punto de atención declara al abrir y al cerrar su caja - Kevin | Kevin | BR-01 | P0 |
 | RF-92 | el sistema informará al operario el efectivo disponible en su punto antes de habilitarle un pago - Kevin | Kevin | BR-01 | P0 |
 | RF-95 | el sistema descontará del efectivo del punto cada pago que autoriza, sin esperar al cierre de caja - Kevin | Kevin | BR-01 | P0 |
@@ -253,7 +256,7 @@ nunca puede ser falso, y que por lo tanto se comprueba en cualquier momento.
 
 | | P0 | P1 | P2 |
 |---|---|---|---|
-| Funcionales | 97 | 15 | 5 |
+| Funcionales | 100 | 15 | 5 |
 | No funcionales | 14 | 3 | 0 |
 
 ## Supuestos y ambigüedades
