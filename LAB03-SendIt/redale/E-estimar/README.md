@@ -128,7 +128,7 @@ backlog las cerró en su iteración 03 y aquí se consumen como dadas, no como p
 | S-15 | Receptores distintos por mes, y cobros por receptor en la ventana | RF-58 cuenta los cobros de un mismo receptor y RF-93 retiene al que supera el acumulado: hace falta una clave de receptor estable entre giros, no una fila por giro. Y RF-80 conserva la evidencia de identidad **del receptor además de la del emisor**, de modo que el binario pesado del cálculo 2 se captura dos veces por giro y no una | El mismo patrón de S-02, del otro lado del mostrador: Elena cobra todos los meses y se identifica todas las veces | — | — |
 | S-16 | Proporción de pagos que se resuelven por desafío, e intentos por pago | RF-68 obliga a registrar pregunta y respuesta en **todo** giro, así que el dato existe siempre y RNF-17 exige guardarlo ilegible en los dos lados del mostrador — coste fijo por giro, en el camino de escritura de la creación. Lo que varía es el consumo: RF-69 abre el desafío como salida al documento vencido, RF-82 acota los intentos y RF-12 los comprueba sin mostrarlos, así que un pago puede costar hasta `intentos` comprobaciones en vez de una | La proporción de documentos vencidos que hoy dejan a Elena sin cobrar, que es la tensión T3 del backlog | — | — |
 | S-17 | Proporción de pagos con declaración de diferencia en el mostrador | RF-90 le da al receptor un acto propio que antes no tenía, y cada declaración abre la cadena cara: atribución al punto (RF-59), aviso al receptor (RF-60), y si termina en corrección, un movimiento nuevo (RF-56) con autorización de un segundo rol (RF-61). Es baja en proporción y alta en operaciones por caso | `[ASSUMPTION: sin fuente; el enunciado no da ninguna cifra de diferencias]` | — | — |
-| S-18 | Pedidos de supresión de datos personales por mes | **Es el único término negativo del cálculo 2.** RF-81 suprime a pedido los datos de quien los entregó —y de nadie más— salvo lo que el registro de actos debe conservar, que RF-55 y RNF-03 declaran inalterable. Resta binarios de identidad; no resta trazas. Y agrega una operación cara que ningún giro pide: buscar a una persona **a través de** todos sus giros, que es el eje por el que el libro contable no está particionado | El plazo de RNF-03 acota lo que puede suprimirse: por debajo del piso de conservación no hay nada que borrar | — | — |
+| S-18 | Pedidos de supresión de datos personales por mes | **Es el único término negativo del cálculo 2.** RF-81 suprime a pedido los datos de quien los entregó —y de nadie más— salvo lo que el registro de actos debe conservar, que RNF-03 y RNF-03 declaran inalterable. Resta binarios de identidad; no resta trazas. Y agrega una operación cara que ningún giro pide: buscar a una persona **a través de** todos sus giros, que es el eje por el que el libro contable no está particionado | El plazo de RNF-03 acota lo que puede suprimirse: por debajo del piso de conservación no hay nada que borrar | — | — |
 
 ### El factor de pico
 
@@ -216,7 +216,7 @@ core, y por eso lleva fila propia en la tabla de entradas.
 | Declarar el efectivo al abrir y al cerrar caja | escritura, `puntos × turnos × 2` | RF-76 | — | — | — |
 | Informar al operario el efectivo del punto | lectura previa a cada pago | RF-92 | — | — | — |
 | Comprobar la respuesta del desafío sin mostrarla | lectura ilegible, hasta `intentos` por pago | RF-12, RF-69, RF-82 | — | — | — |
-| Ejecutar el pago en destino | escritura contable + frontera | RF-34, RF-35, RF-36, RF-85, RF-86 | — | — | — |
+| Ejecutar el pago en destino | escritura contable + frontera | RF-34, RNF-05, RF-36, RF-85, RF-86 | — | — | — |
 | Rederivar el cobro a otro punto del país destino | escritura de estado + segunda ventanilla | RF-91 | — | — | — |
 | Declarar en el mostrador una diferencia de monto | escritura + atribución al punto | RF-90, RF-59 | — | — | — |
 | Cerrar el giro y avisar al emisor | escritura + notificación | RF-64, RF-65 | — | — | — |
@@ -254,7 +254,7 @@ eso, el almacenamiento no sería un problema de arquitectura.
    coincidencia**: la ausencia de coincidencia también hay que poder demostrarla, y una auditoría
    necesita saber contra qué versión de qué lista se aprobó lo que se aprobó.
 3. **El registro inalterable** — el asiento contable de cada movimiento y la traza de auditoría que
-   RF-54 asocia a la identidad de quien ejecutó cada acto y RF-55 impide modificar o eliminar. Esta
+   RF-54 asocia a la identidad de quien ejecutó cada acto y RNF-03 impide modificar o eliminar. Esta
    última crece con las **lecturas**, no solo con las escrituras: RNF-04 exige traza de todo acceso a
    datos de identidad, con autor, momento y giro, así que cada consulta que Kevin hace sobre un
    expediente es una fila más.
@@ -272,7 +272,7 @@ por cuánto: el mínimo defendible del factor es `365 × 5`.
 **Y una cuarta familia que va con signo menos, la única del paso.** RF-81 suprime a pedido los datos
 personales de quien los entregó —y de nadie más— salvo los que el registro de actos debe conservar.
 No es una excepción cosmética a las tres de arriba: recorta la familia 1, que es justamente la que
-domina, y deja intactas la 2 y la 3, que RF-55 y RNF-03 declaran inalterables. El efecto neto sobre
+domina, y deja intactas la 2 y la 3, que RNF-03 y RNF-03 declaran inalterables. El efecto neto sobre
 el total es pequeño y el efecto sobre el **diseño** no lo es, porque obliga a poder encontrar a una
 persona a través de todos sus giros y a borrar parte de una fila sin romper lo que la referencia.
 Un cálculo que ignore el término negativo se equivoca por poco; uno que ignore la operación que lo
