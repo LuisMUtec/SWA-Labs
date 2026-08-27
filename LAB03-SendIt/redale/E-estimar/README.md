@@ -80,7 +80,7 @@ piso y la otra no.
 | **Aperturas y cierres de caja por día** | `puntos activos × turnos × 2` (RF-76). No depende de los giros | **9 000** | `3 000 puntos × 1,5 turnos × 2 = 9 000` | `[ASSUMPTION: S-12]` — es **3,2 veces** el número de giros del día: la carga con piso es mayor que la carga de negocio |
 | **Avisos al receptor por día** | Unidades de voz o SMS entregadas a un tercero (RF-25, RF-37, RF-41, RF-60, RF-75). Se pagan por unidad, no por byte | **13 720** | `4,9 unidades por giro × 2 800 = 13 720` — desglose en S-14. A USD 0,05 la unidad: `13 720 × 0,05 = USD 686/día`, **USD 250 k/año**, **USD 0,24 por giro** | `[ASSUMPTION: S-14]` |
 | Giros por día en pico | `giros por día × P` | **8 400** | `2 800 × 3,0` — el componente **diario** de `P`, no el compuesto | `[ASSUMPTION: S-07]` |
-| RPS — requests por segundo | Derivada, no supuesta: sale del desglose por operación del cálculo 1 | **0,89 promedio · 9,8 en pico** | `76 615 requests/día ÷ 86 400 s = 0,887` · `0,887 × 11 = 9,76` | Derivado |
+| RPS — requests por segundo | Derivada, no supuesta: sale del desglose por operación del cálculo 1 | **0,89 promedio · 9,8 en pico** | `76 785 requests/día ÷ 86 400 s = 0,889` · `0,889 × 11 = 9,78` | Derivado |
 | Almacenamiento requerido | Salida del cálculo 2, no entrada | **1,01 GB/día · 3,2 TB retenidos** | Cálculo 2 | Derivado |
 | Factor de pico `P` | Ver abajo | **11** | `3,0 (día señalado) × 3,6 (hora del día) = 10,8` | `[ASSUMPTION: S-07]` — el único de los grandes sin ancla en ningún RNF |
 
@@ -227,10 +227,10 @@ una escritura contable con una consulta de estado promedia dos cosas que no se p
 |---|---|---|---|
 | 1. Capacidad de un core | `req/s` que sostiene un core, **por tipo de operación** | **escritura contable: 5 req/s · lectura: 50 req/s** | `[ASSUMPTION: la escritura de SendIt cuesta al menos lo que el request genérico del material, que fija 5 req/s por core — toca varias filas, cruza la frontera del corredor y no puede servirse desde caché. La lectura sale de un índice caliente y rinde 10× ]` |
 | 2. Capacidad de un servidor | `#cores × core` | escritura: `16 × 5 = ` **80 req/s** · lectura: `16 × 50 = ` **800 req/s** | `[ASSUMPTION: servidor de 16 vCPU]` |
-| 3. Carga objetivo | `RPS derivado del desglose de abajo × P` | escritura: `50 555 / 86 400 = 0,585 req/s`, `× 11 = ` **6,4 req/s** · lectura: `26 060 / 86 400 = 0,302 req/s`, `× 11 = ` **3,3 req/s** | Derivado |
-| 4. Servidores | `carga objetivo / capacidad de servidor` | escritura: `6,4 / 80 = 0,080` · lectura: `3,3 / 800 = 0,004` · suma: **0,09 servidores** | Derivado — **un solo servidor cubre once veces la carga del pico** |
+| 3. Carga objetivo | `RPS derivado del desglose de abajo × P` | escritura: `50 729 / 86 400 = 0,587 req/s`, `× 11 = ` **6,45 req/s** · lectura: `26 056 / 86 400 = 0,302 req/s`, `× 11 = ` **3,32 req/s** | Derivado |
+| 4. Servidores | `carga objetivo / capacidad de servidor` | escritura: `6,45 / 80 = 0,081` · lectura: `3,32 / 800 = 0,004` · suma: **0,085 → 0,09 servidores** | Derivado — **un solo servidor cubre once veces la carga del pico** |
 
-Donde el material obtiene `100 000 / 160 = 625 servidores`, SendIt obtiene `6,4 / 80 = 0,08`. No es
+Donde el material obtiene `100 000 / 160 = 625 servidores`, SendIt obtiene `6,45 / 80 = 0,081`. No es
 un error de método: es el resultado, y dice algo. Un sistema de remesas en efectivo mueve **dinero**,
 no *bytes*: 2 800 giros diarios son `USD 840 000` al día atravesando la frontera con dos reguladores
 encima, y caben en una máquina. **La dificultad de SendIt nunca fue el cómputo.** Lo que sigue —el
@@ -286,14 +286,14 @@ core, y por eso lleva fila propia en la tabla de entradas.
 | Entregar la devolución en ventanilla y avisarla | escritura + notificación + ventanilla | RF-14, RF-71, RF-72, RF-74, RF-88 | 12 | **95** = `112 × 85 %` retirado (S-13). Los `17` restantes siguen abiertos hasta 12 meses por RF-89 | Escritura |
 | Suprimir a pedido los datos de una persona | **búsqueda transversal + borrado parcial** | RF-81 | **400** — dos órdenes de magnitud sobre la más cara del camino crítico | **1,3** = `40/mes ÷ 30,4` (S-18) | Escritura. **1,3 requests al día que dictan una decisión de particionado en `A`** |
 
-**Suma del desglose:** `76 615 requests/día`, repartidos en **50 555 escrituras** y **26 060
-lecturas**. `76 615 / 86 400 = 0,89 req/s` de promedio; `× 11 = ` **9,8 req/s en pico**.
+**Suma del desglose:** `76 785 requests/día`, repartidos en **50 729 escrituras** y **26 056
+lecturas**. `76 785 / 86 400 = 0,89 req/s` de promedio; `× 11 = ` **9,8 req/s en pico**.
 
 **La comprobación que este documento se exigió a sí mismo.** Arriba se dijo que si el desglose por
 peso cambiara el resultado en más de un orden de magnitud, habría que calcular por separado y sumar.
 Se hizo la cuenta, normalizando el peso 10 a un core de 5 req/s: las escrituras dan
-`392 498 / 10 = 39 250` escrituras equivalentes —**menos** que el recuento plano de 50 555, porque la
-mayoría son ligeras— y las lecturas dan `38 292` equivalentes, `1,47×` el recuento plano de 26 060,
+`392 498 / 10 = 39 250` escrituras equivalentes —**menos** que el recuento plano de 50 729, porque la
+mayoría son ligeras— y las lecturas dan `38 292` equivalentes, `1,47×` el recuento plano de 26 056,
 arrastradas por las 16 800 consultas de estado. Ninguno de los dos mueve la cifra ni medio orden de
 magnitud: `39 250 / 86 400 × 11 / 80 = 0,062` servidores de escritura. **El sistema sigue pidiendo
 menos de un décimo de máquina.**
@@ -436,10 +436,10 @@ El método: **data de entrada por día → data de salida por día → dividir e
 
 | Paso | Qué se cuenta | Valor | Marca |
 |---|---|---|---|
-| 1. Entrada por día | Lo que sube al sistema: las capturas de identidad de las dos puntas que RF-80 conserva, respuestas de las listas de sanciones, declaraciones de caja de RF-76, y las confirmaciones de cobro que suben desde los puntos de atención —incluida la ráfaga que sube un punto al recuperar la conexión y reconciliar su estado (RNF-08), que no es tráfico uniforme | `identidad 1 734 × 500 KB = 867 MB` **(el 73 %)** · `listas de sanciones 8 400 × 15 KB = 126 MB` · `comprobantes de entrega 2 690 × 35 KB = 94,2 MB` · `resto de escrituras de ventanilla 28 785 × 3 KB = 86,4 MB` · `ráfaga de RNF-08: 45 puntos × 400 KB = 18 MB` · `caja 9 000 × 0,4 KB = 3,6 MB` → **1 195,2 MB ≈ 1,20 GB/día** | Derivado. Los `27 MB` de capturas que RF-99 descartará **entran igual**: en el cálculo 2 son un negativo, aquí son un positivo |
+| 1. Entrada por día | Lo que sube al sistema: las capturas de identidad de las dos puntas que RF-80 conserva, respuestas de las listas de sanciones, declaraciones de caja de RF-76, y las confirmaciones de cobro que suben desde los puntos de atención —incluida la ráfaga que sube un punto al recuperar la conexión y reconciliar su estado (RNF-08), que no es tráfico uniforme | `identidad 1 734 × 500 KB = 867 MB` **(el 73 %)** · `listas de sanciones 8 400 × 15 KB = 126 MB` · `comprobantes de entrega 2 690 × 35 KB = 94,2 MB` · `resto de escrituras de ventanilla 28 905 × 3 KB = 86,7 MB` · `ráfaga de RNF-08: 45 puntos × 400 KB = 18 MB` · `caja 9 000 × 0,4 KB = 3,6 MB` → **1 195,5 MB ≈ 1,20 GB/día** | Derivado. Los `27 MB` de capturas que RF-99 descartará **entran igual**: en el cálculo 2 son un negativo, aquí son un positivo |
 | 2. Salida por día | Lo que el sistema entrega: cotizaciones fechadas, estados consultados por el emisor (RF-52, RF-53, RF-66), saldos de caja al operario antes de cada pago (RF-92), y las descargas de evidencia que hace cumplimiento | `consultas de estado 16 800 × 8 KB = 134,4 MB` · `respuestas de ventanilla 20 750 × 6 KB = 124,5 MB` · `descargas de evidencia de cumplimiento 70 casos × 2 × 500 KB = 70 MB` · `cotizaciones 3 640 × 4 KB = 14,6 MB` · `saldos de caja RF-92 2 690 × 2 KB = 5,4 MB` · `reportes a la autoridad RF-17 y RF-22, 3 × 50 KB = 0,15 MB` → **349,1 MB ≈ 0,35 GB/día** | Derivado |
 | 2b. Salida por canal de terceros | **No se mide en bytes.** Avisos de voz y SMS entregados a un operador de telefonía (RF-25, RF-37, RF-41, RF-60, RF-75), contados en unidades y facturados por unidad. Van aparte porque dividirlos entre 86 400 no dice nada útil: lo que los limita es la cuota del tercero, no el enlace | **13 720 unidades/día** · en el día señalado `13 720 × 3,0 = ` **41 160 unidades**. Contra una cuota típica de `10 000/día` por país sin acuerdo comercial `[ASSUMPTION]`, los dos países dan `20 000` → **el día pico la excede por 2,1×**. Costo: `USD 686/día`, `USD 250 k/año` | `[ASSUMPTION: S-14]` — **este es el primer cuello de botella del sistema, y no se resuelve comprando servidores.** Elena no tiene datos móviles: un aviso no entregado no degrada, desaparece |
-| 3. Entrada por segundo | `entrada por día / 86 400` | `1 195 200 KB / 86 400 = ` **13,8 KB/s** ≈ 0,11 Mbit/s | Derivado |
+| 3. Entrada por segundo | `entrada por día / 86 400` | `1 195 500 KB / 86 400 = ` **13,8 KB/s** ≈ 0,11 Mbit/s | Derivado |
 | 4. Salida por segundo | `salida por día / 86 400` | `349 100 KB / 86 400 = ` **4,0 KB/s** ≈ 0,03 Mbit/s | Derivado |
 | 5. Pico | `resultado × P` | `(13,8 + 4,0) × 11 = ` **196 KB/s ≈ 1,6 Mbit/s** — entrada `152 KB/s`, salida `44 KB/s` | **Es la cifra que se usa.** Y hay una que no obedece a `P`: la ráfaga de RNF-08, `18 MB en 60 s = 300 KB/s`, que sola supera el pico entero. Se dimensiona contra ella, no contra los 196 KB/s |
 
@@ -450,7 +450,7 @@ Dos observaciones específicas de este caso:
   SendIt el binario pesado —el documento de identidad— **entra** y casi nunca sale; entra dos veces
   por giro desde que RF-80 lo pide de las dos puntas, y lo que sale son respuestas de pocos
   kilobytes consultadas muchas veces. Con las cifras: YouTube `40 PB / 52 TB = 769×` a favor de la
-  salida; SendIt `1 195,2 / 349,1 = 3,4×` a favor de la **entrada**. La única salida pesada del
+  salida; SendIt `1 195,5 / 349,1 = 3,4×` a favor de la **entrada**. La única salida pesada del
   sistema son los `70 MB/día` que cumplimiento descarga de evidencia, y es el 20 % de toda la
   salida generada por el 0,03 % de las operaciones.
 - **Dividir entre 86 400 supone que la carga es uniforme, y no lo es.** El resultado del paso 3 es
