@@ -129,7 +129,7 @@ decide comunicárselo al receptor. SendIt no se lo entrega al receptor por su cu
 - **Fuente:** `[ASSUMPTION: nuestra, modelo Western Union.]`
 - **Afecta:** creación del giro, pago, cancelación, seguridad.
 
-### BR-09 — El receptor cobra contra código **y** documento, nunca contra uno solo
+### BR-09 — El receptor cobra contra código **y** documento, nunca contra uno solo. Cuando el documento no está vigente, el tercer factor es el desafío que el emisor registró al crear el giro: el receptor cobra contra código, documento y respuesta
 
 El pago exige que quien se presenta exhiba el código del giro y un documento de identidad
 que coincida con el receptor designado por el emisor. Ninguna de las dos cosas basta sola.
