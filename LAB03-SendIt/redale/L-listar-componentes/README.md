@@ -20,7 +20,7 @@ abierto**. Transcripción completa en
 | | |
 |---|---|
 | **Consume de R** | El backlog completo. Es lo que **gobierna** las iteraciones: una pasada del diagrama existe porque hay un ítem sin `DONE` |
-| **Consume de D** | Los servicios y las fronteras con terceros. Las cajas de la iteración 2 son los servicios que `D` nombró |
+| **Consume de D** | Los servicios, las fronteras con terceros y la frontera interna con el punto de pago. Las cajas de la iteración 2 son los servicios que `D` nombró |
 | **Consume de A** | Las bases de datos. **Son varias, no una**: cada grupo de servicios tiene la suya, y cuál es cuál lo decidió `A` |
 | **Consume de E** (estimar) | Solo para saber si un componente necesita estar separado por volumen. La estimación no dibuja cajas |
 | **Entrega a E** (escalar) | El diagrama base sobre el que se pregunta qué se rompe primero cuando la carga sube |
@@ -56,7 +56,10 @@ Heredadas del ejemplo de clase y adoptadas aquí sin cambios.
 | **Rama condicional** | La arista lleva su etiqueta: `TODO OK`, `Validation Failed`, `OK`, `NO LOAN` |
 
 **Código de color** — y hace un trabajo real, no decorativo: **el rosado marca dónde termina el
-sistema.** Todo lo rosado puede fallar, tardar o mentir sin que el diseño pueda impedirlo.
+sistema.** Todo lo rosado puede fallar, tardar o mentir sin que el diseño pueda impedirlo. En este
+caso el código no alcanza, y conviene saberlo antes de dibujar: **el punto de pago no es rosado
+—es propio— y aun así puede pagar cuando el centro ya dijo que no.** Ahí termina la conexión, no el
+sistema, y son cosas distintas.
 
 | Color | Qué agrupa | Clase en Mermaid |
 |---|---|---|
@@ -105,11 +108,13 @@ flowchart LR
 |---|---|---|---|
 | `SendIt` | — | — | — |
 
-**Pendiente de decidir en esta pasada:** si la red pagadora entra como actor —igual que `Proveedor`
-en el ejemplo de Leasing— o aparece recién en la iteración 2 como sistema externo. Elena no habla
-directamente con el sistema: habla con Kevin en el mostrador, y **Rosa tampoco** —bajo el modelo
-Western Union (D-07) las dos puntas pasan por una ventanilla—. Dibujarlas conectadas directamente a
-la caja es cómodo y falso, y ese es exactamente el error que la tensión T6 describe.
+**Pendiente de decidir en esta pasada:** si **quien atiende el mostrador** entra como actor —igual
+que `Proveedor` en el ejemplo de Leasing— o aparece recién en la iteración 2 como una caja propia
+más. Tiene argumento por los dos lados: Kevin es una persona que opera el sistema, y a la vez el
+mostrador es una parte del sistema. Lo que no se puede es saltárselo: Elena no habla directamente
+con el sistema —habla con Kevin en el mostrador— y **Rosa tampoco**, porque bajo el modelo Western
+Union (D-07) las dos puntas pasan por una ventanilla. Dibujarlas conectadas directamente a la caja
+es cómodo y falso, y es exactamente el error que la tensión T6 describe.
 
 **Ítems del backlog que quedan `DONE`:** —
 
@@ -145,8 +150,9 @@ flowchart LR
   el motivo.
 - El canal hacia Elena, que **no tiene datos ni correo**: llamada y mensaje de texto (T5). Un
   `Messaging Service` que solo sabe hablar por aplicación la deja afuera.
-- La frontera con la red pagadora, y del otro lado de ella, el registro que no obedece a nuestra
-  transacción.
+- La frontera entre el centro y el mostrador —**interna, no rosada**— y el momento exacto en que la
+  autorización de pago baja al punto: a partir de ahí, si la conexión se cae, el centro dejó de
+  poder impedir el pago sin haber dejado de ser el dueño del registro.
 
 **Ítems del backlog que quedan `DONE`:** —
 
@@ -174,8 +180,9 @@ flowchart LR
 | — | — | — | — |
 
 **Candidatos que este caso obliga a considerar en esta pasada**, sin decidir todavía cuáles entran:
-el proceso de **conciliación** con la red pagadora —el equivalente del `Debt Job <EOD>` del ejemplo,
-y el punto donde se descubre que una operación figura en dos estados incompatibles—; el
+el proceso de **sincronización y cierre de caja de los puntos de pago** —el equivalente del
+`Debt Job <EOD>` del ejemplo, y el punto donde se descubre que un envío figura a la vez detenido en
+el centro y pagado en el mostrador—; el
 **vencimiento de plazos**, que hace caducar solas las retenciones de cumplimiento y las cotizaciones de
 `D`(d); la **devolución** a Rosa; el **re-tamizaje** cuando una lista se actualiza y alcanza a un
 envío ya aprobado; y el **tablero de cumplimiento**, que es el `Debt Dashboard` de este caso.
@@ -213,22 +220,26 @@ porque «ya se ve completo».
 
 ## Frontera de confianza
 
-En el ejemplo de Leasing, lo rosado —`SUNAT`, `RENIEC`, `INFO CORP API`— **informa**. En SendIt, lo
-rosado **tiene el dinero**. Un tercero que responde tarde en el ejemplo retrasa una validación; una
-red pagadora que responde tarde deja un envío simultáneamente retenido y pagado.
+En el ejemplo de Leasing, lo rosado —`SUNAT`, `RENIEC`, `INFO CORP API`— **informa**. En SendIt lo
+rosado también informa casi todo el tiempo: identidad, listas, tasa, la autoridad. **El peor defecto
+de consistencia de este caso no está en una frontera rosada: está adentro.** El punto de pago es
+azul —es de SendIt, corre su sistema, obedece sus órdenes— hasta que pierde la conexión, y entonces
+sigue teniendo billetes en la caja y una autorización previa que dice «paga».
 
-Toda frontera es donde la consistencia se rompe, y por una razón estructural: **del otro lado hay
-otro registro contable que no participa de nuestra transacción.** Dentro de la frontera, la
-atomicidad es una decisión de diseño. Fuera, no existe: solo hay dos afirmaciones sobre el mismo
-hecho y la esperanza de que coincidan. Lo único que el diseño puede hacer es **detectar la
-divergencia, acotar cuánto dura y decidir cuál registro manda mientras tanto** — la decisión `D`(c).
+De modo que hay **dos clases de frontera y no fallan por la misma causa**. Con un tercero, la
+consistencia se rompe porque del otro lado hay otro registro que no participa de nuestra
+transacción. Con el punto de pago no hay otro registro —la contabilidad es una sola— y aun así se
+rompe: mientras el punto está incomunicado, el centro y el mostrador sostienen cada uno una versión
+del mismo envío, y **las dos son nuestras**. El repertorio del diseño es el mismo en los dos casos
+—**detectar la divergencia, acotar cuánto dura y decidir cuál lado manda mientras tanto**, la
+decisión `D`(c)—, con una diferencia a favor del caso interno: aquí sí se puede decidir de antemano
+qué se le permite hacer al mostrador sin conexión, cosa que con un tercero no se podía.
 
 | Sistema externo | Qué se le manda | Qué se recibe | Qué se rompe si no responde, tarda o miente | Marca |
 |---|---|---|---|---|
 | Verificación de identidad | — | — | — | — |
 | Listas de personas y entidades sancionadas | — | — | — | — |
 | Proveedor de tipo de cambio | — | — | — | — |
-| **Red pagadora en destino** | — | — | — | — |
 | Autoridad a la que reporta cumplimiento | — | — | — | — |
 | Procesador del cobro a Rosa | — | — | — | — |
 | Canal de voz y mensaje hacia Elena | — | — | — | — |
@@ -238,15 +249,30 @@ que lleva el mensaje a Elena cuenta como tercero. Ambas tienen argumento a favor
 obedecen— y el argumento en contra es que multiplican las cajas rosadas hasta que el diagrama deja
 de leerse.
 
-Tres preguntas que la tabla tiene que contestar y suelen quedar sin contestar:
+**La frontera interna, que la tabla de arriba no puede contener** porque no es un sistema externo y
+pintarla de rosado sería mentir:
 
-1. **¿Qué entra desde afuera y se cree sin verificar?** Lo que la red pagadora informa sobre el cobro
-   de Elena entra a nuestro registro contable. Es dato de un tercero moviendo dinero nuestro.
+| Frontera interna | Qué le baja | Qué sube | Qué se rompe si pierde la conexión | Marca |
+|---|---|---|---|---|
+| **Punto de pago (propio)** | — | — | — | — |
+
+Queda por decidir **cómo se dibuja**: el código de color heredado del ejemplo de clase no tiene
+categoría para «propio pero incomunicable», y agregarla es cambiar una convención heredada. Pintarlo
+de azul como cualquier servicio esconde el único modo de falla que importa; pintarlo de rosado dice
+que el diseño no manda ahí, y sí manda.
+
+Tres preguntas que las tablas tienen que contestar y suelen quedar sin contestar:
+
+1. **¿Qué entra desde afuera y se cree sin verificar?** La tasa del proveedor y el resultado de las
+   listas entran y se creen. Y lo que sube un punto que estuvo sin conexión entra al registro
+   contable como hecho consumado: no es dato de un tercero, es **dato nuestro llegando tarde**, y el
+   centro no tuvo forma de impedirlo.
 2. **¿Qué sale y no debería?** La existencia de un reporte a la autoridad no puede filtrarse hacia
    el cliente por ninguna arista, ni siquiera por un estado que se deduzca.
-3. **¿Qué frontera está dibujada dentro del sistema y no debería?** El agente pagador de Huanta no
-   es usuario de SendIt: es usuario de la red pagadora. Dibujarlo como caja propia hace creer que el
-   diseño puede mandarle.
+3. **¿Qué frontera está dibujada como externa y no lo es?** Quien atiende el mostrador de Huanta
+   **sí** es usuario de SendIt y opera sobre su sistema. Dibujarlo en rosado hace creer que el
+   diseño no puede mandarle —cuando puede, salvo en el único caso en que no puede, que es el punto
+   sin conexión—. Ese caso es lo que hay que dejar visible, y no se resuelve con un color.
 
 ---
 
@@ -267,6 +293,8 @@ el enunciado pide ver.
 - [ ] Ningún componente sin ítem del backlog que lo exija — sin huérfanos
 - [ ] Ningún ítem del backlog sin componente que lo cubra — sin huecos
 - [ ] Todo lo que está fuera de la frontera de confianza está en rosado, y nada más lo está
+- [ ] El punto de pago no está en rosado: es propio, y su modo de falla es la conexión, no el mando
+- [ ] El modo de falla del punto sin conexión se ve en el diagrama por algo que no sea el color
 - [ ] Toda rama condicional lleva su etiqueta
 - [ ] Las BD son varias y cada una tiene dueño en A
 - [ ] Un componente renombrado se renombró en las tres iteraciones

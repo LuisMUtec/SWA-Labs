@@ -43,9 +43,13 @@ en `R`.
 | **Caso de cumplimiento** | El expediente de cumplimiento: la coincidencia, la evidencia, la decisión, el plazo y su vencimiento |
 | **Traza de auditoría** | Quién vio qué, quién decidió qué, cuándo. Crece con las lecturas, no solo con las escrituras |
 
-Faltan por decidir, y hay que decidirlas: si el **agente pagador** y la **red pagadora** son
-entidades del modelo o referencias a un sistema externo; si la **clave de idempotencia** es entidad
-propia; si el **aviso enviado a Elena** se guarda como prueba de haber avisado.
+Faltan por decidir, y hay que decidirlas: si el **punto de pago** es entidad del modelo —con su
+caja, su efectivo disponible, su estado de conexión y el momento de su última sincronización— o solo
+un identificador dentro del envío; si **quien atiende el mostrador** es un usuario del sistema con
+su propia identidad o únicamente un dato en la traza de quién pagó; si la **clave de idempotencia**
+es entidad propia; si el **aviso enviado a Elena** se guarda como prueba de haber avisado. Las dos
+primeras ya no son «referencias a un sistema externo»: el punto es de SendIt y corre sobre su
+sistema, así que si no está modelado, no está modelado y punto — no hay un tercero que lo tenga.
 
 ### Campos
 
@@ -79,7 +83,8 @@ integridad transaccional, capacidad de agregar sin bloquear, o volumen barato de
 | Almacenamiento de objetos | Binarios de identidad, evidencia adjunta de un caso | — | — | — |
 | Caché | — | — | — | — |
 | Sistema de archivos distribuido | — | — | — | — |
-| Archivos planos / exportación | Reportes a la autoridad, archivos de conciliación con la red pagadora | — | — | — |
+| Archivos planos / exportación | Reportes a la autoridad, cierre de caja de cada punto de pago | — | — | — |
+| Almacén local del punto de pago | Lo que el mostrador tiene que sostener sin conexión: las autorizaciones ya bajadas, los pagos hechos y no informados, y el efectivo contado | — | — | — |
 
 **Un aviso sobre la caché en este dominio.** Cachear es servir un dato que puede estar viejo. El
 monto que Rosa vio, el estado de un envío retenido y el resultado de un tamizaje son exactamente los
@@ -115,9 +120,15 @@ Tres consecuencias concretas que la tabla tiene que resolver:
 - **Hay un dato cuya sola existencia es secreta.** La de un reporte a la autoridad. El cumplimiento tiene
   prohibido revelarla (tensión T2), y una tabla donde el reporte es una fila más deja que cualquiera
   con acceso de lectura deduzca lo que la ley prohíbe decir. Ocultarlo en la interfaz no basta.
-- **El dato del destinatario lo captura un tercero.** Elena se identifica ante el agente pagador, no
-  ante SendIt. Qué parte de eso llega a nuestro modelo, en qué forma y con qué garantía de que es
-  cierto, es una decisión de modelo con consecuencias de seguridad — y Rosa tiene prohibido verlo.
+- **El dato del destinatario lo captura el mostrador, y el mostrador es nuestro.** Elena se
+  identifica ante un punto de pago propio, sobre el sistema de SendIt: no hay tercero a quien
+  atribuirle la captura, la custodia ni el error. Eso cierra una pregunta y abre otras dos. Cierra:
+  la responsabilidad sobre ese dato es de SendIt entera. Abre: **qué se le exige a Elena lo decide
+  la regla que vive de este lado**, y quien la atiende no puede saltarla aunque sepa que es ella
+  —eso es T3, y con un punto propio se agrava en vez de aliviarse, porque la falta de margen ahora
+  es una decisión de diseño y no un límite ajeno—; y qué queda escrito en el mostrador mientras el
+  punto opera sin conexión, dónde vive mientras tanto y quién puede leerlo después. Rosa sigue
+  teniendo prohibido verlo.
 
 ---
 
@@ -149,6 +160,13 @@ una secuencia de hechos de la que el estado se deriva? Las dos formas soportan l
 Rosa. Solo una soporta una auditoría. Y si conviven —hechos para lo que se audita, fila mutable
 para lo que se consulta— hay que decidir cuál manda cuando difieren, que es la misma pregunta que
 `D`(a) dejó abierta.
+
+**Y hay un tercer lector que no aparece en el material: el mostrador que estuvo sin conexión.** Una
+fila que cambia de estado no se fusiona con la que el punto trae al reconectar —una de las dos pisa
+a la otra y la que pierde desaparece sin dejar rastro—. Una secuencia de hechos sí se fusiona, al
+precio de admitir que dos hechos contradictorios sobre el mismo envío convivan en el registro hasta
+que alguien decida cuál vale. Cuál de esos dos precios se paga es `D`(c), y aquí se materializa en
+la forma de las tablas.
 
 ---
 
@@ -188,7 +206,7 @@ se sufre con las retenciones sin plazo.
 |---|---|
 | `D`(a) verdad del dinero | Movimiento contable, estado del envío, y la sección 5 completa |
 | `D`(b) idempotencia | La entidad que persiste la clave de intento y su ventana de vida |
-| `D`(c) frontera con el pagador | Los estados del envío y qué se guarda de lo que el tercero informa |
+| `D`(c) frontera entre el centro y el mostrador | Los estados del envío, el estado que el mostrador sostiene sin conexión, y qué se guarda de lo que el punto informa al reconectar |
 | `D`(d) tipo de cambio | Tasa aplicada, su vencimiento, y la cuenta de diferencia de cambio |
 | `D`(e) momento del tamizaje | Verificación de identidad, caso de cumplimiento, y el orden de los estados |
 | Los años de retención en `E` | La sección 6 y la elección de motor de las entidades voluminosas |

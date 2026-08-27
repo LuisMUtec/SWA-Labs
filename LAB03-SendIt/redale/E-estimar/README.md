@@ -67,7 +67,7 @@ que es la única defensa que tiene un supuesto.
 
 | # | Supuesto que hace falta | Por qué hace falta | Contra qué se calibra | Valor | Estado |
 |---|---|---|---|---|---|
-| S-01 | Corredor o corredores atendidos | Fija la moneda, el regulador, la red pagadora y el huso horario del pico. Sin él no hay volumen que estimar ni reglas que aplicar | El corredor que modela [Rosa](../../personas/Rosa.MD): Estados Unidos → Perú | — | — |
+| S-01 | Corredor o corredores atendidos | Fija la moneda, el regulador, la red de puntos de pago propios que hay que abrir y operar, y el huso horario del pico. Sin él no hay volumen que estimar ni reglas que aplicar | El corredor que modela [Rosa](../../personas/Rosa.MD): Estados Unidos → Perú | — | — |
 | S-02 | Usuarios registrados | Dimensiona el almacenamiento de identidad y de verificación, que se retiene aunque el usuario no envíe nunca más | — | — | — |
 | S-03 | Proporción de usuarios activos sobre registrados | El registrado inactivo ocupa disco y no genera RPS. Confundirlos sobredimensiona el cómputo y subdimensiona la retención | — | — | — |
 | S-04 | Envíos por usuario activo al mes | Convierte usuarios en envíos, que es la unidad real de carga | El patrón de Rosa: quincenal, estable desde hace tres años | — | — |
@@ -120,8 +120,9 @@ El método del material, con su aritmética explícita:
 
 **Una advertencia que este caso obliga y el ejemplo del material no necesita:** un `request` de
 SendIt no cuesta lo mismo que otro. Consultar el estado de un envío es una lectura; ejecutar un pago
-es una escritura contable que toca varias filas, cruza una frontera con un tercero y no puede
-servirse desde caché. Estimar con un único «core = N req/s» promedia dos cosas que no se promedian.
+es una escritura contable que toca varias filas, cruza una frontera —hacia el procesador que cobra a
+Rosa, o hacia el mostrador que entrega el efectivo— y no puede servirse desde caché. Estimar con un
+único «core = N req/s» promedia dos cosas que no se promedian.
 Si el desglose por tipo de operación cambia el resultado en más de un orden de magnitud, se calcula
 por separado y se suma.
 
@@ -199,7 +200,7 @@ El método: **data de entrada por día → data de salida por día → dividir e
 
 | Paso | Qué se cuenta | Valor | Marca |
 |---|---|---|---|
-| 1. Entrada por día | Lo que sube al sistema: capturas de identidad, respuestas de las listas y del proveedor de tasa, confirmaciones de la red pagadora | — | — |
+| 1. Entrada por día | Lo que sube al sistema: capturas de identidad, respuestas de las listas y del proveedor de tasa, y las confirmaciones de cobro que suben desde los puntos de pago —incluida la ráfaga que sube un punto al recuperar la conexión, que no es tráfico uniforme | — | — |
 | 2. Salida por día | Lo que el sistema entrega: cotizaciones, estados consultados, avisos, y las descargas de evidencia que hace cumplimiento | — | — |
 | 3. Entrada por segundo | `entrada por día / 86 400` | — | — |
 | 4. Salida por segundo | `salida por día / 86 400` | — | — |
@@ -222,7 +223,7 @@ Se registra aquí para que el paso siguiente sepa sobre qué está parado.
 
 | Si cambia… | Se recalcula | Y hay que revisar |
 |---|---|---|
-| El corredor (S-01) | Los tres cálculos | `D` — otra red pagadora es otra frontera; `A` — otras reglas de retención |
+| El corredor (S-01) | Los tres cálculos | `D` — otra red de puntos propios que sincronizar, con otra calidad de conexión; `A` — otras reglas de retención |
 | Los años de retención (S-09) | Almacenamiento | `A` — la política de retención por entidad |
 | El factor de pico (S-07) | Servidores y ancho de banda | `E` (escalar) — el tramo en que el sistema se rompe |
 | La tasa de coincidencias (S-08) | Almacenamiento | `D` — dónde corre el tamizaje; `L` — el componente que lo ejecuta |
