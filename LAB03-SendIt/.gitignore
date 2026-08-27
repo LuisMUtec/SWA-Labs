@@ -1,0 +1,10 @@
+.DS_Store
+Thumbs.db
+*~
+.vscode/
+.idea/
+.claude/worktrees/
+~$*.docx
+
+# Claude Code: estado local por maquina (posibles credenciales)
+.claude/settings.local.json
