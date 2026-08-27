@@ -5,7 +5,7 @@
 > [**D** — Diseñar el servicio](../D-disenar-servicio/README.md) · bitácora:
 > [`ITERACIONES.md`](../ITERACIONES.md)
 
-**Estado: calculado.** Las tres cifras están abajo, con su aritmética a la vista: **11 servidores**,
+**Estado: calculado.** Las tres cifras están abajo, con su aritmética a la vista: **13 servidores**,
 **3,2 TB retenidos** (1,01 GB/día) y **1,6 Mbit/s en pico** (196 KB/s). Ninguna sale del enunciado
 —el enunciado no da ni una cifra— y por eso cada entrada lleva su `[ASSUMPTION: ...]` con la
 calibración contra la que se defiende. Las divisiones se muestran enteras: esto se audita
@@ -310,9 +310,10 @@ servicio, y aquí manda el segundo término por dos órdenes de magnitud.
 | Réplica de lectura en destino | Dos países de destino (RNF-12, RNF-14) y RNF-10 con 900 s de margen: alcanza réplica asíncrona. Dos nodos por país para no caer a cero con una máquina | **4** = `2 × 2 países` | RNF-10, RNF-12 |
 | Consulta del emisor | RF-52, RF-53 y RF-66. **RNF-11 la excluye explícitamente de su medida**, así que no lleva quórum — pero es el 22 % de los requests y no puede compartir suerte con la escritura | **2** | RNF-11 por exclusión |
 | Cumplimiento y tamizaje | RF-26, RF-27 y RF-97 llaman a listas externas cuya latencia y disponibilidad SendIt no fija. Aislarlo evita que una lista lenta consuma el techo de 3,3 s de RNF-09 | **2** | RNF-09, RF-26 |
-| | | **11** | |
+| Módulo del desafío | `D`(f) exige que la llave del verificador **nunca salga del módulo** y que la derivación corra adentro (RF-12, RNF-17): es una frontera de proceso y de credenciales, no una biblioteca. Compartir plano con el giro le daría al mismo host la llave y los datos que protege | **2** | Par mínimo para que RNF-11 no dependa de una sola máquina en el camino de pago de RF-69 |
+| | | **13** | |
 
-`servidores = max(carga / capacidad; piso de disponibilidad y geografía) = max(0,09; 11) = ` **11**.
+`servidores = max(carga / capacidad; piso de disponibilidad y geografía) = max(0,09; 13) = ` **13**.
 
 **Y la consecuencia para `E`-escalar, que es lo que este paso realmente entrega:** para que el
 término de carga alcance al término de disponibilidad, el volumen tendría que multiplicarse por
