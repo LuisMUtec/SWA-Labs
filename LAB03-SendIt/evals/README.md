@@ -194,7 +194,34 @@ rastro—, y eso es lo que D3 puntúa.
 
 ### D4 — Coherencia del backlog · 2 pts
 
-Empieza en 2 y baja **0,25 por hallazgo independiente**, con piso 0.
+> **Enmendada el 2026-08-27, en la ronda 08, por el dictamen de la
+> [iteración 07](iterations/2026-08-27-07.md).** La versión anterior —«empieza en 2 y baja 0,25 por
+> hallazgo, con piso 0»— **medía tamaño, no coherencia**: en siete rondas `n` varió entre 15 y 41, un
+> rango de 2,7×, y **D4 no se movió una sola vez**. Varianza cero.
+>
+> **Las corridas 01 a 07 dejan de ser comparables con las de aquí en adelante.** No se recalculan:
+> quedan como se emitieron, con la vara con que se emitieron.
+
+**D4 se puntúa por densidad de hallazgos, no por su cuenta.**
+
+```
+d  = n / ítems          densidad observada
+D  = 0,40               densidad de referencia
+D4 = 2 × (1 − d / D)    acotado a [0 , 2]
+```
+
+`D = 0,40` se fija **por encima de la peor densidad que este proyecto observó** (36,6 % en la ronda
+01), de modo que un backlog peor que cualquiera de los siete puntúe 0 y uno sin hallazgos puntúe 2.
+
+**Por qué densidad y no cuenta.** D4 era la única dimensión de esta rúbrica con un conteo absoluto.
+D1 puntúa **por persona**; D2 y D3 son **existenciales**; y el censo de D2 se reportó **siempre como
+razón** —«4 de 41», «78 de 118»—. La rúbrica ya normalizaba en D2 y no lo hacía acá. Los hallazgos
+escalan con la superficie: con el piso en `n ≥ 8`, `D4 > 0` exigía un backlog de a lo sumo **31
+ítems** a la mejor densidad alcanzada, y de **23** a la media. El ejemplo del profesor tiene cinco.
+
+**Qué no cambia.** La lista de hallazgos, cómo se cuentan, los dos techos duros y el contraste
+cruzado quedan **exactamente como estaban**. Lo único que cambia es cómo el número de hallazgos se
+convierte en puntaje.
 
 | Hallazgo | Qué es |
 |---|---|

@@ -1,12 +1,16 @@
-# Enmienda propuesta a D4 — **redactada, NO aplicada**
+# Enmienda a D4 — **APLICADA el 2026-08-27, en la ronda 08**
 
-> **Este documento no está en vigor.** La rúbrica que rige es la de
-> [`README.md`](README.md), sin cambios, y las siete corridas se midieron con ella.
+> **En vigor desde la ronda 08.** El grupo decidió aplicarla tras el
+> [dictamen de la iteración 07](iterations/2026-08-27-07.md), que probó que `D4` no medía lo que
+> decía medir a este tamaño.
 >
-> Se redacta porque el [dictamen de la iteración 07](iterations/2026-08-27-07.md) probó que `D4`
-> no mide lo que dice medir a este tamaño, y porque el propio `README.md` fija un procedimiento para
-> enmendar la rúbrica cuando eso pasa. **La decisión de aplicarla o no es del grupo, no del
-> evaluador.**
+> Se siguió el procedimiento que fija [`README.md`](README.md): la enmienda se escribe, se aplica en
+> **su propia ronda**, y **las corridas 01 a 07 dejan de ser comparables** con las siguientes. No se
+> recalculan: quedan como se emitieron.
+>
+> Este documento se conserva porque contiene la evidencia con la que se decidió, y porque la
+> comprobación de abajo —**la enmienda no alcanza el gate en ninguna ronda**— es lo que la separa de
+> un ablandamiento de la vara.
 
 ## Qué está roto
 
@@ -65,7 +69,7 @@ porque el puntaje ya estaba en el piso por debajo de ellos.
 está calibrada para pasar. Lo que hace es **volver a D4 sensible al trabajo** —recorre de 0,17 a
 0,90 siguiendo la calidad real— en vez de leer 0,00 siete veces.
 
-## Por qué no se aplicó
+## Por qué se dudó en aplicarla
 
 1. **El momento.** Enmendar la vara después de siete rondas de no alcanzarla, aunque haya razón, es
    lo que este EVAL existe para hacer imposible. La regla de asimetría, la precondición de los tres
