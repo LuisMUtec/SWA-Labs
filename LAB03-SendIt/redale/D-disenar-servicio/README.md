@@ -51,7 +51,7 @@ contra el efecto, y sobrevive a su propia obsolescencia.
 
 Toda decisión técnica desplazada desde el backlog aterriza **aquí**, no se suprime.
 
-> **Nota de identificadores.** `RF-35`, `RF-38`, `RF-55` y `RF-62` están **retirados** en el
+> **Nota de identificadores.** `RNF-05`, `RNF-16`, `RNF-03` y `RNF-13` están **retirados** en el
 > [backlog](../R-requerimientos/backlog.md#identificadores-retirados) —eran comportamientos que un
 > invariante ya decía— y un número retirado no se reutiliza. Este documento cita en su lugar
 > `RNF-05` (doble pago), `RNF-16` (monto distinto del informado), `RNF-03` (registro inalterable) y
