@@ -340,9 +340,18 @@ Nadie audita un campo que se sobrescribió.
 (hasta la prescripción) y la restricción de unicidad **no caduca nunca**.
 
 **Alcance.** Todo acto que mueve dinero o cambia irreversiblemente el estado: recepción del efectivo,
-pago, cancelación y devolución (`RF-46`, `RF-47`), retiro de la devolución, corrección (`RF-56`) y
-liberación de una retención, que `RF-33` y `RF-87` obligan a registrar con motivo. **Queda fuera, y
-es deliberado:** el intento de desafío, porque cada envío *es* un intento y `RF-82` los cuenta.
+pago, cancelación y devolución (`RF-46`, `RF-47`), retiro de la devolución, corrección (`RF-56`),
+liberación de una retención —que `RF-33` y `RF-87` obligan a registrar con motivo— y **rehacer el
+giro cancelado** (`RF-117`), que crea un giro nuevo y por tanto se puede duplicar como cualquier
+otro. **Queda fuera, y es deliberado:** el intento de desafío, porque cada envío *es* un intento y
+`RF-82` los cuenta.
+
+**Y queda fuera por una razón distinta, que importa más:** el efectivo recibido sin giro creado de
+`RF-118` **no es una clave de intento**. Una clave de idempotencia caduca sola, y lo que caducaría
+acá es el rastro del dinero que Rosa ya entregó — `BR-01` lo vuelve deuda de SendIt desde que entra
+al cajón, con giro o sin él. Ese estado es una **obligación en custodia con asiento propio**, y se
+cierra completando el giro o devolviendo el efectivo, nunca por vencimiento. La clave de intento
+sigue sirviendo para que el reintento de Kevin sea la misma operación, que es otra cosa.
 
 **Contra qué alternativa.** Contra la clave generada por el servidor —un corte antes de que la
 respuesta llegue convierte el reintento en operación nueva, y Rosa entrega un giro y le cobran dos,
@@ -492,7 +501,9 @@ deja que la ventanilla lenta se vuelva una opción gratuita sobre el mercado.
 ### (e) Dónde corre el tamizaje respecto del momento en que el dinero se compromete
 
 **Lo que el backlog ya cerró.** `RF-26` fija el momento: el tamizaje corre **antes de aceptar el
-efectivo**, y la tensión T1 lo decide a favor del control con precio acotado. `RF-27` agrega el
+efectivo**, y la tensión T1 lo decide a favor del control con precio acotado. `RF-119` fija el
+**alcance**: el mismo contraste, antes del mismo instante, sobre el **receptor designado** — dos
+personas y dos veredictos, porque un emisor limpio no absuelve al destinatario del dinero. `RF-27` agrega el
 segundo contraste, al autorizar el pago y contra las listas **vigentes en ese momento**. Aquí se
 elige el mecanismo, y sobre todo qué pasa cuando el tercero no contesta.
 
@@ -502,8 +513,9 @@ los dos tamizajes de forma sincrónica. El camino del dinero nunca llama al prov
 - **Frescura vigilada, y falla cerrada:** el adaptador replica y sella cada versión. Si la copia
   supera `[ASSUMPTION: 24 horas]` sin actualizarse, el sistema **deja de crear giros** en vez de
   crearlos sin tamizar. `BR-06` no admite mover dinero sin contrastar.
-- **Los cinco momentos, cada uno con su control:** identificar y tamizar antes del efectivo
-  (`RF-01`, `RF-26`); aceptar el efectivo (`RF-02`, `RF-79`); dar el giro por fondeado con efectivo
+- **Los cinco momentos, cada uno con su control:** identificar y tamizar **las dos puntas** antes del
+  efectivo (`RF-01`, `RF-26` para el emisor y `RF-119` para el receptor designado); aceptar el
+  efectivo (`RF-02`, `RF-79`); dar el giro por fondeado con efectivo
   en el corredor (`RF-20`, `RF-36`); **arrendar el giro al punto contrastando contra la versión
   vigente** (`RF-27`); entregar el efectivo contra código, documento y —si el documento no está
   vigente— desafío (`RF-34`, `RF-85`, `RF-86`, `RF-69`, `RF-64`).
@@ -514,7 +526,9 @@ los dos tamizajes de forma sincrónica. El camino del dinero nunca llama al prov
   no pagados cuando cambia una lista y avisa por su canal a quien deja de poder cobrar; sobre un giro
   con arrendamiento vivo, espera a que venza (mecanismo de (c)).
 - **Qué ve Rosa mientras su giro está retenido, sin que el motivo se deduzca.** `RF-66` le muestra
-  que está retenido y hasta qué fecha; `RF-67` le avisa cuando pasa a estarlo; a Kevin, `RF-40` le
+  que está retenido y hasta qué fecha; `RF-67` le avisa cuando pasa a estarlo **dentro del plazo que
+  `RF-115` le prometió antes de que entregara el efectivo** —un plazo comprometido y no un mejor
+  esfuerzo: se copia al giro al crearlo y vence contra fecha absoluta, como todos los demás—; a Kevin, `RF-40` le
   omite el motivo y `RF-39` le entrega **una salida concreta que ofrecerle a quien está delante** —no
   el motivo, y tampoco un código de error: qué puede hacer esa persona hoy—. El mecanismo que impide la deducción es que
   **el mensaje y el plazo son los mismos para toda retención, cualquiera sea su causa**: se informa
@@ -544,11 +558,14 @@ busca provocar (`BR-03`).
 **Se propaga a** `A`, `L` (`Screening Service`, `Screening Job`) y `E` (estimar: la carga del camino
 del pago y el almacenamiento de listas replicadas).
 
-### (f) Dónde vive la respuesta del desafío y quién la compara
+### (f) El secreto que no pasa por el operario: dónde vive la respuesta, quién la compara, y por dónde entra y sale
 
 **Decisión.** **La respuesta no se guarda ni se transmite en claro en ningún punto del sistema. Vive
 como derivado irreversible en una base propia del servicio de desafío, y la comparación corre solo en
-el centro, dentro de ese servicio, que es el único componente que llega a ver el valor.**
+el centro, dentro de ese servicio, que es el único componente que llega a ver el valor. Y el camino
+por el que el secreto entra y sale del mostrador no atraviesa al operario: hay un dispositivo
+orientado al cliente, con su propia clave contra el centro, que el software del punto transporta y
+no abre.**
 
 - **Con qué transformación entra.** Normalización decidida por el sistema —mayúsculas, acentos,
   espacios—, igual que `RF-84` decide qué diferencia de escritura cuenta; después, función de
@@ -579,6 +596,34 @@ mostrador para comparar ahí, que resolvería el caso sin línea y a cambio entr
 ataque de diccionario **dentro de un local que no es de SendIt**, que es exactamente el vector que
 [Kevin](../../personas/Operario.MD) modela.
 
+**El mismo mecanismo, del otro lado del mostrador: la respuesta que entra (`RF-114`).** Lo que vale
+para Rosa al registrar vale para Elena al cobrar, y `RF-114` lo exige con todas las letras: la
+respuesta la introduce **el propio receptor**, y quien atiende no puede leerla **ni digitarla**. Esas
+dos palabras cierran la salida barata —«que Elena se la dicte a Kevin y él la teclee»—, que es
+exactamente lo que hoy pasa en cualquier ventanilla y lo que convertiría a `RF-12` en una regla de
+pantalla. El mecanismo es el mismo dispositivo: Elena teclea en la superficie orientada al cliente,
+que sella el sobre contra el `Desafío Service` con su propia clave; el `Punto de Atención Service`
+lo transporta y no lo abre; el centro devuelve veredicto e intentos restantes. **El operario nunca
+tiene el valor en la mano, ni siquiera durante el segundo en que lo escribiría.** Y `RF-122` cuelga
+de ese veredicto y de ningún otro: el pago con documento vencido lo habilita **el centro** al ver la
+respuesta correcta, no el mostrador al declararla.
+
+**Y la salida, que es el código (`RF-113`).** El código lo genera el sistema y `RF-11` lo entrega
+**únicamente al emisor** — pero entregárselo mostrándolo en la pantalla del mostrador es
+entregárselo también a Kevin, que es el vector que [su persona](../../personas/Operario.MD) modela.
+`RF-113` cierra esa puerta, y el mecanismo tiene dos mitades:
+
+- **La respuesta de `POST /giros` no lo lleva.** El mostrador recibe `giro_id` y un acuse de
+  despacho; el código en claro existe durante un único instante, dentro del núcleo, y sale por el
+  **adaptador de canal** hacia el teléfono del emisor —el mismo por el que viaja todo lo demás
+  (T5)—, o se imprime sellado desde el dispositivo orientado al cliente cuando el emisor no tiene
+  señal en el local. Persistido queda solo el derivado.
+- **No hay segunda oportunidad de leerlo, para nadie.** `RF-112` prohíbe que quien atiende vuelva a
+  consultar un código ya entregado y `RF-94` que se reemita aun al emisor que lo perdió. Las dos se
+  cumplen por ausencia de ruta y por ausencia de valor persistido, no por permisos: **no existe el
+  `GET`, y aunque existiera no habría qué devolver.** La salida al código perdido no es leerlo otra
+  vez sino cancelar y rehacer (`RF-110`, `RF-117`), que es donde la tensión T7 quedó decidida.
+
 **Y el lado que el código de seguimiento no tiene.** El código lo genera el sistema; la respuesta la
 elige Rosa, delante de Kevin, y se la transmite a Elena por un canal que SendIt no controla. Es un
 **secreto compartido entre dos personas** que el sistema solo arbitra: no puede regenerarlo, no puede
@@ -599,9 +644,22 @@ recordárselo a nadie, no puede aceptar que se adivine.
 - La normalización que decide el sistema puede rechazar una respuesta correcta escrita distinto, o
   aceptar una demasiado parecida, y **esa decisión ya no se puede auditar contra el valor** porque el
   valor no existe en ninguna parte.
+- **El dispositivo orientado al cliente es hardware en un local que no es de SendIt**, y su clave
+  vive ahí. Se puede robar, sustituir o intervenir, y la única defensa es que lo que sella no vale
+  sin el centro. Cada mostrador pasa a tener dos superficies en vez de una, y `E` (escalar) tiene
+  que contarlas: `RF-113` y `RF-114` no se cumplen con software solo.
+- **Si el dispositivo se avería, no hay giro y no hay desafío.** No queda el atajo de que Kevin
+  teclee —`RF-114` lo prohíbe—, así que la falla de un periférico cierra la operación igual que la
+  caída de línea de **(c)**. Es coherente y es caro, y quien está delante del mostrador no distingue
+  una cosa de la otra.
+- **El código que sale por el canal depende del canal.** Si el mensaje no llega, Rosa se va sin
+  código y `RF-94` impide reemitirlo: la única salida es cancelar y rehacer (`RF-110`, `RF-117`). Se
+  elige eso antes que mostrarle el código a Kevin.
 
-**Se propaga a** `A` (la entidad que lo guarda y su trato en la tabla de datos personales) y a `L`
-(`Desafío Service` y `BD desafíos`, el único componente que toca el valor).
+**Se propaga a** `A` (la entidad que lo guarda, su trato en la tabla de datos personales y el relevo
+de vigencia que `RF-122` obliga a registrar), a `L` (`Desafío Service` y `BD desafíos`, el único
+componente que toca el valor, más el dispositivo orientado al cliente como frontera del
+`Punto de Atención Service`) y a `E` (escalar: dos superficies por mostrador, no una).
 
 ---
 
@@ -610,17 +668,17 @@ recordárselo a nadie, no puede aceptar que se adivine.
 | Decisión | Qué quedó decidido | Se propaga a | Qué queda inválido si se reabre |
 |---|---|---|---|
 | (a) Verdad del dinero | Libro de partida doble solo-adición; estado como proyección; manda el libro | `A`, `L` | El modelo de datos completo del giro y del movimiento; el componente que escribe el libro |
-| (b) Idempotencia | Unicidad natural en el libro + clave del cliente persistida antes del primer asiento; vive lo que el giro | `A`, `L`, API | La tabla de endpoints; la entidad que persiste la clave |
+| (b) Idempotencia | Unicidad natural en el libro + clave del cliente persistida antes del primer asiento; vive lo que el giro; el efectivo en custodia de `RF-118` **queda fuera y es entidad con asiento** | `A`, `L`, API | La tabla de endpoints; la entidad que persiste la clave; la entidad de custodia |
 | (c) Frontera centro ↔ punto de atención | Arrendamiento exclusivo por giro, solo en línea; sin conexión no se paga; *pago en duda* al reconectar | `A`, `L`, `E` (escalar) | El estado del giro y el que el punto sostiene sin conexión; el componente que sincroniza al reconectar; el presupuesto de disponibilidad de `RNF-11` |
 | (d) Tipo de cambio | Cotización de 15 min copiada por valor; SendIt absorbe en cuenta `Diferencia de cambio`; cobertura por corredor | `A`, `L` | La entidad de cotización y la cuenta de diferencia de cambio |
 | (e) Momento del tamizaje | Copia local versionada, falla cerrada a las 24 h; punto de no retorno = emisión del arrendamiento; plazo máximo informado siempre | `A`, `L`, `E` (estimar) | La carga del camino del pago; el orden de los componentes en el diagrama |
-| (f) Respuesta del desafío | Derivado irreversible en base propia con clave fuera de la base; comparación solo en el centro; caducidad por borrado criptográfico | `A`, `L` | La entidad que la guarda y su fila en la tabla de datos personales; el componente que la compara; el flujo de pago con documento no vigente (`RF-69`, `RF-86`) |
+| (f) El secreto que no pasa por el operario | Derivado irreversible en base propia con clave fuera de la base; comparación solo en el centro; caducidad por borrado criptográfico; **el secreto entra y sale por un dispositivo orientado al cliente que el punto transporta y no abre** (`RF-113`, `RF-114`) | `A`, `L`, `E` (escalar) | La entidad que la guarda y su fila en la tabla de datos personales; el componente que la compara; el flujo de pago con documento no vigente (`RF-69`, `RF-86`, `RF-122`); la superficie física del mostrador y su costo |
 
 ---
 
 ## Supuestos que este paso introduce
 
-Cuatro, y son suyos: ninguno viene del backlog, y cada uno es un número que el enunciado no da.
+Cinco, y son suyos: ninguno viene del backlog, y cada uno es un número que el enunciado no da.
 
 | Marca | Dónde | Qué pasa si se retira |
 |---|---|---|
@@ -628,6 +686,7 @@ Cuatro, y son suyos: ninguno viene del backlog, y cada uno es un número que el 
 | `[ASSUMPTION: la cotización vive 15 minutos]` | (d) | Sube o baja la exposición cambiaria de SendIt y la frecuencia con que se recotiza con Rosa delante |
 | `[ASSUMPTION: la copia de listas falla cerrada a las 24 horas sin actualizar]` | (e) | Mueve el equilibrio entre `BR-06` y `RNF-11`: más plazo es más riesgo de tamizar contra lista vieja, menos plazo es más indisponibilidad |
 | `[ASSUMPTION: tres intentos de desafío por giro]` | (f) | Cambia cuántos giros legítimos terminan devueltos por `RF-103` y cuánto margen tiene un ataque de adivinanza |
+| `[ASSUMPTION: la oferta de punto alternativo vence 24 horas después de comunicada]` | Endpoints `punto-alternativo` y su vencimiento | `RF-116` obliga a informar el plazo pero el backlog no lo fija; retirarlo no cambia el mecanismo —fecha absoluta comunicada al emisor y barrida por el `Vencimiento Job`— sino cuánto espera el giro antes de que `RF-111` lo devuelva |
 
 ---
 

@@ -129,7 +129,7 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-24 | el sistema liquidará con el agente el efectivo que puso de su caja, en el plazo acordado con él - Kevin | Kevin | BR-01 | P1 |
 | RF-37 | el sistema avisará al receptor por llamada o mensaje de texto si su giro quedó retenido - Elena | Elena | BR-06 | P0 |
 | RF-59 | el sistema repondrá al emisor o al receptor, según a quién le faltó, toda diferencia entre el monto fijado y el entregado - Elena | Elena | BR-13 | P0 |
-| RF-104 | el sistema descontará de la liquidación del agente la diferencia que su punto produjo - Elena | Elena | BR-13 | P1 |
+| RF-104 | el sistema informará al agente cada descuento por diferencia con la evidencia que lo sustenta, antes de aplicarlo a su liquidación - Elena | Elena | BR-13 | P1 |
 | RF-60 | el sistema informará al emisor por llamada o mensaje de texto toda diferencia registrada sobre el giro - Rosa | Elena | BR-13 | P1 |
 | RF-121 | el sistema informará al receptor por llamada o mensaje de texto toda diferencia registrada sobre el giro - Elena | Elena | BR-13 | P1 |
 | RF-90 | el sistema permitirá al receptor declarar por llamada o mensaje de texto que el dinero recibido no coincide con el informado - Elena | Elena | BR-13 | P0 |
@@ -137,7 +137,7 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-105 | el sistema no cambiará el punto de atención elegido sin la respuesta del emisor - Rosa | Rosa | BR-02 | P0 |
 | RF-111 | el sistema devolverá al emisor el giro cuyo punto no puede pagar y cuya respuesta no llega dentro del plazo que se le informó al ofrecerle otro - Rosa | Rosa | BR-12 | P0 |
 | RF-116 | el sistema informará al emisor, al ofrecerle otro punto de atención, dentro de cuánto debe responder - Rosa | Rosa | BR-11 | P0 |
-| RF-39 | el sistema entregará al operario, ante cada giro que no puede pagar ni crear, una salida concreta que ofrecerle a quien está delante - Kevin | Kevin | BR-16 | P0 |
+| RF-39 | el sistema asociará al menos una acción ofrecible a todo giro rechazado, retenido o no pagable, y se la mostrará al operario - Kevin | Kevin | BR-16 | P0 |
 | RF-40 | el sistema omitirá al operario el motivo de un rechazo cuando revelarlo esté prohibido - Kevin | Kevin | BR-16 | P0 |
 | RF-25 | el sistema avisará al receptor que hay un giro a su nombre por llamada o mensaje de texto - Elena | Elena | BR-09 | P0 |
 | RF-41 | el sistema informará al receptor por llamada o mensaje de texto, antes de que viaje, el monto que cobrará - Elena | Elena | BR-09 | P0 |
