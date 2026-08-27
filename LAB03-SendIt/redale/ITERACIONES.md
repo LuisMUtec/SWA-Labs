@@ -24,9 +24,13 @@ siguiente es un ítem del backlog que el cuadrado no explica.
 
 | # | Qué muestra | Qué ítem del backlog la forzó | Ítems que quedan `DONE` |
 |---|---|---|---|
-| 1 | — | — | — |
-| 2 | — | — | — |
-| 3 | — | — | — |
+| **1** | Los cuatro actores y **una sola caja**. Rosa y Elena hablan cada una con un operario, y el operario con el sistema — bajo el modelo Western Union las dos puntas pasan por una ventanilla | Nada la fuerza: es el punto de partida. Lo único que afirma es **quién habla con el sistema** | **1** — RF-11, que se demuestra por la *ausencia* de una arista hacia el receptor |
+| **2** | La caja se abre: identificación, tamizaje, creación del giro y pago, con sus `BD`, sus sistemas externos y las aristas condicionales etiquetadas | **RF-26** — el tamizaje contra listas antes de aceptar el efectivo no cabe dentro de un cuadrado que no distingue quién decide qué | **38** — 31 RF y 7 RNF |
+| **3** | El resto: devolución, desafío, caja por punto, cobro alternativo, reclamo del receptor, supresión, acumulado de cobros y liquidación con el agente | **RF-68 y RF-69** — el desafío obliga a un servicio y un almacén propios, porque RNF-17 exige que la respuesta sea ilegible **en los dos lados del mostrador** | **71** — 61 RF y 10 RNF |
+
+**Total: 110 de 110.** La trazabilidad ítem por ítem vive en
+[`L-listar-componentes/`](L-listar-componentes/), que es donde el `DONE` se verifica; esta tabla
+dice **por qué** hubo otra pasada, no **qué** quedó cubierto.
 
 La trazabilidad completa —qué ítem cubre qué iteración— vive en
 [`L-listar-componentes/`](L-listar-componentes/), no acá. Esta tabla dice **por qué** hubo otra
@@ -39,9 +43,17 @@ pasada; aquella dice **qué** quedó cubierto.
 Una fila por corrida. El detalle de cada una en [`../evals/iterations/`](../evals/iterations/) y el
 resumen en [`../evals/HISTORY.md`](../evals/HISTORY.md).
 
-| # | Fecha | Pasos tocados | Qué la forzó | Qué cambió | Total /10 |
-|---|---|---|---|---|---|
-| 01 | — | — | — | — | — |
+| # | Fecha | D1 /3 | D2 /3 | D3 /2 | D4 /2 | Total | Qué la forzó y qué cambió |
+|---|---|---|---|---|---|---|---|
+| **01** | 2026-08-26 | 1,0 | 1,5 | 1,0 | 0,0 | **3,5** | Primera corrida, sobre un backlog de 41 ítems escrito antes del modelo Western Union. **El censo de D2 lo mató: solo 4 de 41 ítems cambiaban si el envío dejaba de cruzar un país.** El corredor vivía en un `[ASSUMPTION]`, no en un requerimiento — *la frontera no era puntuable porque no era exigible* |
+| **02** | 2026-08-26 | 0,5 | 2,5 | 1,0 | 0,0 | **4,0** | Backlog reescrito entero desde `insumos.md` sobre el modelo nuevo. Entró el bloque **«La frontera»** y D2 subió un punto. **D1 bajó**: dos correcciones incompletas costaron dos `No funciona`. De diez correcciones, **2 aplicadas, 6 a medias** |
+| **03** | 2026-08-26 | 1,0 | 2,5 | 1,5 | 0,0 | **5,0** | **Dos tensiones cerradas en una ronda** (T5 y T6) y la retención por fin termina. Consistencia llega a 1,0 con RNF-13 y RF-45 ampliado |
+| **04** | 2026-08-26 | 1,5 | **3,0** | 1,5 | 0,0 | **6,0** | **D2 al máximo**: 51 de 97 ítems mueren en una transferencia doméstica, y la proporción se sostuvo mientras el backlog crecía 20 %. **Cero tensiones sin decidir por primera vez.** Elena sale de `No funciona` gracias al desafío — que abrió el agujero de seguridad de la 05 |
+| **05** | 2026-08-26 | 1,5 | **3,0** | **2,0** | 0,0 | **6,5** | **D3 al máximo**: el triángulo RF-68/69/57 cerró con invariante declarable (RNF-17). Censo de D2 en **73 de 110**. Gradiente de prioridad verificado exacto. **D4 sigue en el piso con n=28** |
+
+**Gate ≥ 8. Mejor resultado: 6,5.** El detalle de cada corrida está en
+[`../evals/iterations/`](../evals/iterations/) y el resumen en
+[`../evals/HISTORY.md`](../evals/HISTORY.md).
 
 ---
 
@@ -90,3 +102,31 @@ Las cuatro variantes que el Caso #2 encontró, que acá se buscan **por nombre**
 | **Acto sin consumidor** | Algo se puede registrar, guardar y recuperar, y no le llega a nadie ni puede responderse | Dándole un destinatario y un cierre |
 | **Reparación en la altitud equivocada** | Se corrige el ítem y no la decisión que lo generó, que sigue diciendo lo contrario | Subiendo la corrección al documento que gobierna |
 | **Estado sin terminador** | Algo se abre y nada lo cierra — acá, típicamente: una retención | Dándole un plazo que se vence solo |
+
+---
+
+## Lo que estas cinco rondas enseñaron
+
+El defecto dominante **no fue la sustancia sino la propagación**, y mutó de forma cada ronda:
+
+| Ronda | La forma que tomó |
+|---|---|
+| **02** | Entró el ítem visible y **no la decisión que lo gobernaba** |
+| **03** | Entró la decisión y **no se barrió lo que la contradecía** |
+| **04** | **Entra la corrección y trae consigo un defecto de la clase que vino a corregir** |
+| **05** | La misma, atenuada: cuatro instancias sobre veintiocho hallazgos |
+
+### El error de método que más caro salió
+
+Al partir y limpiar el backlog **reusé identificadores en vez de retirarlos**. `RF-02` dejó de ser
+«rechazar el efectivo antes de identificar» y pasó a ser «entregar en efectivo sin cuenta bancaria»;
+`RF-12` dejó de ser la prohibición del canal y pasó a ser el desafío; `RF-14`, `RF-37` y `RF-58`
+cambiaron igual.
+
+Ahorró cuatro ítems en el documento puntuado y **movió el defecto de la contradicción explícita —que
+se ve— a la deriva semántica silenciosa, que no se ve porque la cita sigue resolviendo.** Siete
+lugares en cuatro pasos siguieron leyendo `RF-02` con su significado viejo, y **ningún `grep` lo
+delata**: el puntero apunta a un ítem que existe y dice otra cosa.
+
+**Los `BR-nn` de [`business-rules.md`](../business-rules.md) no cometen ese error: su catálogo
+declara que no se renumeran ni se reutilizan.** El backlog debería haber hecho lo mismo.
