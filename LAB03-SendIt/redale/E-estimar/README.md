@@ -21,7 +21,7 @@ caro del proyecto hermano.
 
 | | |
 |---|---|
-| **Consume de R** | Los requerimientos funcionales que producen carga (cada operación que Rosa, Elena o Marco ejecutan), los no funcionales con medida, y los supuestos ya declarados en el backlog |
+| **Consume de R** | Los requerimientos funcionales que producen carga (cada operación que Rosa, Elena o Kevin ejecutan), los no funcionales con medida, y los supuestos ya declarados en el backlog |
 | **Entrega a D** | El orden de magnitud contra el que se elige arquitectura y persistencia: si el sistema es de decenas o de cientos de servidores, si el almacenamiento cabe en una base o exige almacenamiento de objetos, y si el ancho de banda de salida cambia el diseño de la API |
 | **Queda inválido si R cambia** | **Todo.** Un requerimiento funcional nuevo agrega un tipo de dato o una operación, y ambos entran en los tres cálculos. Un supuesto que se retira —el corredor, la frecuencia de envío— reescribe la tabla de entradas completa |
 | **Invalida a D, A, L y E** | Cambiar una entrada aquí mueve el dimensionamiento; si el resultado cruza un orden de magnitud, la arquitectura elegida en `D` deja de estar justificada por sí sola |
@@ -74,7 +74,7 @@ que es la única defensa que tiene un supuesto.
 | S-05 | Ticket promedio | No mueve el cómputo, pero decide cuántos envíos cruzan el umbral de reporte y por lo tanto cuántos casos de cumplimiento se abren y se retienen | El rango de Rosa: USD 200–400 | — | — |
 | S-06 | Consultas de estado por envío | Rosa consulta el estado sin necesitar que nadie le conteste. Es la operación de lectura dominante y no aparece en ningún requerimiento como carga | Lo que hoy la obliga a llamar por teléfono | — | — |
 | S-07 | **Factor de pico** | Ver abajo | — | — | — |
-| S-08 | Proporción de envíos que disparan una alerta de tamizaje | Marco dice que «el noventa y tantos por ciento son homónimos». La tasa de coincidencias decide el volumen de evidencia, que es lo que domina el almacenamiento | El día de trabajo de [Marco](../../personas/Marco.MD) | — | — |
+| S-08 | Proporción de envíos que disparan una alerta de tamizaje | La tasa de coincidencias decide el volumen de evidencia, que es lo que domina el almacenamiento, y la abrumadora mayoría son homónimos | `[ASSUMPTION: sin fuente; el enunciado no da ninguna cifra de tamizaje]` | — | — |
 | S-09 | Años de retención regulatoria | Multiplica el almacenamiento diario por un factor que el ejemplo de YouTube no tiene | — | — | — |
 
 ### El factor de pico
@@ -154,10 +154,10 @@ eso, el almacenamiento no sería un problema de arquitectura.
    capturan una vez por persona y no se borran cuando la persona deja de ser cliente.
 2. **La prueba de que se tamizó** — el resultado del contraste contra las listas de personas y
    entidades sancionadas, con la lista, su versión y su fecha. Se guarda **por cada envío, haya o no
-   coincidencia**: la ausencia de coincidencia también hay que poder demostrarla, y Marco necesita
+   coincidencia**: la ausencia de coincidencia también hay que poder demostrarla, y una auditoría necesita
    saber contra qué versión de qué lista se aprobó lo que se aprobó.
 3. **El registro inalterable** — el asiento contable de cada movimiento y la traza de auditoría.
-   Esta última crece con las **lecturas**, no solo con las escrituras: cada consulta de Marco a los
+   Esta última crece con las **lecturas**, no solo con las escrituras: cada consulta al expediente de cumplimiento sobre los
    datos de un cliente es una fila, porque su permiso dice que no puede consultarlos sin un caso
    abierto y eso solo es verificable si queda registrado que consultó.
 

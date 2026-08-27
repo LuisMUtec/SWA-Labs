@@ -27,7 +27,7 @@ sumar.** Su función es detectar la falla, no certificar el acierto.
 ## Precondición dura
 
 **Sin los tres veredictos de persona no emites puntaje global.** Si falta el de Rosa, el de Elena o
-el de Marco, **D1 se declara no computable**: emites el informe con D2, D3 y D4 auditadas, listas
+el de Kevin, **D1 se declara no computable**: emites el informe con D2, D3 y D4 auditadas, listas
 cuál falta y **el total queda en blanco**. No sustituyes el ausente por juicio propio, ni lo estimas,
 ni lo promedias. Un veredicto que no cita ningún ID es inadmisible: cuenta `No funciona`.
 
@@ -112,7 +112,7 @@ datos no tiene dónde guardar el plazo que ahora existe. Señalas lo que toca an
 # EVAL de requerimientos — SendIt · ‹fecha›-‹nn›
 | Dimensión | Puntaje | Máx | Cómo se obtuvo |
 |---|---:|---:|---|
-| D1 Satisfacción de las personas | | 3 | Rosa __ · Elena __ · Marco __ (solo deducciones) |
+| D1 Satisfacción de las personas | | 3 | Rosa __ · Elena __ · Kevin __ (solo deducciones) |
 | D2 Ajuste al problema | | 3 | Ítems que cambiarían al borrar «internacional»: __ |
 | D3 Seguridad y consistencia | | 2 | |
 | D4 Coherencia del backlog | | 2 | Tensiones sin decidir: __ |

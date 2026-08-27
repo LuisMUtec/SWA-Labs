@@ -72,13 +72,12 @@ enunciado pide **todos** los entregables del framework. La tensión y cómo se r
 |---|---|---|
 | **[Rosa Quispe](personas/Rosa.MD)** — *usuario modelo* | Remitente en Estados Unidos | Que el envío llegue por el monto y en la fecha prometidos |
 | [Elena Quispe](personas/Elena.MD) | Destinataria en Huanta, cobra en efectivo | Que el último tramo, el que no tiene pantalla, también cierre |
-| [Marco Salas](personas/Marco.MD) | Oficial de cumplimiento de SendIt | La **seguridad** del enunciado, y la retención que pone a prueba la **consistencia** |
+| [Kevin Ramos](personas/Operario.MD) | Operario de la ventanilla de un agente | La **seguridad** del enunciado: es el vector, no el guardián — y la operación cortada que pone a prueba la **consistencia** |
 
 **El usuario modelo es Rosa:** ella decide usar SendIt o abandonarlo, ella paga, y es la única de
-las tres que elige libremente —Elena recibe por donde Rosa mandó y Marco trabaja dentro de la
-empresa—. Elegirla no la vuelve la única usuaria, porque su problema no se resuelve dentro de su
+las tres que elige libremente —Elena recibe por donde Rosa mandó y Kevin atiende el mostrador—. Elegirla no la vuelve la única usuaria, porque su problema no se resuelve dentro de su
 pantalla: la promesa que ella necesita la cumple o la rompe Elena en la bodega de Huanta, y la
-suspende o la libera Marco.
+sostiene o la pierde Kevin en el mostrador.
 
 Las tres se contradicen entre sí en **seis tensiones** (T1–T6) que el backlog tiene que decidir, no
 esquivar. Están enunciadas, con su lado y su costo, en [`personas/README.md`](personas/README.md).
@@ -96,6 +95,8 @@ distinto. **Cada afirmación ocurre una sola vez, en su altitud.**
 | Decisiones | [`docs/DECISIONES.md`](docs/DECISIONES.md) | Qué se decidió, entre qué opciones y qué cuesta. Y qué **no** se puede decidir todavía |
 | Personas | [`personas/`](personas/README.md) | Quién es cada persona, qué necesita, qué la frustra y qué nunca debe poder hacer. **Nunca qué hace el sistema** |
 | **R** — el backlog | [`redale/R-requerimientos/backlog.md`](redale/R-requerimientos/backlog.md) | Qué debe hacer el sistema. Única fuente de verdad, y **único artefacto puntuado** |
+| **R** — insumos | [`redale/R-requerimientos/insumos.md`](redale/R-requerimientos/insumos.md) | El razonamiento del que saldrán los títulos. **No es el entregable y no se puntúa** |
+| Dominio | [`business-rules.md`](business-rules.md) | Las reglas que obedece el negocio, `BR-nn`. Sobreviven a cualquier backlog |
 | **E** — estimar | [`redale/E-estimar/`](redale/E-estimar/README.md) | Cuántos servidores, cuánto almacenamiento y cuánto ancho de banda, con sus supuestos declarados |
 | **D** — diseñar el servicio | [`redale/D-disenar-servicio/`](redale/D-disenar-servicio/README.md) | Qué arquitectura, qué persistencia, qué API — y el **mecanismo** de seguridad que el backlog solo puede exigir como garantía |
 | **A** — armar el modelo de datos | [`redale/A-armar-modelo-datos/`](redale/A-armar-modelo-datos/README.md) | Qué entidades, qué campos y dónde vive cada uno |
@@ -110,7 +111,7 @@ distinto. **Cada afirmación ocurre una sola vez, en su altitud.**
 
 | Dim | Pts | Qué mide | Juzga |
 |---|---|---|---|
-| **D1** Satisfacción de las personas | 3 | El flujo de Rosa, Elena y Marco corre de extremo a extremo en el backlog, **incluido cuando sale mal**. 1 pt por persona, **solo deducciones** | Los 3 agentes de persona |
+| **D1** Satisfacción de las personas | 3 | El flujo de Rosa, Elena y Kevin corre de extremo a extremo en el backlog, **incluido cuando sale mal**. 1 pt por persona, **solo deducciones** | Los 3 agentes de persona |
 | **D2** Ajuste al problema | 3 | Ataca la remesa internacional —frontera, moneda, efectivo sin banco— y no un «enviar plata» genérico. 1 pt por rasgo | Agregador |
 | **D3** Cobertura de seguridad y consistencia | 2 | Las dos exigencias que el enunciado nombra, con medida o invariante y no como adjetivo. 1 pt cada una | Agregador |
 | **D4** Coherencia del backlog | 2 | Sin huérfanos ni duplicados encubiertos, títulos atómicos y entendibles sin descripción, las seis tensiones decididas, prioridad asignada | Agregador |
@@ -160,7 +161,7 @@ son indistinguibles si no se anota.
 **Andamiaje completo, contenido pendiente.** Lo que está escrito:
 
 - Las **tres personas** —[Rosa](personas/Rosa.MD), [Elena](personas/Elena.MD),
-  [Marco](personas/Marco.MD)—, en `status: proto` y con cada afirmación inventada marcada
+  [Kevin](personas/Operario.MD)—, en `status: proto` y con cada afirmación inventada marcada
   `[ASSUMPTION: …]`. Usuario modelo designado y seis tensiones enunciadas.
 - El **aparato de EVAL**: rúbrica, regla de asimetría, protocolo del agente de persona, las tres
   pruebas de cobertura contra un título, los techos duros de D4 y los cuatro rebarridos de

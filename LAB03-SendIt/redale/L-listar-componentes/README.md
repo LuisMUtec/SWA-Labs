@@ -95,7 +95,7 @@ Lo único que afirma: **quién habla con el sistema**. Los actores salen de
 flowchart LR
   Rosa(( Rosa )) --> APP[ SendIt ]
   Elena(( Elena )) --> APP
-  Marco(( Marco )) --> APP
+  Kevin(( Kevin )) --> APP
 
   classDef propio fill:#dbeafe,stroke:#2563eb,color:#0b1220;
   class APP propio;
@@ -107,8 +107,9 @@ flowchart LR
 
 **Pendiente de decidir en esta pasada:** si la red pagadora entra como actor —igual que `Proveedor`
 en el ejemplo de Leasing— o aparece recién en la iteración 2 como sistema externo. Elena no habla
-con la aplicación: habla con el agente. Dibujarla conectada directamente a la caja es cómodo y
-falso, y ese es exactamente el error que la tensión T6 describe.
+directamente con el sistema: habla con Kevin en el mostrador, y **Rosa tampoco** —bajo el modelo
+Western Union (D-07) las dos puntas pasan por una ventanilla—. Dibujarlas conectadas directamente a
+la caja es cómodo y falso, y ese es exactamente el error que la tensión T6 describe.
 
 **Ítems del backlog que quedan `DONE`:** —
 
@@ -175,7 +176,7 @@ flowchart LR
 **Candidatos que este caso obliga a considerar en esta pasada**, sin decidir todavía cuáles entran:
 el proceso de **conciliación** con la red pagadora —el equivalente del `Debt Job <EOD>` del ejemplo,
 y el punto donde se descubre que una operación figura en dos estados incompatibles—; el
-**vencimiento de plazos**, que hace caducar solas las retenciones de Marco y las cotizaciones de
+**vencimiento de plazos**, que hace caducar solas las retenciones de cumplimiento y las cotizaciones de
 `D`(d); la **devolución** a Rosa; el **re-tamizaje** cuando una lista se actualiza y alcanza a un
 envío ya aprobado; y el **tablero de cumplimiento**, que es el `Debt Dashboard` de este caso.
 

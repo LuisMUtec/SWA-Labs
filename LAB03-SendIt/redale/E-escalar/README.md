@@ -97,9 +97,9 @@ siguiente si no se arregló.
 | — | — | — |
 
 **Un candidato a primer cuello de botella que no es técnico y suele quedar fuera:** el trabajo
-humano de cumplimiento. Marco revisa casos uno por uno. Si la tasa de coincidencias se mantiene y
+humano de cumplimiento. El equipo revisa casos uno por uno. Si la tasa de coincidencias se mantiene y
 los envíos se multiplican por diez, lo primero que se satura no es una base de datos sino la cola de
-Marco — y una retención sin decidir es dinero de alguien detenido en silencio. Ese límite llega
+el equipo — y una retención sin decidir es dinero de alguien detenido en silencio. Ese límite llega
 antes que casi cualquier límite de máquina, y la respuesta no es más servidores.
 
 ---

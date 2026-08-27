@@ -10,7 +10,7 @@ umbral en **8/10**. Eso decide el alcance de este documento: se puntúa el backl
 | Entrada | Papel |
 |---|---|
 | [`redale/R-requerimientos/backlog.md`](../redale/R-requerimientos/backlog.md) | **Lo único puntuado.** El único documento con autoridad sobre qué debe hacer el sistema |
-| [`personas/Rosa.MD`](../personas/Rosa.MD) · [`Elena.MD`](../personas/Elena.MD) · [`Marco.MD`](../personas/Marco.MD) | Las lee cada agente de persona: la suya y el backlog, nada más |
+| [`personas/Rosa.MD`](../personas/Rosa.MD) · [`Elena.MD`](../personas/Elena.MD) · [`Operario.MD`](../personas/Operario.MD) | Las lee cada agente de persona: la suya y el backlog, nada más |
 | [`personas/README.md`](../personas/README.md) | La lee el agregador. De ahí salen las seis tensiones que D4 exige decididas y la designación del usuario modelo |
 | [`docs/LAB-03-ARQ-2026.2.md`](../docs/LAB-03-ARQ-2026.2.md) | La lee el agregador. Fija el problema contra el que mide D2 y nombra las dos exigencias que cuenta D3 |
 
@@ -35,7 +35,7 @@ voluntad de quien los escribe.
 
 | Dim | Pts | Qué mide | Juzga |
 |---|---|---|---|
-| **D1** Satisfacción de las personas | 3 | El flujo principal de [Rosa](../personas/Rosa.MD), [Elena](../personas/Elena.MD) y [Marco](../personas/Marco.MD) corre de extremo a extremo en el backlog, **incluido cuando sale mal**. 1 pt por persona, **solo deducciones** | Los 3 agentes de persona |
+| **D1** Satisfacción de las personas | 3 | El flujo principal de [Rosa](../personas/Rosa.MD), [Elena](../personas/Elena.MD) y [Kevin](../personas/Operario.MD) corre de extremo a extremo en el backlog, **incluido cuando sale mal**. 1 pt por persona, **solo deducciones** | Los 3 agentes de persona |
 | **D2** Ajuste al problema | 3 | Ataca la remesa internacional —dinero que cruza una frontera y una moneda, y termina en efectivo en la mano de alguien sin banco— y no un «enviar plata» genérico | Agregador |
 | **D3** Cobertura de seguridad y consistencia | 2 | Los dos requerimientos que el enunciado nombra, con medida y no como adjetivo | Agregador |
 | **D4** Coherencia del backlog | 2 | Sin huérfanos ni duplicados encubiertos; títulos atómicos y entendibles **sin descripción**; las tensiones entre personas decididas y no esquivadas; prioridad asignada | Agregador |
@@ -122,7 +122,7 @@ historial.
 
 La exclusión de `personas/README.md` es la que más cuesta explicar y la que más importa: ese archivo
 contiene las seis tensiones y el ángulo de las otras dos personas. Un agente que lo lee deja de
-reclamar y empieza a negociar —«entiendo que Marco necesita tiempo»— y ahí se pierde la única señal que
+reclamar y empieza a negociar —«entiendo que Kevin necesita tiempo»— y ahí se pierde la única señal que
 el agente existe para producir. Las tensiones las decide el backlog y las juzga el agregador, no la
 persona que las sufre.
 
@@ -261,7 +261,7 @@ El agregador busca **por nombre** las cuatro variantes que el caso anterior enco
 | Variante | Qué es | Cómo se ve en SendIt |
 |---|---|---|
 | **Cifra sin productor** | Un valor del que todo depende y que ningún ítem produce | El backlog promete el monto en soles fijado al pagar, y ningún título dice quién fija la tasa ni en qué instante queda fija |
-| **Acto sin consumidor** | Algo que se puede hacer, registrar y recuperar, y que no llega a nadie ni puede ser respondido | Marco retiene un envío y ningún ítem lo paga, lo devuelve ni lo libera |
+| **Acto sin consumidor** | Algo que se puede hacer, registrar y recuperar, y que no llega a nadie ni puede ser respondido | El sistema retiene un envío y ningún ítem lo paga, lo devuelve ni lo libera |
 | **Reparación en la altitud equivocada** | El arreglo se aplica donde se vio el síntoma, no en el enunciado que lo gobierna | Se corrige un `RF` y el usuario modelo, las preguntas de encuadre o `D` siguen afirmando lo anterior |
 | **Estado sin terminador** | Un estado que se abre y que nada cierra | Una retención cuyo plazo vence y no produce consecuencia; un envío «en proceso» que no llega a ningún estado final; un cobro de Elena que no cierra el envío |
 
