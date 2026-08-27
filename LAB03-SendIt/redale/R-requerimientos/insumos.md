@@ -1,7 +1,7 @@
 # R — Insumos del backlog
 
 **Esto no es el entregable.** El artefacto que el enunciado puntúa es el
-[backlog](backlog.md), y **todavía no se escribe**: el profesor indicó en clase no hacerlo aún.
+[backlog](backlog.md), que se escribe a partir de estos insumos.
 
 Lo que hay acá es el razonamiento previo — el que un backlog de solo títulos no puede cargar.
 La restricción del enunciado dice dos cosas, y la segunda vale cualquiera sea el formato:
