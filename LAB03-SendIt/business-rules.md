@@ -160,7 +160,7 @@ La disponibilidad para cobrar no se anticipa a la confirmación.
 - **Fuente:** enunciado — consistencia de datos.
 - **Afecta:** pago, liquidación entre agentes.
 
-### BR-12 — El emisor puede cancelar mientras el giro no esté pagado, y solo él
+### BR-12 — El emisor puede cancelar mientras el dinero no esté a disposición del receptor, y solo él
 
 Hasta que el giro se paga, el emisor puede cancelarlo y recuperar su dinero. Después del
 pago, no. El receptor nunca puede cancelar.
