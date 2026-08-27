@@ -37,7 +37,7 @@ recomienda.
 |---|---|
 | **Consume de L** | El diagrama base de la última iteración. Sin él no hay sobre qué preguntar qué se rompe primero |
 | **Consume de E** (estimar) | La carga inicial, el factor de pico y los supuestos declarados. Un tramo es una carga, y la carga viene de ahí |
-| **Consume de D** | Las cinco decisiones. Varias tienen un tramo en el que dejan de funcionar: la conciliación revisada a mano se rompe mucho antes que la base de datos |
+| **Consume de D** | Las cinco decisiones. Varias tienen un tramo en el que dejan de funcionar: la divergencia entre el centro y los mostradores, revisada a mano una por una, se rompe mucho antes que la base de datos |
 | **Entrega a** | Nadie. Es el último paso, y por eso es el único que puede quedar sin cerrar sin invalidar a otro |
 | **Queda inválido si L cambia** | El componente que se nombró como primer cuello de botella, si dejó de existir o cambió de lugar |
 | **Queda inválido si E (estimar) cambia** | El tramo en el que el sistema arranca, y con él el orden de todo lo demás |
@@ -135,7 +135,7 @@ con **otro país**:
 |---|---|
 | Otro regulador | Otros umbrales de reporte, otras obligaciones de retención, otra autoridad. Es lógica de negocio nueva, no más instancias de la vieja |
 | Otra moneda | Otra posición de cambio, otro proveedor de tasa, otra cuenta de diferencia de cambio en el libro |
-| Otra red pagadora | Otro registro contable con el que conciliar, otro formato, otra ventana de divergencia, otro modo de fallar |
+| Otra red de puntos de pago propios | Locales que abrir, personal que capacitar y mostradores que sincronizar. No son más instancias de un servicio: es planta física, y la ventana de divergencia del corredor nuevo la fija la calidad de conexión de sus puntos, no una decisión de arquitectura |
 | Otras listas y otra forma de identidad | Lo que sirve como documento válido en un país no sirve en otro, y el tamizaje cambia de fuente |
 | Otro huso horario | El pico se mueve, y dos corredores pueden tener picos que no se solapan — o que sí |
 

@@ -149,15 +149,28 @@ Lo que se hereda es el método. Lo que cambia es qué hay del otro lado de cada 
 
 | En el ejemplo (Leasing) | En SendIt |
 |---|---|
-| `SUNAT`, `RENIEC`, `INFO CORP API` | Verificación de identidad, **listas de personas y entidades sancionadas**, proveedor de tipo de cambio, **red pagadora en el país de destino**, y la autoridad a la que reporta el oficial de cumplimiento |
+| `SUNAT`, `RENIEC`, `INFO CORP API` | Verificación de identidad, **listas de personas y entidades sancionadas**, proveedor de tipo de cambio, el procesador que cobra a Rosa, y la autoridad a la que reporta el oficial de cumplimiento. **El punto de pago no está en esta fila**: es propio |
 | `Validation Service` con dos ramas | El tamizaje de cumplimiento — con la diferencia de que su rama de rechazo **no puede explicarse al cliente** (ver la tensión T2 en [`../personas/README.md`](../personas/README.md)) |
 | `Messaging Service` → `SMS` / `Email` | El canal hacia Elena, que **no tiene datos ni correo**: llamada y mensaje de texto (tensión T5) |
 | Una `BD` por grupo de servicios | Las varias bases, más el problema que el ejemplo no tiene: el registro contable del dinero, que es donde vive la consistencia |
-| `Debt Job <EOD>` | El equivalente es la conciliación con la red pagadora — el punto donde una operación puede figurar en dos estados incompatibles |
+| `Debt Job <EOD>` | El equivalente es la sincronización y el cierre de caja de los puntos de pago — el punto donde se descubre que un envío figura a la vez detenido en el centro y pagado en el mostrador |
 
-La diferencia de fondo: en el ejemplo de Leasing, lo rosado **informa**. En SendIt, lo rosado
-**tiene el dinero**. Un `SUNAT` que responde tarde retrasa una validación; una red pagadora que
-responde tarde deja un envío que está simultáneamente retenido y pagado.
+La diferencia de fondo **no es de color, y ahí es donde el método heredado se queda corto.** En
+Leasing lo rosado informa, y en SendIt lo rosado también informa: identidad, listas, tasa, la
+autoridad. Un `SUNAT` que responde tarde retrasa una validación, y un proveedor de tasa que responde
+tarde retrasa una cotización. Nada de eso es lo peor que le pasa a este caso.
+
+Lo peor le pasa **adentro**. El punto de pago de Huanta es propio: azul, con la marca, corriendo
+sobre el sistema de SendIt y obedeciendo sus órdenes. Pero puede quedarse sin conexión con billetes
+en la caja y una autorización previa que dice «paga» — y entonces el centro y el mostrador afirman a
+la vez que el mismo envío está detenido y disponible para cobro. Las dos afirmaciones son nuestras y
+las dos están en nuestro registro.
+
+El ejemplo de Leasing no tiene esa figura: todas sus cajas azules están conectadas por definición, y
+el rosado le alcanza para marcar dónde deja de mandar el diseño. Aquí hacen falta dos marcas, no
+una: **dónde termina el mando y dónde termina la conexión.** Lo primero lo resuelve el color
+heredado. Lo segundo hay que inventarlo, y es la única parte del método que este caso obliga a
+extender.
 
 ---
 
