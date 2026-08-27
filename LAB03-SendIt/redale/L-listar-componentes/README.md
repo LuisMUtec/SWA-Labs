@@ -4,8 +4,8 @@
 > [**A** — Armar el modelo de datos](../A-armar-modelo-datos/README.md) · siguiente:
 > [**E** — Escalar](../E-escalar/README.md) · bitácora: [`ITERACIONES.md`](../ITERACIONES.md)
 
-**Estado: tres iteraciones dibujadas y trazabilidad completa.** Las 81 filas del backlog —67 `RF` y
-14 `RNF`— tienen componente e iteración. Lo que queda abierto está marcado como abierto y no como
+**Estado: tres iteraciones dibujadas y trazabilidad completa.** Las 110 filas del backlog —93 `RF` y
+17 `RNF`— tienen componente e iteración. Lo que queda abierto está marcado como abierto y no como
 hecho.
 
 Diagramar la arquitectura con todo lo mapeado en los pasos previos. **Este es el paso donde el
@@ -128,8 +128,8 @@ flowchart LR
 
 **Las dos puntas pasan por una ventanilla, y por eso ni Rosa ni Elena tocan la caja.** Bajo el
 modelo Western Union ([D-07](../../docs/DECISIONES.md#d-07--sendit-opera-el-modelo-western-union))
-Rosa entrega efectivo y se identifica ante un operario (`RF-01`, `RF-02`), y Elena cobra efectivo
-ante otro operario en el país destino (`RF-34`). Dibujarlas conectadas directamente a la caja es
+Rosa entrega efectivo y se identifica ante un operario (`RF-01`, `RF-79`), y Elena cobra efectivo
+ante otro operario en el país destino (`RF-02`, `RF-34`). Dibujarlas conectadas directamente a la caja es
 cómodo y falso: **la corrección de esa arista es todo lo que esta pasada decide.**
 
 **La pregunta que el andamiaje dejaba abierta queda cerrada acá:** el operario **es actor**, igual
@@ -147,10 +147,12 @@ derivación.
 
 | Componente | Qué hace | De qué paso previo sale | Persona o requisito que lo exige |
 |---|---|---|---|
-| `SendIt` | Todo el sistema, sin abrir. Solo afirma quién puede dirigirse a él | `D` — el alcance, antes de partirlo en servicios | `RF-12`: si ninguna arista sale del sistema hacia el receptor, el código no puede llegarle por canal propio |
+| `SendIt` | Todo el sistema, sin abrir. Solo afirma quién puede dirigirse a él | `D` — el alcance, antes de partirlo en servicios | `RF-11`: el código sale por la única arista que va hacia el operario de origen, y no hay ninguna que lo lleve al receptor |
 
-**Ítems del backlog que quedan `DONE`:** `RF-12` — y solo ese. Es el único que se demuestra con el
-grafo de actores: la prohibición de `RF-12` **es** la ausencia de una arista.
+**Ítems del backlog que quedan `DONE`:** `RF-11` — y solo ese. Es el único que se demuestra con el
+grafo de actores: que el código sea **únicamente** del emisor es la ausencia de una arista, no una
+regla escrita adentro de una caja. Las iteraciones 2 y 3 le agregan avisos hacia el receptor
+(`RF-25`, `RF-37`, `RF-41`), y ninguno transporta el código — esa distinción nace acá.
 
 **Lo que esta caja no explica, y fuerza la iteración 2:** `RF-26` exige contrastar a emisor y
 receptor contra las listas de sanciones **antes de aceptar el efectivo**. Un cuadrado no tiene
@@ -227,15 +229,15 @@ flowchart LR
 
 | Componente | Qué hace | De qué paso previo sale | Persona o requisito que lo exige |
 |---|---|---|---|
-| `Punto de Atención Service` | Lo que corre en la ventanilla. Recibe el efectivo, muestra al operario **la acción y no el motivo**, y le recorta la vista a la operación que atiende | `D` — la frontera interna centro↔mostrador, decisión `D`(c) | `RF-02`, `RF-39`, `RF-40`, `RF-57`, `RNF-09` |
-| `Identity Service` | Comprueba documento oficial vigente del emisor antes de crear, y del receptor antes de pagar. Guarda la verificación, no el documento en claro | `A` — entidad *Verificación de identidad* | `RF-01`, `RNF-01`; y `RF-34` desde el lado del pago |
+| `Punto de Atención Service` | Lo que corre en la ventanilla. Recibe el efectivo, muestra al operario **la acción y no el motivo**, y le recorta la vista a la operación que atiende. Ningún rechazo sale de acá sin una salida que ofrecer | `D` — la frontera interna centro↔mostrador, decisión `D`(c) | `RF-39`, `RF-40`, `RF-57`, `RNF-09` |
+| `Identity Service` | Comprueba documento oficial vigente del emisor antes de crear, y la titularidad del receptor antes de pagar. **Es el sistema y no el operario quien decide qué diferencia de escritura cuenta como coincidencia** (`RF-84`). Guarda la evidencia de la verificación, no el documento en claro | `A` — entidad *Verificación de identidad* | `RF-01`, `RF-80`, `RF-84`, `RF-85`, `RNF-01` |
 | `Screening Service` | Contrasta emisor y receptor contra listas **antes de aceptar el efectivo**, separa coincidencia exacta de homonimia y deja el giro retenido | `D`(e) — el momento del tamizaje | `RF-26`, `RF-28`, `RF-29` |
 | `Screening Job <actualización de lista>` | Re-tamiza los giros ya aprobados cuando una lista cambia, que es el caso que `D`(e) señaló como imposible de resolver «antes o después» | `D`(e) | `RF-27` |
 | `Limits Service` | Cuenta el límite por operación y el acumulado de la ventana **sobre la identidad del emisor**, no sobre el punto de atención | `R` — `BR-04` | `RF-08`, `RF-09`, `RF-10` |
 | `Quote Service` | Produce y fecha la cotización, fija el monto en moneda destino y lo conserva sin recalcular | `D`(d) — cuándo se fija el tipo de cambio | `RF-05`, `RF-06`, `RF-07`, `RF-21` |
-| `Giro Service` | Crea el giro con un receptor, un país, un punto de atención elegido y un código que entrega **solo** al emisor | `A` — entidad *Giro* | `RF-03`, `RF-04`, `RF-11`, `RF-63`, `RNF-10` |
+| `Giro Service` | Crea el giro con un receptor —que después ya no se altera—, un país, un punto de atención elegido y un código que entrega **solo** al emisor y guarda comprobable, nunca legible. Da el giro por creado en el instante en que se registra la recepción del efectivo | `A` — entidad *Giro* | `RF-03`, `RF-04`, `RF-63`, `RF-70`, `RF-79`, `RNF-10`, `RNF-15`; y `RF-11` desde la iteración 1 |
 | `Ledger Service` | Escribe el libro de movimientos. Toda operación deja la suma igual | `D`(a) — la verdad del dinero | `RNF-07` |
-| `Payout Service` | Autoriza el pago contra código **y** documento, rechaza el segundo intento en cualquier punto, entrega el monto fijado y cierra el giro cuando el receptor recibe | `D`(b), `D`(c) | `RF-34`, `RF-35`, `RF-36`, `RF-37`, `RF-38`, `RF-64` |
+| `Payout Service` | Autoriza el pago contra código **y** documento, rechaza el segundo intento en cualquier punto, entrega el monto fijado **en efectivo y sin exigir cuenta bancaria**, y cierra el giro cuando el receptor recibe | `D`(b), `D`(c) | `RF-02`, `RF-34`, `RF-35`, `RF-36`, `RF-38`, `RF-64`, `RNF-16` |
 | `Notification Service` | El canal hacia el receptor. Habla por **llamada o mensaje de texto**, sin exigir aplicación, correo ni datos móviles | `R` — tensión T5 | `RF-25`, `RF-41` |
 | `BD identidad`, `BD cumplimiento`, `BD cotizaciones`, `BD giros`, `BD contable` | Cinco, no una. Cada grupo de servicios tiene la suya | `A` — entrega a `L` | — (las exige el componente que escribe en ellas) |
 
@@ -254,15 +256,17 @@ flowchart LR
   punteado: `Punto de Atención Service` es azul y es nuestro, y el punteado dice que la conexión se
   corta aunque el mando no.
 
-**Ítems del backlog que quedan `DONE`:** los 28 `RF` y 5 `RNF` marcados con **2** en la tabla de
+**Ítems del backlog que quedan `DONE`:** los 31 `RF` y 7 `RNF` marcados con **2** en la tabla de
 trazabilidad — el camino de identificación, tamizaje, creación y pago con su rama de rechazo.
 
 **Lo que esta pasada no explica, y fuerza la iteración 3:** `RF-13` exige la autorización de un
-segundo rol sobre el umbral reforzado y `RF-14` prohíbe recibir el efectivo mientras no exista —y en
-el diagrama de arriba no hay un segundo rol en ninguna parte—; `RF-45` prohíbe que un punto sin
-conexión pague un giro que el centro ya retuvo, y nada dibujado reconcilia esas dos versiones;
-`RF-24` dice que el efectivo lo pone el agente de su caja, y no hay ninguna caja del agente. Tres
-huecos, tres razones para una pasada más.
+segundo rol sobre el umbral reforzado y `RNF-02` prohíbe que una misma identidad ejerza dos roles del
+mismo giro —y en el diagrama de arriba no hay un segundo rol en ninguna parte—; `RF-45` prohíbe que
+un punto sin conexión pague un giro que el centro ya retuvo, y nada dibujado reconcilia esas dos
+versiones; `RF-24` dice que el efectivo lo pone el agente de su caja, y no hay ninguna caja del
+agente; y `RF-69` deja cobrar con documento no vigente a quien responde un desafío que `RF-12` y
+`RNF-17` prohíben mostrar **a los dos lados del mostrador**, lo que exige un almacén que esta pasada
+no tiene. Cuatro huecos, cuatro razones para una pasada más.
 
 ### Iteración 3 — cobertura del backlog restante
 
@@ -323,11 +327,35 @@ flowchart LR
 
   PDA --> PAY["Payout Service"]
   PAY --> SCR
+  PAY --> IDN
   PAY --> BDGI
+  PAY --> DES["Desafío Service"]
+  DES --> BDDE[("BD desafíos")]
+  GIR --> DES
+  IDN -->|"DOCUMENTO NO VIGENTE — HAY DESAFÍO"| DES
+  DES -->|"INTENTOS AGOTADOS"| PDA
+  DES -->|"RESPUESTA CORRECTA — SIN MOSTRARLA A NADIE"| PAY
+  PAY --> CRE["Cobros del Receptor Service"]
+  CRE --> BDCU
+  CRE -->|"ACUMULADO DE COBROS SUPERADO"| RET
+  CRE -->|"DENTRO DEL ACUMULADO"| PAY
   PAY -->|"YA PAGADO / CANCELADO / RETENIDO"| PDA
   PAY -->|"CÓDIGO Y DOCUMENTO COINCIDEN"| LED
   PAY -->|"ENTREGADO — GIRO CERRADO"| OPD
   PAY --> CAJA["Caja del agente"]
+
+  PDA --> CPS["Caja del Punto Service"]
+  CPS --> BDPA
+  CPS -->|"EFECTIVO DECLARADO EN EL PUNTO"| PDA
+  CPS --> NOT
+  CPS -->|"EL PUNTO ELEGIDO NO PUEDE PAGAR"| PAL["Punto Alternativo Service"]
+  PAL --> BDPA
+  PAL -->|"OTRO PUNTO DEL PAÍS DESTINO"| PDA
+
+  PDA --> REC["Reclamo Service"]
+  REC --> BDGI
+  REC --> CRR
+  REC --> AUD
 
   RET --> BDCU
   RET --> TAB["Tablero de Cumplimiento"]
@@ -344,9 +372,15 @@ flowchart LR
   ROSA -->|"consulta y cancelación"| CON["Consulta Service"]
   CON --> BDGI
   CON --> CAN["Cancelación Service"]
+  CON --> SUP["Supresión Service"]
+  SUP --> BDID
+  SUP --> AUD
+  AUD -->|"LO QUE EL REGISTRO DE ACTOS CONSERVA"| SUP
   CAN --> DEV
   DEV --> LED
+  DEV --> BDGI
   DEV --> NOT
+  PDA -->|"retiro de la devolución"| DEV
 
   SYN["Sync Service"] --> PDA
   SYN --> BDGI
@@ -354,6 +388,8 @@ flowchart LR
   EOD["Cierre de Caja Job &lt;EOD&gt;"] --> SYN
   EOD --> LED
   EOD --> TAB
+  EOD --> CPS
+  VEN --> DES
   LQJ["Liquidación Job &lt;plazo del agente&gt;"] --> CAJA
   LQJ --> LED
 
@@ -381,10 +417,11 @@ flowchart LR
   classDef agente  stroke-width:4px;
 
   class PDA,IDM,IDN,COR,SCR,LIM,DUAL,QUO,LIQ,GIR,LED,PAY,RET,DEV,CAN,CON,SYN,CRR,REP,AUD propio;
+  class DES,CRE,CPS,PAL,REC,SUP propio;
   class NOT,TAB soporte;
   class RENIEC,VDOC,LIST,FX,TEL,AUTO,AUTD externo;
   class SCRJ,VEN,EOD,LQJ batch;
-  class BDID,BDCU,BDCO,BDGI,BDLI,BDIN,BDCR,BDPA,BDAU bd;
+  class BDID,BDCU,BDCO,BDGI,BDLI,BDIN,BDCR,BDPA,BDAU,BDDE bd;
   class PDA corte;
   class CAJA agente;
 ```
@@ -393,25 +430,32 @@ flowchart LR
 |---|---|---|---|
 | `Corredor Service` | Aplica a un mismo giro las reglas del regulador de origen **y** las del de destino, rechaza cuando son incompatibles en vez de elegir una, y avisa el país no atendible antes del efectivo | `D` — el negocio es multirregulador | `RF-15`, `RF-16`, `RF-19`, `RF-23`, `RNF-12`, `RNF-14` |
 | `Reporte Service` | Reporta a la autoridad de origen el giro sobre el umbral transfronterizo, midiendo el umbral **sobre el giro completo** y no sobre su tramo local | `R` — `BR-06` | `RF-17`, `RF-22` |
-| `Liquidez Service` | Exige efectivo disponible en el corredor de destino antes de dar el giro por fondeado | `A` — catálogo de puntos y efectivo | `RF-20` |
-| `Dual Control Service` | Segunda autorización sobre el umbral reforzado y para corregir un giro pagado, con la identidad de los dos roles separada | `R` — `BR-05`, `BR-13` | `RF-13`, `RF-14`, `RF-61`, `RNF-02` |
-| `Retención Service` | Abre el caso de cumplimiento con el plazo del regulador **más estricto de los dos países**, lo deriva a un rol distinto del operario que atendió y avisa al emisor que su giro quedó retenido | `A` — entidad *Caso de cumplimiento* | `RF-30`, `RF-31` |
-| `Tablero de Cumplimiento` | Donde trabaja el rol de cumplimiento: es el `Debt Dashboard` de este caso. Libera con motivo registrado y **le impide liberar al operario que atendió** | `D` — la consola de cumplimiento no es el punto de venta | `RF-33`, `RF-58` |
-| `Vencimiento Job <diario>` | El terminador. Hace caducar solas las retenciones sin liberar, las cotizaciones de `D`(d) y los giros prescritos, y avisa antes de que prescriban | `D`(d) · `R` — *estado sin terminador* | `RF-32`, `RF-49`, `RF-51` |
-| `Devolución Service` | Devuelve al emisor: por cancelación, por retención vencida y por prescripción. Y rechaza el pago de un giro ya devuelto | `D`(a) — la devolución es un asiento, no un `UPDATE` | `RF-47`, `RF-50`, `RF-62`, `RNF-13` |
-| `Cancelación Service` | Cancela mientras el dinero **no esté a disposición del receptor**, y rechaza toda cancelación pedida por el receptor | `R` — tensión T6 | `RF-46`, `RF-48` |
+| `Liquidez Service` | Exige efectivo disponible en el corredor de destino antes de dar el giro por fondeado, y de ahí sale la fecha desde la cual el giro se podrá cobrar, que el emisor ve **antes** de entregar el efectivo | `A` — catálogo de puntos y efectivo | `RF-20`, `RF-77` |
+| `Dual Control Service` | Segunda autorización sobre el umbral reforzado y para corregir el monto de un giro pagado, con la identidad de los dos roles separada en toda la cadena crear → autorizar → pagar → liberar → corregir | `R` — `BR-05`, `BR-13` | `RF-13`, `RF-61`, `RNF-02` |
+| `Retención Service` | Abre el caso de cumplimiento con el plazo del regulador **más estricto de los dos países** —más corto para la homonimia que para la coincidencia exacta—, lo deriva a un rol distinto del operario que atendió y avisa la retención al emisor **y al receptor** | `A` — entidad *Caso de cumplimiento* | `RF-30`, `RF-31`, `RF-37`, `RF-78` |
+| `Tablero de Cumplimiento` | Donde trabaja el rol de cumplimiento: es el `Debt Dashboard` de este caso. Libera **solo** ese rol, y toda liberación deja su motivo registrado | `D` — la consola de cumplimiento no es el punto de venta | `RF-33`, `RF-87` |
+| `Vencimiento Job <diario>` | El terminador. Hace caducar solas las retenciones sin liberar, las cotizaciones de `D`(d), las respuestas de desafío y los giros prescritos —y con ellos la devolución que nadie retiró—, y avisa antes de que prescriban | `D`(d) · `R` — *estado sin terminador* | `RF-32`, `RF-49`, `RF-51`, `RF-83`, `RF-89` |
+| `Devolución Service` | Devuelve al emisor por cancelación, por retención vencida y por prescripción: **siempre en efectivo, siempre en la moneda que entregó, comisión incluida cuando el giro no llegó a pagarse**, en el punto que él elija y con el plazo informado antes de que soltara el dinero. Rechaza el pago de un giro ya devuelto | `D`(a) — la devolución es un asiento, no un `UPDATE` | `RF-14`, `RF-47`, `RF-50`, `RF-62`, `RF-71`, `RF-72`, `RF-73`, `RF-74`, `RF-88`, `RF-89`, `RNF-13` |
+| `Cancelación Service` | Cancela mientras el dinero **no esté a disposición del receptor**, y solo a pedido del emisor que creó el giro | `R` — tensión T6 | `RF-46`, `RF-48` |
 | `Consulta Service` | El único canal directo de Rosa, y es de lectura: estado de sus giros sin depender del receptor, disponible-para-cobro distinguido del que no lo está, y retención con su fecha | `R` — `BR-01` | `RF-52`, `RF-53`, `RF-66` |
 | `Idempotencia Service` | Persiste la clave del intento **antes** de mover un centavo. El reintento de una creación o de un pago interrumpidos es la misma operación, no una nueva | `D`(b) | `RF-42`, `RF-43`, `RF-44` |
 | `Sync Service` | Reconcilia lo que el punto sostuvo sin conexión. Impide que un punto incomunicado pague un giro que el centro ya retuvo, canceló o dio por pagado, y recupera el estado **sin que el operario haga nada** | `D`(c) | `RF-45`, `RNF-06`, `RNF-08` |
 | `Cierre de Caja Job <EOD>` | El equivalente del `Debt Job <EOD>`. Cuadra la caja de cada punto contra el libro y es donde aparece el doble pago si apareció | `D`(a), `D`(c) | `RNF-05` |
 | `Liquidación Job <plazo del agente>` | Liquida con el agente el efectivo que puso de su caja, en el plazo acordado con él | `D`(a) — la caja del agente es una cuenta del libro | `RF-24` |
-| `Corrección Service` | Registra la corrección de un giro pagado como movimiento nuevo, le atribuye la diferencia a un responsable nombrado y se la informa al receptor por su canal | `A` — sección 5, inmutabilidad | `RF-56`, `RF-59`, `RF-60` |
+| `Corrección Service` | Registra la corrección del monto de un giro pagado como movimiento nuevo, atribuye la diferencia **al punto de atención donde se entregó el dinero** y se la informa al receptor por llamada o mensaje de texto | `A` — sección 5, inmutabilidad | `RF-56`, `RF-59`, `RF-60` |
 | `Audit Service` | Asocia cada acto a la identidad de quien lo ejecutó, impide modificar o eliminar lo ya ejecutado, deja traza de todo acceso a identidad y conserva por el plazo más largo de los dos países | `A` — entidad *Traza de auditoría* | `RF-18`, `RF-54`, `RF-55`, `RNF-03`, `RNF-04` |
-| `Notification Service` (ampliado) | El mismo de la iteración 2, con el segundo destinatario que la 2 no tenía: el **emisor**. Le avisa el cobro, la retención y la prescripción | `R` — tensión T2 y T6 | `RF-65`, `RF-67`, y `RF-51` desde el `Vencimiento Job` |
+| `Notification Service` (ampliado) | El mismo de la iteración 2, con el segundo destinatario que la 2 no tenía: el **emisor**. Le avisa el cobro, la retención, la prescripción y su devolución disponible. Y por el mismo canal lleva al receptor las malas noticias que la 2 no sabía dar: su giro retenido y la diferencia registrada | `R` — tensión T2 y T6 | `RF-65`, `RF-67`, `RF-60`; `RF-51` desde el `Vencimiento Job`, `RF-14` desde el `Devolución Service`, `RF-37` desde el `Retención Service` y `RF-75` desde el `Caja del Punto Service` |
 | `Caja del agente` | No es un servicio: es la cuenta contable del efectivo que el agente puso y SendIt todavía no le liquidó. Borde grueso porque es propia en el mando y ajena en la contabilidad | `D`(a) — cuentas del libro | `RF-24`, `RF-20` |
+| `Desafío Service` | Guarda la pregunta que el emisor registra al crear el giro y **comprueba** la respuesta del receptor sin mostrarla: ni al operario del mostrador ni a quien administra la infraestructura. Es lo que deja cobrar con documento no vigente sin bajar la vara de identificación. Acota los intentos y caduca con el giro | `R` — tensión T3 · `A` — el secreto se guarda comprobable, no legible | `RF-12`, `RF-68`, `RF-69`, `RF-82`, `RF-83`, `RNF-17`; y `RF-86` junto al `Identity Service` |
+| `Cobros del Receptor Service` | Cuenta cuántos giros cobró **un mismo receptor** en la ventana vigente y retiene el que la supera. Es el gemelo del `Limits Service` en la otra punta: aquel cuenta sobre el emisor al crear, este sobre el receptor al pagar | `R` — `BR-06`; `A` — acumulados por identidad | `RF-58`, `RF-93` |
+| `Caja del Punto Service` | El efectivo **por punto**, que el `Liquidez Service` no ve porque mira el corredor entero. Registra lo que cada punto declara al abrir y al cerrar su caja, y le dice al operario cuánto tiene antes de habilitarle un pago | `A` — catálogo de puntos y efectivo · `D`(c) | `RF-76`, `RF-92`, `RF-75` |
+| `Punto Alternativo Service` | La salida cuando el punto que el emisor eligió no puede pagar: habilita el cobro en otro punto del país destino en vez de dejar a Elena sin dinero frente al mostrador | `R` — `BR-11`; y `RF-39`, que prohíbe un rechazo sin salida | `RF-91` |
+| `Reclamo Service` | La voz del receptor, que hasta acá no tenía ninguna: Elena declara **en el mostrador** que el dinero recibido no coincide con el informado, y eso abre el caso que el `Corrección Service` resuelve. Sin esta caja, la diferencia solo se detecta en el cierre de caja y del lado de SendIt | `R` — `BR-13` | `RF-90` |
+| `Supresión Service` | Suprime a pedido los datos personales **de quien los entregó y de nadie más**, dejando en pie lo que el registro de actos debe conservar. La arista con el `Audit Service` es la que hace visible el conflicto: `RNF-03` es inmutable y esta caja no lo toca | `A` — sección de retención · `R` — `BR-15` | `RF-81` |
+| `BD desafíos` | El almacén del secreto de `RNF-17`. Guarda la respuesta de modo que se pueda comprobar y no leer, y por eso es **su propia base** y no una columna de `BD giros`: quien administra la infraestructura del giro no debe poder alcanzarla | `A` — entrega a `L` | `RF-12`, `RNF-17` |
 | `BD intentos`, `BD corredores y reguladores`, `BD puntos de atención y efectivo`, `BD auditoría` | Las cuatro que esta pasada agrega a las cinco de la iteración 2 | `A` — entrega a `L` | — (las exige el componente que escribe en ellas) |
 
-**Ítems del backlog que quedan `DONE`:** los 38 `RF` y 9 `RNF` marcados con **3** en la tabla de
+**Ítems del backlog que quedan `DONE`:** los 61 `RF` y 10 `RNF` marcados con **3** en la tabla de
 trazabilidad. Con eso la columna `DONE` no tiene ningún vacío, y por lo tanto **no hay iteración 4**.
 
 ---
@@ -421,26 +465,28 @@ trazabilidad. Con eso la columna `DONE` no tiene ningún vacío, y por lo tanto 
 Esta tabla **es** el `DONE` escrito a mano del profesor, en forma verificable. Reemplaza a la
 palabra al final del renglón y hace comprobable la exigencia del enunciado.
 
-**81 filas: 67 `RF` y 14 `RNF`.** Una por ítem del backlog, ninguna agrupada, ninguna vacía. La
+**110 filas: 93 `RF` y 17 `RNF`.** Una por ítem del backlog, ninguna agrupada, ninguna vacía. La
 columna del medio nombra la iteración **y el componente** que lo cierra, porque decir «iteración 3»
 sin decir qué caja no es verificable.
 
 | ID del ítem | Título | Iteración que lo cubre | `DONE` |
 |---|---|---|---|
 | RF-01 | el sistema identificará al emisor contra un documento oficial vigente antes de crear un giro - Rosa | **2** — Identity Service | `DONE` |
-| RF-02 | el sistema rechazará registrar la recepción del efectivo antes de identificar al emisor - Kevin | **2** — Punto de Atención Service | `DONE` |
+| RF-02 | el sistema entregará al receptor su dinero en efectivo, sin exigirle cuenta bancaria - Elena | **2** — Payout Service | `DONE` |
+| RF-79 | el sistema dará el giro por creado en el momento en que registra la recepción del efectivo - Kevin | **2** — Giro Service | `DONE` |
 | RF-03 | el sistema exigirá un único receptor designado por giro - Rosa | **2** — Giro Service | `DONE` |
 | RF-04 | el sistema exigirá un único país destino por giro - Rosa | **2** — Giro Service | `DONE` |
+| RF-63 | el sistema permitirá al emisor elegir el punto de atención donde cobrará el receptor, entre los disponibles en el país destino - Rosa | **2** — Giro Service | `DONE` |
 | RF-05 | el sistema informará al emisor el monto exacto en moneda destino antes de que entregue el efectivo - Rosa | **2** — Quote Service | `DONE` |
 | RF-06 | el sistema conservará ese monto sin recalcularlo durante toda la vida del giro - Rosa | **2** — Quote Service | `DONE` |
 | RF-07 | el sistema producirá y fechará la cotización de la que sale ese monto - Rosa | **2** — Quote Service | `DONE` |
-| RF-08 | el sistema rechazará el giro que haga al emisor superar su límite por operación - Rosa | **2** — Limits Service | `DONE` |
-| RF-09 | el sistema rechazará el giro que haga al emisor superar su acumulado en la ventana vigente - Rosa | **2** — Limits Service | `DONE` |
+| RF-08 | el sistema rechazará, antes de registrar la recepción del efectivo, el giro que haga al emisor superar su límite por operación - Rosa | **2** — Limits Service | `DONE` |
+| RF-09 | el sistema rechazará, antes de registrar la recepción del efectivo, el giro que haga al emisor superar su acumulado en la ventana vigente - Rosa | **2** — Limits Service | `DONE` |
 | RF-10 | el sistema contará esos límites sobre la identidad del emisor y no sobre el punto de atención - Kevin | **2** — Limits Service | `DONE` |
-| RF-11 | el sistema entregará el código de seguimiento del giro únicamente al emisor - Rosa | **2** — Giro Service | `DONE` |
-| RF-12 | el sistema no transmitirá el código al receptor por ningún canal propio - Rosa | **1** — el grafo de actores — ninguna arista sale del sistema hacia el receptor | `DONE` |
+| RF-11 | el sistema entregará el código de seguimiento del giro únicamente al emisor - Rosa | **1** — el grafo de actores — ninguna arista del sistema lleva el código al receptor | `DONE` |
+| RF-12 | el sistema comprobará la respuesta del desafío sin mostrarla a quien atiende el mostrador - Kevin | **3** — Desafío Service | `DONE` |
 | RF-13 | el sistema exigirá la autorización de un segundo rol antes de crear un giro sobre el umbral reforzado - Kevin | **3** — Dual Control Service | `DONE` |
-| RF-14 | el sistema no habilitará la recepción del efectivo mientras esa autorización no exista - Kevin | **3** — Dual Control Service | `DONE` |
+| RF-14 | el sistema avisará al emisor que su devolución está disponible y en qué punto retirarla - Rosa | **3** — Devolución Service → Notification Service | `DONE` |
 | RF-15 | el sistema aplicará a un mismo giro las reglas del regulador de origen y las del regulador de destino - Kevin | **3** — Corredor Service | `DONE` |
 | RF-16 | el sistema rechazará el giro cuando los dos reguladores impongan condiciones incompatibles, en vez de elegir una - Kevin | **3** — Corredor Service | `DONE` |
 | RF-17 | el sistema reportará a la autoridad de origen el giro que supere su umbral de reporte transfronterizo - Kevin | **3** — Reporte Service | `DONE` |
@@ -450,63 +496,90 @@ sin decir qué caja no es verificable.
 | RF-21 | el sistema informará al emisor en qué moneda cobrará el receptor, con su nombre y no solo su cifra - Rosa | **2** — Quote Service | `DONE` |
 | RF-22 | el sistema aplicará el umbral de reporte de cada país sobre el giro completo y no sobre su tramo local - Kevin | **3** — Reporte Service | `DONE` |
 | RF-23 | el sistema impedirá que un giro rechazado por el regulador de destino se cree en el de origen - Kevin | **3** — Corredor Service | `DONE` |
-| RF-24 | el sistema liquidará con el agente el efectivo que puso de su caja, en el plazo acordado con él - Kevin | **3** — Liquidación Job &lt;plazo del agente&gt; | `DONE` |
-| RF-25 | el sistema avisará al receptor que hay un giro a su nombre por llamada o mensaje de texto, sin exigirle aplicación, correo ni datos móviles - Elena | **2** — Notification Service → Operador de voz y mensaje de texto | `DONE` |
 | RF-26 | el sistema contrastará a emisor y receptor contra las listas de sanciones antes de aceptar el efectivo - Kevin | **2** — Screening Service | `DONE` |
 | RF-27 | el sistema contrastará al receptor contra las listas vigentes al momento de autorizar el pago - Kevin | **2** — Screening Job &lt;actualización de lista&gt; | `DONE` |
 | RF-28 | el sistema separará una coincidencia exacta de sanciones de una coincidencia por homonimia - Kevin | **2** — Screening Service | `DONE` |
+| RF-78 | el sistema resolverá la coincidencia por homonimia en un plazo más corto que la coincidencia exacta - Kevin | **3** — Retención Service | `DONE` |
 | RF-29 | el sistema dejará retenido el giro con coincidencia de sanciones, ni pagable ni cancelable - Kevin | **2** — Screening Service | `DONE` |
 | RF-30 | el sistema derivará el giro retenido a un rol distinto del operario que lo atendió - Kevin | **3** — Retención Service | `DONE` |
 | RF-31 | el sistema exigirá que toda retención lleve el plazo del regulador más estricto de los dos países del giro - Kevin | **3** — Retención Service | `DONE` |
 | RF-32 | el sistema devolverá al emisor el monto del giro cuya retención venció sin haber sido liberada - Kevin | **3** — Vencimiento Job &lt;diario&gt; → Devolución Service | `DONE` |
-| RF-33 | el sistema permitirá liberar un giro retenido únicamente al rol de cumplimiento, dejando registrado el motivo - Kevin | **3** — Tablero de Cumplimiento | `DONE` |
-| RF-34 | el sistema autorizará el pago solo contra el código del giro y un documento que coincida con el receptor designado - Elena | **2** — Payout Service | `DONE` |
+| RF-71 | el sistema devolverá siempre en efectivo - Rosa | **3** — Devolución Service | `DONE` |
+| RF-88 | el sistema devolverá siempre en la moneda que el emisor entregó - Rosa | **3** — Devolución Service | `DONE` |
+| RF-72 | el sistema devolverá en el punto de atención que el emisor elija - Rosa | **3** — Devolución Service | `DONE` |
+| RF-73 | el sistema informará al emisor el plazo de una eventual devolución antes de que entregue el efectivo - Rosa | **3** — Devolución Service → Punto de Atención Service | `DONE` |
+| RF-89 | el sistema mantendrá disponible la devolución no retirada hasta el plazo de prescripción del giro - Rosa | **3** — Devolución Service + Vencimiento Job &lt;diario&gt; | `DONE` |
+| RF-74 | el sistema devolverá también la comisión cobrada cuando el giro no llegó a pagarse - Rosa | **3** — Devolución Service | `DONE` |
+| RF-33 | el sistema permitirá liberar un giro retenido únicamente al rol de cumplimiento - Kevin | **3** — Tablero de Cumplimiento | `DONE` |
+| RF-87 | el sistema registrará el motivo de cada liberación de un giro retenido - Kevin | **3** — Tablero de Cumplimiento | `DONE` |
+| RF-58 | el sistema contará cuántos giros cobró un mismo receptor en la ventana vigente - Kevin | **3** — Cobros del Receptor Service | `DONE` |
+| RF-93 | el sistema retendrá el giro cuyo receptor superó el acumulado de cobros de la ventana - Kevin | **3** — Cobros del Receptor Service → Retención Service | `DONE` |
+| RF-34 | el sistema exigirá el código del giro para autorizar un pago - Elena | **2** — Payout Service | `DONE` |
+| RF-85 | el sistema exigirá un documento de identidad cuyo titular coincida con el receptor designado - Elena | **2** — Identity Service | `DONE` |
+| RF-86 | el sistema exigirá que ese documento esté vigente, salvo cuando el receptor responde el desafío - Elena | **3** — Identity Service ↔ Desafío Service | `DONE` |
+| RF-68 | el sistema exigirá al emisor registrar al crear el giro una pregunta y su respuesta - Rosa | **3** — Desafío Service | `DONE` |
+| RF-69 | el sistema aceptará un documento de identidad no vigente cuando el receptor responde correctamente el desafío - Elena | **3** — Desafío Service | `DONE` |
+| RF-82 | el sistema limitará a un número acotado los intentos de responder el desafío de un giro - Kevin | **3** — Desafío Service | `DONE` |
+| RF-83 | el sistema caducará la respuesta del desafío junto con el giro que la lleva - Kevin | **3** — Desafío Service → Vencimiento Job &lt;diario&gt; | `DONE` |
+| RF-84 | el sistema decidirá qué diferencias de escritura cuentan como coincidencia de titular, y no el operario - Kevin | **2** — Identity Service | `DONE` |
 | RF-35 | el sistema rechazará todo intento de pago sobre un giro ya pagado, en cualquier punto de la red - Elena | **2** — Payout Service | `DONE` |
 | RF-36 | el sistema no habilitará el pago de un giro cuyos fondos de origen no estén confirmados - Kevin | **2** — Payout Service | `DONE` |
-| RF-37 | el sistema entregará al receptor el monto en moneda destino fijado al crearse el giro - Elena | **2** — Payout Service | `DONE` |
+| RF-24 | el sistema liquidará con el agente el efectivo que puso de su caja, en el plazo acordado con él - Kevin | **3** — Liquidación Job &lt;plazo del agente&gt; | `DONE` |
+| RF-37 | el sistema avisará al receptor por llamada o mensaje de texto si su giro quedó retenido - Elena | **3** — Retención Service → Notification Service | `DONE` |
 | RF-38 | el sistema impedirá entregar al receptor un monto distinto del fijado al crear el giro - Elena | **2** — Payout Service | `DONE` |
-| RF-39 | el sistema entregará al operario la acción que corresponde ofrecer ante un rechazo - Kevin | **2** — Punto de Atención Service | `DONE` |
+| RF-59 | el sistema atribuirá toda diferencia entre el monto fijado y el entregado al punto de atención donde se entregó el dinero - Elena | **3** — Corrección Service | `DONE` |
+| RF-60 | el sistema informará al receptor por llamada o mensaje de texto toda diferencia registrada sobre su giro - Elena | **3** — Notification Service | `DONE` |
+| RF-90 | el sistema permitirá al receptor declarar en el mostrador que el dinero recibido no coincide con el informado - Elena | **3** — Reclamo Service | `DONE` |
+| RF-91 | el sistema permitirá cobrar en otro punto de atención del país destino cuando el elegido no puede pagar - Elena | **3** — Punto Alternativo Service | `DONE` |
+| RF-39 | el sistema no producirá ningún rechazo sin una salida asociada que el operario pueda ofrecer en el mostrador - Kevin | **2** — Punto de Atención Service | `DONE` |
 | RF-40 | el sistema omitirá al operario el motivo de un rechazo cuando revelarlo esté prohibido - Kevin | **2** — Punto de Atención Service | `DONE` |
-| RF-41 | el sistema informará al receptor, por ese mismo canal y antes de que viaje, el monto que cobrará y si el punto puede pagarle - Elena | **2** — Notification Service → Operador de voz y mensaje de texto | `DONE` |
+| RF-25 | el sistema avisará al receptor que hay un giro a su nombre por llamada o mensaje de texto - Elena | **2** — Notification Service → Operador de voz y mensaje de texto | `DONE` |
+| RF-41 | el sistema informará al receptor por llamada o mensaje de texto, antes de que viaje, el monto que cobrará - Elena | **2** — Notification Service → Operador de voz y mensaje de texto | `DONE` |
+| RF-75 | el sistema informará al receptor por llamada o mensaje de texto, antes de que viaje, si el punto elegido puede pagarle hoy - Elena | **3** — Caja del Punto Service → Notification Service | `DONE` |
+| RF-76 | el sistema registrará el efectivo que cada punto de atención declara al abrir y al cerrar su caja - Kevin | **3** — Caja del Punto Service | `DONE` |
+| RF-92 | el sistema informará al operario el efectivo disponible en su punto antes de habilitarle un pago - Kevin | **3** — Caja del Punto Service | `DONE` |
+| RF-77 | el sistema informará al emisor la fecha desde la cual el giro estará disponible para cobro, antes de que entregue el efectivo - Rosa | **3** — Liquidez Service → Punto de Atención Service | `DONE` |
 | RF-42 | el sistema dejará el giro en un estado único y legible ante una interrupción - Kevin | **3** — Idempotencia Service | `DONE` |
 | RF-43 | el sistema tratará todo reintento de una creación interrumpida como la misma operación - Kevin | **3** — Idempotencia Service | `DONE` |
 | RF-44 | el sistema tratará todo reintento de un pago interrumpido como la misma operación - Kevin | **3** — Idempotencia Service | `DONE` |
 | RF-45 | el sistema impedirá que un punto sin conexión pague un giro que el centro ya retuvo, canceló o dio por pagado en otro punto - Kevin | **3** — Sync Service | `DONE` |
 | RF-46 | el sistema permitirá al emisor cancelar su giro mientras el dinero no esté a disposición del receptor - Rosa | **3** — Cancelación Service | `DONE` |
 | RF-47 | el sistema devolverá al emisor el monto entregado al cancelar - Rosa | **3** — Devolución Service | `DONE` |
-| RF-48 | el sistema rechazará toda cancelación pedida por el receptor - Elena | **3** — Cancelación Service | `DONE` |
+| RF-48 | el sistema admitirá la cancelación de un giro únicamente del emisor que lo creó - Rosa | **3** — Cancelación Service | `DONE` |
+| RF-62 | el sistema rechazará todo intento de pago sobre un giro ya cancelado y devuelto al emisor - Elena | **3** — Devolución Service | `DONE` |
 | RF-49 | el sistema dejará no pagable el giro cuyo plazo de prescripción venció - Rosa | **3** — Vencimiento Job &lt;diario&gt; | `DONE` |
-| RF-50 | el sistema pondrá a disposición del emisor el monto del giro prescrito - Rosa | **3** — Devolución Service | `DONE` |
+| RF-50 | el sistema devolverá al emisor el monto del giro prescrito - Rosa | **3** — Devolución Service | `DONE` |
 | RF-51 | el sistema avisará al emisor antes de que su giro prescriba - Rosa | **3** — Vencimiento Job &lt;diario&gt; → Notification Service | `DONE` |
 | RF-52 | el sistema permitirá al emisor consultar el estado de sus giros sin depender del receptor - Rosa | **3** — Consulta Service | `DONE` |
 | RF-53 | el sistema distinguirá al emisor el giro disponible para cobro del que todavía no lo está - Rosa | **3** — Consulta Service | `DONE` |
-| RF-54 | el sistema asociará cada acto sobre un giro a la identidad de quien lo ejecutó - Kevin | **3** — Audit Service | `DONE` |
-| RF-55 | el sistema impedirá modificar o eliminar el registro de un acto ya ejecutado - Kevin | **3** — Audit Service | `DONE` |
-| RF-56 | el sistema registrará la corrección de un giro pagado como un movimiento nuevo - Kevin | **3** — Corrección Service | `DONE` |
-| RF-57 | el sistema limitará lo que el operario ve a los datos de la operación que está atendiendo - Kevin | **2** — Punto de Atención Service | `DONE` |
-| RF-58 | el sistema impedirá que el operario que atendió un giro sea quien lo libere - Kevin | **3** — Tablero de Cumplimiento | `DONE` |
-| RF-59 | el sistema atribuirá a un responsable nombrado toda diferencia entre el monto fijado y el entregado - Elena | **3** — Corrección Service | `DONE` |
-| RF-60 | el sistema informará al receptor por su canal toda diferencia registrada sobre su giro - Elena | **3** — Notification Service | `DONE` |
-| RF-61 | el sistema exigirá la autorización de un segundo rol para corregir un giro pagado - Kevin | **3** — Dual Control Service | `DONE` |
-| RF-62 | el sistema rechazará todo intento de pago sobre un giro ya cancelado y devuelto al emisor - Elena | **3** — Devolución Service | `DONE` |
-| RF-63 | el sistema permitirá al emisor elegir el punto de atención donde cobrará el receptor, entre los disponibles en el país destino - Rosa | **2** — Giro Service | `DONE` |
 | RF-64 | el sistema dará el giro por cerrado en el momento en que el receptor recibe el dinero - Elena | **2** — Payout Service | `DONE` |
 | RF-65 | el sistema avisará al emisor que su giro fue cobrado - Rosa | **3** — Notification Service | `DONE` |
 | RF-66 | el sistema mostrará al emisor que su giro está retenido y hasta qué fecha - Rosa | **3** — Consulta Service | `DONE` |
 | RF-67 | el sistema avisará al emisor cuando su giro pase a estar retenido - Rosa | **3** — Notification Service | `DONE` |
-| RNF-01 | el sistema mantendrá ilegibles los datos de identidad y el código para quien administre la infraestructura | **2** — Identity Service + `BD identidad` | `DONE` |
+| RF-54 | el sistema asociará cada acto sobre un giro a la identidad de quien lo ejecutó - Kevin | **3** — Audit Service | `DONE` |
+| RF-55 | el sistema impedirá modificar o eliminar el registro de un acto ya ejecutado - Kevin | **3** — Audit Service | `DONE` |
+| RF-56 | el sistema registrará la corrección del **monto** de un giro pagado como un movimiento nuevo - Kevin | **3** — Corrección Service | `DONE` |
+| RF-70 | el sistema impedirá alterar el receptor designado de un giro después de creado - Rosa | **2** — Giro Service | `DONE` |
+| RF-61 | el sistema exigirá la autorización de un segundo rol para corregir el monto de un giro pagado - Kevin | **3** — Dual Control Service | `DONE` |
+| RF-57 | el sistema limitará lo que el operario ve a los datos de la operación que está atendiendo - Kevin | **2** — Punto de Atención Service | `DONE` |
+| RF-80 | el sistema conservará la evidencia de la identificación del emisor y del receptor de cada giro - Kevin | **2** — Identity Service + `BD identidad` | `DONE` |
+| RF-81 | el sistema suprimirá a pedido los datos personales de quien los entregó, y de nadie más, salvo los que el registro de actos debe conservar - Rosa | **3** — Supresión Service | `DONE` |
+| RNF-01 | el sistema mantendrá ilegibles los datos de identidad para quien administre la infraestructura | **2** — Identity Service + `BD identidad` | `DONE` |
+| RNF-15 | el sistema mantendrá ilegible el código de seguimiento para quien administre la infraestructura | **2** — Giro Service + `BD giros` | `DONE` |
+| RNF-17 | el sistema mantendrá ilegible la respuesta del desafío para quien administre la infraestructura y para quien atiende | **3** — Desafío Service + `BD desafíos` | `DONE` |
 | RNF-02 | el sistema impedirá que una misma identidad ejerza dos roles de un mismo giro | **3** — Dual Control Service | `DONE` |
-| RNF-03 | el sistema conservará el registro de actos inalterable por el plazo más largo de los dos reguladores del giro | **3** — Audit Service + `BD auditoría` | `DONE` |
+| RNF-03 | el sistema conservará inalterable el registro de actos | **3** — Audit Service + `BD auditoría` | `DONE` |
 | RNF-04 | el sistema dejará traza de todo acceso a datos de identidad | **3** — Audit Service | `DONE` |
-| RNF-05 | el sistema impedirá que un giro quede pagado dos veces o con dos montos distintos | **3** — Cierre de Caja Job &lt;EOD&gt; | `DONE` |
+| RNF-05 | el sistema impedirá que un giro quede pagado dos veces | **3** — Cierre de Caja Job &lt;EOD&gt; | `DONE` |
+| RNF-16 | el sistema impedirá que un giro quede pagado con un monto distinto del que se le informó al emisor | **2** — Payout Service | `DONE` |
 | RNF-06 | el sistema mantendrá un solo estado del giro entre el centro y el punto de atención | **3** — Sync Service | `DONE` |
+| RNF-13 | el sistema impedirá que un giro quede devuelto y cobrado a la vez | **3** — Devolución Service | `DONE` |
 | RNF-07 | el sistema conservará la suma del dinero en toda operación | **2** — Ledger Service + `BD contable` | `DONE` |
 | RNF-08 | el sistema recuperará el estado de los giros de un punto caído sin intervención del operario | **3** — Sync Service | `DONE` |
-| RNF-09 | el sistema completará una operación de ventanilla en un tiempo acotado | **2** — Punto de Atención Service | `DONE` |
+| RNF-09 | el sistema resolverá en un tiempo acotado todo lo que no dependa de una persona ni de un sistema ajenos | **2** — Punto de Atención Service | `DONE` |
 | RNF-10 | el sistema dejará un giro fondeado disponible para cobro en el destino en un tiempo acotado | **2** — Giro Service → Notification Service | `DONE` |
 | RNF-11 | el sistema sostendrá la capacidad de crear y de pagar giros | **2** — el camino crear→pagar, aislado del resto de las cajas | `DONE` |
 | RNF-12 | el sistema operará con más de un país de origen desde el primer día | **3** — Corredor Service | `DONE` |
-| RNF-13 | el sistema impedirá que un giro quede devuelto y cobrado a la vez | **3** — Devolución Service | `DONE` |
 | RNF-14 | el sistema operará con más de una moneda destino desde el primer día | **3** — Corredor Service | `DONE` |
 
 Los títulos se copian del [backlog](../R-requerimientos/backlog.md) tal como están escritos allá, en
@@ -527,7 +600,7 @@ Se lee en las dos direcciones y las dos fallan distinto:
 | Caja borrada | Por qué era huérfana |
 |---|---|
 | `Procesador del cobro a Rosa` | No traza a ningún ítem, y no puede trazar: `RF-02` dice que el efectivo se **recibe** en la ventanilla. Rosa entrega billetes a un operario. No hay cobro que procesar, y la caja era un residuo del modelo de originación por aplicación que [D-07](../../docs/DECISIONES.md#d-07--sendit-opera-el-modelo-western-union) descartó |
-| `Tablero de cumplimiento` **como sistema externo** | El tablero sí existe y sí traza —`RF-33`, `RF-58`—, pero no es de un tercero: es nuestro, es el `Debt Dashboard` del ejemplo, y lo opera un rol de SendIt. Estaba en la tabla equivocada. No se borró: se mudó a la iteración 3 como componente propio de soporte |
+| `Tablero de cumplimiento` **como sistema externo** | El tablero sí existe y sí traza —`RF-33`, `RF-87`—, pero no es de un tercero: es nuestro, es el `Debt Dashboard` del ejemplo, y lo opera un rol de SendIt. Estaba en la tabla equivocada. No se borró: se mudó a la iteración 3 como componente propio de soporte |
 
 El diagrama está terminado cuando la columna `DONE` no tiene ningún vacío. No antes, y tampoco
 porque «ya se ve completo».
@@ -556,13 +629,13 @@ existe: sin ítem, se borra.
 
 | Sistema externo | Qué se le manda | Qué se recibe | Qué se rompe si no responde, tarda o miente | Ítem que lo exige |
 |---|---|---|---|---|
-| `RENIEC` | Número de documento del emisor o del receptor peruano | Vigencia y titularidad del documento | Sin él no se identifica, y `RF-02` prohíbe recibir el efectivo. Si **miente**, se paga a quien no es: `RF-34` queda satisfecho en la forma y violado en el fondo | `RF-01`, `RF-34` |
+| `RENIEC` | Número de documento del emisor o del receptor peruano | Vigencia y titularidad del documento | Sin él no se identifica, y `RF-01` no se puede cumplir. Si **miente**, se paga a quien no es: `RF-85` queda satisfecho en la forma y violado en el fondo | `RF-01`, `RF-85`, `RF-86` |
 | `Verificación documental del corredor de origen` | Documento del emisor en Estados Unidos o España | Vigencia y titularidad | Igual que arriba, y con un corredor caído se cae un país entero, no una operación — que es lo que `RNF-12` obliga a mirar | `RF-01`, `RNF-12` |
 | `Listas de personas y entidades sancionadas — OFAC / ONU / UE` | Nombre y documento de emisor y receptor | Coincidencia, su grado, y la **versión** de la lista contra la que se contrastó | Sin respuesta no se puede aceptar el efectivo (`RF-26`). Si tarda, el costo lo paga la cola de la ventanilla (`RNF-09`). Si la lista se actualiza sin aviso, alcanza a giros ya aprobados — por eso existe el `Screening Job` | `RF-26`, `RF-27`, `RF-28` |
 | `Proveedor de tipo de cambio` | Par de monedas y momento | Tasa, con su vigencia | Sin tasa no hay cotización y `RF-05` no se puede cumplir. Si miente, el error queda **congelado** por `RF-06` durante toda la vida del giro y lo carga la empresa | `RF-05`, `RF-07`, `RF-21` |
 | `Autoridad de origen — FinCEN / SEPBLAC` | El reporte del giro sobre el umbral de reporte transfronterizo | Acuse | Un reporte no entregado es incumplimiento regulatorio, no un mensaje perdido. Y su **existencia** no puede filtrarse hacia el cliente por ninguna arista | `RF-17`, `RF-22` |
 | `Autoridad de destino — UIF-Perú` | El reporte cuando el umbral que aplica es el peruano | Acuse | Igual, y `RF-22` obliga a medir el umbral sobre el giro completo: reportar el tramo local es reportar mal | `RF-22`, `RF-15` |
-| `Operador de voz y mensaje de texto` | El aviso al receptor y el aviso al emisor | Entrega o fallo de entrega | Si no entrega, Elena no sabe que hay un giro a su nombre y viaja o no viaja a ciegas (`RF-25`, `RF-41`). Del lado de Rosa, no se entera del cobro ni de la retención (`RF-65`, `RF-67`). **Nunca transporta el código**: `RF-12` | `RF-25`, `RF-41`, `RF-51`, `RF-60`, `RF-65`, `RF-67` |
+| `Operador de voz y mensaje de texto` | El aviso al receptor y el aviso al emisor | Entrega o fallo de entrega | Si no entrega, Elena no sabe que hay un giro a su nombre, ni si el punto puede pagarle, ni que quedó retenido, y viaja o no viaja a ciegas (`RF-25`, `RF-41`, `RF-75`, `RF-37`). Del lado de Rosa, no se entera del cobro, de la retención ni de que su devolución está lista (`RF-65`, `RF-67`, `RF-14`). **Nunca transporta el código ni la respuesta del desafío**: `RF-11`, `RNF-17` | `RF-14`, `RF-25`, `RF-37`, `RF-41`, `RF-51`, `RF-60`, `RF-65`, `RF-67`, `RF-75` |
 
 **La frontera interna, que la tabla de arriba no puede contener** porque no es un sistema externo y
 pintarla de rosado sería mentir. Son **dos filas y dos marcas distintas**, y esa es la categoría que
@@ -608,13 +681,13 @@ el enunciado pide ver.
 - [x] Ni el emisor ni el receptor tocan el sistema: las dos puntas pasan por una ventanilla
 - [ ] Cada iteración declara qué ítem del backlog la forzó, en ITERACIONES.md
 - [x] Ningún componente sin ítem del backlog que lo exija — sin huérfanos
-- [x] Ningún ítem del backlog sin componente que lo cubra — 81 filas, sin huecos
+- [x] Ningún ítem del backlog sin componente que lo cubra — 110 filas, sin huecos
 - [x] Todo lo que está fuera de la frontera de confianza está en rosado, y nada más lo está
 - [x] El punto de atención no está en rosado: es propio, y su modo de falla es la conexión, no el mando
 - [x] El modo de falla del punto sin conexión se ve por algo que no sea el color — borde punteado y Sync Service
 - [x] La frontera contable con el agente tiene su propia marca, distinta de la de conexión (RF-24)
 - [x] Toda rama condicional lleva su etiqueta
-- [x] Las BD son varias —nueve— y cada una tiene dueño en A
+- [x] Las BD son varias —diez— y cada una tiene dueño en A
 - [x] Un componente renombrado se renombró en las tres iteraciones
 - [ ] Las tres iteraciones existen como imagen, además del bloque Mermaid
 ```
