@@ -19,7 +19,7 @@ usuario_modelo: true
 
 **Rosa es el usuario modelo del caso.** Es quien decide usar SendIt o abandonarlo, quien paga, y
 la única de las tres personas que elige libremente. Elena recibe lo que Rosa mandó por donde Rosa
-lo mandó, y Marco trabaja dentro de SendIt. Si el diseño no resuelve el día de Rosa, no hay
+lo mandó, y Kevin atiende el mostrador. Si el diseño no resuelve el día de Rosa, no hay
 sistema que diseñar.
 
 ## Contexto
@@ -45,7 +45,11 @@ salir de la bodega.
 hace tres años. Ese patrón es lo que la hace reconocible y también lo que hace ruidosa cualquier
 alerta que se dispare por un envío fuera de rango.]`
 
-`[ASSUMPTION: Rosa opera desde un teléfono propio con datos móviles. Es su único canal.]`
+`[ASSUMPTION: SendIt opera el modelo Western Union —red de agentes con efectivo en las dos
+puntas—, por indicación del profesor. Rosa por lo tanto **no origina desde una aplicación**:
+va a la ventanilla de un agente de la red en Paterson, entrega efectivo y sale con un código.
+Su teléfono le sirve para consultar el estado y para pasarle el código a Elena, no para
+enviar.]`
 
 ## Flujo principal
 
@@ -55,25 +59,29 @@ alerta que se dispare por un envío fuera de rango.]`
 yo conozca de antemano, en una fecha que yo conozca de antemano, **para** poder decirle cuándo ir a
 cobrar sin hacerla viajar en vano.
 
-1. Digo cuánto quiero mandar, y veo cuántos soles va a recibir Elena — el número final, ya con todo
-   descontado, antes de comprometer un centavo.
-2. Digo dónde y cómo lo va a cobrar: efectivo en la bodega-agente de Huanta, que es lo único que le
+1. Voy a la ventanilla del agente con mi documento y el efectivo, y me identifico antes de
+   soltar un dólar.
+2. Digo cuánto quiero mandar, y me dicen cuántos soles va a recibir Elena — el número final, ya
+   con todo descontado, antes de comprometer un centavo.
+3. Digo dónde y cómo lo va a cobrar: efectivo en la bodega-agente de Huanta, que es lo único que le
    sirve a mi madre.
-3. Pago. A partir de ahí el monto en soles que vi es el monto que Elena cobra, aunque el dólar se
-   mueva mientras el envío viaja.
-4. Sé en qué estado está el envío sin tener que preguntar, y sé cuándo el dinero ya está
+4. Entrego el efectivo y salgo con un código. A partir de ahí el monto en soles que vi es el monto
+   que Elena cobra, aunque el dólar se mueva mientras el envío viaja.
+5. Le paso el código a Elena por mi cuenta. Nadie más se lo da.
+6. Sé en qué estado está el envío sin tener que preguntar, y sé cuándo el dinero ya está
    disponible para que Elena vaya.
-5. Cuando Elena cobra, me entero. Ese es el final del envío: no cuando SendIt lo despachó, sino
+7. Cuando Elena cobra, me entero. Ese es el final del envío: no cuando SendIt lo despachó, sino
    cuando mi madre tiene los billetes.
 
-**Cuando sale mal:** mandé un lunes y el martes no había pasado nada. La app decía «en proceso» y
+**Cuando sale mal:** mandé un lunes y el martes no había pasado nada. Consulté y decía «en proceso» y
 nada más. Llamé, y una persona me dijo que estaba «en revisión» y que no podía darme más detalle.
 Al sexto día apareció el dinero, sin explicación y sin que nadie me avisara. En esos seis días mi
 madre se quedó sin una medicina y yo mandé cien dólares más por otro servicio, más caro, para
 cubrir el hueco — de modo que cuando el primer envío por fin llegó, había mandado el doble de lo
 que podía. Nadie me devolvió esos seis días ni la comisión del envío de emergencia. Lo que necesito
 no es que nunca me revisen: es saber, el mismo lunes, que hay una revisión, cuánto puede durar como
-máximo, y que si se pasa de ese plazo el dinero vuelve a mi cuenta sin que yo tenga que pelearlo.
+máximo, y que si se pasa de ese plazo puedo recuperar mi efectivo en la ventanilla sin tener que
+pelearlo.
 
 ## Qué se le interpone
 
@@ -88,8 +96,10 @@ máximo, y que si se pasa de ese plazo el dinero vuelve a mi cuenta sin que yo t
   va a decir». Rosa reacciona igual ante los dos: llama, y luego manda de nuevo.
 - Su madre no tiene cuenta bancaria ni teléfono con datos. Todo lo que Rosa elija tiene que
   terminar en efectivo, en un lugar al que Elena pueda llegar.
-- Rosa trabaja de día en casas ajenas. No puede pasar cuarenta minutos en una llamada ni ir a una
-  oficina en horario de atención.
+- Rosa trabaja de día en casas ajenas. La ventanilla del agente le queda de paso y abre hasta tarde,
+  pero no puede pasar cuarenta minutos en una llamada ni ir a una oficina en horario de atención.
+- El código que sale de la ventanilla viaja por donde ella pueda: un mensaje, una llamada. Si se
+  pierde o alguien más lo escucha, no tiene forma de saberlo antes de que sea tarde.
 - Cuando algo se detiene, Rosa no tiene a quién reclamarle con efecto. El servicio le responde que
   «se está revisando», y ella no tiene forma de saber si eso significa dos horas o dos semanas.
 - Una devolución no la deja como estaba: le devuelven los dólares pero el envío que hizo para
@@ -104,9 +114,11 @@ máximo, y que si se pasa de ese plazo el dinero vuelve a mi cuenta sin que yo t
   envío suyo; cancelar un envío mientras el dinero no haya sido puesto a disposición de Elena;
   reclamar la devolución cuando un envío excede el plazo prometido.
 - **Nunca debe:** conocer el motivo de una retención cuando informarlo está prohibido por la
-  obligación de reserva de Marco; alterar el destinatario de un envío ya pagado, porque eso
+  obligación de reserva que pesa sobre SendIt; alterar el destinatario de un envío ya pagado, porque eso
   convierte una verificación hecha sobre una persona en un pago a otra; cobrar ella misma en el
-  destino; ver, corregir ni exportar los datos de identidad que Elena entregó al agente pagador.
+  destino; ver, corregir ni exportar los datos de identidad que Elena entregó en la ventanilla;
+  recuperar el código por un canal de SendIt después de haberlo perdido, porque eso lo volvería
+  obtenible por quien se haga pasar por ella.
 
 ## Señal de éxito
 
@@ -119,5 +131,5 @@ máximo, y que si se pasa de ese plazo el dinero vuelve a mi cuenta sin que yo t
 - Rosa se entera de que Elena cobró, sin que Elena tenga que avisarle.
 - Un envío que no se completa devuelve el dinero a Rosa dentro de un plazo que Rosa conocía desde
   el principio, sin que ella tenga que reclamarlo.
-- Rosa nunca paga dos veces por el mismo envío, ni siquiera cuando la app se le cierra a mitad del
-  pago y vuelve a entrar.
+- Rosa nunca paga dos veces por el mismo envío, ni siquiera cuando la operación se corta a mitad de
+  camino en la ventanilla y el operario tiene que retomarla.
