@@ -83,4 +83,31 @@ for i in issues:
 for c in range(0, len(ops), 20):
     gql("mutation{\n" + "\n".join(ops[c:c+20]) + "\n}")
 print(f"  campos fijados: {len(ops)}")
+
+# 4. vistas
+# El agrupamiento no se puede fijar por API (solo visibleFieldIds), pero una vista
+# de tablero agrupa por Status por su cuenta: las seis columnas salen solas.
+F_TITLE  = next(f["id"] for f in fields if f["name"] == "Title")
+F_LABELS = next(f["id"] for f in fields if f["name"] == "Labels")
+vistas = gql('{node(id:"%s"){...on ProjectV2{views(first:20){nodes{id name layout}}}}}' % PID
+             )["node"]["views"]["nodes"]
+board = next((v["id"] for v in vistas if v["layout"] == "BOARD_LAYOUT"), None)
+table = next((v["id"] for v in vistas if v["layout"] == "TABLE_LAYOUT"), None)
+if not table:
+    table = gql('mutation{createProjectV2View(input:{projectId:"%s",name:"Por paso R.E.D.A.L.E.",'
+                'layout:TABLE_LAYOUT}){projectV2View{id}}}' % PID
+                )["createProjectV2View"]["projectV2View"]["id"]
+if not board:
+    board = gql('mutation{createProjectV2View(input:{projectId:"%s",name:"Tablero",'
+                'layout:BOARD_LAYOUT}){projectV2View{id}}}' % PID
+                )["createProjectV2View"]["projectV2View"]["id"]
+campos = '","'.join([F_TITLE, F_PASO, F_PRIO, F_STATUS, F_LABELS])
+gql('mutation{'
+    'b: updateProjectV2View(input:{viewId:"%s",name:"Tablero"}){projectV2View{name}}'
+    't: updateProjectV2View(input:{viewId:"%s",name:"Por paso R.E.D.A.L.E.",'
+    'configuration:{visibleFieldIds:["%s"]}}){projectV2View{name}}}' % (board, table, campos))
+print("  vistas: Tablero (board) · Por paso R.E.D.A.L.E. (table)")
+
 print(f"\n  ✓ listo → {proj['url']}")
+print("     El agrupamiento de la vista de tabla se elige a mano: "
+      "Group by → Paso. Un clic, la API no lo expone.")
