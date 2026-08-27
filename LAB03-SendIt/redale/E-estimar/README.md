@@ -230,10 +230,10 @@ una escritura contable con una consulta de estado promedia dos cosas que no se p
 |---|---|---|---|
 | 1. Capacidad de un core | `req/s` que sostiene un core, **por tipo de operación** | **escritura contable: 5 req/s · lectura: 50 req/s** | `[ASSUMPTION: la escritura de SendIt cuesta al menos lo que el request genérico del material, que fija 5 req/s por core — toca varias filas, cruza la frontera del corredor y no puede servirse desde caché. La lectura sale de un índice caliente y rinde 10× ]` |
 | 2. Capacidad de un servidor | `#cores × core` | escritura: `16 × 5 = ` **80 req/s** · lectura: `16 × 50 = ` **800 req/s** | `[ASSUMPTION: servidor de 16 vCPU]` |
-| 3. Carga objetivo | `RPS derivado del desglose de abajo × P` | escritura: `50 729 / 86 400 = 0,587 req/s`, `× 11 = ` **6,45 req/s** · lectura: `26 056 / 86 400 = 0,302 req/s`, `× 11 = ` **3,32 req/s** | Derivado |
-| 4. Servidores | `carga objetivo / capacidad de servidor` | escritura: `6,45 / 80 = 0,081` · lectura: `3,32 / 800 = 0,004` · suma: **0,085 → 0,09 servidores** | Derivado — **un solo servidor cubre once veces la carga del pico** |
+| 3. Carga objetivo | `RPS derivado del desglose de abajo × P` | escritura: `60 527 / 86 400 = 0,700 req/s`, `× 11 = ` **7,71 req/s** · lectura: `26 056 / 86 400 = 0,302 req/s`, `× 11 = ` **3,32 req/s** | Derivado |
+| 4. Servidores | `carga objetivo / capacidad de servidor` | escritura: `7,71 / 80 = 0,096` · lectura: `3,32 / 800 = 0,004` · suma: **0,100 → 0,10 servidores** | Derivado — **un solo servidor cubre diez veces la carga del pico** |
 
-Donde el material obtiene `100 000 / 160 = 625 servidores`, SendIt obtiene `6,45 / 80 = 0,081`. No es
+Donde el material obtiene `100 000 / 160 = 625 servidores`, SendIt obtiene `7,71 / 80 = 0,096`. No es
 un error de método: es el resultado, y dice algo. Un sistema de remesas en efectivo mueve **dinero**,
 no *bytes*: 2 800 giros diarios son `USD 840 000` al día atravesando la frontera con dos reguladores
 encima, y caben en una máquina. **La dificultad de SendIt nunca fue el cómputo.** Lo que sigue —el
@@ -258,13 +258,21 @@ Del lado del efectivo tampoco hay procesador que cobre a Rosa: **RF-02 hace que 
 por la ventanilla**, contra un emisor ya identificado. La única frontera de cobro que este sistema
 cruza es la de la liquidación con el agente (RF-24), que no está en el camino del giro.
 
-**La tercera advertencia es de unidad, no de peso: el aviso al receptor no se mide en requests.** Es
-una llamada o un SMS que entrega un operador de telefonía, con cuota diaria y precio por unidad, y
-su latencia y su tasa de fallo no las fija este sistema. Cinco requerimientos se apoyan en él
-—RF-25, RF-37, RF-41 y RF-75, los cuatro P0, y RF-60 en P1— y ninguno tiene alternativa: Elena no
-tiene aplicación ni datos móviles, así que un aviso no entregado no degrada, **desaparece**. Se
-dimensiona en unidades por día contra la cuota del tercero, no en RPS contra la capacidad de un
-core, y por eso lleva fila propia en la tabla de entradas.
+**La tercera advertencia es de unidad, no de peso: el aviso no se mide en requests.** Es una llamada
+o un SMS que entrega un operador de telefonía, con cuota diaria y precio por unidad, y su latencia y
+su tasa de fallo no las fija este sistema. **Doce requerimientos se apoyan en él del lado del
+receptor** —RF-25, RF-37, RF-41, RF-69, RF-75, RF-106, RF-107, RF-109 y RF-124, los nueve P0, más
+RF-108, RF-120 y RF-121 en P1— y cinco del lado del emisor —RF-14, RF-51, RF-60, RF-65, RF-67—.
+Ninguno tiene alternativa: Elena no tiene aplicación ni datos móviles, así que un aviso no entregado
+no degrada, **desaparece**. Se dimensiona en unidades por día contra la cuota del tercero, no en RPS
+contra la capacidad de un core, y por eso lleva fila propia en la tabla de entradas.
+
+**Y una cuarta, que es de altitud: RF-115 y RF-116 no son avisos.** Son **plazos que se informan**
+—dentro de cuánto se avisará una retención, dentro de cuánto hay que responder a la oferta de otro
+punto— y se informan donde el emisor ya está: en la ventanilla, antes de que entregue el efectivo.
+No consumen unidad del tercero; consumen un dato más en la respuesta del mostrador y una constancia
+más en el libro. Contarlos como avisos habría inflado el cuello del canal con carga que no pasa
+por él.
 
 | Operación | Tipo | Requerimiento que la exige | Peso relativo | Volumen diario | Marca |
 |---|---|---|---|---|---|
@@ -274,7 +282,7 @@ core, y por eso lleva fila propia en la tabla de entradas.
 | Cotizar y fechar la cotización | **escritura durable** | RF-05, RF-06, RF-07 | 10 | **3 640** = `2 800 × 1,3` — RF-05 se cotiza más de una vez por giro cuando Rosa pregunta por dos montos | Escritura |
 | Contar límites sobre la identidad del emisor | lectura agregada | RF-08, RF-09, RF-10 | 3 | **2 980** — una por creación intentada, antes de tocar el efectivo | Lectura |
 | Contar los cobros del receptor en la ventana | lectura agregada **por identidad de receptor** | RF-58, RF-93 | 3 | **2 690** — una por pago | Lectura — y la única que no se resuelve con la clave del giro |
-| Tamizar contra listas | lectura externa + escritura de evidencia | RF-26, RF-27, RF-28 | 12 | **8 400** = `2 800 × 3` — dos obligatorias (RF-26 al aceptar, RF-27 al autorizar) más una de retamizaje por cambio de lista (RF-97) | Escritura de evidencia |
+| Tamizar contra listas | lectura externa + escritura de evidencia | RF-26, RF-119, RF-27, RF-28, RF-97, RF-123 | 12 | **11 326** = `2 800 × 4 = 11 200` — **tres obligatorias, no dos**: RF-26 tamiza al emisor y RF-119 al receptor designado, **las dos antes de aceptar el efectivo**, y RF-27 vuelve sobre el receptor contra las listas vigentes al autorizar el pago; la cuarta es el retamizaje por cambio de lista (RF-97). Más `42 rehechos × 3 = 126` que RF-123 obliga a repetir enteros | Escritura de evidencia |
 | Crear el giro y emitir su código | escritura contable | RF-11, RF-13, RF-20 | 10 | **2 800** | Escritura |
 | Declarar el efectivo al abrir y al cerrar caja | escritura, `puntos × turnos × 2` | RF-76 | 4 | **9 000** = `3 000 × 1,5 × 2` — **la operación más numerosa que no depende del volumen** | Escritura con piso |
 | Informar al operario el efectivo del punto | lectura previa a cada pago | RF-92 | 1 | **2 690** | Lectura |
@@ -284,26 +292,33 @@ core, y por eso lleva fila propia en la tabla de entradas.
 | Declarar en el mostrador una diferencia de monto | escritura + atribución al punto | RF-90, RF-59 | 8 | **13** = `2 690 × 0,5 %` (S-17) | Escritura |
 | Cerrar el giro y avisar al emisor | escritura + notificación | RF-64, RF-65 | 10 | **2 690** — RF-64 cierra cuando Elena cuenta los billetes, no antes | Escritura |
 | Consultar estado | lectura | RF-52, RF-53, RF-66 | 1 | **16 800** = `2 800 × 6` (S-06) — **el 22 % de todos los requests del sistema**, y la única familia que RNF-11 excluye de su medida | Lectura |
-| Avisar al receptor por llamada o mensaje | **salida por canal de un tercero, por unidad** | RF-25, RF-37, RF-41, RF-60, RF-75 | **No se mide en requests** | **13 720 unidades** entregadas al tercero, más **13 720** constancias de RF-98 que sí son escrituras propias (peso 2) | Unidad de tercero + escritura |
-| Devolver al emisor (retención vencida, cancelación, prescripción) | escritura contable | RF-32, RF-47, RF-50 | 15 | **112** = `2 800 × 4 %` (S-13) | Escritura |
+| Avisar por llamada o mensaje de texto (receptor y emisor) | **salida por canal de un tercero, por unidad** | Receptor: RF-25, RF-37, RF-41, RF-69, RF-75, RF-106, RF-107, RF-108, RF-109, RF-120, RF-121, RF-124 · Emisor: RF-14, RF-51, RF-60, RF-65, RF-67 | **No se mide en requests** | **14 000 unidades** entregadas al tercero (`5,0 × 2 800`, S-14), más **14 000** constancias de RF-98 que sí son escrituras propias (peso 2) | Unidad de tercero + escritura |
+| Rehacer el giro cancelado por código perdido, con todos sus controles | escritura contable + tamizaje completo | RF-110, RF-117, RF-123 | 12 | **42** = `2 800 × 1,5 %` (S-19). **No suma un giro al volumen de negocio** —RF-117 conserva la cotización y no vuelve a cobrar la comisión— y sí suma una creación entera a la carga: sus `126` tamizajes ya están en la fila de arriba | Escritura |
+| Traspasar el código al emisor y recibir la respuesta del propio receptor | escritura ilegible **dentro del módulo del desafío** | RF-11, RF-112, RF-113, RF-114, RNF-15, RNF-17 | 4 | **3 696** = `2 800 (RF-113, un traspaso por giro) + 896 (RF-114, una captura por comprobación de S-16)`. RF-113 saca el código de la pantalla del mostrador y RF-114 saca de ella la respuesta: las dos mueven actos que ya existían **al quinto plano**, el del desafío, no al del giro | Escritura |
+| Informar al emisor los plazos que le corresponden | escritura de constancia de lo informado | RF-115, RF-116 | 1 | **2 854** = `2 800 (RF-115, en todo giro, antes del efectivo) + 54 (RF-116, uno por cada rederivación de RF-91)`. RF-115 acota además el aviso de RF-67 a `[ASSUMPTION: 1 hora]` | Escritura |
+| Devolver al emisor (retención vencida, cancelación, prescripción) | escritura contable | RF-32, RF-47, RF-50, RF-111 | 15 | **112** = `2 800 × 4 %` (S-13) | Escritura |
 | Entregar la devolución en ventanilla y avisarla | escritura + notificación + ventanilla | RF-14, RF-71, RF-72, RF-74, RF-88 | 12 | **95** = `112 × 85 %` retirado (S-13). Los `17` restantes siguen abiertos hasta 12 meses por RF-89 | Escritura |
 | Suprimir a pedido los datos de una persona | **búsqueda transversal + borrado parcial** | RF-81 | **400** — dos órdenes de magnitud sobre la más cara del camino crítico | **1,3** = `40/mes ÷ 30,4` (S-18) | Escritura. **1,3 requests al día que dictan una decisión de particionado en `A`** |
 
-**Suma del desglose:** `76 785 requests/día`, repartidos en **50 729 escrituras** y **26 056
-lecturas**. `76 785 / 86 400 = 0,89 req/s` de promedio; `× 11 = ` **9,8 req/s en pico**.
+**Suma del desglose:** `86 583 requests/día`, repartidos en **60 527 escrituras** y **26 056
+lecturas**. `86 583 / 86 400 = 1,00 req/s` de promedio; `× 11 = ` **11,0 req/s en pico**. De las
+`9 798` escrituras que el backlog agregó sobre las `50 729` anteriores, `2 926` son tamizaje
+(RF-119 y RF-123), `3 696` el traspaso del código y de la respuesta (RF-113, RF-114), `2 854` los
+plazos informados (RF-115, RF-116), `280` constancias de aviso (RF-98 sobre los cinco avisos nuevos)
+y `42` el rehacer (RF-117).
 
 **La comprobación que este documento se exigió a sí mismo.** Arriba se dijo que si el desglose por
 peso cambiara el resultado en más de un orden de magnitud, habría que calcular por separado y sumar.
 Se hizo la cuenta, normalizando el peso 10 a un core de 5 req/s: las escrituras dan
-`392 498 / 10 = 39 250` escrituras equivalentes —**menos** que el recuento plano de 50 729, porque la
+`446 312 / 10 = 44 631` escrituras equivalentes —**menos** que el recuento plano de 60 527, porque la
 mayoría son ligeras— y las lecturas dan `38 292` equivalentes, `1,47×` el recuento plano de 26 056,
 arrastradas por las 16 800 consultas de estado. Ninguno de los dos mueve la cifra ni medio orden de
-magnitud: `39 250 / 86 400 × 11 / 80 = 0,062` servidores de escritura. **El sistema sigue pidiendo
-menos de un décimo de máquina.**
+magnitud: `44 631 / 86 400 × 11 / 80 = 0,071` servidores de escritura. **El sistema sigue pidiendo
+menos de un décimo de máquina por el camino ponderado, y exactamente un décimo por el plano.**
 
 ### Lo que sí dimensiona: RNF-11, RNF-10 y la geografía
 
-`0,09` no es un número de servidores: es la prueba de que la carga no es la restricción activa. El
+`0,10` no es un número de servidores: es la prueba de que la carga no es la restricción activa. El
 número real sale de tomar el **máximo** entre lo que pide la carga y lo que piden los umbrales de
 servicio, y aquí manda el segundo término por dos órdenes de magnitud.
 
@@ -312,18 +327,23 @@ servicio, y aquí manda el segundo término por dos órdenes de magnitud.
 | Escritura del giro | RNF-11 pide 99,9 % **sobre crear y pagar**, y RNF-06 exige un solo estado del giro entre el centro y el punto. Un plano de escritura, no tres | **3** | Quórum que tolera una caída sin gastar los 43,2 min/mes del presupuesto de error |
 | Réplica de lectura en destino | Dos países de destino (RNF-12, RNF-14) y RNF-10 con 900 s de margen: alcanza réplica asíncrona. Dos nodos por país para no caer a cero con una máquina | **4** = `2 × 2 países` | RNF-10, RNF-12 |
 | Consulta del emisor | RF-52, RF-53 y RF-66. **RNF-11 la excluye explícitamente de su medida**, así que no lleva quórum — pero es el 22 % de los requests y no puede compartir suerte con la escritura | **2** | RNF-11 por exclusión |
-| Cumplimiento y tamizaje | RF-26, RF-27 y RF-97 llaman a listas externas cuya latencia y disponibilidad SendIt no fija. Aislarlo evita que una lista lenta consuma el techo de 3,3 s de RNF-09 | **2** | RNF-09, RF-26 |
-| Módulo del desafío | `D`(f) exige que la llave del verificador **nunca salga del módulo** y que la derivación corra adentro (RF-12, RNF-17): es una frontera de proceso y de credenciales, no una biblioteca. Compartir plano con el giro le daría al mismo host la llave y los datos que protege | **2** | Par mínimo para que RNF-11 no dependa de una sola máquina en el camino de pago de RF-69 |
-| | | **13** | |
+| Cumplimiento y tamizaje | RF-26, RF-27 y RF-97 llaman a listas externas cuya latencia y disponibilidad SendIt no fija. Aislarlo evita que una lista lenta consuma el techo de `2,5 s` de RNF-09, que **es P0 y se estrechó** cuando RF-119 sumó el tamizaje del receptor a la misma creación | **2** | RNF-09, RF-26, RF-119 |
+| Módulo del desafío — **el quinto plano, y ya lo era** | `D`(f) exige que la llave del verificador **nunca salga del módulo** y que la derivación corra adentro (RF-12, RNF-17): es una frontera de proceso y de credenciales, no una biblioteca. Compartir plano con el giro le daría al mismo host la llave y los datos que protege. **RF-113 y RF-114 lo ensanchan sin agregar plano**: el código deja de pasar por la pantalla del mostrador y la respuesta deja de digitarla el operario, de modo que los `3 696` actos diarios de esa fila del desglose entran acá y no en el plano del giro. RF-112 le agrega la única regla de negación que el plano ejerce: un código ya entregado no se vuelve a consultar | **2** | Par mínimo para que RNF-11 no dependa de una sola máquina en el camino de pago de RF-69 y RF-122 |
+| **Total** | `3 + 4 + 2 + 2 + 2` | **13** | `max(carga 0,10; piso 13)` |
 
-`servidores = max(carga / capacidad; piso de disponibilidad y geografía) = max(0,09; 13) = ` **13**.
+`servidores = max(carga / capacidad; piso de disponibilidad y geografía) = max(0,10; 13) = ` **13**.
+
+**Y una nota de prioridad que el backlog acaba de mover:** el término que manda es RNF-11, que es
+**P1**; el que fija el techo de latencia por request es RNF-09, que pasó a **P0**. La cifra de
+servidores la dicta el requerimiento menos prioritario de los dos, y el más prioritario no la dicta
+sino que la acota por el otro lado —`2,5 s` por request— sin pedir una máquina más.
 
 **Y la consecuencia para `E`-escalar, que es lo que este paso realmente entrega:** para que el
 término de carga alcance al término de disponibilidad, el volumen tendría que multiplicarse por
-`11 / 0,09 ≈ 122`, es decir **341 000 giros diarios**, que son `USD 102 M` al día y una cuota del
-61 % de los dos corredores. Antes de eso se rompen otras tres cosas, y ninguna se arregla con
+`13 / 0,10 = 130`, es decir **364 000 giros diarios**, que son `USD 109 M` al día y una cuota del
+65 % de los dos corredores. Antes de eso se rompen otras tres cosas, y ninguna se arregla con
 servidores: la **cuota diaria del operador de telefonía** (cálculo 3, punto 2b), el **efectivo de la
-caja del punto** (RF-92, RF-95) y el **caudal de la cola de cumplimiento** (70 casos/día contra
+caja del punto** (RF-92, RF-95) y el **caudal de la cola de cumplimiento** (71 casos/día contra
 cuántos analistas). Ese es el orden en que este sistema se rompe.
 
 ---
@@ -349,10 +369,13 @@ eso, el almacenamiento no sería un problema de arquitectura.
    cada una capturada en su mostrador y en su país. Es la partida que domina el cálculo, y este
    backlog la duplicó.
 2. **La prueba de que se tamizó** — el resultado del contraste contra las listas de personas y
-   entidades sancionadas, con la lista, su versión y su fecha. RF-26 lo exige antes de aceptar el
-   efectivo y RF-27 otra vez al autorizar el pago, así que son **dos evidencias por giro, haya o no
-   coincidencia**: la ausencia de coincidencia también hay que poder demostrarla, y una auditoría
-   necesita saber contra qué versión de qué lista se aprobó lo que se aprobó.
+   entidades sancionadas, con la lista, su versión y su fecha. **Son cuatro evidencias por giro, no
+   dos, y el backlog las partió así a propósito:** RF-26 tamiza al emisor y RF-119 al receptor
+   designado, **las dos antes de aceptar el efectivo** —de modo que el sistema se detiene en vez de
+   revertir—, RF-27 vuelve sobre el receptor contra las listas vigentes al autorizar el pago, y
+   RF-97 retamiza cuando una lista cambia. Se guardan **haya o no coincidencia**: la ausencia
+   también hay que poder demostrarla, y una auditoría necesita saber contra qué versión de qué lista
+   se aprobó lo que se aprobó. RF-123 obliga a repetir el juego entero sobre el giro rehecho.
 3. **El registro inalterable** — el asiento contable de cada movimiento y la traza de auditoría que
    RF-54 asocia a la identidad de quien ejecutó cada acto y RNF-03 impide modificar o eliminar. Esta
    última crece con las **lecturas**, no solo con las escrituras: RNF-04 exige traza de todo acceso a
@@ -399,18 +422,21 @@ sino cuando prescribe. Todo lo demás es archivo: dato que hay que conservar y c
 | Registro del giro | La fila del giro: emisor, receptor único (RF-03), país único (RF-04), punto elegido (RF-63), monto fijado (RF-06), código ilegible (RNF-15) y su historia de estados | 1,0 KB | 1 | **2,8 MB** | 8,7 | `[ASSUMPTION]` |
 | Asiento contable | Recepción del efectivo (RF-79), fondeo del corredor (RF-20), descuento de la caja al pagar (RF-95), más los extra de devolución (RF-74) y corrección (RF-56) | 0,4 KB | 3,2 | **3,6 MB** | 8,7 | `[ASSUMPTION]` |
 | Cotización producida y fechada (RF-07) | Par de monedas, tasa, comisión, sello de tiempo y autor. **No es una lectura cacheada de una tasa ajena**: es un acto del sistema | 0,3 KB | 1,3 | **1,1 MB** | 8,7 | `[ASSUMPTION]` |
-| Documento de identidad (binario, RF-80: emisor **y** receptor) | Anverso, reverso y foto de contraste, comprimidos, ilegibles en reposo por RNF-01 | **500 KB** por captura · 2 KB por referencia | `0,619` capturas (S-03 en las dos puntas, más las que RF-99 descarta) **+ 2 referencias** | **878 MB** — el **87 %** del diario | 8,7 | `[ASSUMPTION: S-03]` |
+| Documento de identidad (binario, RF-80: emisor **y** receptor) | Anverso, reverso y foto de contraste, comprimidos, ilegibles en reposo por RNF-01 | **500 KB** por captura · 2 KB por referencia | `0,619` capturas (S-03 en las dos puntas, más las que RF-99 descarta) **+ 2 referencias** | **878 MB** — el **86 %** del diario | 8,7 | `[ASSUMPTION: S-03]` |
 | Pregunta y respuesta del desafío, ilegibles (RF-68, RNF-17) | Pregunta en claro, resumen con sal de la respuesta. RF-101 prohíbe transmitirla y RNF-17 mostrarla | 0,25 KB | 1 — coste fijo por giro | **0,7 MB** | 8,7 | `[ASSUMPTION]` |
 | Intentos de respuesta al desafío (RF-82, RF-83) | Momento, punto y resultado de cada intento. Nunca la respuesta | 0,15 KB | `0,32` = `0,20 × 1,6` (S-16) | **0,13 MB** | 8,7 | `[ASSUMPTION: S-16]` |
-| Resultado de tamizaje (RF-26 y RF-27: dos por giro) | Lista, versión, fecha y veredicto. **La ausencia de coincidencia también hay que poder probarla**; el expediente completo solo cuando la hay | 2 KB sin coincidencia · **60 KB** con | `3` (RF-26 + RF-27 + retamizaje de RF-97) · `2 %` con coincidencia (S-08) | **20,2 MB** | 8,7 | `[ASSUMPTION: S-08]` |
+| Resultado de tamizaje (RF-26, RF-119 y RF-27: **tres por giro antes del retamizaje**) | Lista, versión, fecha y veredicto. **La ausencia de coincidencia también hay que poder probarla**; el expediente completo solo cuando la hay | 2 KB sin coincidencia · **60 KB** con | `4,045` = `11 326 / 2 800` (RF-26 emisor + RF-119 receptor antes del efectivo + RF-27 al autorizar + RF-97 por cambio de lista, más los `126` que RF-123 repite sobre los rehechos) · `2 %` con coincidencia (S-08) | **26,0 MB** = `(4,045 × 2 KB + 0,02 × 60 KB) × 2 800` | 8,7 | `[ASSUMPTION: S-08]` |
 | Acumulado de cobros por identidad de receptor (RF-58, RF-93) | Clave estable de receptor, contador y ventana. **Por identidad, no por giro** — es lo más parecido a un padrón que este sistema tiene | 0,2 KB por identidad | `0,45` = `1 / 2,2 cobros` (S-15) | **0,25 MB** | Vive mientras la ventana lo exija; se archiva con el último giro de esa identidad | `[ASSUMPTION: S-15]` |
-| Caso de cumplimiento y su evidencia de liberación (RF-33, RF-87) | Motivo, derivación al segundo rol (RF-30), plazo del regulador más estricto (RF-31), y el motivo de la liberación que RF-87 exige | 40 KB | `0,025` = 2 % de S-08 + 0,5 % de RF-93 → **70 casos/día** | **2,8 MB** | 8,7 | `[ASSUMPTION: S-08]` |
+| Caso de cumplimiento y su evidencia de liberación (RF-33, RF-87, RF-108) | Motivo, derivación al segundo rol (RF-30), plazo del regulador más estricto (RF-31), el motivo de la liberación que RF-87 exige y lo que RF-108 le informa a quien dejó de poder cobrar | 40 KB | `0,0254` = 2 % de S-08 `+ 0,5 %` de RF-93 `+ 2 %` de los `42` rehechos de RF-123 → **71 casos/día** | **2,8 MB** | 8,7 | `[ASSUMPTION: S-08]` |
 | Traza de auditoría de actos y de accesos (RF-54, RNF-04) | Autor, momento, giro y acto. **Crece con las lecturas**: RNF-04 exige traza de todo acceso a datos de identidad, así que cada consulta de Kevin es una fila | 0,35 KB | `25` ≈ 18 actos + 7 accesos a identidad | **24,5 MB** | 8,7 — y **RNF-03 la declara inalterable: no se suprime nunca, ni por RF-81** | `[ASSUMPTION]` |
 | Declaración de caja al abrir y al cerrar (RF-76) — **por punto y turno, no por giro** | Efectivo declarado por el punto, dos veces por turno, haya cero giros o mil | 0,4 KB | `3,21` equivalentes por giro = `9 000 / 2 800` | **3,6 MB** | 8,7 | `[ASSUMPTION: S-12]` |
 | Comprobante de entrega en destino | Recibo firmado por el receptor en el mostrador, digitalizado. Es la prueba de que Elena contó los billetes | 35 KB | `0,96` — un pago por cada giro no devuelto | **94,1 MB** | 8,7 | `[ASSUMPTION]` |
 | Declaración de diferencia del receptor y su atribución (RF-90, RF-59) | Lo que el receptor declara, la atribución al punto y su resolución aparte con el agente (RF-104) | 5 KB | `0,005` (S-17) | **0,07 MB** | 8,7 | `[ASSUMPTION: S-17]` |
-| Aviso al receptor (prueba de aviso, RF-25, RF-37, RF-91) | La constancia que RF-98 obliga a conservar de cada unidad entregada al tercero: destinatario, canal, momento y resultado | 0,3 KB | `4,9` (S-14) | **4,1 MB** | 8,7 | `[ASSUMPTION: S-14]` |
-| Devolución al emisor y su disponibilidad abierta (RF-32, RF-47, RF-50, RF-89) | Motivo, monto en la moneda que el emisor entregó (RF-88), comisión devuelta (RF-74) y punto que el emisor eligió (RF-72) | 1,5 KB | `0,04` (S-13) | **0,17 MB** | 8,7 — pero **caliente hasta 12 meses**: RF-89 no deja archivar la devolución no retirada | `[ASSUMPTION: S-13]` |
+| Aviso por llamada o SMS (prueba de aviso; receptor: RF-25, RF-37, RF-41, RF-75, RF-106, RF-107, RF-108, RF-109, RF-120, RF-121, RF-124 · emisor: RF-14, RF-51, RF-60, RF-65, RF-67) | La constancia que RF-98 obliga a conservar de cada unidad entregada al tercero: destinatario, canal, momento y resultado | 0,3 KB | `5,0` (S-14) | **4,2 MB** | 8,7 | `[ASSUMPTION: S-14]` |
+| Plazos informados al emisor antes del efectivo (RF-115, RF-116) | Constancia de lo informado: dentro de cuánto se le avisará una retención —techo `[ASSUMPTION: 1 hora]`, que RF-67 tiene que respetar— y dentro de cuánto debe responder a la oferta de otro punto (RF-91, RF-105), vencido el cual RF-111 devuelve | 0,2 KB | `1,019` = `1` (RF-115, todo giro) `+ 0,019` (RF-116, uno por rederivación) | **0,6 MB** | 8,7 | `[ASSUMPTION]` |
+| Giro rehecho tras la pérdida del código (RF-110, RF-117, RF-123) | Registro nuevo, vínculo al cancelado, y la constancia de que se conservó la cotización de RF-06 y **no** se volvió a cobrar la comisión. Sus tamizajes y sus avisos están en sus propias filas | 1,4 KB | `0,015` (S-19) | **0,06 MB** | 8,7 | `[ASSUMPTION: S-19]` |
+| Traspaso del código y captura de la respuesta (RF-113, RF-114) | Constancia de que el código llegó al emisor **sin pasar por la pantalla del mostrador** y de que la respuesta la entró el propio receptor. Nunca el código ni la respuesta: RNF-15 y RNF-17 los mantienen ilegibles, y RF-112 marca el código como no reconsultable | 0,3 KB | `1,32` = `1` (RF-113) `+ 0,32` (RF-114, S-16) | **1,1 MB** | 8,7 | `[ASSUMPTION]` |
+| Devolución al emisor y su disponibilidad abierta (RF-32, RF-47, RF-50, RF-89, RF-111) | Motivo, monto en la moneda que el emisor entregó (RF-88), comisión devuelta (RF-74) y punto que el emisor eligió (RF-72) | 1,5 KB | `0,04` (S-13) | **0,17 MB** | 8,7 — pero **caliente hasta 12 meses**: RF-89 no deja archivar la devolución no retirada | `[ASSUMPTION: S-13]` |
 | **Supresión a pedido (RF-81)** — término **negativo** | Borra la evidencia de identidad de quien la entregó. **Nunca la traza**: RNF-03 prevalece sobre toda supresión | **−700 KB** por pedido (≈ 1,4 capturas) | **−0,00046** = `40 pedidos/mes ÷ 85 120 giros/mes` | **−0,9 MB** | Se resta del retenido, jamás del registro de actos | `[ASSUMPTION: S-18]` |
 | **Descarte de evidencia sin giro (RF-99)** — término **negativo**, el mayor de los dos | La captura del emisor que se identificó (RF-01) y no llegó a entregar efectivo (RF-02): rechazado por límite, país no atendible, reguladores incompatibles, o se fue | **−500 KB** por captura | **−0,019** = `54 descartes/día ÷ 2 800 giros` | **−27,0 MB** — **30× lo que resta RF-81** | Nunca entra al retenido, aunque sí al ancho de banda de entrada | `[ASSUMPTION: 6 % de las identificaciones no terminan en giro]` |
 
@@ -418,12 +444,12 @@ sino cuando prescribe. Todo lo demás es archivo: dato que hay que conservar y c
 
 | | Fórmula | Valor | Marca |
 |---|---|---|---|
-| Espacio por giro | suma de los tipos por su multiplicidad | `370,0 KB brutos − 9,64 KB (RF-99) − 0,32 KB (RF-81) = ` **360,0 KB** | Derivado. El binario de identidad son `313,5` de esos `370,0`: **el 85 %**. La verificación de abajo pasa |
-| Almacenamiento diario | `espacio por giro × giros por día` | `360,0 KB × 2 800 = 1 008 000 KB = ` **1,01 GB/día** | Derivado. Para escala: YouTube, en el ejemplo del material, hace `52 TB` diarios — **52 000 veces esto** |
-| Almacenamiento retenido | `diario × 365 × años de retención (S-09, ≥ 5)` | Los dos reguladores no piden lo mismo: **5 años** en el corredor peruano, **10 años** en el mexicano `[ASSUMPTION]`. S-09 obliga a tomar el máximo **por giro**, así que el multiplicador se pondera por el reparto de S-01b: `0,26 × 5 + 0,74 × 10 = 1,3 + 7,4 = ` **8,7 años**. → `1,008 GB × 365 × 8,7 = 3 201 GB = ` **3,2 TB** | Derivado. Piso defendible si los dos pidieran 5 años: `1,008 × 365 × 5 = ` **1,84 TB**. Techo si los dos pidieran 10: **3,68 TB**. **Detenerse en el diario habría dicho `1 GB` en vez de `3 200 GB`: los dos órdenes de magnitud que el método del material no tiene por qué contemplar y este caso sí** |
-| Almacenamiento caliente | la fracción del retenido que todavía es pagable: `diario × 365 × 1` por los 12 meses de prescripción (S-11), **más las devoluciones no retiradas**, que RF-89 mantiene abiertas hasta ese mismo plazo | `1,008 GB × 365 × 1 = ` **368 GB ≈ 0,37 TB**, el `368 / 3 201 = ` **11,5 %** del retenido. Dentro van las devoluciones que RF-89 no deja archivar: `4 % × 15 % = 0,6 %` de los giros, `17/día` | Derivado. El otro `88,5 %` es archivo: dato que hay que conservar y casi nunca leer, y que por tanto **no tiene por qué vivir donde vive el giro pagable** |
-| Almacenamiento independiente del giro | identidad y verificación de un emisor identificado en ventanilla que no llegó a crear giro (RF-01 corre antes de RF-02), y las declaraciones de caja de RF-76, que existen aunque el punto no pague nada en todo el turno | Caja: `9 000 × 0,4 KB = 3,6 MB/día` → `× 365 × 8,7 = ` **11,4 GB**. Capturas de RF-99 mientras esperan el descarte: `54 × 500 KB × 3 días = ` **81 MB** en régimen. Acumulados por identidad de receptor (RF-58): `39 000 × 0,2 KB = ` **7,8 MB/mes** | Derivado. Suma `11,5 GB`: irrelevante en el total y **el único piso que no baja cuando el volumen baja** — un día sin un solo giro sigue escribiendo 9 000 declaraciones de caja |
-| **Menos: lo suprimido a pedido** | `pedidos (S-18) × lo que RF-81 puede borrar`, que es la evidencia de identidad y no la traza. Se resta al retenido, nunca al registro de actos | RF-81: `40 pedidos/mes × 700 KB × 12 × 8,7 años = 2,92 GB` → el **0,09 %** del retenido. RF-99: `27 MB/día × 365 × 8,7 = 85,7 GB` → el **2,7 %**, treinta veces más | Derivado. **Ninguno de los dos mueve la cifra; los dos mueven el diseño.** RF-81 obliga a encontrar a una persona *a través de* todos sus giros —el eje por el que el libro contable no está particionado— y RF-99 obliga a un ciclo de vida del binario que empieza **antes** de que exista el giro al que colgarlo |
+| Espacio por giro | suma de los tipos por su multiplicidad | `372,7 KB brutos − 9,64 KB (RF-99) − 0,32 KB (RF-81) = ` **362,7 KB** | Derivado. El binario de identidad son `313,5` de esos `372,7`: **el 84 %**. La verificación de abajo pasa. Los `2,7 KB` que los diecinueve ítems nuevos agregaron al bruto son casi todos tamizaje: `+2,09` por RF-119 y RF-123, `+0,40` por RF-113 y RF-114, `+0,20` por RF-115 y RF-116, `+0,03` por los cinco avisos nuevos y `+0,02` por el rehacer de RF-117 |
+| Almacenamiento diario | `espacio por giro × giros por día` | `362,7 KB × 2 800 = 1 015 560 KB = ` **1,02 GB/día** | Derivado. Para escala: YouTube, en el ejemplo del material, hace `52 TB` diarios — **51 000 veces esto** |
+| Almacenamiento retenido | `diario × 365 × años de retención (S-09, ≥ 5)` | Los dos reguladores no piden lo mismo: **5 años** en el corredor peruano, **10 años** en el mexicano `[ASSUMPTION]`. S-09 obliga a tomar el máximo **por giro**, así que el multiplicador se pondera por el reparto de S-01b: `0,26 × 5 + 0,74 × 10 = 1,3 + 7,4 = ` **8,7 años**. → `1,0156 GB × 365 × 8,7 = 3 225 GB = ` **3,2 TB** | Derivado. Piso defendible si los dos pidieran 5 años: `1,0156 × 365 × 5 = ` **1,85 TB**. Techo si los dos pidieran 10: **3,71 TB**. **Detenerse en el diario habría dicho `1 GB` en vez de `3 200 GB`: los dos órdenes de magnitud que el método del material no tiene por qué contemplar y este caso sí** |
+| Almacenamiento caliente | la fracción del retenido que todavía es pagable: `diario × 365 × 1` por los 12 meses de prescripción (S-11), **más las devoluciones no retiradas**, que RF-89 mantiene abiertas hasta ese mismo plazo | `1,0156 GB × 365 × 1 = ` **371 GB ≈ 0,37 TB**, el `371 / 3 225 = ` **11,5 %** del retenido. Dentro van las devoluciones que RF-89 no deja archivar: `4 % × 15 % = 0,6 %` de los giros, `17/día` | Derivado. El otro `88,5 %` es archivo: dato que hay que conservar y casi nunca leer, y que por tanto **no tiene por qué vivir donde vive el giro pagable** |
+| Almacenamiento independiente del giro | identidad y verificación de un emisor identificado en ventanilla que no llegó a crear giro (RF-01 corre antes de RF-02), el **efectivo ya recibido sin giro creado** que RF-118 deja en un estado único que el operario puede leer y retomar, y las declaraciones de caja de RF-76, que existen aunque el punto no pague nada en todo el turno | Caja: `9 000 × 0,4 KB = 3,6 MB/día` → `× 365 × 8,7 = ` **11,4 GB**. Capturas de RF-99 mientras esperan el descarte: `54 × 500 KB × 3 días = ` **81 MB** en régimen. Acumulados por identidad de receptor (RF-58): `39 000 × 0,2 KB = ` **7,8 MB/mes**. Efectivo sin giro de RF-118, `[ASSUMPTION: 0,1 % de las creaciones]`: `3 × 1,0 KB/día` → **9,5 MB** | Derivado. Suma `11,5 GB`: irrelevante en el total y **el único piso que no baja cuando el volumen baja** — un día sin un solo giro sigue escribiendo 9 000 declaraciones de caja |
+| **Menos: lo suprimido a pedido** | `pedidos (S-18) × lo que RF-81 puede borrar`, que es la evidencia de identidad y no la traza. Se resta al retenido, nunca al registro de actos | RF-81: `40 pedidos/mes × 700 KB × 12 × 8,7 años = 2,92 GB` → el `2,92 / 3 225 = ` **0,09 %** del retenido. RF-99: `27 MB/día × 365 × 8,7 = 85,7 GB` → el `85,7 / 3 225 = ` **2,7 %**, treinta veces más | Derivado. **Ninguno de los dos mueve la cifra; los dos mueven el diseño.** RF-81 obliga a encontrar a una persona *a través de* todos sus giros —el eje por el que el libro contable no está particionado— y RF-99 obliga a un ciclo de vida del binario que empieza **antes** de que exista el giro al que colgarlo |
 
 **Verificación mínima antes de dar por buena la cifra:** si el binario de identidad no es la partida
 más grande, o se contó una identidad por giro en vez de las dos que pide RF-80, o el cálculo omitió
@@ -440,12 +466,12 @@ El método: **data de entrada por día → data de salida por día → dividir e
 
 | Paso | Qué se cuenta | Valor | Marca |
 |---|---|---|---|
-| 1. Entrada por día | Lo que sube al sistema: las capturas de identidad de las dos puntas que RF-80 conserva, respuestas de las listas de sanciones, declaraciones de caja de RF-76, y las confirmaciones de cobro que suben desde los puntos de atención —incluida la ráfaga que sube un punto al recuperar la conexión y reconciliar su estado (RNF-08), que no es tráfico uniforme | `identidad 1 734 × 500 KB = 867 MB` **(el 73 %)** · `listas de sanciones 8 400 × 15 KB = 126 MB` · `comprobantes de entrega 2 690 × 35 KB = 94,2 MB` · `resto de escrituras de ventanilla 28 905 × 3 KB = 86,7 MB` · `ráfaga de RNF-08: 45 puntos × 400 KB = 18 MB` · `caja 9 000 × 0,4 KB = 3,6 MB` → **1 195,5 MB ≈ 1,20 GB/día** | Derivado. Los `27 MB` de capturas que RF-99 descartará **entran igual**: en el cálculo 2 son un negativo, aquí son un positivo |
-| 2. Salida por día | Lo que el sistema entrega: cotizaciones fechadas, estados consultados por el emisor (RF-52, RF-53, RF-66), saldos de caja al operario antes de cada pago (RF-92), y las descargas de evidencia que hace cumplimiento | `consultas de estado 16 800 × 8 KB = 134,4 MB` · `respuestas de ventanilla 20 750 × 6 KB = 124,5 MB` · `descargas de evidencia de cumplimiento 70 casos × 2 × 500 KB = 70 MB` · `cotizaciones 3 640 × 4 KB = 14,6 MB` · `saldos de caja RF-92 2 690 × 2 KB = 5,4 MB` · `reportes a la autoridad RF-17 y RF-22, 3 × 50 KB = 0,15 MB` → **349,1 MB ≈ 0,35 GB/día** | Derivado |
-| 2b. Salida por canal de terceros | **No se mide en bytes.** Avisos de voz y SMS entregados a un operador de telefonía (RF-25, RF-37, RF-41, RF-60, RF-75), contados en unidades y facturados por unidad. Van aparte porque dividirlos entre 86 400 no dice nada útil: lo que los limita es la cuota del tercero, no el enlace | **13 720 unidades/día** · en el día señalado `13 720 × 3,0 = ` **41 160 unidades**. Contra una cuota típica de `10 000/día` por país sin acuerdo comercial `[ASSUMPTION]`, los dos países dan `20 000` → **el día pico la excede por 2,1×**. Costo: `USD 686/día`, `USD 250 k/año` | `[ASSUMPTION: S-14]` — **este es el primer cuello de botella del sistema, y no se resuelve comprando servidores.** Elena no tiene datos móviles: un aviso no entregado no degrada, desaparece |
-| 3. Entrada por segundo | `entrada por día / 86 400` | `1 195 500 KB / 86 400 = ` **13,8 KB/s** ≈ 0,11 Mbit/s | Derivado |
-| 4. Salida por segundo | `salida por día / 86 400` | `349 100 KB / 86 400 = ` **4,0 KB/s** ≈ 0,03 Mbit/s | Derivado |
-| 5. Pico | `resultado × P` | `(13,8 + 4,0) × 11 = ` **196 KB/s ≈ 1,6 Mbit/s** — entrada `152 KB/s`, salida `44 KB/s` | **Es la cifra que se usa.** Y hay una que no obedece a `P`: la ráfaga de RNF-08, `18 MB en 60 s = 300 KB/s`, que sola supera el pico entero. Se dimensiona contra ella, no contra los 196 KB/s |
+| 1. Entrada por día | Lo que sube al sistema: las capturas de identidad de las dos puntas que RF-80 conserva, respuestas de las listas de sanciones, declaraciones de caja de RF-76, y las confirmaciones de cobro que suben desde los puntos de atención —incluida la ráfaga que sube un punto al recuperar la conexión y reconciliar su estado (RNF-08), que no es tráfico uniforme | `identidad 1 734 × 500 KB = 867 MB` **(el 69 %)** · `listas de sanciones 11 326 × 15 KB = 169,9 MB` · `comprobantes de entrega 2 690 × 35 KB = 94,2 MB` · `resto de escrituras de ventanilla 35 777 × 3 KB = 107,3 MB` — `60 527 − 1 734 − 11 326 − 9 000 − 2 690` · `ráfaga de RNF-08: 45 puntos × 400 KB = 18 MB` · `caja 9 000 × 0,4 KB = 3,6 MB` → **1 260,0 MB ≈ 1,26 GB/día** | Derivado. Los `27 MB` de capturas que RF-99 descartará **entran igual**: en el cálculo 2 son un negativo, aquí son un positivo. **Lo que más creció es la entrada de listas** —`126 → 169,9 MB`— y lo hizo RF-119, que tamiza al receptor antes de aceptar el efectivo |
+| 2. Salida por día | Lo que el sistema entrega: cotizaciones fechadas, estados consultados por el emisor (RF-52, RF-53, RF-66), saldos de caja al operario antes de cada pago (RF-92), y las descargas de evidencia que hace cumplimiento | `consultas de estado 16 800 × 8 KB = 134,4 MB` · `respuestas de ventanilla 20 750 × 6 KB = 124,5 MB` · `descargas de evidencia de cumplimiento 71 casos × 2 × 500 KB = 71 MB` · `cotizaciones 3 640 × 4 KB = 14,6 MB` · `saldos de caja RF-92 2 690 × 2 KB = 5,4 MB` · `plazos informados al emisor RF-115 y RF-116, 2 854 × 1 KB = 2,9 MB` · `reportes a la autoridad RF-17 y RF-22, 3 × 50 KB = 0,15 MB` → **353,0 MB ≈ 0,35 GB/día** | Derivado |
+| 2b. Salida por canal de terceros | **No se mide en bytes.** Avisos de voz y SMS entregados a un operador de telefonía —al receptor (RF-25, RF-37, RF-41, RF-69, RF-75, RF-106, RF-107, RF-108, RF-109, RF-120, RF-121, RF-124) y al emisor (RF-14, RF-51, RF-60, RF-65, RF-67)—, contados en unidades y facturados por unidad. Van aparte porque dividirlos entre 86 400 no dice nada útil: lo que los limita es la cuota del tercero, no el enlace | **14 000 unidades/día** · en el día señalado `14 000 × 3,0 = ` **42 000 unidades**. Contra una cuota típica de `10 000/día` por país sin acuerdo comercial `[ASSUMPTION]`, los dos países dan `20 000` → **el día pico la excede por `42 000 / 20 000 = ` 2,1×**. Costo: `USD 700/día`, `USD 256 k/año`. **El agujero se abre antes que el pico:** `20 000 ÷ (5,0 × 3,0) = ` **1 333 giros/día**, por debajo de los `2 800` de llegada | `[ASSUMPTION: S-14]` — **este es el primer cuello de botella del sistema, y no se resuelve comprando servidores.** Elena no tiene datos móviles: un aviso no entregado no degrada, desaparece |
+| 3. Entrada por segundo | `entrada por día / 86 400` | `1 260 000 KB / 86 400 = ` **14,6 KB/s** ≈ 0,12 Mbit/s | Derivado |
+| 4. Salida por segundo | `salida por día / 86 400` | `353 000 KB / 86 400 = ` **4,1 KB/s** ≈ 0,03 Mbit/s | Derivado |
+| 5. Pico | `resultado × P` | `(14,6 + 4,1) × 11 = ` **206 KB/s ≈ 1,6 Mbit/s** — entrada `161 KB/s`, salida `45 KB/s` | **Es la cifra que se usa.** Y hay una que no obedece a `P`: la ráfaga de RNF-08, `18 MB en 60 s = 300 KB/s`, que sola supera el pico entero. Se dimensiona contra ella, no contra los 206 KB/s |
 
 Dos observaciones específicas de este caso:
 
@@ -454,9 +480,10 @@ Dos observaciones específicas de este caso:
   SendIt el binario pesado —el documento de identidad— **entra** y casi nunca sale; entra dos veces
   por giro desde que RF-80 lo pide de las dos puntas, y lo que sale son respuestas de pocos
   kilobytes consultadas muchas veces. Con las cifras: YouTube `40 PB / 52 TB = 769×` a favor de la
-  salida; SendIt `1 195,5 / 349,1 = 3,4×` a favor de la **entrada**. La única salida pesada del
-  sistema son los `70 MB/día` que cumplimiento descarga de evidencia, y es el 20 % de toda la
-  salida generada por el 0,03 % de las operaciones.
+  salida; SendIt `1 260,0 / 353,0 = 3,6×` a favor de la **entrada** — y la asimetría **creció**,
+  porque RF-119 puso una respuesta de lista más por giro del lado de la entrada. La única salida
+  pesada del sistema son los `71 MB/día` que cumplimiento descarga de evidencia, y es el
+  `71 / 353,0 = ` 20 % de toda la salida generada por menos del 0,1 % de las operaciones.
 - **Dividir entre 86 400 supone que la carga es uniforme, y no lo es.** El resultado del paso 3 es
   un promedio contra el que no se dimensiona nada. La cifra que se usa es la del paso 5.
 
@@ -468,7 +495,7 @@ Se registra aquí para que el paso siguiente sepa sobre qué está parado.
 
 | Si cambia… | Se recalcula | Y hay que revisar |
 |---|---|---|
-| **La cuota de mercado del lanzamiento (0,5 %) o el ticket promedio (S-05)** | **Los tres cálculos, en proporción directa** | Nada, mientras no cruce un orden de magnitud: `0,09` servidores de carga aguantan `×122` antes de alcanzar el piso de 11. Es el supuesto del que más depende la cifra y el que menos cambia la arquitectura |
+| **La cuota de mercado del lanzamiento (0,5 %) o el ticket promedio (S-05)** | **Los tres cálculos, en proporción directa** | Nada, mientras no cruce un orden de magnitud: `0,10` servidores de carga aguantan `×130` antes de alcanzar el piso de 13. Es el supuesto del que más depende la cifra y el que menos cambia la arquitectura |
 | **El reparto entre corredores (S-01b, 26 % / 74 %)** | El multiplicador de retención del cálculo 2: `8,7 años` se mueve entre `5` y `10` | `A` — la política de conservación es **por giro**, no global; el reparto solo elige contra qué extremo se dimensiona el agregado |
 | El número de corredores (S-01, anclado en RNF-12) | Los tres cálculos | `D` — otra red afiliada que sincronizar, con otra calidad de conexión; `A` — otro plazo de conservación en el máximo por corredor |
 | Los años de retención (S-09, anclado en RNF-03 y RF-18) | Almacenamiento | `A` — la política de retención por entidad, que es por giro y no global |
@@ -478,6 +505,8 @@ Se registra aquí para que el paso siguiente sepa sobre qué está parado.
 | El tamaño de la red afiliada o sus turnos (S-12) | Servidores y almacenamiento, por el piso de RF-76 que no depende del volumen | `E` (escalar) — el tramo más bajo, que ya nace con carga aunque no haya giros |
 | La tasa de devolución o la de retiro (S-13) | Operaciones de ventanilla y almacenamiento caliente, por RF-89 | `D` — el ciclo de vida del giro, que no termina en el pago |
 | El coste o la cuota del canal de voz y SMS (S-14) | El costo por giro, no el cómputo | `E` (escalar) — es un candidato a cuello de botella que no se resuelve con servidores; `L` — el componente que habla con el tercero |
+| La proporción de códigos perdidos que se rehacen (S-19, anclada en RF-110, RF-117 y RF-123) | Las operaciones de ventanilla (`2,13` por giro), los tamizajes (`126/día`) y los avisos de base repetidos al receptor (`0,045` por giro) | `E` (escalar) — el caudal de la cola de cumplimiento, que gana su tercera fuente; `D` — el ciclo de vida de un giro que puede volver a nacer conservando la cotización de RF-06 |
+| El reparto de avisos entre receptor y emisor (S-14, y quién es el destinatario de cada RF) | El factor de unidades por giro y, con él, **el tramo en que se agota la cuota del tercero**. Mover un aviso de una punta a la otra no cambia el total; agregar uno sí | `E` (escalar) — es el primer cuello y el más sensible: `5,0 × 3,0` unidades en el día señalado agotan `20 000` en `1 333` giros/día |
 | El acumulado de cobros del receptor (S-15, anclado en RF-58 y RF-93) | El caudal de la cola de cumplimiento, que gana una fuente de retención nueva | `E` (escalar) — el primer cuello de botella; `D` — la clave por la que se cuenta del lado receptor |
 | El volumen de supresiones (S-18) | Almacenamiento, con signo menos | `D` — poder borrar la evidencia sin tocar la traza, que RNF-03 no deja mover |
 | Un requerimiento funcional nuevo en el backlog | Los tres | Todo lo de aguas abajo |
