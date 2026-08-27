@@ -11,7 +11,7 @@ umbral en **8/10**. Eso decide el alcance de este documento: se puntúa el backl
 |---|---|
 | [`redale/R-requerimientos/backlog.md`](../redale/R-requerimientos/backlog.md) | **Lo único puntuado.** El único documento con autoridad sobre qué debe hacer el sistema |
 | [`personas/Rosa.MD`](../personas/Rosa.MD) · [`Elena.MD`](../personas/Elena.MD) · [`Operario.MD`](../personas/Operario.MD) | Las lee cada agente de persona: la suya y el backlog, nada más |
-| [`personas/README.md`](../personas/README.md) | La lee el agregador. De ahí salen las seis tensiones que D4 exige decididas y la designación del usuario modelo |
+| [`personas/README.md`](../personas/README.md) | La lee el agregador. De ahí salen las siete tensiones que D4 exige decididas y la designación del usuario modelo |
 | [`docs/LAB-03-ARQ-2026.2.md`](../docs/LAB-03-ARQ-2026.2.md) | La lee el agregador. Fija el problema contra el que mide D2 y nombra las dos exigencias que cuenta D3 |
 
 ### Los demás pasos de R.E.D.A.L.E. no se puntúan
@@ -121,7 +121,7 @@ otras personas, ni [`personas/README.md`](../personas/README.md), ni los veredic
 historial.
 
 La exclusión de `personas/README.md` es la que más cuesta explicar y la que más importa: ese archivo
-contiene las seis tensiones y el ángulo de las otras dos personas. Un agente que lo lee deja de
+contiene las siete tensiones y el ángulo de las otras dos personas. Un agente que lo lee deja de
 reclamar y empieza a negociar —«entiendo que Kevin necesita tiempo»— y ahí se pierde la única señal que
 el agente existe para producir. Las tensiones las decide el backlog y las juzga el agregador, no la
 persona que las sufre.
@@ -231,12 +231,12 @@ convierte en puntaje.
 | Título no entendible | Un **título comodín**, según las pruebas de arriba |
 | Ambigüedad no marcada | Dos lecturas razonables y ningún `[CLARIFY: …]` |
 | Título no atómico | Dos cosas que pueden ser verdaderas o falsas por separado bajo un identificador |
-| Tensión esquivada | Una de las seis de [`personas/README.md`](../personas/README.md) que ningún ítem decide |
+| Tensión esquivada | Una de las siete de [`personas/README.md`](../personas/README.md) que ningún ítem decide |
 | Prioridad ausente | Un ítem sin prioridad |
 
 **Techos duros.** Se aplican después de las deducciones y no se negocian:
 
-- Si **dos o más** de las seis tensiones quedan sin decidir, **D4 no supera 1,0**. Una tensión sin
+- Si **dos o más** de las siete tensiones quedan sin decidir, **D4 no supera 1,0**. Una tensión sin
   decidir no es un hallazgo más: es la decisión que el backlog existía para tomar.
 - Si **todos** los ítems comparten la misma prioridad, **D4 no supera 1,5**. Una lista sin gradiente no
   está priorizada.
