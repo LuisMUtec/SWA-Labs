@@ -38,6 +38,7 @@ contra el efecto, y sobrevive a su propia obsolescencia.
 | `RF-06` — «el sistema conservará ese monto sin recalcularlo durante toda la vida del giro» | Cuánto vive la cotización que `RF-07` fecha, y quién absorbe el movimiento cambiario hasta que el receptor cobra |
 | `RNF-06` — «el sistema mantendrá un solo estado del giro entre el centro y el punto de atención» | Qué puede hacer un punto sin conexión, cuál lado manda mientras dura, y cómo se resuelve la divergencia al reconectar (`RNF-08`) |
 | `RF-55` — «el sistema impedirá modificar o eliminar el registro de un acto ya ejecutado» | Registro por adición frente a actualización en el sitio |
+| `RF-12` — «el sistema comprobará la respuesta del desafío sin mostrarla a quien atiende el mostrador», con el invariante de `RNF-17`: «El sistema puede comprobar una respuesta sin poder mostrarla, en los dos lados del mostrador» | Con qué transformación se guarda la respuesta que `RF-68` le pide al emisor, dónde corre la comparación que `RF-69` habilita, cómo se cuentan los intentos de `RF-82` y qué caduca con el giro por `RF-83` |
 
 Toda decisión técnica desplazada desde el backlog aterriza **aquí**, no se suprime.
 
@@ -54,8 +55,9 @@ Toda decisión técnica desplazada desde el backlog aterriza **aquí**, no se su
 | Mixta — núcleo monolítico + servicios en la frontera | — | — | — |
 
 **El criterio del propio material no se cumple aquí, y hay que decirlo.** El ejemplo del material
-elige monolito con este argumento literal: *«la arquitectura elegida será 3-tier y en monolito ya
-que encontramos que la aplicación no tendrá conexión hacia afuera»*. SendIt es lo contrario: tiene
+elige monolito 3-tier con el argumento de que su aplicación no tiene conexiones hacia afuera — no
+está transcrito literal en este repositorio, así que se usa como criterio y no como cita. SendIt es
+lo contrario de ese caso: tiene
 al menos cinco conexiones hacia afuera —verificación del documento oficial (`RF-01`), listas de
 sanciones (`RF-26`, `RF-27`), proveedor de tipo de cambio (`RF-07`), la autoridad de origen a la que
 reporta (`RF-17`) y el canal de llamada o mensaje de texto por el que se avisa al receptor
@@ -74,10 +76,11 @@ Preguntas que la tabla tiene que responder, no esquivar:
 - ¿Qué **no** se separa porque separarlo rompe una transacción? Partir el registro contable en dos
   servicios convierte una escritura atómica en un problema distribuido creado por el diseño.
 - ¿El puesto desde el que se resuelven las retenciones y el mostrador del operario son el mismo
-  sistema? `RF-30` deriva el giro retenido a un rol distinto del que lo atendió, `RF-58` prohíbe que
-  quien atendió lo libere, `RNF-02` prohíbe que una misma identidad ejerza dos roles del mismo giro
-  y `RF-57` limita al operario a la operación que está atendiendo. Separar los dos puestos —o no
-  separarlos— es el mecanismo de esas cuatro exigencias, no una preferencia de despliegue.
+  sistema? `RF-30` deriva el giro retenido a un rol distinto del que lo atendió, `RF-33` reserva la
+  liberación al rol de cumplimiento y `RF-87` obliga a que deje su motivo escrito, `RNF-02` prohíbe
+  que una misma identidad ejerza dos roles del mismo giro y `RF-57` limita al operario a la
+  operación que está atendiendo. Separar los dos puestos —o no separarlos— es el mecanismo de esas
+  exigencias, no una preferencia de despliegue.
 
 ## 2. Tipo de persistencia
 
@@ -85,14 +88,19 @@ Preguntas que la tabla tiene que responder, no esquivar:
 |---|---|---|---|---|
 | Registro contable del dinero | — | — | — | — |
 | Giro y su estado | — | — | — | — |
-| Código de seguimiento (`RF-11`, `RNF-01`) | — | — | — | — |
+| Código de seguimiento (`RF-11`, `RNF-15`) | — | — | — | — |
+| Respuesta del desafío y sus intentos (`RF-68`, `RF-12`, `RF-82`, `RNF-17`) | — | — | — | — |
 | Acumulado del emisor en la ventana vigente (`RF-09`, `RF-10`) | — | — | — | — |
+| Acumulado de cobros del receptor en la ventana vigente (`RF-58`, `RF-93`) | — | — | — | — |
 | Identidad de personas | — | — | — | — |
-| Binarios de identidad (imágenes) | — | — | — | — |
+| Binarios de identidad (imágenes) — evidencia que `RF-80` obliga a conservar | — | — | — | — |
 | Resultado de tamizaje | — | — | — | — |
 | Traza de auditoría | — | — | — | — |
 | Cotizaciones de tipo de cambio | — | — | — | — |
 | Catálogo de puntos de atención y efectivo disponible en el corredor (`RF-20`, `RF-63`) | — | — | — | — |
+| Efectivo que cada punto declara al abrir y al cerrar su caja (`RF-76`, `RF-92`) | — | — | — | — |
+| Devolución pendiente de retiro y su plazo (`RF-14`, `RF-89`) | — | — | — | — |
+| Declaración de diferencia hecha por el receptor en el mostrador (`RF-90`, `RF-59`) | — | — | — | — |
 | Estado que el punto sostiene mientras opera sin conexión | — | — | — | — |
 
 La decisión es **por familia de dato, no global**. El propio material lo hace así en su ejemplo
@@ -122,28 +130,39 @@ se llena contra esta:
 | Capacidad obligada | Traza a | Llamador |
 |---|---|---|
 | Cotizar e informar el monto en moneda destino antes del efectivo | `RF-05`, `RF-07`, `RF-21` | Ventanilla de origen |
+| Informar antes del efectivo lo que el emisor tiene que saber: desde cuándo se cobra, el plazo de una eventual devolución y si el país destino se puede atender | `RF-77`, `RF-73`, `RF-19` | Ventanilla de origen |
 | Elegir el punto de atención donde cobrará el receptor | `RF-63` | Ventanilla de origen, por el emisor |
-| Crear el giro y entregar el código únicamente al emisor | `RF-11`, `RF-12` | Ventanilla de origen |
-| Registrar la recepción del efectivo | `RF-02`, `RF-20` | Ventanilla de origen |
-| Pedir y otorgar la segunda autorización | `RF-13`, `RF-14`, `RF-61` | Segundo rol, nunca el mismo operario |
-| Avisar al receptor por llamada o mensaje de texto | `RF-25`, `RF-41`, `RF-60` | Proceso interno hacia el canal de Elena |
+| Crear el giro y entregar el código únicamente al emisor | `RF-11`, `RNF-15` | Ventanilla de origen |
+| Registrar la pregunta del desafío y su respuesta al crear el giro | `RF-68`, `RNF-17` | Ventanilla de origen, por el emisor |
+| Registrar la recepción del efectivo, que es lo que da el giro por creado | `RF-79`, `RF-08`, `RF-09`, `RF-20` | Ventanilla de origen |
+| Pedir y otorgar la segunda autorización | `RF-13`, `RF-61` | Segundo rol, nunca el mismo operario |
+| Avisar al receptor por llamada o mensaje de texto | `RF-25`, `RF-41`, `RF-60`, `RF-75` | Proceso interno hacia el canal de Elena |
 | Reportar a la autoridad de origen | `RF-17`, `RF-22` | Proceso interno hacia la autoridad |
 | Listar y decidir giros retenidos | `RF-29`, `RF-30` | Rol de cumplimiento |
-| Liberar una retención dejando registrado el motivo | `RF-33`, `RF-58` | Rol de cumplimiento, distinto del que atendió |
+| Liberar una retención dejando registrado el motivo | `RF-33`, `RF-87` | Rol de cumplimiento, distinto del que atendió |
+| Contar los cobros del receptor en la ventana y retener al superarla | `RF-58`, `RF-93` | Proceso interno hacia el rol de cumplimiento |
 | Autorizar el pago hacia el punto contra las listas vigentes | `RF-27`, `RF-36` | Centro → punto de atención |
-| Confirmar el cobro desde el mostrador | `RF-34`, `RF-64`, `RF-65` | Punto de atención → centro |
+| Informar al operario el efectivo de su punto antes de habilitarle un pago | `RF-92` | Centro → punto de atención |
+| Declarar el efectivo del punto al abrir y al cerrar la caja | `RF-76` | Punto de atención → centro |
+| Comprobar la respuesta del desafío sin mostrarla, con intentos acotados | `RF-12`, `RF-69`, `RF-82`, `RF-83`, `RF-86`, `RNF-17` | Punto de atención → centro. **Nunca devuelve la respuesta: devuelve el veredicto** |
+| Confirmar el cobro desde el mostrador, en efectivo y por el monto fijado | `RF-34`, `RF-85`, `RF-02`, `RF-38`, `RF-64`, `RF-65` | Punto de atención → centro |
+| Cobrar en otro punto del país destino cuando el elegido no puede pagar | `RF-91` | Punto de atención → centro |
+| Registrar la declaración del receptor de que el dinero no coincide | `RF-90`, `RF-59` | Punto de atención → centro, por el receptor |
 | Sincronizar un punto que estuvo sin conexión | `RF-45`, `RNF-08` | Punto de atención → centro |
 | Consultar el estado de los giros propios | `RF-52`, `RF-53`, `RF-66` | Emisor |
 | Cancelar y devolver | `RF-46`, `RF-47`, `RF-62` | Emisor, nunca el receptor (`RF-48`) |
+| Avisar la devolución disponible y dónde retirarla | `RF-14`, `RF-72` | Proceso interno hacia el emisor |
+| Retirar la devolución en efectivo, en la moneda entregada, con su comisión | `RF-71`, `RF-88`, `RF-74`, `RF-89` | Punto de atención elegido por el emisor → centro |
 | Vencer una retención y devolver | `RF-31`, `RF-32` | Proceso interno |
 | Prescribir y poner el monto a disposición del emisor | `RF-49`, `RF-50`, `RF-51` | Proceso interno |
 | Liquidar con el agente el efectivo que puso de su caja | `RF-24` | Proceso interno hacia el agente |
+| Suprimir a pedido los datos personales de quien los entregó | `RF-81` | Emisor → proceso interno, acotado por lo que `RF-55` obliga a conservar |
 
 ---
 
 ## Decisiones que este caso obliga y no se pueden posponer
 
-Cinco. No están resueltas y no se resuelven aquí: se enuncian con su tensión para que la iteración
+Seis. No están resueltas y no se resuelven aquí: se enuncian con su tensión para que la iteración
 que las cierre sepa qué estaba en juego. Posponerlas no las deja abiertas — las resuelve por
 omisión, y por omisión siempre salen mal.
 
@@ -163,7 +182,7 @@ cancelación (`RF-47`) y la prescripción (`RF-50`).
 hablando de dinero»—* es exactamente la invariante contable: el dinero no se crea ni se destruye, se
 mueve entre cuentas, y toda diferencia tiene una contrapartida con nombre. Elegir un campo mutable
 no es elegir una representación más simple de la misma cosa: es renunciar a poder demostrar que la
-suma cuadra —que es literalmente el invariante de `RNF-07`: «lo que sale de una cuenta entra en
+suma cuadra —que es literalmente el invariante de `RNF-07`: «Lo que sale de una cuenta entra en
 otra». Nadie puede auditar un campo que se sobrescribió, y `RF-55` prohíbe modificar el registro de
 un acto ya ejecutado mientras `RNF-03` obliga a que siga íntegro por el plazo más largo de los dos
 reguladores del giro (`BR-15`).
@@ -225,7 +244,7 @@ dejar sin servicio: al receptor, que viajó cuarenta minutos en combi, o a quien
 
 | Opción sobre el giro sin condición en contra | Qué supone | Dónde se rompe en este caso |
 |---|---|---|
-| El punto no paga sin confirmación en línea del centro | Que la conexión sea la condición de operar | Una caída de línea cierra el punto. Elena viajó, hizo la cola y vuelve con las manos vacías por un motivo que no tiene nada que ver con ella — y el sistema cumple `RF-45` y `RNF-06` por el método de no pagarle a nadie, después de que `RF-41` le prometiera antes de viajar que ese punto podía pagarle |
+| El punto no paga sin confirmación en línea del centro | Que la conexión sea la condición de operar | Una caída de línea cierra el punto. Elena viajó, hizo la cola y vuelve con las manos vacías por un motivo que no tiene nada que ver con ella — y el sistema cumple `RF-45` y `RNF-06` por el método de no pagarle a nadie, después de que `RF-41` y `RF-75` le prometieran antes de viajar que ese punto podía pagarle. La salida que `RF-91` le da —cobrar en otro punto del país destino— exige línea para trasladar el giro, que es justo lo que falta |
 | El punto paga contra la autorización que el centro ya le bajó, con caducidad corta y tope de monto, y trata como no pagable todo giro cuya ausencia de retención no pueda sostener con lo que tiene local | Que la autorización caduque sola, que el tope acote el daño y que lo no demostrable se rechace en vez de pagarse | Hay que fijar caducidad y tope, y el backlog no los da: `RNF-09` acota el mostrador y `RNF-10` la disponibilidad, ninguno la vida de una autorización fuera de línea. El techo no es negociable: `RNF-06` no admite ventana |
 | El centro le empuja al punto las prohibiciones antes de la caída —retenidos, cancelados, pagados en otro punto— y el punto paga lo demás | Que la lista de prohibiciones viaje antes que la caída | Se rompe con la retención que nace mientras el punto está caído: `RF-29` no espera a que vuelva. No elimina la ventana, la desplaza al último empujón hecho — y hay que decir cuánto puede durar ese desfase |
 
@@ -233,7 +252,7 @@ dejar sin servicio: al receptor, que viajó cuarenta minutos en combi, o a quien
 autorización ya había bajado al punto, que llevaba desde la mañana sin conexión. El centro decía
 «retenido»; el mostrador decía «disponible para cobro»; Elena cobró. Eso **ya no es un precedente
 que el diseño tolere**: es la conducta que `RF-45` prohíbe y el estado que `RNF-06` declara
-imposible —*«dos lugares del sistema nunca afirman a la vez que un giro está retenido y disponible
+imposible —*«Dos lugares del sistema nunca afirman a la vez que un giro está retenido y disponible
 para cobro»*—. Lo que el caso sigue aportando es el costo, no la licencia: lo que no se le pudo
 explicar al auditor no fue la decisión, fue que dos registros del mismo sistema afirmaran dos hechos
 incompatibles sobre el mismo dinero. El diseño no tiene que justificar ese desenlace; tiene que
@@ -300,7 +319,8 @@ pregunta no es «antes o después» sino **qué se compromete en cada punto de l
 **La secuencia que hay que desagregar.** Identificar y tamizar antes de tocar el efectivo (`RF-01`,
 `RF-26`), aceptar el efectivo en la ventanilla de origen (`RF-02`), dar el giro por fondeado con
 efectivo disponible en el corredor de destino (`RF-20`, `RF-36`), autorizar el pago contra las
-listas vigentes (`RF-27`), y entregarle el efectivo al receptor (`RF-34`, `RF-64`) son **cinco
+listas vigentes (`RF-27`), y entregarle el efectivo al receptor contra código, documento y —cuando
+el documento no está vigente— desafío (`RF-34`, `RF-85`, `RF-86`, `RF-69`, `RF-64`) son **cinco
 momentos distintos**, no uno. Cada control se ancla a uno de ellos, y el punto de no retorno
 —el último momento en que detener todavía es no-hacer en vez de deshacer— hay que nombrarlo
 explícitamente. Con un punto que puede quedar sin conexión, ese punto de no retorno **se cruza sin
@@ -315,6 +335,38 @@ muestra que el giro está retenido y hasta qué fecha y `RF-67` le avisa cuando 
 Esa última no se resuelve redactando mejor un mensaje: hay que decidir qué mecanismo hace que el
 hecho y el plazo lleguen sin que el motivo se pueda deducir.
 
+### (f) Dónde vive la respuesta del desafío y quién la compara
+
+**Pregunta.** `RF-68` obliga al emisor a registrar, al crear el giro, una pregunta y su respuesta.
+`RF-69` deja cobrar con un documento no vigente a quien la responde correctamente, y `RF-86`
+convierte esa respuesta en la única excepción a la vigencia que `RF-85` exige sobre el titular. La
+pregunta de diseño no es dónde poner el campo: es **quién tiene la respuesta en las manos y en qué
+forma**, cuando `RF-12` prohíbe mostrársela a quien atiende el mostrador y `RNF-17` extiende la
+prohibición a quien administra la infraestructura — «El sistema puede comprobar una respuesta sin
+poder mostrarla, en los dos lados del mostrador».
+
+**Por qué no es un campo más.** Un campo se guarda y se lee; esto se guarda y **no se puede leer**,
+ni por el operario que lo teclea ni por quien tiene acceso al almacenamiento. Eso obliga a decidir
+tres cosas que ninguna tabla vacía resuelve sola: con qué transformación entra el dato (y por tanto
+qué se pierde para siempre), **dónde corre la comparación** —en el mostrador, que puede estar sin
+conexión, o en el centro, que entonces recibe por la línea lo que Elena dijo—, y qué viaja de vuelta
+por esa línea, que tiene que ser un veredicto y nunca el valor.
+
+**Y hay un lado que el código de seguimiento no tiene.** El código lo genera el sistema; la
+respuesta la elige Rosa, en el mostrador, delante de Kevin, y se la transmite a Elena por el mismo
+canal que SendIt no controla. Es un **secreto compartido entre dos personas** que el sistema solo
+arbitra: no puede regenerarlo, no puede recordárselo a nadie y no puede aceptar que se adivine —de
+ahí `RF-82`, que acota los intentos, y `RF-83`, que la caduca junto con el giro. Contar intentos
+fallidos es a su vez un dato sobre el secreto, y hay que decir dónde vive y quién lo ve, sabiendo
+que `RF-57` limita al operario a la operación que atiende.
+
+**Qué queda decidido al responderla.** La forma en que se persiste la respuesta y si es reversible;
+el lado del mostrador donde ocurre la comparación y qué pasa con `RF-69` cuando ese lado está sin
+conexión (es la frontera de (c) otra vez, ahora sobre un secreto en vez de sobre un estado); cuántos
+intentos son «acotados» y qué queda del giro al agotarlos; y si la caducidad de `RF-83` borra el
+dato o solo lo deja inservible. **Se propaga a** `A` (la entidad que lo guarda y su trato en la
+tabla de datos personales) y a `L` (el componente que compara, que es el único que toca el valor).
+
 ---
 
 ## Resumen de propagación
@@ -326,6 +378,7 @@ hecho y el plazo lleguen sin que el motivo se pueda deducir.
 | (c) Frontera entre el centro y el punto de atención | `A`, `L`, `E` (escalar) | El estado del giro y el que el punto sostiene sin conexión; el componente que sincroniza el punto al reconectar; el tramo en que la divergencia deja de ser manejable a mano |
 | (d) Tipo de cambio | `A`, `L` | La entidad de cotización y la cuenta de diferencia de cambio |
 | (e) Momento del tamizaje | `A`, `L`, `E` (estimar) | La carga del camino del pago; el orden de los componentes en el diagrama |
+| (f) Dónde vive y quién compara la respuesta del desafío | `A`, `L` | La entidad que la guarda y su fila en la tabla de datos personales; el componente que la compara; el flujo de pago con documento no vigente (`RF-69`, `RF-86`) |
 
 ---
 
@@ -336,4 +389,4 @@ es la que exige el enunciado ([ejemplo de clase](../../docs/EJEMPLO-CLASE-TOP-DO
 **iteración del EVAL** no son lo mismo y [`ITERACIONES.md`](../ITERACIONES.md) las lleva en tablas
 separadas. Este paso alimenta la primera: los servicios que aquí se nombren son las cajas que
 [`L`](../L-listar-componentes/README.md) abre en su segunda pasada. Y lo afecta la segunda: un ítem
-nuevo en el backlog puede reabrir cualquiera de las cinco decisiones de arriba.
+nuevo en el backlog puede reabrir cualquiera de las seis decisiones de arriba.
