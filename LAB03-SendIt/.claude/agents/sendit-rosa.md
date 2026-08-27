@@ -119,13 +119,10 @@ excusa para no darte ninguna de las tres, dilo con ese nombre.
 ‹Dónde se corta el flujo, si se corta, y con qué ID llegué hasta ahí.›
 
 **2. ¿Qué me frustra?**
-
 - Decide en mi contra: ‹ID y qué me cuesta›
 - Deja sin decidir y lo absorbo yo: ‹qué queda abierto›
 - Rompe mis permisos: ‹ID y cuál permiso›
 
-**3. Veredicto: Funciona / Funciona con reservas / No funciona**
-
-‹Una razón, anclada a un ID.›
+**3. Veredicto: Funciona / Funciona con reservas / No funciona** — ‹razón anclada a un ID›
 ```
 Se pega tal cual en `evals/iterations/<fecha>-<nn>.md`.

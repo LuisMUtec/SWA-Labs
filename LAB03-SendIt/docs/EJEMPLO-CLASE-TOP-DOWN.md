@@ -5,8 +5,10 @@ Transcripción y lectura del excalidraw que el profesor mostró en clase
 sesión UTEC). El caso del ejemplo es **Leasing**, no SendIt: lo que se hereda es el **método**, no
 el contenido.
 
-> **Falta el archivo original.** Este documento transcribe la imagen. Cuando se consiga el
-> `.excalidraw` o el PNG, va en esta carpeta y se enlaza desde aquí.
+![Top Down Design — el ejemplo de clase](ejemplo-clase-top-down.png)
+
+> El original es un excalidraw; lo que se conserva acá es la captura
+> ([`ejemplo-clase-top-down.png`](ejemplo-clase-top-down.png)). El resto de este documento la lee.
 
 ---
 
@@ -122,7 +124,10 @@ Debt Job <EOD> ──▶ Evaluation Service
 | **Actor** | Círculo con etiqueta, fuera del sistema |
 | **Rama condicional** | La arista lleva su etiqueta: `TODO OK`, `Validation Failed`, `OK`, `NO LOAN` |
 
-**Código de color:**
+**Código de color.** Hay que leerlo del dibujo, no de su leyenda: la leyenda del lienzo declara
+solo dos categorías —un cuadrado verde rotulado `BD` y uno azul rotulado `LEASING`— y el diagrama
+usa cinco colores que no le corresponden. Es una leyenda de pizarra que quedó a medio hacer. Lo que
+el cuerpo del diagrama efectivamente hace, que es lo que se adopta:
 
 | Color | Qué agrupa |
 |---|---|
@@ -130,7 +135,7 @@ Debt Job <EOD> ──▶ Evaluation Service
 | Verde | Servicios de soporte y notificación — `Messaging`, `SMS`, `Email`, `Dashboard` |
 | Rosado | Sistemas de terceros, fuera de la frontera de confianza |
 | Amarillo | Procesos batch y servicios secundarios |
-| Naranja (elipse) | Bases de datos |
+| Naranja (elipse) | Bases de datos — **pese a que la leyenda las pinta de verde** |
 
 El código de color hace un trabajo real: **el rosado marca dónde termina el sistema**. Todo lo
 rosado es algo sobre lo que el diseño no manda, y por lo tanto algo que puede fallar, mentir o
