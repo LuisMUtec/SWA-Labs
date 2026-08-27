@@ -26,9 +26,14 @@ siguiente es un ítem del backlog que el cuadrado no explica.
 |---|---|---|---|
 | **1** | Los cuatro actores y **una sola caja**. Rosa y Elena hablan cada una con un operario, y el operario con el sistema — bajo el modelo Western Union las dos puntas pasan por una ventanilla | Nada la fuerza: es el punto de partida. Lo único que afirma es **quién habla con el sistema** | **1** — RF-11, que se demuestra por la *ausencia* de una arista hacia el receptor |
 | **2** | La caja se abre: identificación, tamizaje, creación del giro y pago, con sus `BD`, sus sistemas externos y las aristas condicionales etiquetadas | **RF-26** — el tamizaje contra listas antes de aceptar el efectivo no cabe dentro de un cuadrado que no distingue quién decide qué | **36** — 29 RF y 7 RNF |
-| **3** | El resto: devolución, desafío, caja por punto, cobro alternativo, reclamo del receptor, supresión, acumulado de cobros y liquidación con el agente | **RF-68 y RF-69** — el desafío obliga a un servicio y un almacén propios, porque RNF-17 exige que la respuesta sea ilegible **en los dos lados del mostrador** | **81** — 71 RF y 10 RNF |
+| **3** | El resto: devolución, desafío, caja por punto, cobro alternativo, reclamo del receptor, supresión, acumulado de cobros y liquidación con el agente | **RF-68 y RF-69** — el desafío obliga a un servicio y un almacén propios, porque RNF-17 exige que la respuesta sea ilegible **en los dos lados del mostrador** | **118** — 111 RF y 7 RNF |
 
-**Total: 118 de 118.** La trazabilidad ítem por ítem vive en
+**Total: 155 de 155.** La tercera pasada **creció de 81 a 118 filas** entre las rondas 05 y 11 del EVAL
+sin que hiciera falta una cuarta: casi todo ítem nuevo cayó dentro de un componente que ya existía.
+Eso es lo que una tercera iteración bien abierta tiene que poder absorber, y es la prueba de que el
+corte fue en el lugar correcto. Los pocos componentes que nacieron después de la tercera pasada son
+los que el propio EVAL forzó —`Código Service`, `Terminal del Cliente`, `Rehacer Service`,
+`Condiciones Previas Service`—, y cada uno tiene su ítem que lo pidió. La trazabilidad ítem por ítem vive en
 [`L-listar-componentes/`](L-listar-componentes/), que es donde el `DONE` se verifica; esta tabla
 dice **por qué** hubo otra pasada, no **qué** quedó cubierto.
 
@@ -53,7 +58,11 @@ resumen en [`../evals/HISTORY.md`](../evals/HISTORY.md).
 | **06** | 2026-08-27 | 1,5 | 3,0 | 1,0 | 0,0 | **5,5** | **Primera regresión de la serie, entera en D3.** Tres de los nueve ítems nuevos niegan el invariante que los justificaba: RF-94 contra RNF-15 —un sistema que no puede mostrar un código no puede reentregarlo—, RF-100 contra RNF-05, y RF-101 contra RF-69, que reabre T3 |
 | **07** | 2026-08-27 | 1,0 | 3,0 | **2,0** | 0,0 | **6,0** | **Se revierte la regresión**: RF-94 y RF-100 pasan de negar su invariante a ejercerlo. `n` baja de 41 a **26**, la mejor densidad de la serie, y el backlog **se achica por primera vez**. Y el agregador dictamina que **D4 no está calibrada para 118 ítems: varianza cero en siete rondas** |
 
-**Gate ≥ 8. Mejor resultado: 6,5 (iteración 05). Última medición: 6,0 (iteración 07).** El detalle de cada corrida está en
+| **08** | 2026-08-27 | 1,5 | 3,0 | 1,5 | **1,12** | **7,12** | **La ronda que cambió la vara.** El dictamen de la 07 se aplica: `D4` pasa de restar 0,25 por hallazgo a puntuar por **densidad**, `2 × (1 − d/D)` con `D = 0,40`. Las corridas 01-07 dejan de ser comparables y **no se recalculan**. La comprobación de honestidad, hecha sobre datos nuevos: con la fórmula vieja y n=22 habría leído 0,00 por octava vez y el total habría sido 6,0, idéntico al de la 07 — **la enmienda no ablandó la vara**. Y D3 **bajó**, porque el agregador empezó a cobrar en D3 el hueco del mostrador que antes solo cobraba en D1 |
+| **09** | 2026-08-27 | 1,0 | 3,0 | 1,5 | 1,00 | **6,5** | **El techo duro de las tensiones ata por primera vez en nueve rondas.** T2 y T3 se reabrieron, las dos por correcciones de la 08: al reescribir RF-39 se le dio a Kevin **la razón** en vez de **la acción**, que es justo lo que RF-40 prohíbe; y al partir RF-69 se perdió el título que autorizaba el pago con documento vencido. La lección: **partir un ítem puede perder una garantía sin que ningún `grep` lo delate** |
+| **10** | 2026-08-27 | **1,5** | 3,0 | 1,5 | 0,54 | **6,54** | **Primera ronda sin un solo `No funciona`**: los tres flujos corren de extremo a extremo y Elena sale del piso. Y el puntaje sube 0,04, porque es **la primera ronda que rebarre enteras las tres mil líneas de `E`, `D`, `A`, `L` y `E-escalar`**: `n` salta de 26 a **40**. El hallazgo que ordena a los demás: **T5, la tensión de los canales, era la única que no decidía el suyo** — la fila decía que el código no se transmite a nadie, RF-11 decía que se entrega al emisor, RNF-15 que no puede mostrarse, y ningún título nombraba el canal. Kevin lo venía reportando desde la 06 como «el paso 4 no existe» |
+
+**Gate ≥ 8. Mejor resultado: 7,12 (iteración 08). Última medición: 6,54 (iteración 10).** El detalle de cada corrida está en
 [`../evals/iterations/`](../evals/iterations/) y el resumen en
 [`../evals/HISTORY.md`](../evals/HISTORY.md).
 
