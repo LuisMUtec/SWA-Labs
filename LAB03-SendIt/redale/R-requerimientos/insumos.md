@@ -1,5 +1,10 @@
 # R — Insumos del backlog
 
+> **La numeración de este documento es anterior al backlog y no es autoritativa.** Sus `RF-nn`
+> y `RNF-nn` no corresponden con los del [backlog](backlog.md), que es el único documento puntuado.
+> Los `[CLARIFY]` que aparezcan más abajo están **cerrados allí** como supuestos declarados.
+
+
 **Esto no es el entregable.** El artefacto que el enunciado puntúa es el
 [backlog](backlog.md), que se escribe a partir de estos insumos.
 

@@ -188,7 +188,7 @@ disposición del emisor.
 
 - **Por qué:** BR-01 dice que el dinero es una obligación. Sin plazo, la obligación es
   perpetua y el pasivo nunca cierra.
-- **Fuente:** `[CLARIFY: el plazo concreto lo fija la regulación de cada país de origen.]`
+- **Fuente:** `[ASSUMPTION: el plazo lo fija el regulador del país de origen; a falta de norma expresa, 12 meses desde la creación del giro]`
 - **Afecta:** pago, contabilidad, cancelación.
 
 ### BR-15 — Toda operación queda registrada con quién la hizo, y ese registro no se altera
