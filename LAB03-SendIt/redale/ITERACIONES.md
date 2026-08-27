@@ -25,10 +25,10 @@ siguiente es un ítem del backlog que el cuadrado no explica.
 | # | Qué muestra | Qué ítem del backlog la forzó | Ítems que quedan `DONE` |
 |---|---|---|---|
 | **1** | Los cuatro actores y **una sola caja**. Rosa y Elena hablan cada una con un operario, y el operario con el sistema — bajo el modelo Western Union las dos puntas pasan por una ventanilla | Nada la fuerza: es el punto de partida. Lo único que afirma es **quién habla con el sistema** | **1** — RF-11, que se demuestra por la *ausencia* de una arista hacia el receptor |
-| **2** | La caja se abre: identificación, tamizaje, creación del giro y pago, con sus `BD`, sus sistemas externos y las aristas condicionales etiquetadas | **RF-26** — el tamizaje contra listas antes de aceptar el efectivo no cabe dentro de un cuadrado que no distingue quién decide qué | **38** — 31 RF y 7 RNF |
-| **3** | El resto: devolución, desafío, caja por punto, cobro alternativo, reclamo del receptor, supresión, acumulado de cobros y liquidación con el agente | **RF-68 y RF-69** — el desafío obliga a un servicio y un almacén propios, porque RNF-17 exige que la respuesta sea ilegible **en los dos lados del mostrador** | **71** — 61 RF y 10 RNF |
+| **2** | La caja se abre: identificación, tamizaje, creación del giro y pago, con sus `BD`, sus sistemas externos y las aristas condicionales etiquetadas | **RF-26** — el tamizaje contra listas antes de aceptar el efectivo no cabe dentro de un cuadrado que no distingue quién decide qué | **36** — 29 RF y 7 RNF |
+| **3** | El resto: devolución, desafío, caja por punto, cobro alternativo, reclamo del receptor, supresión, acumulado de cobros y liquidación con el agente | **RF-68 y RF-69** — el desafío obliga a un servicio y un almacén propios, porque RNF-17 exige que la respuesta sea ilegible **en los dos lados del mostrador** | **81** — 71 RF y 10 RNF |
 
-**Total: 110 de 110.** La trazabilidad ítem por ítem vive en
+**Total: 118 de 118.** La trazabilidad ítem por ítem vive en
 [`L-listar-componentes/`](L-listar-componentes/), que es donde el `DONE` se verifica; esta tabla
 dice **por qué** hubo otra pasada, no **qué** quedó cubierto.
 
@@ -50,8 +50,10 @@ resumen en [`../evals/HISTORY.md`](../evals/HISTORY.md).
 | **03** | 2026-08-26 | 1,0 | 2,5 | 1,5 | 0,0 | **5,0** | **Dos tensiones cerradas en una ronda** (T5 y T6) y la retención por fin termina. Consistencia llega a 1,0 con RNF-13 y RF-45 ampliado |
 | **04** | 2026-08-26 | 1,5 | **3,0** | 1,5 | 0,0 | **6,0** | **D2 al máximo**: 51 de 97 ítems mueren en una transferencia doméstica, y la proporción se sostuvo mientras el backlog crecía 20 %. **Cero tensiones sin decidir por primera vez.** Elena sale de `No funciona` gracias al desafío — que abrió el agujero de seguridad de la 05 |
 | **05** | 2026-08-26 | 1,5 | **3,0** | **2,0** | 0,0 | **6,5** | **D3 al máximo**: el triángulo RF-68/69/57 cerró con invariante declarable (RNF-17). Censo de D2 en **73 de 110**. Gradiente de prioridad verificado exacto. **D4 sigue en el piso con n=28** |
+| **06** | 2026-08-27 | 1,5 | 3,0 | 1,0 | 0,0 | **5,5** | **Primera regresión de la serie, entera en D3.** Tres de los nueve ítems nuevos niegan el invariante que los justificaba: RF-94 contra RNF-15 —un sistema que no puede mostrar un código no puede reentregarlo—, RF-100 contra RNF-05, y RF-101 contra RF-69, que reabre T3 |
+| **07** | 2026-08-27 | 1,0 | 3,0 | **2,0** | 0,0 | **6,0** | **Se revierte la regresión**: RF-94 y RF-100 pasan de negar su invariante a ejercerlo. `n` baja de 41 a **26**, la mejor densidad de la serie, y el backlog **se achica por primera vez**. Y el agregador dictamina que **D4 no está calibrada para 118 ítems: varianza cero en siete rondas** |
 
-**Gate ≥ 8. Mejor resultado: 6,5.** El detalle de cada corrida está en
+**Gate ≥ 8. Mejor resultado: 6,5 (iteración 05). Última medición: 6,0 (iteración 07).** El detalle de cada corrida está en
 [`../evals/iterations/`](../evals/iterations/) y el resumen en
 [`../evals/HISTORY.md`](../evals/HISTORY.md).
 
@@ -105,7 +107,7 @@ Las cuatro variantes que el Caso #2 encontró, que acá se buscan **por nombre**
 
 ---
 
-## Lo que estas cinco rondas enseñaron
+## Lo que estas siete rondas enseñaron
 
 El defecto dominante **no fue la sustancia sino la propagación**, y mutó de forma cada ronda:
 

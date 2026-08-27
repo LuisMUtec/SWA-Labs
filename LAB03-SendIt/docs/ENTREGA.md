@@ -57,7 +57,7 @@ entera. **La séptima ronda además produjo el hallazgo más valioso de todo el 
 dictaminó, con evidencia de siete puntos de datos, que la dimensión `D4 = 2 − 0,25n` **no está
 calibrada para un artefacto de 118 ítems** —varianza cero en las siete rondas— y que, en
 consecuencia, **el techo real de este EVAL es exactamente 8,0 y coincide con el gate**. La rúbrica
-**no se cambió**. La sección 11 desarrolla el dictamen completo, porque es el resultado que este
+**no se cambió**. La sección 9 desarrolla el dictamen completo, porque es el resultado que este
 trabajo entrega y no el puntaje.
 
 ---
@@ -610,12 +610,13 @@ El número real sale del **máximo** entre lo que pide la carga y lo que piden l
 | Réplica de lectura en destino | Dos países (RNF-12, RNF-14) y RNF-10 con 900 s de margen: alcanza réplica asíncrona. Dos nodos por país | **4** = `2 × 2` |
 | Consulta del emisor | RF-52, RF-53, RF-66. RNF-11 **la excluye** de su medida, así que no lleva quórum — pero es el 22 % de los requests y no puede compartir suerte con la escritura | **2** |
 | Cumplimiento y tamizaje | RF-26, RF-27, RF-97 llaman a listas cuya latencia SendIt no fija. Aislarlo evita que una lista lenta consuma el techo de 3,3 s de RNF-09 | **2** |
-| | | **11** |
+| Módulo del desafío | `D`(f) exige que la llave del verificador **nunca salga del módulo** y que la derivación corra adentro (RF-12, RNF-17): es una frontera de proceso y de credenciales, no una biblioteca. Compartir plano con el giro le daría al mismo host la llave y los datos que protege | **2** |
+| | | **13** |
 
 ```
 servidores = max(carga / capacidad ; piso de disponibilidad y geografía)
-           = max(0,09 ; 11)
-           = 11
+           = max(0,09 ; 13)
+           = 13
 ```
 
 **Y la consecuencia que este paso entrega a `E`-escalar:** para que el término de carga alcance al de
@@ -867,3 +868,1301 @@ Cuatro, y son suyos: ninguno viene del backlog, y cada uno es un número que el 
 | `[ASSUMPTION: la cotización vive 15 minutos]` | (d) | Sube o baja la exposición cambiaria y la frecuencia con que se recotiza con Rosa delante |
 | `[ASSUMPTION: la copia de listas falla cerrada a las 24 h]` | (e) | Mueve el equilibrio entre BR-06 y RNF-11 |
 | `[ASSUMPTION: tres intentos de desafío por giro]` | (f) | Cambia cuántos giros legítimos terminan devueltos por RF-103 |
+
+---
+
+## 5. A — Modelo de datos
+
+**Treinta entidades, diez bases, ninguna elipse decorativa y ninguna tabla huérfana.** El material
+pide cuatro cosas —tablas, campos, opciones de base de datos y otros tipos de almacenamiento— y acá
+se entregan las cuatro, más una quinta que este caso obliga: **en qué `BD` del diagrama de
+componentes vive cada entidad.** Esa columna es el contrato con el paso `L`, y se lee en las dos
+direcciones: **una `BD` sin entidad es una elipse decorativa, y una entidad sin `BD` es una tabla
+que nadie escribe.** Las diez bases que la sección 6 dibuja se deciden acá y no hay una undécima:
+`BD identidad`, `BD giros`, `BD cumplimiento`, `BD cotizaciones`, `BD contable`, `BD intentos`,
+`BD corredores y reguladores`, `BD puntos de atención y efectivo`, `BD auditoría` y `BD desafíos`.
+
+**Una convención atraviesa todo el modelo y conviene enunciarla antes que las tablas: nadie se
+identifica por su documento.** Toda persona —emisor, receptor, operario, rol de cumplimiento— entra
+al modelo por un **seudónimo estable y opaco**, `persona_ref`, y es ese seudónimo el que viaja al
+asiento contable, a la traza y a los acumulados. El nombre y el documento viven detrás de una
+referencia, en otra base y con otra llave. De esa decisión sola dependen tres cosas que ninguna
+política escrita conseguiría: que `RF-81` pueda borrar a una persona sin destruir el asiento que
+`RNF-07` obliga a conservar, que `RNF-02` sea una restricción de unicidad comprobable en vez de una
+comparación de cadenas de texto, y que `RF-10` cuente los límites sobre la identidad del emisor y
+no sobre el mostrador que lo atendió.
+
+**Convenciones de nombre de campo:** `*_ref` es un seudónimo opaco de persona · `*_cif` es una
+columna cifrada con llave por corredor · `*_hmac` y `verificador` son valores que **se comparan y no
+se leen** · `*_id` es una clave foránea corriente.
+
+### 5.1 Las treinta entidades — campos, clave y base
+
+| # | Entidad · `BD` | Campos | Clave y restricción |
+|---|---|---|---|
+| 1 | **Emisor** · `BD identidad` | `persona_ref`, `token_documento` (HMAC determinista), `tipo_documento`, `pais_documento`, `documento_cif`, `nombre_cif`, `fecha_nacimiento_cif`, `telefono_cif`, `jurisdiccion_origen_id`(FK), `declarante`=`emisor`, `giro_captura_id`(FK), `estado_supresion`, `creado_en` | `persona_ref` |
+| 2 | **Receptor** · `BD identidad` | `persona_ref`, `token_documento`, `nombre_designado_cif` (lo escribe el emisor al crear), `nombre_verificado_cif` (lo captura el mostrador de destino), `telefono_cif`, `pais_destino`, `declarante`=`receptor`, `punto_captura_id`(FK), `es_cliente`=`false`, `estado_supresion` | `persona_ref`. **Dos filas de persona por giro con dos `declarante` distintos**: es lo que permite ejecutar el *«y de nadie más»* de `RF-81` |
+| 3 | **Identidad de actor** (operario, segundo rol, cumplimiento) · `BD identidad` | `identidad_id`, `persona_ref`, `rol`, `agente_id`(FK), `punto_id`(FK), `alta_en`, `baja_en`, `activa` | `identidad_id` |
+| 4 | **Giro** · `BD giros` | `giro_id`, `emisor_ref`(FK), `receptor_ref`(FK), `jurisdiccion_origen_id`(FK), `jurisdiccion_destino_id`(FK), `version_regla_jurisdiccion` (congelada al crear), `monto_origen`, `moneda_origen`, `monto_destino`, `moneda_destino`, `comision`, `cotizacion_id`(FK), `punto_eleccion_id`(FK), `punto_pago_id`(FK), `estado` (**proyección**), `version_estado`, `disponible_desde`, `prescribe_en`, `conservar_hasta`, `clave_idempotencia`(FK), `creado_en`, `creada_por_identidad_id`(FK) | `giro_id` |
+| 5 | **Código de seguimiento** · `BD giros` | `giro_id`(PK,FK), `codigo_hmac`, `llave_id` (la llave nunca sale del módulo), `prefijo_busqueda` (4 caracteres, para no barrer la tabla), `emitido_en`, `emitido_a`=`emisor`, `reemitible`=`false`, `estado` | `giro_id`. **Ninguna columna guarda el código en claro, en ninguna base** — `RNF-15`, y `RF-94` deja de ser política para ser consecuencia |
+| 6 | **Desafío** · `BD desafíos` | `giro_id`(PK), `pregunta_cif`, `verificador` (HMAC de la respuesta normalizada, llave del módulo), `llave_id`, `normalizacion_version` (congelada al crear), `intentos_fallidos`, `intentos_max`, `caduca_en`, `estado` ∈ {`vigente`,`agotado`,`caducado`,`consumido`} | `giro_id`, **por referencia y sin clave foránea comprobable desde `BD giros`**: quien administra la base del giro no alcanza esta |
+| 7 | **Pago** · `BD giros` | `pago_id`, `giro_id`(FK), `punto_id`(FK), `identidad_operario_id`(FK), `monto_entregado`, `moneda`, `entregado_en`, `verificacion_receptor_id`(FK), `desafio_usado` (bool, nunca el valor), `asiento_id`(FK), `clave_idempotencia`(FK) | `pago_id`; **`UNIQUE(giro_id)`**. Ese índice **es** `RNF-05`: no hay forma de escribir dos entregas del mismo giro, en ningún punto y en ningún momento |
+| 8 | **Devolución** · `BD giros` | `devolucion_id`, `giro_id`(FK), `causa` ∈ {`cancelacion`,`retencion_vencida`,`prescripcion`,`intentos_agotados`}, `monto`, `moneda` (=`giro.moneda_origen`), `incluye_comision`, `punto_retiro_id`(FK), `disponible_desde`, `disponible_hasta` (=`giro.prescribe_en`), `estado`, `retirada_en`, `asiento_id`(FK) | `devolucion_id`; **`UNIQUE(giro_id)`**. Los dos `UNIQUE` más la exclusión mutua entre `Pago` y `Devolución` son `RNF-13` |
+| 9 | **Movimiento contable** · `BD contable` | `movimiento_id`, `asiento_id`, `secuencia`, `giro_id`(FK), `cuenta` ∈ {`efectivo_origen`,`obligacion_receptor`,`caja_agente`,`comision`,`diferencia_cambio`}, `debe`, `haber`, `moneda`, `tipo_hecho`, `identidad_autor_id`(FK), `ocurrido_en`, `registrado_en`, `compensa_movimiento_id`(FK), `hash_anterior` | `movimiento_id`; `UNIQUE(asiento_id, cuenta)`. **`SUM(debe) − SUM(haber) = 0` por `asiento_id`** — `RNF-07` escrito como restricción del motor, no como intención |
+| 10 | **Cotización** · `BD cotizaciones` | `cotizacion_id`, `par_monedas`, `tasa`, `proveedor`, `emitida_en`, `vence_en`, `margen_aplicado`, `giro_id`(FK, nulo hasta congelarse), `congelada_en` | `cotizacion_id`. Con `giro_id` no nulo es la que `RF-06` prohíbe recalcular; con `giro_id` nulo caduca sola por `vence_en` |
+| 11 | **Verificación de identidad** · `BD identidad` | `verificacion_id`, `persona_ref`(FK), `giro_id`(FK), `rol`, `momento`, `resultado`, `fuente`, `documento_vigente` (bool), `evidencia_uri`, `evidencia_hash`, `llave_objeto_id`, `regla_coincidencia_version`, `identidad_operario_id`(FK) | `verificacion_id`. `evidencia_uri` **no es un binario en la fila**: apunta al almacenamiento de objetos |
+| 12 | **Resultado de tamizaje** · `BD cumplimiento` | `tamizaje_id`, `giro_id`(FK), `sujeto_ref`(FK), `rol`, `momento` ∈ {`creacion`,`autorizacion_pago`,`retamizaje`}, `lista`, `version_lista`, `consultada_en`, `veredicto`, `grado` ∈ {`exacta`,`homonimia`,`sin_coincidencia`}, `nombre_contrastado_cif` (**el valor tal como se vio, no un puntero**), `payload_proveedor` (documento), `hash` | `tamizaje_id`. **Dos filas por giro como mínimo** —`RF-26` y `RF-27`— y una más por cada `RF-97` |
+| 13 | **Caso de cumplimiento** · `BD cumplimiento` | `caso_id`, `giro_id`(FK), `tamizaje_id`(FK), `tipo` ∈ {`exacta`,`homonimia`}, `abierto_en`, `plazo_vence_en`, `derivado_a_rol`, `identidad_excluida_id`(FK), `estado`, `motivo_liberacion_cif`, `liberado_por_identidad_id`(FK), `liberado_en` | `caso_id`. El motivo vive **acá y no en `Retención`**: es el dato cuyo lector es distinto |
+| 14 | **Retención** · `BD cumplimiento` | `retencion_id`, `giro_id`(FK), `caso_id`(FK, nulo cuando la origina `RF-93`), `origen` ∈ {`sancion`,`acumulado_receptor`}, `regulador_id`(FK, **el más estricto de los dos**), `vence_en`, `estado`, `liberada_en` | `retencion_id`. La existencia y la fecha se le sirven al emisor (`RF-66`); **el motivo no está en esta tabla, y por eso no se puede filtrar por descuido** |
+| 15 | **Punto de atención** · `BD puntos de atención y efectivo` | `punto_id`, `agente_id`(FK), `pais`, `jurisdiccion_id`(FK), `geo`, `horario`, `monedas_que_paga`, `estado_operativo`, `estado_conexion`, `ultima_sincronizacion`, `tope_pago_sin_conexion` | `punto_id` |
+| 16 | **Agente** · `BD puntos de atención y efectivo` | `agente_id`, `razon_social`, `pais`, `jurisdiccion_id`(FK), `plazo_liquidacion`, `moneda_liquidacion`, `cuenta_libro` | `agente_id`. Entidad **distinta** del punto: `RF-24` liquida por agente, no por mostrador |
+| 17 | **Caja del punto** · `BD puntos de atención y efectivo` | `caja_id`, `punto_id`(FK), `jornada`, `turno`, `moneda`, `declarado_apertura`, `declarado_cierre`, `saldo_corriente`, `declarada_por_identidad_id`(FK), `abierta_en`, `cerrada_en`, `diferencia_cierre` | `caja_id`; `UNIQUE(punto_id, jornada, turno)`. **No es el efectivo del corredor** de `RF-20`: ese se agrega sobre esta tabla por `jurisdiccion_id`, y son dos cifras distintas |
+| 18 | **Liquidación con el agente** · `BD puntos…` + asiento en `BD contable` | `liquidacion_id`, `agente_id`(FK), `periodo_desde`, `periodo_hasta`, `total_efectivo_puesto`, `total_liquidado`, `moneda`, `estado`, `asiento_id`(FK), `archivo_export_uri`, `corrida_en` | `liquidacion_id` |
+| 19 | **Acumulado del emisor** · `BD giros` | `emisor_ref`(FK), `jurisdiccion_origen_id`(FK), `ventana_desde`, `ventana_hasta`, `monto_acumulado`, `giros_contados`, `limite_operacion`, `limite_ventana`, `actualizado_en` | `(emisor_ref, jurisdiccion_origen_id, ventana_desde)`. **La clave no lleva `punto_id`, y esa ausencia es literalmente `RF-10`** |
+| 20 | **Acumulado de cobros del receptor** · `BD cumplimiento` | `receptor_ref`(FK), `pais_destino`, `ventana_desde`, `ventana_hasta`, `cobros_contados`, `limite_ventana`, `actualizado_en` | `(receptor_ref, pais_destino, ventana_desde)`. **Sobrevive a la supresión** porque no tiene ni un atributo personal: un seudónimo y un número |
+| 21 | **Segunda autorización** · `BD auditoría`, compuerta en `BD giros` | `autorizacion_id`, `secuencia`, `giro_id`(FK), `motivo` ∈ {`umbral_reforzado`,`correccion_monto`}, `identidad_solicitante_id`(FK), `identidad_autorizante_id`(FK), `rol_autorizante`, `otorgada_en`, `resultado`, `hash_anterior` | `autorizacion_id`. **`RNF-02`:** `identidad_autorizante_id` no puede aparecer en ninguna otra fila de la cadena crear → autorizar → pagar → liberar → corregir del mismo `giro_id` |
+| 22 | **Prescripción** · `BD giros` | `giro_id`(PK,FK), `prescribe_en`, `jurisdiccion_origen_id`(FK), `version_regla`, `aviso_previo_enviado_en`, `ejecutada_en`, `devolucion_id`(FK) | `giro_id`. `prescribe_en` es **fecha absoluta congelada al crear**, no un plazo que se recalcula |
+| 23 | **Jurisdicción** · `BD corredores y reguladores` | `jurisdiccion_id`, `version`, `pais`, `regulador`, `plazo_conservacion_anios`, `plazo_retencion_horas`, `plazo_prescripcion_meses`, `umbral_reporte`, `limite_operacion`, `limite_acumulado_ventana`, `umbral_reforzado`, `motivo_revelable` (bool, `RF-40`), `vigente_desde`, `vigente_hasta` | `(jurisdiccion_id, version)`. **Versionada**: el giro congela la versión que obedeció, porque `RNF-03` exige calcular por giro y no por política global |
+| 24 | **Corredor** · `BD corredores y reguladores` | `corredor_id`, `jurisdiccion_origen_id`(FK), `jurisdiccion_destino_id`(FK), `habilitado`, `incompatibilidad` (`RF-16`), `monedas_destino`, `motivo_no_atendible` (`RF-19`) | `corredor_id`. Es la entidad que hace que `RF-15` aplique **las dos** jurisdicciones y `RF-16` rechace en vez de elegir |
+| 25 | **Aviso enviado** · `BD auditoría` | `aviso_id`, `secuencia`, `giro_id`(FK), `destinatario_ref`(FK), `rol`, `tipo` (uno de nueve: `RF-25`, `RF-41`, `RF-75`, `RF-37`, `RF-60`, `RF-14`, `RF-51`, `RF-65`, `RF-67`), `canal` ∈ {`llamada`,`sms`}, `telefono_token`, `enviado_en`, `acuse`, `intentos`, `resumen_contenido`, `hash_anterior` | `aviso_id`. **`telefono_token` y no el número**: la constancia de `RF-98` tiene que sobrevivir a la supresión del contacto, y sobrevive porque no lo contiene |
+| 26 | **Declaración de diferencia del receptor** · `BD giros` | `declaracion_id`, `giro_id`(FK), `pago_id`(FK), `monto_informado`, `monto_declarado_recibido`, `moneda`, `declarada_en`, `canal`=`mostrador`, `punto_atribuido_id`(FK, `RF-59`), `identidad_operario_id`(FK), `estado`, `correccion_movimiento_id`(FK) | `declaracion_id`. El operario registrado es aquel **sobre el que** se declara |
+| 27 | **Reporte a la autoridad** · `BD auditoría` + archivo plano | `reporte_id`, `giro_id`(FK), `autoridad`, `jurisdiccion_id`(FK), `umbral_aplicado`, `base_del_umbral`=`giro_completo` (`RF-22`), `enviado_en`, `acuse`, `archivo_uri`, `hash_anterior` | `reporte_id`. **No tiene ninguna relación hacia `Retención` ni hacia el estado que ve el emisor**, y esa ausencia es la garantía de que su existencia no se deduce |
+| 28 | **Traza de auditoría** · `BD auditoría` | `traza_id`, `secuencia`, `giro_id`(FK), `tipo_acto` (incluidas las **lecturas** de identidad, `RNF-04`), `identidad_autor_id`(FK), `rol`, `punto_id`(FK), `entidad_objetivo`, `id_objetivo`, `valores_relevantes` (el valor que se vio, no un puntero), `ocurrido_en`, `registrado_en`, `conservar_hasta`, `hash_anterior` | `traza_id`. **Crece con las lecturas**: cada consulta de Kevin sobre un expediente es una fila |
+| 29 | **Supresión** · `BD auditoría`, ejecuta sobre `BD identidad` y los objetos | `supresion_id`, `solicitante_ref`(FK), `rol_declarante`, `solicitada_en`, `alcance`, `ejecutada_en`, `campos_borrados`, `objetos_criptoborrados`, `conservado_por_regla` (**qué no se borró y qué ítem lo obliga**), `identidad_ejecutor_id`(FK), `resultado`, `hash_anterior` | `supresion_id`. Es el acto que **demuestra** el borrado, y por eso no puede vivir en la base que borra |
+| 30 | **Clave de idempotencia** · `BD intentos` | `clave`, `operacion` ∈ {`crear`,`pagar`,`cancelar`,`devolver`,`liberar`}, `punto_id`(FK), `giro_id`(FK, nulo hasta que existe), `huella_contenido`, `estado`, `resultado_serializado`, `creada_en`, `expira_en` (TTL) | `clave`. **Misma clave con distinta `huella_contenido` es conflicto, no operación nueva** — es lo único que impide que un corte convierta un giro en dos |
+
+### 5.2 Elección de motor — por entidad, no global
+
+El material ya lo hace así en su ejemplo —NoSQL para las imágenes, SQL para la metadata—. El
+criterio no es la preferencia sino **qué garantía necesita cada dato**: integridad transaccional,
+capacidad de agregar sin bloquear, o volumen barato de solo escritura. **El dinero y la traza no
+toleran lo mismo que un historial de avisos, y por eso no comparten motor.**
+
+| Entidades | Necesidad dominante | Motor · `BD` |
+|---|---|---|
+| `Giro`, `Pago`, `Devolución`, `Prescripción`, `Código de seguimiento`, `Declaración de diferencia`, `Acumulado del emisor` | Restricciones de unicidad y transacción sobre varias filas | **Relacional transaccional** — `BD giros` |
+| `Movimiento contable`, `Liquidación con el agente` | Suma que cuadra y valor anterior que no desaparece | **Relacional en modo append-only** (`INSERT` únicamente; **sin `UPDATE` ni `DELETE` concedidos**) — `BD contable` |
+| `Traza de auditoría`, `Segunda autorización`, `Reporte a la autoridad` | Escritura masiva que nunca se modifica y casi nunca se lee | **Append-only encadenado por huella, particionado por fecha** — `BD auditoría` |
+| `Aviso enviado` | Volumen alto, valor probatorio bajo, retención corta | **Append-only barato**, misma `BD auditoría` pero **partición propia con retención propia** |
+| `Cotización` | Serie temporal fechada, lectura por giro y análisis por rango | **Append-only fechado con lectura columnar** — `BD cotizaciones` |
+| `Emisor`, `Receptor`, `Identidad de actor`, `Verificación de identidad` | Cifrado por columna, control de acceso propio y **borrado selectivo de fila** | **Relacional con cifrado por columna y llave fuera del motor** — `BD identidad` |
+| `Resultado de tamizaje`, `Caso de cumplimiento` | Payload heterogéneo de un tercero, guardado **tal como llegó** | **Documental**, dentro de `BD cumplimiento` |
+| `Retención`, `Acumulado de cobros del receptor` | Plazo que vence y contador por identidad | **Relacional** — `BD cumplimiento` |
+| `Desafío` | Comparar sin poder leer, con contador de intentos y caducidad | **Clave-valor con llave propia y TTL, en base separada y con administrador distinto** — `BD desafíos` |
+| `Clave de idempotencia` | Escritura antes de mover dinero, lectura por clave, muerte por TTL | **Clave-valor durable con TTL** — `BD intentos` |
+| `Punto de atención`, `Agente`, `Caja del punto` | Lectura muy frecuente del catálogo, escritura transaccional del saldo | **Relacional** — `BD puntos de atención y efectivo` |
+| `Jurisdicción`, `Corredor` | Volumen mínimo, lectura en cada operación, **historial de versiones** | **Relacional versionado** — `BD corredores y reguladores` |
+| `Supresión` | Prueba de un borrado, que no puede vivir donde se borra | **Append-only** — `BD auditoría` |
+
+**Lo que este reparto deja dicho de una vez: ninguna base guarda a la vez el secreto y el dato que
+el secreto protege.** El código vive en `BD giros` como verificador y su llave no; la respuesta del
+desafío vive en `BD desafíos` y ni siquiera comparte administrador; el documento vive en
+`BD identidad` cifrado y su llave está fuera del motor. **Un administrador con acceso total a una
+cualquiera de las diez bases no reconstruye ninguno de los tres**, y eso es `RNF-01`, `RNF-15` y
+`RNF-17` cumplidos por la forma de las tablas y no por la configuración del servidor.
+
+### 5.3 Otros almacenamientos
+
+| Necesidad | Qué guarda | Decisión |
+|---|---|---|
+| **Almacenamiento de objetos** | Binarios de identidad de `RF-80` y evidencia adjunta de un caso | Un objeto por verificación, **cifrado con llave por giro**; la fila guarda `evidencia_uri`, `evidencia_hash` y `llave_objeto_id`, nunca el binario |
+| **Caché — lo que sí** | Catálogo de puntos de `RF-63` y `RF-91`, jurisdicciones y corredores | Cacheados **por versión**, no por tiempo: `RF-63` tolera segundos de atraso |
+| **Caché — lo que no, y es la decisión que importa** | Estado del giro (`RF-52`, `RF-53`, `RF-66`), saldo de caja (`RF-92`, `RF-95`), resultado de tamizaje (`RF-27`), efectivo del corredor (`RF-20`) | **No se cachea nada de esto.** Cachear es servir un dato que puede estar viejo, y estos son exactamente los que no lo toleran. Justificar la caché *por capa* —«las lecturas van por caché»— habría metido el estado del giro adentro sin que nadie lo decidiera, y `RNF-06` no admite ese segundo lugar que afirma |
+| **Sistema de archivos distribuido** | Archivo frío: binarios y particiones de traza de giros cerrados cuyo `conservar_hasta` sigue corriendo; lotes de re-tamizaje de `RF-97` | Frío, barato, sin latencia comprometida |
+| **Archivos planos / exportación** | Reportes a la autoridad (`RF-17`) y liquidaciones con cada agente (`RF-24`) | **Archivo firmado por corrida**, con su `acuse` y su `hash` guardados en `BD auditoría` |
+| **Almacén local del punto de atención** | Lo que el mostrador sostiene sin conexión | **Base embebida append-only y firmada.** No sostiene *estados*: sostiene **hechos** (`hecho_local_pendiente`), y nunca es fuente de verdad de un pago |
+
+### 5.4 El desafío — un secreto que se comprueba y no se lee
+
+Es el problema de modelado más interesante del paso porque **las tres salidas obvias están cerradas
+por un ítem cada una**, y hay que verlas cerradas antes de aceptar la cuarta.
+
+| Salida obvia | Qué la cierra |
+|---|---|
+| Guardar la respuesta en claro | `RNF-17` — la vuelve legible para quien administra `BD desafíos`, que es **exactamente el lector que el invariante nombra** |
+| Guardarla **cifrada** con llave del sistema | `RF-101` —*no transmitirá a nadie la respuesta*—. **Una llave que descifra *es* una ruta de lectura:** quien la tiene reconstruye el valor, y `RNF-17` no dice «difícil de leer», dice ilegible |
+| No guardar nada | `RF-69` — sin nada guardado no hay contra qué comparar, y la única excepción a la vigencia del documento que `RF-86` admite deja de existir. Elena vuelve a quedarse sin cobrar |
+
+**Lo que se guarda, entonces: un verificador y ninguna forma del valor.**
+
+```
+Tabla: Desafío  ·  BD desafíos  ·  clave: giro_id
+Campos: giro_id, pregunta_cif, verificador, llave_id, normalizacion_version,
+        intentos_fallidos, intentos_max, caduca_en, estado
+
+verificador = HMAC(llave_del_módulo, normalizar(respuesta, normalizacion_version))
+```
+
+Cinco decisiones, y **ninguna es de infraestructura**: todas cambian qué columnas existen.
+
+1. **La llave nunca sale del módulo de claves, y la derivación corre dentro de él.** No es lo mismo
+   que un hash con sal guardado en la fila, y la razón es del dominio: **el espacio de respuestas es
+   diminuto** —el nombre de un perro, el pueblo de la abuela, un apodo—, así que un hash con sal
+   robado se rompe con un diccionario en una tarde. Con la llave adentro, quien copia `BD desafíos`
+   entera se lleva verificadores que no puede atacar, y **el módulo no responde «cuál es» sino
+   «coincide»**. Eso es lo que hace verdadero el invariante frente a **quien administra la
+   infraestructura**, y no solo frente a quien roba el disco.
+2. **`normalizacion_version` es una columna, no una constante del código.** La regla —minúsculas,
+   sin tildes, sin puntuación, sin espacios en los extremos— se congela **al crear el giro** y viaja
+   en la fila. Sin esa columna, cambiar la regla mañana invalidaría en silencio todos los
+   verificadores vigentes **y nadie podría saber cuáles**: no hay forma de recalcularlos, porque no
+   hay dónde leer el valor original.
+3. **El contador vive en esta tabla y no en la del giro.** `RF-82` acota los intentos y `RF-103`
+   devuelve el giro al agotarlos, así que el contador decide sobre dinero; pero es un dato **sobre**
+   el secreto, y en la fila del giro le delataría a cualquier lector que hubo desafío y cuántas
+   veces falló. Al mostrador le llega *«quedan N intentos»*, que es lo que `RF-57` le concede.
+4. **La comparación corre en el centro y devuelve un veredicto.** Del desafío **no baja nada al
+   almacén local del punto** —ni verificador, ni pregunta, ni contador—, y por lo tanto la salida de
+   `RF-69` no existe mientras el punto está incomunicado. Es `RF-100` aplicado, no una preferencia.
+5. **Caducar es destruir, no marcar.** Al vencer se borran `verificador` y `pregunta_cif`; la fila
+   queda con `estado = caducado` y su traza en `BD auditoría` (`RF-83`).
+
+**Qué se pierde, que es la mitad de la respuesta.** Nadie puede corregir un error de tipeo: si Rosa
+escribió mal la respuesta, ni ella ni Kevin ni SendIt pueden leerla para ver qué pasó, y la única
+salida es agotar los intentos y devolver el giro — **una devolución causada por un error de tipeo**.
+La regla de normalización no se puede revisar sobre datos vivos. No hay analítica ni detección de
+respuestas débiles: el sistema no puede saber que la respuesta es `«1234»`, y por tanto no puede
+desaconsejarla. El módulo de claves se vuelve **dependencia dura del camino de pago**. Y **la
+ilegibilidad es de ida**: ningún requerimiento futuro que necesite leer una respuesta —una disputa,
+una investigación, un pedido judicial— se va a poder cumplir sobre giros ya creados.
+
+### 5.5 La frontera entre inmutabilidad y supresión
+
+No hace falta invocar a nadie: lo exige el backlog con ítems que se pueden contar. `RNF-03` declara
+que ningún acto registrado se modifica ni se borra *cualquiera sea quien lo pida*; `RF-54` ata cada
+acto a la identidad de quien lo ejecutó; `RF-56` obliga a que la corrección de un giro pagado sea un
+movimiento **nuevo**; `RF-18` conserva todo eso por el plazo más largo de los **dos** reguladores.
+
+**La frontera, en una frase:** *se agrega lo que describe un **acto**; se actualiza lo que describe
+un **estado derivado de esos actos**; y cuando los dos difieren, manda el acto.*
+
+| Dato | ¿Se agrega o se actualiza? | Por qué |
+|---|---|---|
+| Movimiento contable | **Solo se agrega** | Corregir el monto de un giro pagado es un movimiento nuevo con `compensa_movimiento_id` y segunda autorización (`RF-56`, `RF-61`) |
+| Traza de auditoría | **Solo se agrega, y ni el administrador tiene `UPDATE`** | `RNF-03` dice *cualquiera sea quien lo pida*: eso es un privilegio que **no se concede**, no una política que se escribe |
+| Decisión de cumplimiento | **Se agrega** — cada transición es una fila | Un `UPDATE` de `retenido` a `liberado` no dice quién, ni cuándo, ni con qué a la vista, y `RF-87` obliga a las tres |
+| Evidencia sobre la que se decidió | **Se agrega, con el valor y no con el puntero** | `RF-27` decide contra listas **vigentes al momento de pagar**: un puntero a `Receptor` no reconstruye lo que se vio |
+| Código de seguimiento | **Se agrega una vez y no se toca nunca más** | `RF-94` prohíbe reemitirlo aun al emisor que lo perdió |
+| Declaración de diferencia (`RF-90`) | **Se agrega. Nunca se corrige ni se retira** | Es la única versión de los hechos que **no escribió** el punto al que `RF-59` le atribuye la diferencia |
+| Estado del giro | **Se actualiza** — es proyección | Existe porque `RF-52`, `RF-53` y `RF-66` le deben a Rosa una consulta barata. Lleva `version_estado` y **se reconstruye entera** desde `BD contable` y `BD auditoría` |
+| Acumulados del emisor y del receptor | **Se actualizan** — son proyecciones | Reconstruibles desde `BD giros` y `BD contable`, y por eso seguros de actualizar |
+| Datos de contacto | **Se actualiza, y además se borra** | Es el único dato del que `RF-81` dice **sí** sin excepción |
+
+**La regla operativa que sale de ahí es estrecha y hay que decirla: ningún servicio decide contra la
+proyección.** `Payout Service` no consulta `giro.estado` para autorizar un pago; consulta la
+**ausencia de fila** en `Pago` y en `Devolución` —las dos con `UNIQUE(giro_id)`— y la ausencia de
+`Retención` vigente. **La proyección se lee para mostrar, nunca para permitir.**
+
+**Y hay un tercer lector que el material no tiene: el punto que estuvo sin conexión.** Una fila que
+cambia de estado **no se fusiona** con la que el punto trae al reconectar —una de las dos pisa a la
+otra y la que pierde desaparece sin dejar rastro, que es justo lo que `RNF-03` prohíbe—. Por eso el
+almacén local sostiene hechos y no estados, y sube filas nuevas con **`ocurrido_en` (el reloj del
+punto) y `registrado_en` (el del centro) en dos columnas separadas**: un pago hecho a las 10:40 en
+Huanta y registrado a las 17:05 es **un solo hecho con dos momentos**, y confundirlos hace
+irreconstruible el orden.
+
+El precio se paga y se nombra: **dos hechos contradictorios pueden convivir en el registro** —el
+pago que subió tarde y la devolución que el `Vencimiento Job` ya asentó—. `RNF-06` no tolera que esa
+convivencia sea *observable como estado*, y no lo es: la proyección no se recalcula hasta que la
+contradicción se resuelve. `RNF-08` no tolera que resolverla dependa del operario, y no depende:
+**`UNIQUE(giro_id)` hace que el segundo `INSERT` falle en el motor**, y el hecho rechazado no se
+descarta sino que se asienta como movimiento de excepción con su contrapartida. **Nadie tiene que
+contar nada.**
+
+**Y cripto-borrado, no anonimización.** Anonimizar es reescribir filas —un `UPDATE` sobre
+`BD auditoría`, que `RNF-03` prohíbe *cualquiera sea quien lo pida*—. **Destruir la llave deja la
+fila byte por byte como estaba y la vuelve ilegible**, así que el encadenamiento `hash_anterior`
+sigue verificando y la traza sigue demostrando que el acto ocurrió. Es **la única forma de borrar
+que no rompe lo inmutable**, y es la misma primitiva que ejecuta `RF-81` años antes: la diferencia
+entre las dos no es el mecanismo, es el alcance y quién lo pide.
+
+### 5.6 Datos personales — seudónimo opaco y token determinista
+
+**Cifrar el disco protege contra el robo del disco. No protege contra la consulta legítima que no
+debía ocurrir** — y ese es el lector que este caso nombra: `RF-57` limita al operario a los datos de
+la operación que atiende, `RNF-01` exige que la identidad quede ilegible para quien administra la
+infraestructura y `RNF-04` obliga a que **todo acceso** a datos de identidad deje autor, momento y
+giro. Esas garantías se cumplen decidiendo dónde vive el dato, detrás de qué referencia y con qué
+llave: **es la forma de las tablas, no la configuración del servidor.**
+
+| Dato | ¿Se guarda? | Cómo | Quién puede leerlo |
+|---|---|---|---|
+| Documento del emisor y del receptor | Sí, **partido en dos columnas** | `token_documento` **tokenizado con HMAC determinista** (llave en el módulo) **y** `documento_cif` cifrado con llave por corredor | El token: `Limits Service` y `Cobros del Receptor Service`, **sin poder leer el documento**. El cifrado: `Identity Service`, con traza |
+| Imagen del documento (`RF-80`) | Sí | Almacenamiento de objetos, **cifrada con llave por giro**; en la fila solo `evidencia_uri`, `evidencia_hash`, `llave_objeto_id` | `Identity Service` al verificar; cumplimiento sobre un caso abierto |
+| Código de seguimiento (`RNF-15`) | **No en claro, en ninguna base** | `codigo_hmac` con llave en el módulo, más `prefijo_busqueda` de 4 caracteres | **Nadie.** Ningún servicio tiene ruta de lectura: se compara y se recibe un booleano |
+| Respuesta del desafío | **No.** Se guarda un verificador | HMAC con llave que **nunca sale del módulo** | **Nadie, en ninguna condición** |
+| Teléfono de Elena | Sí, **mientras haya avisos pendientes** | `telefono_cif` en `BD identidad`; en la constancia de `RF-98` solo `telefono_token` | `Notification Service` al despachar; nadie más |
+| Motivo de retención y de liberación | Sí | `motivo_liberacion_cif` en `Caso de cumplimiento`, **no en `Retención`** | Solo el rol de cumplimiento, sobre el caso que tiene asignado, con traza |
+| Existencia de un reporte a la autoridad | Sí | Fila propia en `BD auditoría`, **sin relación alguna hacia `Retención` ni hacia el estado que ve el emisor** | Cumplimiento y `Reporte Service`. Nunca por la ruta del emisor |
+| **Domicilio** | **No se guarda** | **Ninguna forma: no existe la columna** | Nadie, porque no hay dato. **Ningún ítem lo pide**, y un dato personal sin requerimiento que lo exija es un pasivo |
+
+**El token determinista es la pieza que resuelve el problema de fondo: contar sin leer.** `RF-08`,
+`RF-09` y `RF-58` obligan a saber si dos giros son de la misma persona; `RNF-01` prohíbe que quien
+los cuenta pueda leer quién es. Un HMAC determinista sobre el documento da lo primero sin conceder
+lo segundo: **valores iguales producen tokens iguales, y ningún token produce un documento** — la
+llave que lo generaría vive en el módulo y el servicio de límites no la tiene.
+
+**Del reporte a la autoridad, lo que se oculta es el motivo, no el hecho.** Al operario `RF-39` le
+entrega **la acción** que corresponde ofrecer y `RF-40` le **omite el motivo** cuando revelarlo está
+prohibido; al emisor `RF-66` le muestra **que** su giro está retenido y **hasta qué fecha**. Motivo
+y hecho son dos datos con lectores distintos —no una fila que se muestra u oculta entera—, y por eso
+están en **dos tablas** y no en una: ocultarlo en la interfaz no habría bastado.
+
+### 5.7 Retención por jurisdicción — tres fechas absolutas congeladas al crear
+
+`RNF-03` exige conservar *«calculado por giro y no por política global»* y `RF-18` fija el criterio:
+el plazo más largo de los **dos** países que tocaron el giro. **Eso no se cumple con una constante
+en un archivo de configuración —una constante es exactamente una política global— y tampoco con una
+consulta a la tabla de jurisdicciones al momento de purgar, porque para entonces la norma puede
+haber cambiado.** Se cumple con tres fechas absolutas congeladas al crear el giro, **con la versión
+de la norma que las produjo al lado**.
+
+| Campo | Dónde vive | Cómo se calcula | Qué ítem lo fija |
+|---|---|---|---|
+| `giro.conservar_hasta` | `Giro`, en `BD giros`; se copia a `traza.conservar_hasta` y a la partición del asiento | `creado_en + MAX(origen.plazo_conservacion_anios, destino.plazo_conservacion_anios)`, **piso de 5 años** | `RF-18`, `RNF-03`, `BR-15` |
+| `retencion.vence_en` | `Retención`, en `BD cumplimiento` | `abierto_en + MIN_estricto(origen.plazo_retencion_horas, destino.plazo_retencion_horas)`, **piso de 72 h**, y más corto para la homonimia que para la coincidencia exacta | `RF-31`, `RF-32`, `RF-78` |
+| `giro.prescribe_en` | `Giro` y `Prescripción`, en `BD giros` | `creado_en + origen.plazo_prescripcion_meses`, 12 meses a falta de norma expresa | `RF-49`, `RF-50`, `BR-14` — el del **regulador de origen, y solo ese** |
+
+**Tres reglas distintas sobre los mismos dos reguladores, y ninguna se puede derivar de las otras:**
+la conservación toma el **máximo**, la retención el **mínimo estricto**, y la prescripción **no mira
+al destino**. Guardarlas como plazo relativo —«cinco años», «72 horas»— y resolverlas al vencer
+haría que una norma nueva **reescribiera retroactivamente** el plazo de giros ya creados; guardarlas
+como fecha absoluta con `version_regla_jurisdiccion` al lado las vuelve defendibles una por una,
+años después, ante el regulador que las pregunte. **Es una columna del giro, no una línea de
+configuración.**
+
+Un plazo que nadie hace vencer no vence. **El ejecutor es uno solo y ya está dibujado en la sección
+6: el `Vencimiento Job <diario>`, que barre por fecha absoluta y no por cálculo.**
+
+| Plazo | Qué ejecuta el vencimiento | Ítem |
+|---|---|---|
+| Retención sin liberar | Devuelve al emisor y avisa al receptor por su canal | `RF-31`, `RF-32` |
+| Giro no cobrado | Lo deja no pagable, pone el monto a disposición del emisor, y **avisa antes** | `RF-49`, `RF-50`, `RF-51` |
+| Respuesta del desafío | **Borra** `verificador` y `pregunta_cif`; deja `estado = caducado` y su traza | `RF-83` |
+| Devolución no retirada | Se mantiene disponible **hasta `giro.prescribe_en`**, no antes | `RF-89` |
+| Supresión pedida | Borra los campos del alcance y **destruye las llaves** de los objetos, dejando en pie el asiento y la traza | `RF-81` |
+| Conservación del giro (`conservar_hasta`) | **Cripto-borrado**: se destruye la llave de corredor de las columnas cifradas y la llave por giro de los objetos. El asiento y la traza **quedan enteros** con `persona_ref` | `RF-18`, `RNF-03` |
+
+**Lo que esta tabla decide sin que lo parezca.** Si el nombre y el documento de Rosa vivieran
+*dentro* de la fila del giro, borrar a Rosa destruiría el asiento contable y con él la posibilidad
+de demostrar que la suma cuadra, que es el invariante de `RNF-07`. Viviendo **detrás de una
+referencia**, se puede borrar la identidad y dejar en pie la operación. Es decir: **la convivencia
+entre el derecho de supresión y la obligación de conservación se resuelve en el diseño de las
+tablas, y solo ahí.** Y `RF-81` alcanza también al receptor —sus datos los entregó él en el
+mostrador—, lo cual se ejecuta gracias a la columna `declarante`: **una supresión pedida por Rosa no
+toca la fila de Elena.** El contador de `RF-58` sobrevive a las dos porque no vive en `BD identidad`
+sino en `BD cumplimiento`, con un seudónimo y un número.
+
+### Lo único que este paso no puede cerrar solo
+
+`[CLARIFY: la ventana de vida de la clave de idempotencia (BD intentos). El backlog no la da —RNF-09
+acota la operación de ventanilla y RNF-10 la disponibilidad, ninguno la vida de un intento— y
+depende de cuánto tarda un mostrador en reintentar tras un corte. La destraba una cifra de D(b) o
+una medición de campo del tiempo entre corte y reintento; mientras tanto el modelo la trata como
+columna `expira_en` y no como constante, así que cambiarla no rehace ninguna tabla.]`
+
+---
+
+## 6. L — Componentes
+
+**Este es el paso donde el enunciado exige «mostrar claramente las iteraciones del diseño»**, y el
+ejemplo que el profesor mostró en clase define qué significa eso: **el mismo diagrama, dibujado tres
+veces, cada vez más abierto.** La regla que las gobierna, y que decide si el trabajo es honesto:
+**no se dibuja el diagrama final y después se inventan las iteraciones previas.** La primera es un
+cuadrado. Lo que fuerza la segunda es un ítem del backlog que el cuadrado no explica, y lo mismo la
+tercera. **El diagrama deja de crecer cuando el backlog está cubierto**, no cuando «ya se ve
+completo».
+
+El vocabulario es el del backlog y no se traduce: **giro**, **emisor**, **receptor**, **punto de
+atención**, **operario**. Un componente que dice «envío» o «remitente» está nombrando otra cosa.
+
+| Qué muestra el diagrama | Qué no muestra |
+|---|---|
+| Los componentes y sus relaciones | Cómo está implementado cada uno |
+| Los actores, fuera del sistema | Pantallas, rutas de navegación, texto de interfaz |
+| Las bases de datos —**diez, no una**— | Esquemas, tablas ni campos: eso es la sección 5 |
+| Los sistemas de terceros, marcados como externos | Versiones, proveedores concretos, topología de despliegue |
+| La etiqueta de cada rama condicional | Números de rendimiento: eso son las secciones 3 y 7 |
+
+**Convenciones, heredadas del ejemplo de clase sin cambios:** un servicio es `<Nombre> Service`; un
+proceso batch es `<Nombre> Job <momento>`; una base de datos es `BD <de qué>` en cilindro; un sistema
+externo lleva su nombre real, sin eufemismo; un actor es un círculo fuera del sistema; y **toda rama
+condicional lleva su etiqueta** en la arista.
+
+**El código de color hace un trabajo real, no decorativo: el rosado marca dónde termina el mando.**
+Todo lo rosado puede fallar, tardar o mentir sin que el diseño pueda impedirlo. Azul, servicios
+propios; verde, soporte y notificación; **rosado, terceros**; amarillo, procesos batch; naranja, las
+bases.
+
+**Y el color no alcanza — hacen falta dos marcas más, porque son dos fronteras distintas que caen
+sobre la misma clase de caja:**
+
+| Marca | Qué afirma | Dónde, y con qué ítem |
+|---|---|---|
+| **Borde punteado** | Propio en el mando y **cortable en la conexión**. El diseño manda ahí, salvo mientras no llega | `Punto de Atención Service` — `RF-45`, `RNF-06`, `RNF-08` |
+| **Borde grueso** | Propio en el mando y **ajeno en la contabilidad**: el efectivo que se entrega no salió de la caja de SendIt | `Caja del agente` — `RF-24`, `RF-20` |
+
+Pintar el punto de atención de rosado diría que el diseño no manda ahí —y sí manda—; pintarlo de
+azul a secas escondería los dos únicos modos de falla que importan.
+
+### 6.1 Iteración 1 — la caja única
+
+Lo único que afirma: **quién habla con el sistema.**
+
+```mermaid
+flowchart LR
+  ROSA(( Rosa<br/>emisora )) --> OPO(( Operario<br/>punto de atención<br/>de origen ))
+  ELENA(( Elena<br/>receptora )) --> OPD(( Operario<br/>punto de atención<br/>de destino ))
+  OPO --> APP[ SendIt ]
+  OPD --> APP
+  CUMP(( Rol de<br/>cumplimiento )) --> APP
+
+  classDef propio fill:#dbeafe,stroke:#2563eb,color:#0b1220;
+  class APP propio;
+```
+**Las dos puntas pasan por una ventanilla, y por eso ni Rosa ni Elena tocan la caja.** Rosa entrega
+efectivo y se identifica ante un operario (`RF-01`, `RF-79`); Elena cobra efectivo ante otro operario
+en el país destino (`RF-02`, `RF-34`). Dibujarlas conectadas directamente a la caja es cómodo y
+falso: **la corrección de esa arista es todo lo que esta pasada decide.**
+
+**El operario es actor, no una caja.** El argumento que decide: hay ítems que el sistema le muestra
+**a él y a nadie más** —`RF-39` le entrega la acción, `RF-40` le oculta el motivo, `RF-57` le recorta
+lo que ve—, y **un componente interno no puede ser el destinatario de un requisito de mínimo
+privilegio**. Son **dos** círculos de operario y no uno: el de origen y el de destino están en países
+distintos, con reguladores distintos (`RF-15`), y colapsarlos borra la única frontera que este caso
+tiene por definición. El **rol de cumplimiento** entra como actor por `RF-30`: el giro retenido se
+deriva a un rol **distinto** del operario que lo atendió, y un actor que no existe en el diagrama no
+puede recibir una derivación.
+
+**Qué queda `DONE`: `RF-11`, y solo ese.** Es el único ítem que se demuestra con el grafo de
+actores: que el código sea **únicamente** del emisor es **la ausencia de una arista**, no una regla
+escrita adentro de una caja. Las iteraciones 2 y 3 agregan avisos hacia el receptor (`RF-25`,
+`RF-37`, `RF-41`) y **ninguno transporta el código** — esa distinción nace acá.
+
+**Qué ítem fuerza la iteración 2: `RF-26`** — contrastar a emisor y receptor contra las listas de
+sanciones **antes de aceptar el efectivo**. **Un cuadrado no tiene «antes»:** no hay dónde dibujar un
+control que corre previo al instante en que el dinero se compromete, que es la decisión `D`(e). Con
+`RF-26` sin cubrir, hay una pasada más.
+
+### 6.2 Iteración 2 — la caja se abre en servicios
+
+La caja deja de ser una caja. En el ejemplo de clase, esta pasada es la que hace aparecer por primera
+vez la **autenticación**, la **validación contra terceros**, la **bifurcación del resultado** y el
+**canal por el que se avisa cuando falla**. El equivalente en SendIt cubre el camino que va desde que
+Rosa entrega el efectivo hasta que Elena lo cobra, con su rama de rechazo: **identificación,
+tamizaje, límites, cotización, creación del giro y pago.**
+
+```mermaid
+flowchart LR
+  ROSA(( Rosa<br/>emisora )) --> OPO(( Operario<br/>origen ))
+  ELENA(( Elena<br/>receptora )) --> OPD(( Operario<br/>destino ))
+
+  OPO --> PDA["Punto de Atención Service"]
+  OPD --> PDA
+
+  PDA --> IDN["Identity Service"]
+  IDN --> RENIEC["RENIEC"]
+  IDN --> VDOC["Verificación documental del corredor de origen"]
+  IDN --> BDID[("BD identidad")]
+  IDN -->|"DOCUMENTO NO VIGENTE"| PDA
+  IDN -->|"IDENTIDAD OK"| SCR["Screening Service"]
+
+  SCRJ["Screening Job &lt;actualización de lista&gt;"] --> SCR
+  SCR --> LIST["Listas de sanciones OFAC / ONU / UE"]
+  SCR --> BDCU[("BD cumplimiento")]
+  SCR -->|"COINCIDENCIA — GIRO RETENIDO"| PDA
+  SCR -->|"SIN COINCIDENCIA"| LIM["Limits Service"]
+
+  LIM --> BDGI[("BD giros")]
+  LIM -->|"LÍMITE EXCEDIDO"| PDA
+  LIM -->|"DENTRO DEL LÍMITE"| QUO["Quote Service"]
+
+  QUO --> FX["Proveedor de tipo de cambio"]
+  QUO --> BDCO[("BD cotizaciones")]
+  QUO -->|"MONTO ACEPTADO POR EL EMISOR"| GIR["Giro Service"]
+
+  GIR --> BDGI
+  GIR --> LED["Ledger Service"]
+  LED --> BDLI[("BD contable")]
+  GIR -->|"CÓDIGO — SOLO AL EMISOR"| OPO
+  GIR --> NOT["Notification Service"]
+  NOT --> TEL["Operador de voz y mensaje de texto"]
+  TEL -->|"llamada o SMS, sin app, correo ni datos"| ELENA
+
+  PDA --> PAY["Payout Service"]
+  PAY --> IDN
+  PAY --> SCR
+  PAY --> BDGI
+  PAY -->|"YA PAGADO / FONDOS NO CONFIRMADOS"| PDA
+  PAY -->|"CÓDIGO Y DOCUMENTO COINCIDEN"| LED
+  PAY -->|"ENTREGADO — GIRO CERRADO"| OPD
+
+  classDef propio  fill:#dbeafe,stroke:#2563eb,color:#0b1220;
+  classDef soporte fill:#dcfce7,stroke:#16a34a,color:#0b1220;
+  classDef externo fill:#fce7f3,stroke:#db2777,color:#0b1220;
+  classDef batch   fill:#fef9c3,stroke:#ca8a04,color:#0b1220;
+  classDef bd      fill:#ffedd5,stroke:#ea580c,color:#0b1220;
+  classDef corte   stroke-dasharray: 6 3,stroke-width:3px;
+
+  class PDA,IDN,SCR,LIM,QUO,GIR,LED,PAY propio;
+  class NOT soporte;
+  class RENIEC,VDOC,LIST,FX,TEL externo;
+  class SCRJ batch;
+  class BDID,BDCU,BDCO,BDGI,BDLI bd;
+  class PDA corte;
+```
+| Componente | Qué hace | Ítems |
+|---|---|---|
+| `Punto de Atención Service` | Lo que corre en la ventanilla. Recibe el efectivo, muestra al operario **la acción y no el motivo**, y le recorta la vista a la operación que atiende. **Ningún rechazo sale de acá sin una salida que ofrecer** | `RF-39`, `RF-40`, `RF-57`, `RNF-09` |
+| `Identity Service` | Documento oficial vigente del emisor antes de crear, titularidad del receptor antes de pagar. **Es el sistema y no el operario quien decide qué diferencia de escritura cuenta como coincidencia** | `RF-01`, `RF-80`, `RF-84`, `RF-85`, `RNF-01` |
+| `Screening Service` | Contrasta emisor y receptor contra las listas **antes de aceptar el efectivo**, separa coincidencia exacta de homonimia y deja el giro retenido | `RF-26`, `RF-28`, `RF-29` |
+| `Screening Job <actualización de lista>` | Re-tamiza los giros ya aprobados cuando una lista cambia — el caso que `D`(e) señaló como imposible de resolver «antes o después» | `RF-27` |
+| `Limits Service` | Cuenta el límite por operación y el acumulado de la ventana **sobre la identidad del emisor**, no sobre el punto de atención | `RF-08`, `RF-09`, `RF-10` |
+| `Quote Service` | Produce y fecha la cotización, fija el monto en moneda destino y lo conserva **sin recalcular** | `RF-05`, `RF-06`, `RF-07`, `RF-21` |
+| `Giro Service` | Crea el giro con un receptor que después ya no se altera, un país, un punto elegido y un código que entrega **solo** al emisor y guarda comprobable, nunca legible. Da el giro por creado en el instante en que se registra la recepción del efectivo | `RF-03`, `RF-04`, `RF-63`, `RF-70`, `RF-79`, `RNF-10`, `RNF-15` |
+| `Ledger Service` | Escribe el libro de movimientos. **Toda operación deja la suma igual** | `RNF-07` |
+| `Payout Service` | Autoriza el pago contra código **y** documento, rechaza el segundo intento **en cualquier punto**, entrega el monto fijado en efectivo y cierra el giro | `RF-02`, `RF-34`, `RF-36`, `RF-64`, `RNF-05`, `RNF-16` |
+| `Notification Service` | El canal hacia el receptor. Habla por **llamada o mensaje de texto**, sin exigir aplicación, correo ni datos móviles | `RF-25`, `RF-41` |
+| `BD identidad`, `BD cumplimiento`, `BD cotizaciones`, `BD giros`, `BD contable` | **Cinco, no una.** Cada grupo de servicios tiene la suya | — |
+
+**Lo que esta pasada hace visible y la iteración 1 no podía.** El punto exacto en que el dinero se
+compromete y qué control corre **antes** de él: `Screening Service` está aguas arriba de
+`Ledger Service`, de modo que la herramienta es **detener y no revertir**. La rama de rechazo del
+tamizaje, que **no puede explicarse al cliente**: la arista lleva etiqueta igual que
+`Validation Failed`, pero lo que sale por ella hacia el operario es la acción y no el motivo —`RF-39`
+y `RF-40` son **dos aristas distintas del mismo rechazo**—. El canal hacia Elena, que no tiene datos
+ni correo: `Notification Service` sale a un `Operador de voz y mensaje de texto`, **no a un
+`Email Service`**. Y la frontera centro↔mostrador dibujada con borde punteado: azul porque es
+nuestra, punteada porque **la conexión se corta aunque el mando no**.
+
+**Qué queda `DONE`: los 29 `RF` y 7 `RNF` marcados con 2 en la tabla de trazabilidad — 36 ítems.**
+
+**Qué ítems fuerzan la iteración 3. Cuatro huecos, cuatro razones:** `RF-13` exige la autorización de
+un segundo rol sobre el umbral reforzado y `RNF-02` prohíbe que una misma identidad ejerza dos roles
+del mismo giro —**y en el diagrama de arriba no hay un segundo rol en ninguna parte**—; `RF-45`
+prohíbe que un punto sin conexión pague un giro que el centro ya retuvo, **y nada dibujado reconcilia
+esas dos versiones**; `RF-24` dice que el efectivo lo pone el agente de su caja, **y no hay ninguna
+caja del agente**; y `RF-69` deja cobrar con documento no vigente a quien responde un desafío que
+`RF-12` y `RNF-17` prohíben mostrar **a los dos lados del mostrador**, lo que exige un almacén que
+esta pasada no tiene.
+
+### 6.3 Iteración 3 — cobertura del backlog restante
+
+Repite el subgrafo de la iteración 2 y le agrega lo que falta **hasta que ningún ítem quede sin
+`DONE`**. En el ejemplo de clase, esta pasada trae la evaluación, el presupuesto, la cobranza, el
+proceso batch de fin de día y el tablero.
+
+```mermaid
+flowchart LR
+  ROSA(( Rosa<br/>emisora )) --> OPO(( Operario<br/>origen ))
+  ELENA(( Elena<br/>receptora )) --> OPD(( Operario<br/>destino ))
+  CUMP(( Rol de<br/>cumplimiento ))
+
+  OPO --> PDA["Punto de Atención Service"]
+  OPD --> PDA
+  PDA --> IDM["Idempotencia Service"]
+  IDM --> BDIN[("BD intentos")]
+  IDM --> IDN["Identity Service"]
+
+  IDN --> RENIEC["RENIEC"]
+  IDN --> VDOC["Verificación documental del corredor de origen"]
+  IDN --> BDID[("BD identidad")]
+  IDN -->|"DOCUMENTO NO VIGENTE"| PDA
+  IDN -->|"IDENTIDAD OK"| COR["Corredor Service"]
+
+  COR --> BDCR[("BD corredores y reguladores")]
+  COR -->|"PAÍS NO ATENDIBLE / REGULADORES INCOMPATIBLES"| PDA
+  COR -->|"CORREDOR HABILITADO"| SCR["Screening Service"]
+
+  SCRJ["Screening Job &lt;actualización de lista&gt;"] --> SCR
+  SCR --> LIST["Listas de sanciones OFAC / ONU / UE"]
+  SCR --> BDCU[("BD cumplimiento")]
+  SCR -->|"COINCIDENCIA"| RET["Retención Service"]
+  SCR -->|"SIN COINCIDENCIA"| LIM["Limits Service"]
+
+  LIM --> BDGI[("BD giros")]
+  LIM -->|"LÍMITE EXCEDIDO"| PDA
+  LIM -->|"SOBRE EL UMBRAL REFORZADO"| DUAL["Dual Control Service"]
+  LIM -->|"DENTRO DEL LÍMITE"| QUO["Quote Service"]
+  DUAL -->|"SIN SEGUNDA AUTORIZACIÓN"| PDA
+  DUAL -->|"SEGUNDA AUTORIZACIÓN OTORGADA"| QUO
+
+  QUO --> FX["Proveedor de tipo de cambio"]
+  QUO --> BDCO[("BD cotizaciones")]
+  QUO --> LIQ["Liquidez Service"]
+  LIQ --> BDPA[("BD puntos de atención y efectivo")]
+  LIQ -->|"SIN EFECTIVO EN EL CORREDOR"| PDA
+  LIQ -->|"CORREDOR FONDEADO"| GIR["Giro Service"]
+
+  GIR --> BDGI
+  GIR --> LED["Ledger Service"]
+  LED --> BDLI[("BD contable")]
+  GIR -->|"CÓDIGO — SOLO AL EMISOR"| OPO
+  GIR --> NOT["Notification Service"]
+  GIR --> REP["Reporte Service"]
+  REP --> AUTO["Autoridad de origen — FinCEN / SEPBLAC"]
+  REP --> AUTD["Autoridad de destino — UIF-Perú"]
+
+  PDA --> PAY["Payout Service"]
+  PAY --> SCR
+  PAY --> IDN
+  PAY --> BDGI
+  PAY --> DES["Desafío Service"]
+  DES --> BDDE[("BD desafíos")]
+  GIR --> DES
+  IDN -->|"DOCUMENTO NO VIGENTE — HAY DESAFÍO"| DES
+  DES -->|"INTENTOS AGOTADOS"| PDA
+  DES -->|"RESPUESTA CORRECTA — SIN MOSTRARLA A NADIE"| PAY
+  PAY --> CRE["Cobros del Receptor Service"]
+  CRE --> BDCU
+  CRE -->|"ACUMULADO DE COBROS SUPERADO"| RET
+  CRE -->|"DENTRO DEL ACUMULADO"| PAY
+  PAY -->|"YA PAGADO / CANCELADO / RETENIDO"| PDA
+  PAY -->|"CÓDIGO Y DOCUMENTO COINCIDEN"| LED
+  PAY -->|"ENTREGADO — GIRO CERRADO"| OPD
+  PAY --> CAJA["Caja del agente"]
+
+  PDA --> CPS["Caja del Punto Service"]
+  CPS --> BDPA
+  CPS -->|"EFECTIVO DECLARADO EN EL PUNTO"| PDA
+  CPS --> NOT
+  CPS -->|"EL PUNTO ELEGIDO NO PUEDE PAGAR"| PAL["Punto Alternativo Service"]
+  PAL --> BDPA
+  PAL -->|"OTRO PUNTO DEL PAÍS DESTINO"| PDA
+
+  PDA --> REC["Reclamo Service"]
+  REC --> BDGI
+  REC --> CRR
+  REC --> AUD
+
+  RET --> BDCU
+  RET --> TAB["Tablero de Cumplimiento"]
+  RET --> NOT
+  CUMP --> TAB
+  TAB -->|"LIBERADO — CON MOTIVO Y POR OTRO ROL"| GIR
+  TAB -->|"NO LIBERADO"| RET
+
+  VEN["Vencimiento Job &lt;diario&gt;"] --> RET
+  VEN --> QUO
+  VEN --> NOT
+  VEN --> DEV["Devolución Service"]
+
+  ROSA -->|"consulta y cancelación"| CON["Consulta Service"]
+  CON --> BDGI
+  CON --> CAN["Cancelación Service"]
+  CON --> SUP["Supresión Service"]
+  SUP --> BDID
+  SUP --> AUD
+  AUD -->|"LO QUE EL REGISTRO DE ACTOS CONSERVA"| SUP
+  CAN --> DEV
+  DEV --> LED
+  DEV --> BDGI
+  DEV --> NOT
+  PDA -->|"retiro de la devolución"| DEV
+
+  SYN["Sync Service"] --> PDA
+  SYN --> BDGI
+  SYN --> BDPA
+  EOD["Cierre de Caja Job &lt;EOD&gt;"] --> SYN
+  EOD --> LED
+  EOD --> TAB
+  EOD --> CPS
+  VEN --> DES
+  LQJ["Liquidación Job &lt;plazo del agente&gt;"] --> CAJA
+  LQJ --> LED
+
+  CRR["Corrección Service"] --> DUAL
+  CRR --> LED
+  CRR --> NOT
+
+  NOT --> TEL["Operador de voz y mensaje de texto"]
+  TEL --> ELENA
+  TEL --> ROSA
+
+  PDA --> AUD["Audit Service"]
+  PAY --> AUD
+  GIR --> AUD
+  TAB --> AUD
+  IDN --> AUD
+  AUD --> BDAU[("BD auditoría")]
+
+  classDef propio  fill:#dbeafe,stroke:#2563eb,color:#0b1220;
+  classDef soporte fill:#dcfce7,stroke:#16a34a,color:#0b1220;
+  classDef externo fill:#fce7f3,stroke:#db2777,color:#0b1220;
+  classDef batch   fill:#fef9c3,stroke:#ca8a04,color:#0b1220;
+  classDef bd      fill:#ffedd5,stroke:#ea580c,color:#0b1220;
+  classDef corte   stroke-dasharray: 6 3,stroke-width:3px;
+  classDef agente  stroke-width:4px;
+
+  class PDA,IDM,IDN,COR,SCR,LIM,DUAL,QUO,LIQ,GIR,LED,PAY,RET,DEV,CAN,CON,SYN,CRR,REP,AUD propio;
+  class DES,CRE,CPS,PAL,REC,SUP propio;
+  class NOT,TAB soporte;
+  class RENIEC,VDOC,LIST,FX,TEL,AUTO,AUTD externo;
+  class SCRJ,VEN,EOD,LQJ batch;
+  class BDID,BDCU,BDCO,BDGI,BDLI,BDIN,BDCR,BDPA,BDAU,BDDE bd;
+  class PDA corte;
+  class CAJA agente;
+```
+**Lo que esta pasada agrega, y contra qué ítem.** Solo lo nuevo: los diez componentes de la
+iteración 2 siguen ahí con el mismo nombre.
+
+| Componente nuevo | Qué hace | Ítems |
+|---|---|---|
+| `Idempotencia Service` | Persiste la clave del intento **antes de mover un centavo**. El reintento de una creación o un pago interrumpidos es la misma operación, no una nueva | `RF-42`, `RF-43`, `RF-44` |
+| `Corredor Service` | Aplica a un mismo giro las reglas del regulador de origen **y** las del de destino, **rechaza cuando son incompatibles en vez de elegir una**, y avisa el país no atendible antes del efectivo | `RF-15`, `RF-16`, `RF-19`, `RF-23`, `RNF-12`, `RNF-14` |
+| `Dual Control Service` | Segunda autorización sobre el umbral reforzado y para corregir un giro pagado, con la identidad de los dos roles separada en toda la cadena crear → autorizar → pagar → liberar → corregir | `RF-13`, `RF-61`, `RNF-02` |
+| `Liquidez Service` | Exige efectivo disponible **en el corredor de destino** antes de dar el giro por fondeado; de ahí sale la fecha desde la cual se podrá cobrar, que el emisor ve **antes** de entregar el efectivo | `RF-20`, `RF-77` |
+| `Reporte Service` | Reporta a la autoridad el giro sobre el umbral transfronterizo, midiéndolo **sobre el giro completo** y no sobre su tramo local | `RF-17`, `RF-22` |
+| `Retención Service` | Abre el caso con el plazo del regulador **más estricto de los dos países** —más corto para la homonimia que para la exacta—, lo deriva a un rol distinto del operario que atendió y avisa al emisor **y al receptor** | `RF-30`, `RF-31`, `RF-37`, `RF-78` |
+| `Tablero de Cumplimiento` | Donde trabaja el rol de cumplimiento: es el `Debt Dashboard` de este caso. **Libera solo ese rol**, y toda liberación deja su motivo registrado | `RF-33`, `RF-87` |
+| `Desafío Service` | Guarda la pregunta y **comprueba** la respuesta sin mostrarla: ni al operario ni a quien administra la infraestructura. Es lo que deja cobrar con documento no vigente **sin bajar la vara de identificación**. Acota los intentos y caduca | `RF-12`, `RF-68`, `RF-69`, `RF-82`, `RF-83`, `RNF-17` |
+| `Cobros del Receptor Service` | Cuenta cuántos giros cobró **un mismo receptor** en la ventana y retiene el que la supera. **El gemelo del `Limits Service` en la otra punta**: aquel cuenta sobre el emisor al crear, este sobre el receptor al pagar | `RF-58`, `RF-93` |
+| `Caja del Punto Service` | El efectivo **por punto**, que el `Liquidez Service` no ve porque mira el corredor entero. Registra lo que cada punto declara al abrir y al cerrar, y le dice al operario cuánto tiene antes de habilitarle un pago | `RF-76`, `RF-92`, `RF-95` |
+| `Punto Alternativo Service` | La salida cuando el punto que el emisor eligió no puede pagar: habilita el cobro en otro punto del país destino **en vez de dejar a Elena sin dinero frente al mostrador** | `RF-91`, `RF-105` |
+| `Reclamo Service` | **La voz del receptor, que hasta acá no tenía ninguna.** Elena declara en el mostrador que el dinero recibido no coincide con el informado, y eso abre el caso que el `Corrección Service` resuelve. Sin esta caja, la diferencia solo se detecta en el cierre de caja y **del lado de SendIt** | `RF-90`, `RF-59` |
+| `Corrección Service` | Registra la corrección de un giro pagado **como movimiento nuevo**, atribuye la diferencia al punto donde se entregó el dinero y se la informa al receptor | `RF-56`, `RF-59`, `RF-60` |
+| `Cancelación Service` | Cancela mientras el dinero **no esté a disposición del receptor**, y solo a pedido del emisor que creó el giro | `RF-46`, `RF-48` |
+| `Devolución Service` | Devuelve al emisor por cancelación, retención vencida y prescripción: **siempre en efectivo, siempre en la moneda que entregó**, comisión incluida cuando el giro no llegó a pagarse, en el punto que él elija | `RF-14`, `RF-47`, `RF-50`, `RF-71`, `RF-72`, `RF-73`, `RF-74`, `RF-88`, `RF-89`, `RNF-13` |
+| `Consulta Service` | **El único canal directo de Rosa, y es de lectura**: estado de sus giros sin depender del receptor, y la retención con su fecha | `RF-52`, `RF-53`, `RF-66` |
+| `Supresión Service` | Suprime los datos personales **de quien los entregó y de nadie más**, dejando en pie lo que el registro de actos debe conservar. **La arista con el `Audit Service` es la que hace visible el conflicto**: `RNF-03` es inmutable y esta caja no lo toca | `RF-81`, `RF-99` |
+| `Sync Service` | Reconcilia lo que el punto sostuvo sin conexión. Impide que un punto incomunicado pague un giro que el centro ya retuvo, canceló o dio por pagado, y recupera el estado **sin que el operario haga nada** | `RF-45`, `RNF-06`, `RNF-08` |
+| `Audit Service` | Asocia cada acto a la identidad de quien lo ejecutó, impide modificar o eliminar lo ya ejecutado, **deja traza de todo acceso a identidad** y conserva por el plazo más largo de los dos países | `RF-18`, `RF-54`, `RNF-03`, `RNF-04` |
+| `Vencimiento Job <diario>` | **El terminador.** Hace caducar solas las retenciones sin liberar, las cotizaciones, las respuestas de desafío y los giros prescritos —y con ellos la devolución que nadie retiró—, y avisa antes | `RF-32`, `RF-49`, `RF-51`, `RF-83`, `RF-89` |
+| `Cierre de Caja Job <EOD>` | El equivalente del `Debt Job <EOD>`. Cuadra la caja de cada punto contra el libro **y es donde aparece el doble pago si apareció** | `RNF-05` |
+| `Liquidación Job <plazo del agente>` | Liquida con el agente el efectivo que puso de su caja, en el plazo acordado con él | `RF-24` |
+| `Caja del agente` | **No es un servicio: es una cuenta contable** del efectivo que el agente puso y SendIt todavía no le liquidó. Borde grueso porque es propia en el mando y ajena en la contabilidad | `RF-24`, `RF-20` |
+| `BD desafíos` · `BD intentos` · `BD corredores y reguladores` · `BD puntos de atención y efectivo` · `BD auditoría` | Las cinco que esta pasada agrega a las cinco de la iteración 2 — **diez en total, y son exactamente las diez que decide la sección 5**. `BD desafíos` es **su propia base y no una columna de `BD giros`**: quien administra la infraestructura del giro no debe poder alcanzarla | `RF-12`, `RNF-17` |
+
+**Qué queda `DONE`: los 71 `RF` y 10 `RNF` marcados con 3 — 81 ítems. Con eso la columna `DONE` no
+tiene ningún vacío, y por lo tanto no hay iteración 4.**
+
+### 6.4 Inventario
+
+| Clase | Cuántos | Cuáles |
+|---|---|---|
+| **Actores** | 5 | Rosa (emisora), Elena (receptora), operario de origen, operario de destino, rol de cumplimiento |
+| **Servicios propios** | 26 | Punto de Atención, Idempotencia, Identity, Corredor, Screening, Limits, Dual Control, Quote, Liquidez, Giro, Ledger, Payout, Desafío, Cobros del Receptor, Caja del Punto, Punto Alternativo, Reclamo, Retención, Cancelación, Devolución, Consulta, Supresión, Corrección, Sync, Reporte, Audit |
+| **Soporte** | 2 | Notification Service, Tablero de Cumplimiento |
+| **Procesos batch** | 4 | `Screening Job <actualización de lista>`, `Vencimiento Job <diario>`, `Cierre de Caja Job <EOD>`, `Liquidación Job <plazo del agente>` |
+| **Sistemas externos** (rosados) | 7 | RENIEC · Verificación documental del corredor de origen · Listas OFAC/ONU/UE · Proveedor de tipo de cambio · Autoridad de origen (FinCEN/SEPBLAC) · Autoridad de destino (UIF-Perú) · Operador de voz y mensaje de texto |
+| **Bases de datos** | 10 | identidad · giros · cumplimiento · cotizaciones · contable · intentos · corredores y reguladores · puntos de atención y efectivo · auditoría · desafíos |
+| **Cuenta contable dibujada** | 1 | `Caja del agente`, con borde grueso |
+
+**Dos cajas se borraron por la regla del huérfano, y conviene dejar dicho cuáles porque volverían
+solas.** `Procesador del cobro a Rosa`: no traza a ningún ítem **y no puede trazar**, porque `RF-02`
+dice que el efectivo se **recibe** en la ventanilla — Rosa entrega billetes a un operario, no hay
+cobro que procesar. Y `Tablero de cumplimiento` **como sistema externo**: el tablero existe y traza
+(`RF-33`, `RF-87`), pero **no es de un tercero** — es nuestro, lo opera un rol de SendIt, y estaba en
+la tabla equivocada; no se borró, se mudó a componente propio de soporte.
+
+### 6.5 La frontera de confianza — dos clases, no una
+
+En el ejemplo de Leasing, lo rosado —`SUNAT`, `RENIEC`, `INFO CORP API`— **informa**. En SendIt lo
+rosado también informa casi todo el tiempo. **Pero el peor defecto de consistencia de este caso no
+está en una frontera rosada: está adentro.** El punto de atención es azul —es de SendIt, corre su
+sistema, obedece sus órdenes— **hasta que pierde la conexión**, y entonces sigue teniendo billetes en
+la caja y una autorización previa que dice «paga».
+
+**De ahí que haya dos clases de frontera, y no fallen por la misma causa. Dónde termina el mando no
+es dónde termina la conexión.**
+
+- **Con un tercero**, la consistencia se rompe porque **del otro lado hay otro registro** que no
+  participa de nuestra transacción.
+- **Con el punto de atención no hay otro registro** —la contabilidad es una sola— y **aun así se
+  rompe**: mientras el punto está incomunicado, el centro y la ventanilla sostienen cada uno una
+  versión del mismo giro, y **las dos son nuestras**.
+
+El repertorio del diseño es el mismo en los dos casos —detectar la divergencia, acotar cuánto dura y
+decidir cuál lado manda mientras tanto, que es la decisión `D`(c)—, **con una diferencia a favor del
+caso interno: aquí sí se puede decidir de antemano qué se le permite hacer a la ventanilla sin
+conexión, cosa que con un tercero no se puede.**
+
+**Todo lo de esta tabla es rosado, y nada más lo es.**
+
+| Sistema externo | Qué se le manda / qué se recibe | Qué se rompe si no responde, tarda o miente | Ítems |
+|---|---|---|---|
+| `RENIEC` | Documento del emisor o del receptor peruano → vigencia y titularidad | Sin él no se identifica y `RF-01` no se cumple. **Si miente, se paga a quien no es**: `RF-85` queda satisfecho en la forma y violado en el fondo | `RF-01`, `RF-85`, `RF-86` |
+| `Verificación documental del corredor de origen` | Documento del emisor → vigencia y titularidad | Igual, y **con un corredor caído se cae un país entero, no una operación** — que es lo que `RNF-12` obliga a mirar | `RF-01`, `RNF-12` |
+| `Listas OFAC / ONU / UE` | Nombre y documento → coincidencia, su grado y la **versión** de la lista | Sin respuesta no se acepta el efectivo. Si tarda, el costo lo paga la cola de la ventanilla (`RNF-09`). Si la lista se actualiza sin aviso, **alcanza a giros ya aprobados** — por eso existe el `Screening Job` | `RF-26`, `RF-27`, `RF-28` |
+| `Proveedor de tipo de cambio` | Par de monedas y momento → tasa con su vigencia | Sin tasa no hay cotización. **Si miente, el error queda congelado por `RF-06` durante toda la vida del giro y lo carga la empresa** | `RF-05`, `RF-07`, `RF-21` |
+| `Autoridad de origen — FinCEN / SEPBLAC` | El reporte del giro sobre el umbral → acuse | **Un reporte no entregado es incumplimiento regulatorio, no un mensaje perdido.** Y su **existencia** no puede filtrarse hacia el cliente por ninguna arista | `RF-17`, `RF-22` |
+| `Autoridad de destino — UIF-Perú` | El reporte cuando el umbral que aplica es el peruano → acuse | Igual, y `RF-22` obliga a medir sobre el giro completo: **reportar el tramo local es reportar mal** | `RF-22`, `RF-15` |
+| `Operador de voz y mensaje de texto` | El aviso al receptor y al emisor → entrega o fallo de entrega | Si no entrega, Elena no sabe que hay un giro a su nombre, ni si el punto puede pagarle, **y viaja o no viaja a ciegas**. **Nunca transporta el código ni la respuesta del desafío**: `RF-11`, `RNF-17` | `RF-14`, `RF-25`, `RF-37`, `RF-41`, `RF-51`, `RF-60`, `RF-65`, `RF-67`, `RF-75` |
+
+**La frontera interna, que la tabla de arriba no puede contener porque no es un sistema externo y
+pintarla de rosado sería mentir.** Dos filas y dos marcas distintas:
+
+| Frontera interna | Marca | Qué le baja / qué sube | Qué se rompe | Ítems |
+|---|---|---|---|---|
+| **`Punto de Atención Service`** — propio, incomunicable | Borde punteado | Baja: la autorización de pago, el catálogo de giros disponibles, la acción a ofrecer ante un rechazo · Sube: el pago hecho, el efectivo contado, la identificación del receptor | Mientras dura el corte, **el centro y la ventanilla afirman cosas distintas del mismo giro y las dos son nuestras**. El `Sync Service` es lo que las vuelve una | `RF-45`, `RNF-06`, `RNF-08` |
+| **`Caja del agente`** — propia en el mando, ajena en la contabilidad | Borde grueso | Baja: nada, **no es un sistema, es una cuenta del libro** · Sube: el efectivo entregado a Elena que todavía no se liquidó | El agente pone billetes suyos y SendIt se los debe hasta que corre el `Liquidación Job`. **Si esa cuenta no existe en el libro, `RNF-07` no cierra**: sale dinero que no entró de ninguna cuenta de SendIt | `RF-24`, `RF-20` |
+
+**Tres preguntas que las tablas tienen que contestar y suelen quedar sin contestar.**
+
+1. **¿Qué entra desde afuera y se cree sin verificar?** La tasa del proveedor y el resultado de las
+   listas entran y se creen. Y lo que sube un punto que estuvo sin conexión entra al registro
+   contable **como hecho consumado**: no es dato de un tercero, es **dato nuestro llegando tarde**, y
+   el centro no tuvo forma de impedirlo.
+2. **¿Qué sale y no debería?** La existencia de un reporte a la autoridad **no puede filtrarse hacia
+   el cliente por ninguna arista**, ni siquiera por un estado que se deduzca. Por eso el diagrama
+   **no tiene ninguna arista** desde `Reporte Service` hacia el `Punto de Atención Service` ni hacia
+   el `Consulta Service`, **y esa ausencia es la garantía**.
+3. **¿Qué frontera está dibujada como externa y no lo es?** El operario de Huanta **sí** es usuario
+   de SendIt. Dibujarlo en rosado haría creer que el diseño no puede mandarle —cuando puede, salvo
+   en el único caso en que no puede—. Ese caso hay que dejarlo visible, y **no se resuelve con un
+   color**: se resuelve con el borde punteado y con el `Sync Service` dibujado.
+
+### 6.6 Trazabilidad — 118 / 118
+
+La tabla completa vive en `redale/L-listar-componentes/README.md`, una fila por ítem, ninguna
+agrupada, ninguna vacía, y **nombrando la iteración y el componente** que la cierra — porque decir
+«iteración 3» sin decir qué caja no es verificable. **Esa tabla es el `DONE` escrito a mano del
+profesor, en forma comprobable.** El resumen:
+
+| Iteración | `RF` | `RNF` | Total | Qué cerró |
+|---|---|---|---|---|
+| **1** — la caja única | 1 | 0 | **1** | `RF-11`: el código sale por una sola arista, y hacia el receptor no hay ninguna |
+| **2** — la caja se abre en servicios | 29 | 7 | **36** | Identificación, tamizaje, límites, cotización, creación y pago, con su rama de rechazo |
+| **3** — cobertura del backlog restante | 71 | 10 | **81** | Doble control, corredores, desafío, sin conexión, caja del agente, devoluciones, cumplimiento, auditoría, supresión y los cuatro procesos batch |
+| | **101** | **17** | **118 / 118** | **Ningún hueco, y por eso no hay una cuarta pasada** |
+
+**La regla se lee en las dos direcciones, y las dos importan.** *De componente a ítem:* un componente
+que no traza a ningún ítem es un **huérfano** — se borra, o se descubre que el backlog tenía un hueco
+y entonces el arreglo va en `R`, no en el diagrama. *De ítem a componente:* un ítem que ninguna
+iteración cubre es un **hueco**, y es exactamente lo que obliga a una pasada más. **El diagrama está
+terminado cuando la columna `DONE` no tiene ningún vacío. No antes, y tampoco porque «ya se ve
+completo».**
+
+---
+
+## 7. E — Escalar
+
+**El material rotula sus tramos en usuarios registrados. Esa unidad no existe en este modelo:**
+`RF-01` identifica al emisor presencialmente contra un documento vigente **cada vez** que crea un
+giro, y no hay cuenta, padrón ni sesión que contar. Un tramo de SendIt se rotula en **giros por día**
+—la unidad que produce la estimación de la sección 3— y se lee junto a tres columnas derivadas que
+**no crecen con el mismo factor**: las operaciones de ventanilla (más de dos por giro), el pico
+diario, y una cuarta que **no es carga sino superficie**: los puntos de atención afiliados.
+
+**Esa cuarta columna es la que rompe la intuición del material.** Los puntos no crecen con los giros:
+`S-12` pone **3 000 desde el día uno**. Y son ellos —no el volumen— los que fijan cuántas cajas
+declara `RF-76` cada turno, cuánto efectivo hay parado en mostradores ajenos y **cuántos mostradores
+cierran cuando se les cae el enlace**. Un tramo con muchos giros en pocos puntos y otro con los
+mismos giros repartidos en miles **no se rompen por lo mismo**.
+
+Cada celda se calcula en el **techo** de su tramo, con los factores que la sección 3 ya derivó y sin
+inventar ninguno: `2,11` ventanillas por giro · `3,0` de pico diario · `4,9` avisos por giro ·
+`0,96` pagos por giro.
+
+| Tramo (giros/día) | Ventanillas/día | Giros/día en pico | Puntos activos | Avisos de voz y SMS/día | Corredores |
+|---|---|---|---|---|---|
+| `< 1 k` | **2 110** — menos que las **9 000** declaraciones de caja del mismo día | 3 000 | **3 000** — piso de `S-12`, no derivado del volumen | 4 900 | 2 |
+| `1 k – 10 k` | **21 100** — **SendIt entra acá**, en `2 800` (`5 921` ventanillas) | 30 000 | 3 000 — la red sigue al `11 %` de su techo de caja | 49 000 | 2 |
+| `100 k` | 211 000 | 300 000 | **3 200** — primer tramo en que la red deja de estar sobrada | 490 000 | 2, al `18 %` de los dos corredores |
+| `500 k` | 1 055 000 | 1 500 000 | 16 000 | 2 450 000 | **≥ 12** — el `89 %` de los dos corredores es inalcanzable |
+| `1 M` | 2 110 000 | 3 000 000 | 32 000 | 4 900 000 | **≥ 24** — `1,8×` los dos corredores enteros |
+
+**Los puntos son la única columna que no se multiplica**, y su cruce está calculado: un punto que
+paga `N` giros por turno tiene que tener `N × USD 300` inmovilizados en su cajón —de **su** dinero,
+`RF-24`—, lo que con `[ASSUMPTION: USD 6 000 de caja por punto y turno]` da `20` pagos por turno y
+`30` por día. De ahí `puntos = max(3 000; pagos/día ÷ 30)`, y el cruce cae en
+`3 000 × 30 ÷ 0,96 = ` **93 750 giros/día**: por debajo manda `S-12`, por encima manda la tesorería
+del agente.
+
+### 7.1 El hallazgo: el sistema nace pasado su primer cuello
+
+**El primer cuello de botella de SendIt no es técnico, y se rompe por debajo del volumen de
+llegada.**
+
+```
+Avisos por giro (S-14) ................................  4,9
+Pico diario ...........................................  3,0×
+Unidades por giro el día señalado .....................  14,7
+
+Cuota del operador, 10 000/día por país × 2 países ....  20 000
+Techo del tramo:  20 000 ÷ 14,7 = ................  1 360 giros/día
+
+Volumen de llegada estimado (sección 3) ...........  2 800 giros/día
+```
+
+**`1 360 < 2 800`. El sistema arranca ya pasado su primer cuello, y por un factor de 2,1.** El día
+señalado se necesitan `41 160` unidades contra `20 000` de cuota.
+
+**Y no hay plan B, porque el plan B es la persona.** Los cuatro avisos P0 —`RF-25`, `RF-37`, `RF-41`,
+`RF-75`— y el P1 `RF-60` salen por ese canal, y **Elena no tiene aplicación ni datos móviles**: un
+aviso no entregado no degrada, **desaparece**. El sistema se ve sano en todas sus métricas —el giro
+está creado, fondeado y disponible— y nadie lo cobra.
+
+**Lo que la arquitectura puede aportar es poco, y hay que decir exactamente cuánto.** Nada en el
+diagrama; todo en el contrato. El `Notification Service` que la sección 6 dibuja como **una** caja
+pasa a ser **uno por país** —`RNF-12` obliga a contar **dos operadores**, no dos endpoints— y gana lo
+único que la arquitectura sí da: **cola con prioridad, para que la cuota se agote en `RF-60` (P1) y
+no en `RF-25` (P0)**, y constancia de `RF-98` también de lo **no** entregado, que hoy solo registra
+lo enviado. El resto se negocia.
+
+**Como contraste, el cuello que un servidor sí arregla llega cuarto y muy arriba:** el plano único de
+escritura de `D`(a), en **34 700 giros/día**. `18,12` escrituras por giro —porque `D`(a) hizo que
+*todo hecho sea un asiento con contrapartida*, incluida la retención de `RF-29`, que no mueve un
+centavo y reclasifica `Obligación con el receptor` contra `Obligación retenida`— dan
+`giros × 18,12 ÷ 86 400 × 11 = 80 req/s`, que es la capacidad de un plano de 16 vCPU. **Ese es el
+único de los seis cuellos que se compra.**
+
+### 7.2 Los cinco tramos y qué se rompe primero en cada uno
+
+| Tramo | Qué se rompe primero | Por qué | Qué cambia en la arquitectura |
+|---|---|---|---|
+| **`< 1 k`** *(el tramo donde el material dibuja «un servidor y una base»)* | **La cuota del operador de telefonía**, en `1 360` giros/día | `14,7` unidades por giro el día señalado contra `20 000` de cuota. **El tramo se rompe adentro, y por debajo del volumen de llegada** | Nada en el diagrama, todo en el contrato: `Notification Service` **uno por país**, cola con prioridad, constancia de lo no entregado. *En segundo plano ya asoman el mostrador sin línea —los `3 000` puntos de `S-12`— y el piso de `RF-76`: `9 000` declaraciones de caja al día, **`4,3×` la carga que sí se apaga**. Un día sin un solo giro sigue escribiendo `9 000` filas* |
+| **`1 k – 10 k`** *(SendIt entra acá, en `2 800`)* | **La cuota, ya rota, se vuelve estructural**, y aparece el primer límite medido en personas | En el techo del tramo son `49 000` avisos/día y `147 000` el día señalado: **`7,4×` la cuota**. Un factor de dos se negocia en un mes; **uno de siete cambia el modelo comercial del canal**, y con él el `USD 0,24` por giro que `S-14` cargó al costo unitario | El canal deja de ser un adaptador y pasa a ser una **decisión de compra por corredor**. **Es el único cuello del sistema que se renegocia en vez de rediseñarse.** Y la cola de cumplimiento revela **dos términos que no se parecen**: el de sanciones crece como el volumen; el de `RF-93` crece con los cobros por receptor, **que es justo lo que sube cuando el negocio va bien** |
+| **`100 k`** *(el primer tramo en que algo se rompe por volumen — y no es la base de lectura)* | **El plano único de escritura de `D`(a)**, roto desde `34 700` giros/día | `18,12` escrituras por giro. Los tres nodos de `RNF-11` son **un plano con quórum, no tres capacidades**. A `100 k` hacen falta `2,9` | Aparece el **particionamiento del libro, por giro** —porque `RNF-07` exige que las dos líneas del asiento entren juntas y las dos son del mismo giro—. **Lo que queda a caballo**: `RF-81` busca a una persona **a través de** todos sus giros, y `RF-58`/`RF-93` cuentan por identidad de receptor. En paralelo la caja por punto (`3 200` puntos contra `3 000`) hace de `Caja del Punto Service` **el segundo escritor más caliente del libro**, y el `Desafío Service` pasa a ser dependencia dura del pago |
+| **`500 k`** *(deja de ser un tramo de carga)* | **El mercado direccionable, antes que cualquier componente** | `500 000 × USD 300 × 365 = USD 54 750 M/año`: el **`89 %`** de los dos corredores enteros, que valen `USD 61 300 M`. Ningún incumbente de treinta años tiene el `89 %` de un corredor. **No se llega vendiendo más: se llega abriendo corredores** | Lo que crece **no es el número de corredores: son los pares origen–destino** (`o × d`). Y **es el tramo donde una decisión de `D` deja de sostenerse**: con varios orígenes una misma Elena cobra giros de corredores distintos, y el acumulado de `RF-58` que `D` exigió *sin caché y dentro de la transacción* **cruza particiones**. Las dos salidas cuestan: partir por identidad de receptor —y entonces `RNF-07` queda a caballo— o un segundo recurso en el camino crítico de `RNF-09` |
+| **`1 M`** *(no se alcanza con arquitectura)* | **Los supuestos de la estimación, antes que cualquier caja** | `USD 109 500 M/año`: **1,8 veces** los dos corredores de lanzamiento y del orden del `13 %` de todo el flujo mundial de remesas. La cuota del `0,5 %` y el ticket de `USD 300` son las dos entradas de las que todo cuelga en proporción directa; este tramo exige mover una por un factor grande. **Ninguna de las tres cosas es una decisión de arquitectura** | **Se devuelve a la estimación, no se resuelve acá.** Lo que sí es una prueba de arquitectura: **si el corredor enésimo cuesta lo mismo que el segundo.** Si los pares viven como **filas** de `BD corredores y reguladores`, el costo es constante; si viven como **ramas** en el `Corredor Service`, crece con los que ya hay. Y con `[ASSUMPTION: 99 % de enlace por punto]`, en `32 000` mostradores hay **320 que no pueden pagar nada en cualquier instante** — del orden de `9 600` pagos diarios que no ocurren donde Elena fue a buscarlos |
+
+### 7.3 El orden en que este sistema se rompe
+
+Se ordenan **por el tramo en el que caen, no por gravedad**. Cinco de los seis son de personas, de
+tesorería, de contrato o de un tercero.
+
+| Orden | Cuello | Tramo en que cae | Se responde con |
+|---|---|---|---|
+| **1** | La cuota del operador de telefonía | **`1 360` giros/día — debajo del volumen de llegada** | Un contrato, no una máquina |
+| **2** | El mostrador sin línea | `< 1 k`, con los `3 000` puntos de `S-12` | Un segundo camino de conectividad, o **aceptar la indisponibilidad por escrito** |
+| **3** | El plano único de escritura de `D`(a) | `34 700` giros/día | Particionar el libro por giro — y asumir lo que queda a caballo |
+| **4** | La caja por punto de atención | `93 750` giros/día | Tesorería del agente, y `RF-91` como **balanceo** y no como excepción |
+| **5** | La capacidad de decidir dentro del plazo de la retención | `100 k`, creciendo **más rápido** que el volumen por `RF-93` | Personas, o achicar el caudal con `RF-78` — **que es un ítem de `R`, no una caja** |
+| **6** | Los roles distintos por punto y turno (`RNF-02`) | `500 k`, con la red ya ensanchada | Más personas **distintas y simultáneas**, que no es lo mismo que más horas |
+
+**El cuello número 3 es el único de los seis que un servidor arregla, y es el cuarto en llegar.**
+
+**Dos correcciones que este paso obligó a hacer sobre pasos anteriores, y conviene decirlas porque
+son el trabajo real del método.**
+
+- **El candidato obvio era falso.** Se esperaba que el primer cuello fuera la **cola de casos de
+  cumplimiento** —Kevin revisa uno por uno y la cola crece sin fin—. `RF-31` y `RF-32` le quitan la
+  premisa: toda retención nace con plazo y la que vence sin liberarse **se resuelve sola**
+  devolviendo el monto. **La cola no es un acumulado: es un caudal con tiempo de residencia
+  acotado**, y su tamaño en régimen no diverge. Lo que satura no se apila — se manifiesta como
+  **tasa de devolución automática**, no como retraso: Rosa recupera su dinero, Elena no cobra, **y
+  el libro queda perfecto**. Un fallo silencioso con recibo contable correcto.
+- **La ventana de divergencia entre el centro y el punto dejó de existir, y esa ausencia es un
+  resultado.** Estaba escrita como cuello cuando el candidato era el centro diciendo «retenido» y el
+  mostrador «disponible». `D`(c) eligió **arrendamiento exclusivo emitido solo en línea**, y `RF-100`
+  invertido **elimina esa ventana por construcción, no la acorta**. **`RNF-06` y `RNF-13` dejaron de
+  ser dimensionables y por eso no aparecen en ninguna tabla de tramo.** Lo que queda en su lugar no
+  es un invariante roto sino **una capacidad perdida**: una caída de enlace **cierra el mostrador
+  para pagos, sin excepción** — y eso crece con el número de puntos exactamente igual que crecía la
+  divergencia. No es dinero pagado dos veces: **es dinero que no se paga ninguna.**
+
+**Una deuda que este paso devuelve hacia atrás, y que ya está saldada en la cifra de la sección 3.**
+El `Desafío Service` que `D`(f) exige con proceso, base y credenciales propias necesita **su propio
+par de nodos** —`RNF-11` mide sobre *pagar*, y el `20 %` de los pagos pasa por él—. Con esa fila, el
+piso de disponibilidad y geografía es **13 servidores** —`3` de escritura, `4` de réplica de lectura
+(dos por país), `2` de consulta, `2` de cumplimiento y `2` del módulo del desafío— y no una cifra
+menor: `max(0,09 ; 13) = 13`.
+
+---
+
+## 8. El EVAL
+
+El enunciado pide *«un EVAL con resultado de requerimientos»* y fija el umbral en **8/10**. Eso
+decide el alcance del aparato: **se puntúa el backlog, y nada más.** Los otros cinco pasos de
+R.E.D.A.L.E. son entregable exigido, no puntaje.
+
+**Lo que impide que los pasos aguas abajo diverjan del backlog no es puntuarlos, sino una regla de
+dirección: los requerimientos bajan, nunca suben.** Si `D` diseña un endpoint que responde algo que
+ningún título exige, o `A` guarda un campo que ningún título obliga a conocer, **el defecto es del
+backlog** y se cobra en D4 como *decisión sin requerimiento*. La corrección va arriba —se agrega el
+título y se vuelve a puntuar—, nunca abajo. **La regla se paga sola:** convierte cualquier invención
+aguas abajo en una deducción de la única dimensión que sí se puntúa, y así la coherencia entre pasos
+deja de depender de la buena voluntad de quien los escribe.
+
+### 8.1 La rúbrica — 10 puntos, gate en 8
+
+| Dim | Pts | Qué mide | Quién juzga |
+|---|---:|---|---|
+| **D1** Satisfacción de las personas | 3 | El flujo principal de Rosa, Elena y Kevin corre de extremo a extremo, **incluido cuando sale mal**. 1 pt por persona, **solo deducciones** | Los tres agentes de persona |
+| **D2** Ajuste al problema | 3 | Ataca **la remesa internacional** —dinero que cruza una frontera y una moneda y termina en efectivo en la mano de alguien sin banco— y no un «enviar plata» genérico. Un punto por rasgo, **contra un censo** | Agregador |
+| **D3** Cobertura de seguridad y consistencia | 2 | Los dos requerimientos que el enunciado nombra, **con medida o invariante y no como adjetivo**. Un punto cada uno | Agregador |
+| **D4** Coherencia del backlog | 2 | Sin huérfanos ni duplicados encubiertos; títulos atómicos y entendibles **sin descripción**; tensiones decididas; prioridad asignada. **`D4 = 2 − 0,25 n`**, piso en 0 | Agregador |
+
+**Gate: ≥ 8/10.** Se pueden perder dos puntos, no más. **Un puntaje por debajo del gate no baja la
+vara: se corrige el backlog y se vuelve a evaluar.**
+
+**La aritmética del gate no admite un camino barato.** Aun con el agregador entregando sus siete
+puntos perfectos, dos personas pueden devolver `No funciona` y el total sigue siendo exactamente 8.
+En cualquier otro escenario, **un solo `No funciona` obliga a que el agregador ceda como máximo un
+punto entre D2, D3 y D4**. El gate se alcanza por acuerdo de los dos lados, o no se alcanza.
+
+**Dos exigencias de forma que valen la pena porque son las que hacen puntuable un backlog sin
+descripciones.** Primero, **un título cubre un paso solo si pasa tres pruebas**: nombra un hecho y no
+un área (*«Gestión de tipo de cambio»* no pasa: un sistema que no hace nada de eso también podría
+llevar ese título); **es negable** (*«Seguridad de extremo a extremo»* no pasa: ningún sistema lo
+incumple y ninguno lo cumple); y admite **una sola lectura**. Un título que falla las dos primeras es
+un **comodín**, y el agente lo cuenta como paso **no cubierto** — porque un comodín *no es cobertura
+débil, es ausencia de cobertura con apariencia de presencia*, que es peor: **nadie va a buscar el
+requerimiento que falta**. Segundo, la ambigüedad **se marca, nunca se rellena en silencio**:
+`[CLARIFY: …]` cuando la respuesta determina el contenido, `[ASSUMPTION: …]` cuando se avanza bajo
+una hipótesis declarada.
+
+### 8.2 Cómo funciona el aparato
+
+**Tres agentes de persona, cada uno con una sola voz y una sola capacidad: restar.** Viven en
+`.claude/agents/` y leen **exactamente dos archivos**: el suyo en `personas/` y el backlog. Nada más:
+ni las otras personas, ni los veredictos ajenos, ni el historial.
+
+| Agente | Persona | Veredictos posibles |
+|---|---|---|
+| `sendit-rosa` | Rosa Quispe, la emisora | `Funciona` (−0) · `Funciona con reservas` (−0,5) · `No funciona` (−1) |
+| `sendit-elena` | Elena, la receptora en Huanta | ídem |
+| `sendit-kevin` | Kevin, el operario del mostrador | ídem |
+| `sendit-agregador` | Ninguna. Ve el conjunto | Puntúa D2, D3 y D4 y corre los cuatro rebarridos de propagación |
+
+**La regla de asimetría: un agente de persona solo puede restar de D1, nunca sumar. Si ninguno
+objeta, D1 vale 3.** No es una cortesía metodológica, es una consecuencia de **qué puede observar
+cada quien**. Un agente ve un ángulo del problema y no ve el conjunto; **si además pudiera sumar, una
+lectura entusiasta compraría puntos que ninguna otra lectura está en condiciones de contestar**, y D1
+terminaría midiendo la generosidad del agente en lugar de la calidad del backlog. Restringido a
+restar, el agente solo puede aportar evidencia de un tipo —*acá se me corta el día*— que es
+exactamente el tipo de evidencia que **nadie más puede producir**. Del mismo lado: **un puntaje alto
+debe costar. El máximo de D1 no se gana, se conserva.**
+
+**Por qué el agente NO lee `personas/README.md`** —la exclusión que más cuesta explicar y la que más
+importa—: ese archivo contiene las seis tensiones y el ángulo de las otras dos personas. **Un agente
+que lo lee deja de reclamar y empieza a negociar** —«entiendo que Kevin necesita tiempo»— y ahí se
+pierde la única señal que el agente existe para producir. **Las tensiones las decide el backlog y las
+juzga el agregador, no la persona que las sufre.**
+
+**Dos salvaguardas más.** *Precondición:* sin los tres veredictos **no se emite total** — D1 se
+declara no computable y el total queda en blanco; no se sustituye el veredicto ausente por el
+criterio del agregador. Y *un veredicto sin cita al backlog es inadmisible y cuenta como
+`No funciona`*; una cita a un identificador que no existe **tampoco es cita**.
+
+**El agregador busca por nombre las cuatro variantes de propagación**, y registra el rebarrido
+**aunque no encuentre nada** —un rebarrido vacío es un resultado; uno que nadie corrió no lo es, y
+son indistinguibles si no se anota—:
+
+| Variante | Qué es |
+|---|---|
+| **Cifra sin productor** | Un valor del que todo depende y que ningún ítem produce |
+| **Acto sin consumidor** | Algo que se puede hacer, registrar y recuperar, y que **no llega a nadie** ni puede ser respondido |
+| **Reparación en la altitud equivocada** | El arreglo se aplica donde se vio el síntoma, no en el enunciado que lo gobierna |
+| **Estado sin terminador** | Un estado que se abre y que **nada cierra** |
+
+**Y dos reglas de higiene que valen todo el aparato: medir y corregir no ocurren a la vez** —las
+correcciones se aplican **después** de puntuar y quedan sin puntaje hasta la ronda siguiente, porque
+*quien corrige conoce la vara*—; y **ni la rúbrica ni las personas se editan para elevar el puntaje.
+Son la vara.**
+
+### 8.3 Las siete rondas
+
+| Ronda | Fecha | Ítems | D1 /3 | D2 /3 | D3 /2 | D4 /2 | **Total** | Gate | Qué cambió |
+|---|---|---:|---:|---:|---:|---:|---:|---|---|
+| **01** | 26-08 | 41 | 1,0 | 1,5 | 1,0 | 0,0 | **3,5** | FALLÓ | Primera corrida. **El hallazgo que ordena todos los demás es un censo: solo 4 de 41 ítems cambiarían si el envío dejara de cruzar un país.** El corredor vivía en un `[ASSUMPTION]`, no en un requerimiento. Una de las personas devolvió `No funciona`: reportar a la autoridad no tenía identificador, y tres ítems le anunciaban siempre al emisor que su envío estaba detenido y hasta cuándo — **revelar la medida con el porqué tachado**. **T2 no quedó sin decidir: quedó mal decidida y registrada como virtud** |
+| **02** | 26-08 | 69 | 0,5 | 2,5 | 1,0 | 0,0 | **4,0** | FALLÓ | Backlog reescrito **entero** sobre el modelo Western Union. **D2 +1,0**: diez de los once ítems del bloque «La frontera» mueren si el envío deja de cruzar un país, y la tasa por fin tiene productor. **D1 baja**: de las diez correcciones de la 01, **2 aplicadas, 6 a medias, 2 no aplicadas** |
+| **03** | 26-08 | 81 | 1,0 | 2,5 | 1,5 | 0,0 | **5,0** | FALLÓ | **Dos tensiones cerradas en una ronda** (T5 y T6), la retención por fin termina y **D3 sube a 1,5**. El censo de D2 llega a **41 de 81** |
+| **04** | 26-08 | 97 | 1,5 | **3,0** | 1,5 | 0,0 | **6,0** | FALLÓ | **D2 al máximo: 51 de 97 ítems mueren en una transferencia doméstica**, y la proporción se sostuvo mientras el backlog crecía 20 %. **Ninguna tensión sin decidir, por primera vez.** Elena sale de `No funciona` |
+| **05** | 26-08 | 110 | 1,5 | 3,0 | **2,0** | 0,0 | **6,5** | FALLÓ | **D3 al máximo:** el triángulo del desafío cierra con invariante declarable (`RNF-17`). Censo de D2 en **73 de 110**. Gradiente de prioridad verificado exacto |
+| **06** | 27-08 | 119 | 1,5 | 3,0 | **1,0** | 0,0 | **5,5** | FALLÓ | **Primera regresión de la serie, entera en D3.** Tres de los nueve ítems nuevos **niegan el invariante que los justificaba**: `RF-94` contra `RNF-15` —*un sistema que no puede mostrar un código no puede reentregarlo*—, `RF-100` contra `RNF-05`, y `RF-101` contra `RF-69`, que reabre T3. `n` sube a 41 |
+| **07** | 27-08 | 118 | 1,0 | 3,0 | **2,0** | 0,0 | **6,0** | FALLÓ | **Se revierte la regresión entera** (+1,0 en D3): `RF-94` y `RF-100` pasan de negar su invariante a **ejercerlo**. `n` baja de 41 a **26**, la mejor densidad de la serie, y **el backlog se achica por primera vez**. Elena baja a `No funciona` por tres bloqueos que la misma ronda introdujo. **Y el agregador dictamina que D4 no está calibrada para 118 ítems** |
+
+```
+Ronda      01     02     03     04     05     06     07
+Puntaje   3,5 →  4,0 →  5,0 →  6,0 →  6,5 →  5,5 →  6,0
+Ítems      41     69     81     97    110    119    118
+```
+
+**El resultado se dice sin adornos: el EVAL cerró en 6,0 / 10 y el gate es 8. No se alcanzó.** Lo que
+la serie sí muestra es una señal fuerte y bien capturada: **D2 subió 1,5 → 3,0 y se sostuvo cuatro
+rondas; D3 hizo 1,0 → 2,0 → 1,0 → 2,0 siguiendo defectos identificables; D1 se movió cinco veces.**
+La única dimensión que **nunca se movió** es D4 — y esa es la sección siguiente.
+
+**Las dos correcciones que revirtieron la regresión, para que se vea qué clase de cambio mueve un
+punto:**
+
+| | Ronda 06 | Ronda 07 |
+|---|---|---|
+| **`RF-94`** | «el sistema **volverá a entregar** el código… tras identificarlo de nuevo» | «el sistema **no volverá a entregar** un código ya emitido, **ni siquiera al emisor que lo perdió**» |
+| **`RF-100`** | «**acotará por monto y por antigüedad** lo que un punto sin conexión puede pagar» | «**impedirá** que un punto sin conexión autorice un pago que no puede comprobar contra el centro» |
+
+**Rosa confirma `RF-94` contra su propio interés.** Kevin confirma `RF-100`: *«RNF-05 está escrito
+fuerte, no confiado en mi honestidad.»*
+
+---
+
+## 9. El dictamen de calibración
+
+**Este es el resultado que este trabajo entrega, y vale más que el puntaje.**
+
+Al cerrar la séptima ronda se le pidió al agregador que juzgara —con la severidad de cualquier otro
+hallazgo y **sin cambiar la rúbrica**— si `D4 = 2 − 0,25 n` mide lo que dice medir en un artefacto de
+este tamaño. El dictamen fue:
+
+> **No. Por encima de unos treinta ítems, `D4` deja de medir coherencia y mide tamaño.**
+
+### 9.1 Los siete puntos de datos
+
+| Ronda | Ítems | `n` | Densidad | **D4** | Qué hizo el backlog |
+|---:|---:|---:|---:|---:|---|
+| 01 | 41 | 15 | 36,6 % | **0,00** | primera corrida |
+| 02 | 69 | 23 | 33,3 % | **0,00** | reescrito entero; D2 +1,0 |
+| 03 | 81 | 24 | 29,6 % | **0,00** | dos tensiones cerradas; D3 +0,5 |
+| 04 | 97 | 30 | 30,9 % | **0,00** | cero tensiones sin decidir por primera vez |
+| 05 | 110 | 28 | 25,5 % | **0,00** | D3 al máximo |
+| 06 | 119 | 41 | 34,5 % | **0,00** | **regresión de un punto entero** |
+| 07 | 118 | **26** | **22,0 %** | **0,00** | 4 retirados, 3 partidos, 13 citas, 2 tensiones recerradas |
+
+> **El artefacto varió `n` entre 15 y 41 —un rango de 2,7×— y D4 no se movió una sola vez. Su
+> varianza es cero.** Una dimensión con varianza cero **no aporta información** sobre lo que dice
+> medir.
+
+### 9.2 La prueba decisiva es el par 06 → 07
+
+Entre esas dos rondas el backlog mejoró **en la métrica propia de D4 y en nada más**: cuatro
+duplicados retirados, tres títulos partidos, trece citas corregidas, dos tensiones recerradas.
+
+**`n` cayó 37 %. D4 leyó 0,00 antes y 0,00 después.**
+
+Y el par anterior cierra la pinza por el otro lado: entre 05 y 06 el backlog **empeoró** de una forma
+que la rúbrica **sí** detectó —un punto entero— **y lo detectó en D3, no en D4**, aunque `n` había
+subido de 28 a 41 **por esos mismos ítems**. La rúbrica tiene sensibilidad; D4 no participa de ella.
+
+### 9.3 Por qué es estructural, y no un accidente de esta serie
+
+**D4 es la única dimensión de la rúbrica con un conteo absoluto.** Las otras tres están normalizadas
+o son existenciales — **y el propio documento lo sabe**:
+
+| Dim | Forma | Efecto del tamaño |
+|---|---|---|
+| **D1** | Puntúa **por persona** | Independiente del tamaño por construcción |
+| **D2** | Existencial, **y su censo se reportó siempre como razón** — «4 de 41», «51 de 97», «73 de 110», «78 de 118» | **El autor de la rúbrica normalizó ahí** |
+| **D3** | Existencial | Independiente |
+| **D4** | Cuenta hallazgos **sin denominador**, sobre un artefacto cuyo tamaño la rúbrica no acota | Crece con el tamaño |
+
+Que D2 reporte su censo como razón y D4 no tenga denominador **no es una diferencia de estilo: es la
+prueba de que la normalización estaba disponible y se aplicó en un lugar y no en el otro.**
+
+**La aritmética.** La densidad observada en siete rondas va de `22,0 %` a `36,6 %`, media `≈ 29,6 %`,
+y **nunca bajó de 22 %** — ni siquiera en la ronda en que se prohibió agregar superficie y se
+retiraron ítems. Con el piso en `n ≥ 8`, `D4 > 0` exige `n ≤ 7`:
+
+```
+A la mejor densidad alcanzada (22,0 %) → un backlog de a lo sumo  31 ítems
+A la densidad media          (29,6 %) → un backlog de a lo sumo  23 ítems
+El ejemplo del profesor tiene ..........................  5 ítems
+```
+
+> A la densidad media, un backlog de cinco ítems daría `n ≈ 1,5` → `D4 ≈ 1,6`. **En un backlog de
+> cinco ítems D4 nunca toca el piso y siempre discrimina. En uno de 118 nunca sale del piso y nunca
+> discrimina.**
+
+**Y este artefacto salió de ese régimen antes de la primera medición:** la ronda 01 ya tenía 41 ítems
+y `n = 15`, **casi el doble del umbral**. No hubo una sola corrida dentro del rango donde la
+dimensión funciona.
+
+**Dos corroboraciones internas, que el dictamen buscó a propósito.**
+
+1. **Los dos techos duros de D4 nunca ataron.** En las siete rondas —incluidas las tres con tensiones
+   abiertas— el puntaje **ya estaba en 0,00 por debajo de los dos techos**. Una restricción que jamás
+   fue la restricción activa no influyó en ningún resultado.
+2. **La aritmética del gate que el propio `evals/README.md` describe no existe a este tamaño.** Ese
+   documento explica que dos personas pueden devolver `No funciona` y el total seguir siendo 8 —
+   cálculo que supone `D4 = 2,0`, o sea `n = 0`.
+
+### 9.4 La consecuencia aritmética: el techo real es 8,0 y coincide con el gate
+
+Con D4 fijada en 0,00, el máximo alcanzable es:
+
+```
+D1 = 3,0  ·  D2 = 3,0  ·  D3 = 2,0  ·  D4 = 0,0   →   Total = 8,0
+```
+
+**El máximo alcanzable es exactamente 8,0, y solo con las tres personas devolviendo `Funciona` sin
+una sola reserva.**
+
+Y ahí está el nudo: **otra regla de la misma rúbrica —el contraste cruzado— declara sospechosa
+precisamente esa configuración.** El `README.md` dice que *tres personas conformes a la vez es el
+resultado esperado de un backlog que decidió bien, y también el resultado esperado de un backlog que
+evitó decidir*.
+
+> **A este tamaño, el gate exige la única combinación que la rúbrica misma advierte que hay que mirar
+> con desconfianza, y el escape que ella ofrece está aritméticamente cerrado.**
+
+### 9.5 ¿Y no será que el backlog es simplemente malo?
+
+**No es esa la explicación, y la evidencia lo separa limpiamente.** La calidad de este backlog **sí
+se mueve y sí se mide**: D2 subió `1,5 → 3,0` y se sostuvo cuatro rondas; D3 hizo
+`1,0 → 2,0 → 1,0 → 2,0` siguiendo defectos identificables; D1 se movió cinco veces; el total recorrió
+`3,5 → 6,5 → 5,5 → 6,0`.
+
+**La señal existe, es fuerte, y las otras tres dimensiones la capturan. La única que no la ve es la
+que no tiene denominador.**
+
+### 9.6 La decisión: la rúbrica no se cambia
+
+El propio `evals/README.md` fija el procedimiento para enmendarla —por escrito, en su propia ronda,
+declarando las corridas anteriores no comparables— **y la justificación para invocarlo está probada
+arriba**.
+
+**No se invoca. Y esa es la decisión.**
+
+| Razón | Por qué pesa |
+|---|---|
+| **El momento** | Cambiar el instrumento después de siete rondas de no alcanzarlo, **aun con razón**, es exactamente lo que este EVAL existe para hacer imposible. La regla de asimetría, la precondición de los tres veredictos y la prohibición de que un agente sume están **todas** construidas sobre la idea de que un puntaje alto tiene que costar |
+| **El procedimiento lo permite y también lo encarece** | Al cambiar una regla, *«las corridas anteriores dejan de ser comparables»*. Aplicarla **convertiría siete puntos de datos en uno** |
+| **El hallazgo vale más que el punto** | Que un instrumento diseñado por el propio grupo resulte mal calibrado, **se pruebe con siete mediciones y no se explote**, dice más sobre el método que un 6,9 |
+
+**Lo que sí se declara, con las palabras del dictamen: el techo real de este EVAL es 8,0 y coincide
+con el gate.**
+
+### 9.7 La enmienda redactada y no aplicada
+
+Para que la decisión sea auditable y no una excusa, **la enmienda está escrita**, en
+`evals/ENMIENDA-PROPUESTA-D4.md`, con su encabezado diciendo que **no está en vigor**. Sustituye el
+conteo absoluto por **densidad**, que es lo que D2 ya hacía:
+
+```
+D4 = 2 × (1 − d/D)     acotado a [0, 2]
+     d = n / ítems     densidad de hallazgos observada
+     D = 0,40          densidad de referencia
+```
+
+`D = 0,40` se fija **por encima de la peor densidad observada** (36,6 %), de modo que un backlog peor
+que cualquiera de los siete puntúe 0 y uno perfecto puntúe 2. Los dos techos duros se conservan sin
+cambios y **por primera vez podrían atar**.
+
+| Ronda | `d` | D4 enmendada | Total con la enmienda | Total real |
+|---:|---:|---:|---:|---:|
+| 01 | 36,6 % | 0,17 | 3,67 | 3,5 |
+| 02 | 33,3 % | 0,33 | 4,33 | 4,0 |
+| 03 | 29,6 % | 0,52 | 5,52 | 5,0 |
+| 04 | 30,9 % | 0,45 | 6,45 | 6,0 |
+| 05 | 25,5 % | 0,73 | 7,23 | 6,5 |
+| 06 | 34,5 % | 0,28 | 5,78 | 5,5 |
+| **07** | **22,0 %** | **0,90** | **6,90** | **6,0** |
+
+**Y este es el dato que hace legítima la enmienda: no alcanza el gate en ninguna ronda.** El mejor
+total simulado es 6,90 contra un gate de 8. **La enmienda no está calibrada para pasar** — lo que
+hace es devolverle a D4 la sensibilidad al trabajo, recorriendo de `0,17` a `0,90` siguiendo la
+calidad real, en vez de leer `0,00` siete veces.
+
+**Si el grupo decidiera aplicarla**, habría que hacerlo en su propia ronda, declarando por escrito
+que las corridas 01 a 07 dejan de ser comparables y volviendo a correr el EVAL completo. **Las rondas
+viejas no se recalculan**: la tabla de arriba es una simulación para juzgar la enmienda, **no un
+resultado**.
+
+---
+
+## 10. Las iteraciones del diseño
+
+**Hay dos clases de iteración y confundirlas arruina el entregable.** Las dos viven en la bitácora
+`redale/ITERACIONES.md`, en tablas separadas, **porque una fuerza a la otra**.
+
+| Clase | Qué es | Qué la hace avanzar |
+|---|---|---|
+| **Del diseño** (*top-down*) | El **mismo diagrama de componentes**, dibujado otra vez y más abierto | **Un ítem del backlog que el diagrama actual no explica** |
+| **Del EVAL** | Una pasada de evaluación que **cambia una decisión** del backlog | Un puntaje bajo el gate, o el veredicto de una persona |
+
+**La que el enunciado pide mostrar es la primera** —así la mostró el profesor en clase—. **La segunda
+es cómo se llega a un backlog que valga la pena diagramar.**
+
+### 10.1 Las tres del diagrama
+
+| # | Qué muestra | **Qué ítem la forzó** | `DONE` |
+|---|---|---|---:|
+| **1** | Los cinco actores y **una sola caja**. Rosa y Elena hablan cada una con un operario, y el operario con el sistema | **Nada la fuerza: es el punto de partida.** Lo único que afirma es *quién habla con el sistema* | **1** |
+| **2** | La caja se abre: identificación, tamizaje, límites, cotización, creación del giro y pago, con sus `BD`, sus terceros y las aristas condicionales etiquetadas | **`RF-26`** — el tamizaje contra listas **antes de aceptar el efectivo** no cabe dentro de un cuadrado. **Un cuadrado no tiene «antes»** | **36** |
+| **3** | El resto: doble control, corredores, desafío, sin conexión, caja del agente y del punto, cobro alternativo, reclamo del receptor, devolución, supresión, acumulado de cobros, liquidación y los cuatro procesos batch | **`RF-68` y `RF-69`** — el desafío obliga a un servicio y un almacén **propios**, porque `RNF-17` exige que la respuesta sea ilegible **en los dos lados del mostrador**. Más `RF-13`+`RNF-02` (no hay segundo rol en ninguna parte), `RF-45` (nada reconcilia las dos versiones) y `RF-24` (no hay caja del agente) | **81** |
+| | | **Total** | **118 / 118** |
+
+**Y no hay una cuarta, por la única razón admisible: la columna `DONE` no tiene ningún vacío.** El
+registro de cada pasada exige cuatro cosas y en ese orden: qué ítem no explicaba el diagrama
+anterior · qué caja dejó de ser una caja · qué queda `DONE` · **y qué quedó sin cubrir, que es lo que
+va a forzar la siguiente.**
+
+### 10.2 Las siete del EVAL
+
+| # | Total | Qué la forzó y qué cambió |
+|---|---:|---|
+| **01** | 3,5 | Primera corrida sobre 41 ítems escritos **antes** del modelo Western Union. **El censo de D2 la mató: solo 4 de 41 ítems cambiaban si el envío dejaba de cruzar un país.** El corredor vivía en un `[ASSUMPTION]` — *la frontera no era puntuable porque no era exigible* |
+| **02** | 4,0 | Backlog **reescrito entero** sobre el modelo nuevo. Entra el bloque «La frontera» y D2 sube un punto. D1 baja: de diez correcciones, **2 aplicadas, 6 a medias, 2 no aplicadas** |
+| **03** | 5,0 | **Dos tensiones cerradas en una ronda** (T5 y T6) y la retención por fin termina. D3 sube con `RNF-13` y `RF-45` ampliado |
+| **04** | 6,0 | **D2 al máximo**: 51 de 97 ítems mueren en una transferencia doméstica. **Cero tensiones sin decidir por primera vez.** Elena sale de `No funciona` gracias al desafío — **que abrió el agujero que la 05 tuvo que cerrar** |
+| **05** | 6,5 | **D3 al máximo**: el triángulo `RF-68`/`RF-69`/`RF-57` cierra con invariante declarable (`RNF-17`). Censo de D2 en 73 de 110. Gradiente de prioridad verificado exacto |
+| **06** | 5,5 | **Primera regresión de la serie, entera en D3.** Tres de los nueve ítems nuevos niegan el invariante que los justificaba |
+| **07** | 6,0 | **Se revierte la regresión entera.** `n` cae 37 %, el backlog **se achica por primera vez**, y sale el **dictamen de calibración de D4** de la sección 9 |
+
+### 10.3 El patrón que mutó — la propagación, ronda por ronda
+
+**El defecto dominante no fue la sustancia: fue la propagación.** Y lo que hace valioso el registro
+es que **no repitió su forma ni una sola vez**. Cada ronda encontró la misma enfermedad con un
+disfraz nuevo, y nombrarlo es lo que permitió cazarla la vez siguiente:
+
+| Ronda | La forma que tomó |
+|---|---|
+| **02** | **Entró el ítem sin su decisión** — el título visible se agregó y la decisión que lo gobernaba se quedó afuera |
+| **03** | **Entró la decisión sin barrer lo que la contradecía** — `RF-25` nombra el canal y `RF-41` lo referencia; `RF-31` pone jurisdicción y el supuesto pone techo global; `RNF-12` cierra y `RNF-14` queda falso |
+| **04** | **La corrección trajo un defecto de su propia clase** — la pregunta de seguridad que salvó a Elena **le muestra a Kevin la respuesta que él mismo debe verificar** |
+| **05** | **El defecto sobrevivió una altitud más abajo** — la misma forma, atenuada: cuatro instancias sobre veintiocho hallazgos |
+| **06** | **La corrección negó el invariante que la justificaba** — `RF-94` prometía reentregar un código que `RNF-15` hace irrecuperable: *un sistema que no puede mostrar un código no puede reentregarlo* |
+| **07** | **Dos correcciones vecinas del mismo commit se contradijeron** — la corrección 2 nombra el canal de Rosa en cuatro títulos; la corrección 3, **escrita al lado**, deja el de Elena sin nombrar en otros cuatro. **La regla existía, se aplicó, y se aplicó a la mitad del problema** |
+
+**De ahí sale la regla operativa que la séptima ronda dejó escrita, y que es la lección más
+transferible del trabajo: antes de cerrar, releer las correcciones propias unas contra otras, no solo
+contra el backlog.**
+
+### 10.4 El error de método que más caro salió
+
+**Al partir y limpiar el backlog se reusaron identificadores en vez de retirarlos.** `RF-02` dejó de
+ser «rechazar el efectivo antes de identificar» y pasó a ser «entregar en efectivo sin cuenta
+bancaria»; `RF-12` dejó de ser la prohibición del canal y pasó a ser el desafío; `RF-14`, `RF-37` y
+`RF-58` cambiaron igual.
+
+**Ahorró cuatro ítems en el documento puntuado y movió el defecto de la contradicción explícita —que
+se ve— a la deriva semántica silenciosa, que no se ve porque la cita sigue resolviendo.** Siete
+lugares en cuatro pasos siguieron leyendo `RF-02` con su significado viejo, y **ningún `grep` lo
+delata: el puntero apunta a un ítem que existe y dice otra cosa.**
+
+**La regla se corrigió y ya pagó su dividendo.** La séptima ronda retiró cuatro identificadores **sin
+reutilizarlos**, y con eso convirtió la deriva invisible en **32 punteros muertos que un `grep`
+encuentra**. Se barrieron en el commit siguiente, junto con **20 títulos de la trazabilidad de `L`
+que habían derivado** y **12 filas que faltaban** — y así `L` quedó en 118/118.
+
+> **La deuda de propagación no se saldó porque alguien la recordara: se saldó porque se la volvió
+> visible para una herramienta.** Los `BR-nn` de `business-rules.md` no cometen ese error — su
+> catálogo declara que no se renumeran ni se reutilizan. **El backlog debería haber hecho lo mismo
+> desde el principio.**
+
+---
+
+## 11. Anexo — el repositorio
+
+Todo el trabajo, con su historia de commits, está en:
+
+**https://github.com/LuisMUtec/SWA-LAB03-SendIt**
+
+Este documento es **autocontenido**: no hace falta abrir el repositorio para evaluarlo. El
+repositorio existe para que cada cifra, cada veredicto y cada iteración **se puedan verificar en su
+fuente**.
+
+| Ruta | Qué hay |
+|---|---|
+| `docs/ENTREGA.md` | **Este documento.** La fuente en Markdown, con los tres bloques `mermaid` que se renderizan al convertir a PDF |
+| `docs/LAB-03-ARQ-2026.2.md` | El enunciado del caso, transcrito |
+| `docs/EJEMPLO-CLASE-TOP-DOWN.md` · `ejemplo-clase-top-down.png` | El ejemplo de Leasing que el profesor mostró en clase — **la referencia que define qué es una iteración del diseño** |
+| `docs/DECISIONES.md` | Las decisiones de encuadre (`D-01` …) que gobiernan el resto: el modelo Western Union, el usuario modelo, qué cuenta como iteración |
+| `business-rules.md` | El catálogo `BR-nn`. **Declara que no se renumeran ni se reutilizan**, que es la regla que el backlog aprendió tarde |
+| `personas/` | `Rosa.MD`, `Elena.MD`, `Operario.MD` (Kevin) y el `README.md` con **las seis tensiones** y la designación del usuario modelo. Son la vara: **no se editan para elevar el puntaje** |
+| `redale/R-requerimientos/backlog.md` | **El backlog de 118 ítems.** Lo único que el EVAL puntúa |
+| `redale/R-requerimientos/insumos.md` | El material crudo del que salió el backlog |
+| `redale/E-estimar/` | La estimación: 13 servidores, 3,2 TB retenidos, 1,6 Mbit/s en pico, con toda su aritmética y sus supuestos `S-nn` |
+| `redale/D-disenar-servicio/` | La arquitectura, los 32 endpoints y las seis decisiones cerradas con su columna de *qué se pierde* |
+| `redale/A-armar-modelo-datos/` | Las 30 entidades, el motor por entidad y las cuatro tensiones del modelo |
+| `redale/L-listar-componentes/` | Las tres iteraciones del diagrama y **la tabla de trazabilidad ítem por ítem, 118 filas** |
+| `redale/E-escalar/` | Los cinco tramos, los seis cuellos de botella y el orden en que este sistema se rompe |
+| `redale/ITERACIONES.md` | **La bitácora.** Las dos clases de iteración, en tablas separadas |
+| `evals/README.md` | **La rúbrica completa**: las cuatro dimensiones, el gate, la regla de asimetría y las cuatro variantes de propagación |
+| `evals/HISTORY.md` | Una fila por ronda: las siete corridas con su puntaje por dimensión |
+| `evals/iterations/2026-08-26-01.md` … `2026-08-27-07.md` | **El detalle de cada corrida**, con los veredictos citados y las correcciones que produjo |
+| `evals/iterations/2026-08-27-07.md` | La séptima ronda **y el dictamen de calibración de D4** que desarrolla la sección 9 |
+| `evals/ENMIENDA-PROPUESTA-D4.md` | **La enmienda redactada y no aplicada**, con su encabezado declarando que no está en vigor |
+| `.claude/agents/` | Los cuatro agentes del EVAL: `sendit-rosa`, `sendit-elena`, `sendit-kevin` y `sendit-agregador` |
+| `scripts/entrega-a-pdf.sh` | Convierte este documento en PDF **con los diagramas renderizados**, sin red |
