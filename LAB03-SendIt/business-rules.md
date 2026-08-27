@@ -7,7 +7,7 @@ estarán empezando.
 
 **Este documento enuncia** qué permite, prohíbe y exige el negocio.
 **No enuncia** qué hace el sistema —eso es
-[`redale/R-requerimientos/requerimientos.md`](redale/R-requerimientos/requerimientos.md)— ni
+[`redale/R-requerimientos/backlog.md`](redale/R-requerimientos/backlog.md)— ni
 quiénes son los usuarios —eso es [`personas/`](personas/).
 
 ## Convenciones

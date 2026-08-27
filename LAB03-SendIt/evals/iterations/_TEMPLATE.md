@@ -39,7 +39,7 @@ por veredicto es obligatoria; sin ella el veredicto es inadmisible y cuenta como
 - **Qué me frustra:** —
 - **Comprobado y no deducido:** —
 
-### Marco — `Funciona` / `Funciona con reservas` / `No funciona` (resta X)
+### Kevin — `Funciona` / `Funciona con reservas` / `No funciona` (resta X)
 
 - **Flujo principal:** —
 - **Cuando sale mal:** la operación simultáneamente retenida y pagada. —

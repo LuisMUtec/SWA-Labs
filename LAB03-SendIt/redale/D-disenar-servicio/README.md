@@ -67,7 +67,7 @@ Preguntas que la tabla tiene que responder, no esquivar:
   pago.
 - ¿Qué **no** se separa porque separarlo rompe una transacción? Partir el registro contable en dos
   servicios convierte una escritura atómica en un problema distribuido creado por el diseño.
-- ¿La consola de cumplimiento y la aplicación del remitente son el mismo sistema? Tienen usuarios,
+- ¿La consola de cumplimiento y el punto de venta del mostrador son el mismo sistema? Tienen usuarios,
   ritmos, permisos y obligaciones de auditoría distintos.
 
 ## 2. Tipo de persistencia
@@ -97,7 +97,7 @@ megabytes que nunca se consulta salvo por auditoría.
 Los ejemplos del material listan rutas desnudas (`/tweet`, `/timeline`, `/user`, `/invoice`). Aquí
 la tabla lleva dos columnas más y las dos son obligatorias:
 
-- **Quién la usa** — la aplicación de Rosa, el canal de Elena, la consola de Marco, la red pagadora,
+- **Quién la usa** — la ventanilla donde Rosa origina, el canal de Elena, el mostrador de Kevin, la red pagadora,
   o un proceso interno. Una ruta sin llamador identificado es una superficie de ataque sin dueño, y
   el enunciado dice que la seguridad es muy importante.
 - **Qué garantiza** — y en particular, si es idempotente. **Un endpoint que mueve dinero y no
@@ -124,13 +124,13 @@ movimientos que solo se agregan?
 desapareció cuando se sobrescribió. Un registro contable de partida doble —cada movimiento con su
 contrapartida, cada asiento sumando cero— tiene historia completa y es reconstruible, pero obliga a
 que **todo** hecho del envío se exprese como asiento, incluidos los que no parecen contables: la
-retención de Marco, el vencimiento de un plazo, la devolución.
+la retención de cumplimiento, el vencimiento de un plazo, la devolución.
 
 **Por qué no es un detalle de implementación.** La consistencia que el enunciado exige *—«estamos
 hablando de dinero»—* es exactamente la invariante contable: el dinero no se crea ni se destruye, se
 mueve entre cuentas, y toda diferencia tiene una contrapartida con nombre. Elegir un campo mutable
 no es elegir una representación más simple de la misma cosa: es renunciar a poder demostrar que la
-suma cuadra. Marco no puede auditar un campo que se sobrescribió, y su señal de éxito dice que un
+suma cuadra. Nadie puede auditar un campo que se sobrescribió, y `BR-15` exige que un
 año después su decisión y su evidencia siguen siendo recuperables.
 
 **Qué queda decidido al responderla.** Si existe un libro de movimientos y cuáles son sus cuentas
@@ -141,7 +141,7 @@ aparte, cuál de los dos manda cuando difieren. **Se propaga a** `A` (entidades 
 
 ### (b) Idempotencia
 
-**Pregunta.** Rosa paga, se le cierra la app, vuelve a entrar y ve la pantalla de pago otra vez.
+**Pregunta.** Rosa paga en la ventanilla, la operación se corta, Kevin vuelve a entrar y ve la pantalla de registro otra vez.
 ¿Quién genera la clave que identifica ese intento —el cliente antes de mandar, o el servidor al
 recibir— y qué devuelve el sistema cuando llega el segundo intento?
 
@@ -174,7 +174,7 @@ absorbe**.
 | Saga con compensación | Que todo paso tenga inverso | «Se le entregó efectivo a Elena» **no tiene inverso**. La compensación de un pago consumado es una deuda, no una reversión |
 | Conciliación | Que la divergencia sea temporal, detectable y acotada | Hay que decidir cuánto puede durar, quién manda mientras dura, y qué ve Rosa en ese intervalo |
 
-**El caso concreto está documentado.** Marco tuvo dos días una operación que su sistema declaraba
+**El caso concreto está documentado.** Hubo dos días una operación que el sistema declaraba
 retenida y el del pagador declaraba disponible para cobro. Elena cobró. Lo que no pudo explicarle al
 auditor no fue su decisión: fue por qué sus propios registros afirmaban dos hechos incompatibles
 sobre el mismo dinero.
@@ -208,7 +208,7 @@ diferencia de cambio, que es una cuenta del libro de (a) y no un ajuste silencio
 **Pregunta.** El contraste contra listas y el análisis de patrón, ¿corren en el camino del pago
 —bloqueando a Rosa hasta que resuelvan— o después de aceptar el dinero?
 
-**La tensión (T1).** Marco lo dice sin ambigüedad: hoy el control corre después de aceptar, así que
+**La tensión (T1).** Kevin lo dice sin ambigüedad: el control tiene que correr antes de que él toque el efectivo, porque si corre después
 su herramienta no es detener sino **revertir**, y revertir cruza la frontera de (c), donde él ya no
 manda. Su señal de éxito exige que ninguna decisión suya se tome sobre dinero que ya salió. Pero
 tamizar antes es tiempo que Rosa espera, y Rosa necesita una promesa firme al pagar, no un «en
@@ -227,7 +227,7 @@ explícitamente.
 
 **Qué queda decidido.** Qué control corre en cuál momento; cuál es el punto de no retorno; qué pasa
 con un re-tamizaje posterior a ese punto; y qué ve Rosa mientras un envío está retenido, dado que
-Marco tiene **prohibido** decirle el motivo cuando hay un reporte de por medio (T2). Esa última no
+Kevin, que es la cara de SendIt frente a ella, tiene **prohibido** decirle el motivo cuando hay un reporte de por medio (T2). Esa última no
 se resuelve redactando mejor un mensaje: hay que decidir qué se le dice cuando no se le puede decir
 nada.
 

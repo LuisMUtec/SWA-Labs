@@ -35,12 +35,12 @@ en `R`.
 | Entidad candidata | Por qué es candidata |
 |---|---|
 | **Remitente** | Rosa. Es quien paga y quien tiene que ser identificable antes de que el dinero se mueva |
-| **Destinatario** | Elena. No es un campo del envío: es una persona con identidad propia, que se verifica y que cobra. Modelarla como texto dentro del envío hace imposible reconocer que dos envíos van a la misma persona, que es justo lo que Marco necesita ver |
+| **Destinatario** | Elena. No es un campo del envío: es una persona con identidad propia, que se verifica y que cobra. Modelarla como texto dentro del envío hace imposible reconocer que dos envíos van a la misma persona, que es justo lo que el tamizaje necesita ver |
 | **Envío** | La operación completa, de extremo a extremo. Su cierre no es «despachado» sino «Elena contó los billetes» (tensión T6) |
 | **Movimiento contable** | El asiento. Existe si `D`(a) decide que la verdad del dinero es una suma de movimientos y no un campo |
 | **Tasa aplicada / cotización** | La promesa de cuántos soles. Tiene momento de emisión, vencimiento y valor; no es un número dentro del envío |
 | **Verificación de identidad** | El acto de haber comprobado quién es alguien, con su evidencia, su momento y su resultado. Distinto de la persona verificada |
-| **Caso de cumplimiento** | El expediente de Marco: la coincidencia, la evidencia, la decisión, el plazo y su vencimiento |
+| **Caso de cumplimiento** | El expediente de cumplimiento: la coincidencia, la evidencia, la decisión, el plazo y su vencimiento |
 | **Traza de auditoría** | Quién vio qué, quién decidió qué, cuándo. Crece con las lecturas, no solo con las escrituras |
 
 Faltan por decidir, y hay que decidirlas: si el **agente pagador** y la **red pagadora** son
@@ -103,7 +103,7 @@ decide aquí y hay que justificarlo por dato, no por capa.
 
 **Por qué esto es decisión de modelo de datos y no de infraestructura.** Cifrar el disco protege
 contra el robo del disco. No protege contra la consulta legítima que no debía ocurrir — y el permiso
-de Marco dice literalmente que **no debe consultar los datos de un cliente sin un caso abierto que
+de Kevin dice literalmente que **no debe ver el historial de un cliente más allá de la operación que
 lo justifique**. Esa garantía se cumple decidiendo dónde vive el dato, detrás de qué referencia, con
 qué llave y con qué registro de acceso: es la forma de las tablas, no la configuración del servidor.
 
@@ -112,7 +112,7 @@ Tres consecuencias concretas que la tabla tiene que resolver:
 - **Tokenizar cambia la forma de la entidad.** Si el instrumento de pago se guarda como referencia,
   deja de ser un campo del remitente y pasa a ser una relación con otro almacén, con otra llave y
   otro control de acceso. Eso no es un detalle: es una tabla menos y una frontera más.
-- **Hay un dato cuya sola existencia es secreta.** La de un reporte a la autoridad. Marco tiene
+- **Hay un dato cuya sola existencia es secreta.** La de un reporte a la autoridad. El cumplimiento tiene
   prohibido revelarla (tensión T2), y una tabla donde el reporte es una fila más deja que cualquiera
   con acceso de lectura deduzca lo que la ley prohíbe decir. Ocultarlo en la interfaz no basta.
 - **El dato del destinatario lo captura un tercero.** Elena se identifica ante el agente pagador, no
@@ -123,14 +123,14 @@ Tres consecuencias concretas que la tabla tiene que resolver:
 
 ## 5. Qué es inmutable y qué no
 
-Marco necesita que su decisión y la evidencia sobre la que la tomó **no se puedan editar**. Su
+El cumplimiento necesita que su decisión y la evidencia sobre la que la tomó **no se puedan editar** (`BR-15`). Su
 permiso lo dice: nunca debe borrar ni editar una decisión suya ya registrada. Su señal de éxito lo
 dice: un año después, la decisión, su momento, su evidencia y la versión de la lista contra la que
 se tomó siguen siendo recuperables y nadie pudo haberlas alterado.
 
 **Un modelo donde todo se actualiza en el sitio no puede darle eso.** Un `UPDATE` no deja rastro del
 valor anterior; una fila de estado que pasa de `retenido` a `liberado` no dice quién, cuándo, ni con
-qué a la vista. Y el problema es más agudo de lo que parece: Marco decidió mirando un dato que
+qué a la vista. Y el problema es más agudo de lo que parece: se decidió mirando un dato que
 **después cambió** —una lista se actualizó, un patrón se movió—, así que guardar un puntero al dato
 no basta. Hay que guardar el valor que tenía en el momento de decidir.
 
@@ -146,7 +146,7 @@ no basta. Hay que guardar el valor que tenía en el momento de decidir.
 
 **La pregunta de fondo, planteada y sin responder:** ¿el envío es una fila que cambia de estado, o
 una secuencia de hechos de la que el estado se deriva? Las dos formas soportan la aplicación de
-Rosa. Solo una soporta el día de Marco. Y si conviven —hechos para lo que se audita, fila mutable
+Rosa. Solo una soporta una auditoría. Y si conviven —hechos para lo que se audita, fila mutable
 para lo que se consulta— hay que decidir cuál manda cuando difieren, que es la misma pregunta que
 `D`(a) dejó abierta.
 
@@ -178,7 +178,7 @@ documento la resuelve si el modelo no la permite.
 
 Falta decidir además qué pasa al vencer el plazo: ¿se borra, se anonimiza, se archiva en frío? Y
 quién ejecuta ese vencimiento, porque un plazo que nadie hace vencer no vence — el mismo defecto que
-Marco sufre con las retenciones sin plazo.
+se sufre con las retenciones sin plazo.
 
 ---
 

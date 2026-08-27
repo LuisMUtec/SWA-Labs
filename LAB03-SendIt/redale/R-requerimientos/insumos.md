@@ -131,7 +131,7 @@ cita; ninguna cita es portante.
 
 El enunciado nombra dos como críticos —**seguridad** y **consistencia de datos**— y no da
 ninguna cifra. Los umbrales de abajo son nuestros y van marcados; son además las entradas que
-el paso [`E`](../E-estimar/estimaciones.md) va a consumir.
+el paso [`E`](../E-estimar/README.md) va a consumir.
 
 - **RNF-01 — Consistencia del dinero.** Ningún giro queda pagado dos veces ni con dos montos
   distintos, aun ante caída de un punto de atención o pérdida de conexión durante la

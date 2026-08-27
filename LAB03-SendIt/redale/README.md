@@ -8,7 +8,7 @@ Framework para diseñar una arquitectura desde cero, tomado del capítulo 3 del 
 
 | Paso | Nombre | Salida | Carpeta |
 |---|---|---|---|
-| **R** | Requerimientos | Lista de requerimientos funcionales y no funcionales | [`R-requerimientos/`](R-requerimientos/) |
+| **R** | Requerimientos | El [backlog](R-requerimientos/backlog.md) —lo único puntuado— y sus [insumos](R-requerimientos/insumos.md) | [`R-requerimientos/`](R-requerimientos/) |
 | **E** | Estimar | Servidores, almacenamiento y ancho de banda requeridos | [`E-estimar/`](E-estimar/) |
 | **D** | Diseñar el servicio | Arquitectura high-level, tipo de persistencia, diseño de API | [`D-disenar-servicio/`](D-disenar-servicio/) |
 | **A** | Armar el modelo de datos | Tablas/objetos, campos, opciones de almacenamiento | [`A-armar-modelo-datos/`](A-armar-modelo-datos/) |

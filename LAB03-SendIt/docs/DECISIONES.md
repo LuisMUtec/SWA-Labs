@@ -19,6 +19,7 @@ se decidió: se justificó. Lo que cuesta va escrito con el mismo cuidado que lo
 | [D-04](#d-04--la-rúbrica-del-eval-se-recorta-respecto-del-caso-2) | La rúbrica se recorta respecto del Caso #2 | Qué mide el EVAL y qué puntajes son comparables |
 | [D-05](#d-05--las-iteraciones-del-diseño-son-iteraciones-del-diagrama-de-componentes) | «Las iteraciones del diseño» son del diagrama | Qué se entrega como iteración y en qué orden se construye |
 | [D-06](#d-06--el-backlog-adopta-el-formato-literal-del-profesor) | El backlog adopta el formato del profesor | La forma exacta de cada ítem del único artefacto puntuado |
+| [D-07](#d-07--sendit-opera-el-modelo-western-union) | SendIt opera el modelo Western Union | El canal de origen, quién es la tercera persona y la mitad de las reglas de seguridad |
 
 ---
 
@@ -34,22 +35,22 @@ y legítimo, y el enunciado no nombra a ninguno.
 |---|---|---|
 | **Remitente** (Rosa) | Comprar una llegada: tantos soles, tal día | — |
 | **Destinatario** (Elena) | Cobrar sin viajar en vano y sin que le falte | No elige el servicio: recibe por donde el remitente mandó |
-| **Oficial de cumplimiento** (Marco) | Detener lo que hay que detener, antes y con evidencia | Trabaja dentro de la empresa. Su día se resuelve sin que exista un cliente |
+| **Operario de ventanilla** (Kevin) | Cerrar la operación sin equivocarse, con cola esperando y con el efectivo de su patrón | Atiende el mostrador de un tercero afiliado. No elige SendIt: SendIt llegó a su negocio |
 | **Tesorería** | Prefinanciar el corredor, cerrar la posición de cambio | Su problema es de la empresa, no del envío |
-| **Agente pagador** | Pagar sin quedarse sin efectivo ni sin respaldo | No es usuario de SendIt sino de la red pagadora, un tercero |
+| **Oficial de cumplimiento** | Detener lo que hay que detener, antes y con evidencia | Trabaja dentro de la empresa. Su día se resuelve sin que exista un cliente (ver D-07) |
 
 **Decisión.** **Rosa.** Es quien decide usar SendIt o abandonarlo, quien paga, y la única de las
 cinco que elige libremente.
 
 **Consecuencias.**
 
-- Un backlog que resuelve el día de Marco y no el de Rosa **describe una casa de cambio con buen
-  cumplimiento y sin clientes.** Es la falla que esta decisión existe para prevenir, y el enunciado
+- Un backlog que resuelve el día de Kevin y no el de Rosa **describe una red de agentes muy bien
+  controlada y sin clientes.** Es la falla que esta decisión existe para prevenir, y el enunciado
   la invita: nombra la seguridad y no nombra al cliente.
 - **En sentido inverso, y es igual de importante: elegirla no la vuelve la única.** Es el usuario
   modelo, no el único usuario, y la razón es concreta — **el problema de Rosa no se resuelve dentro
   de la pantalla de Rosa.** La promesa que ella necesita la cumple o la rompe Elena en la bodega de
-  Huanta, y la suspende o la libera Marco. Un diseño que solo mira su pantalla declara el envío
+  Huanta, y la sostiene o la pierde Kevin en el mostrador. Un diseño que solo mira su lado declara el envío
   terminado cuando el dinero salió, que es exactamente el momento en que nada se resolvió.
 - **El usuario modelo no compra peso en la rúbrica.** D1 reparte un punto por persona, igual para
   las tres ([`evals/README.md`](../evals/README.md)). Ser el usuario modelo decide contra quién se
@@ -68,20 +69,20 @@ a quitárselos a D2, D3 o D4, que son las que miden el ajuste al problema y las 
 enunciado nombró.
 
 **Decisión.** **Tres: [Rosa](../personas/Rosa.MD), [Elena](../personas/Elena.MD) y
-[Marco](../personas/Marco.MD).** Cada una existe porque el sistema le falla de una forma que a las
+[Kevin](../personas/Operario.MD).** Cada una existe porque el sistema le falla de una forma que a las
 otras dos no.
 
 | Persona | Por qué sí | El modo de falla que solo ella ve |
 |---|---|---|
 | Rosa | Es el usuario modelo (D-01) | La promesa de monto y fecha que nadie más está en posición de exigir |
-| Elena | El corredor termina en su mano, no en la aplicación de Rosa | El envío que el sistema da por cerrado antes de que ella cuente los billetes |
-| Marco | La **seguridad** del enunciado es el trabajo de alguien, no un requisito buscando dueño | La retención: la única operación que rompe la **consistencia** si está mal hecha |
+| Elena | El corredor termina en su mano, no en el mostrador donde Rosa pagó | El envío que el sistema da por cerrado antes de que ella cuente los billetes |
+| Kevin | La **seguridad** del enunciado necesita un cuerpo, y el cuerpo correcto es por donde se rompe, no quien la vigila (D-07) | La operación cortada a la mitad: la única que rompe la **consistencia** con dinero ya en la mano |
 
 Los tres actores descartados están argumentados uno por uno en
 [`personas/README.md`](../personas/README.md). En resumen: **tesorería** tiene un problema de la
-empresa y no del envío, y su día se resuelve sin tocar el de Rosa; **el agente pagador** es usuario
-de un tercero, y darle voz de persona haría creer que el diseño puede mandarle; **soporte al
-cliente** existe hoy porque el sistema no informa, y modelarlo como persona vuelve requisito al
+empresa y no del envío, y su día se resuelve sin tocar el de Rosa; **el oficial de cumplimiento**
+trabaja dentro de la empresa y su día se resuelve sin que exista un cliente, de modo que su función
+vive en las reglas y no en una voz (D-07); **soporte al cliente** existe hoy porque el sistema no informa, y modelarlo como persona vuelve requisito al
 síntoma —cada vez que Rosa «tiene que llamar», eso es un defecto del backlog, no un caso de uso.
 
 **Consecuencias.**
@@ -89,8 +90,8 @@ síntoma —cada vez que Rosa «tiene que llamar», eso es un defecto del backlo
 - La rúbrica queda estable y comparable ronda a ronda: 3 = 1 + 1 + 1.
 - Los tres actores excluidos **siguen apareciendo**, pero como frontera del sistema o como decisión
   aguas abajo, no como voz que puntúa. La liquidez del corredor se decide en
-  [`D`](../redale/D-disenar-servicio/README.md); el agente pagador es la frontera que produce el
-  peor defecto de consistencia del caso.
+  [`D`](../redale/D-disenar-servicio/README.md); el cumplimiento vive en `BR-04`, `BR-06` y `BR-15`
+  de [`business-rules.md`](../business-rules.md), y su conflicto sin resolver sobrevive en T1 y T2.
 - **La consistencia de datos se queda sin persona propia**, y es deliberado: es la costura entre las
   tres y ninguna la ve entera. Por eso la puntúa D3, aparte de D1.
 - Si aparece una necesidad que ninguna de las tres documenta, **se agrega primero a la persona** y
@@ -235,6 +236,52 @@ adeudados **- Leaser**»*.
 
 ---
 
+## D-07 — SendIt opera el modelo Western Union
+
+**Contexto.** El enunciado no dice cómo se origina un envío. El andamiaje inicial supuso que Rosa
+paga desde una aplicación y que el efectivo se cobra en una red pagadora de terceros. **El profesor
+indicó que el modelo tiene que ser tipo Western Union**, que es otra cosa: red de agentes con
+efectivo en las **dos** puntas, sin cuenta bancaria obligatoria de ninguno de los dos lados, y un
+código que el remitente transmite por su cuenta.
+
+**Opciones.**
+
+| Opción | A favor | En contra |
+|---|---|---|
+| Originación por aplicación | Es el modelo dominante hoy y da a Rosa un canal propio | No es lo que el profesor pidió, y deja sin existir a la persona del mostrador en el origen |
+| **Ventanilla en las dos puntas** | Es lo indicado, y hace concreta la exigencia de seguridad | Rosa pierde el canal digital para originar; hay que reescribir su flujo |
+| Híbrido, ventanilla y aplicación | Más fiel al Western Union real, que tiene los dos | Agrega una cuarta voz o diluye D1, que reparte un punto por persona (D-02) |
+
+**Decisión.** **Ventanilla en las dos puntas.** Rosa se identifica y entrega efectivo en el
+mostrador de un agente y sale con un código; Elena cobra efectivo contra ese código y su documento.
+El teléfono de Rosa sirve para consultar el estado y para pasarle el código a Elena, no para enviar.
+
+**Consecuencias.**
+
+- **Aparece el mostrador, y con él la tercera persona.** Existe alguien que identifica, cobra y
+  paga: [Kevin](../personas/Operario.MD). Ocupa el tercer lugar que D-02 le había dado al oficial de
+  cumplimiento, y esa parte de D-02 queda superada por esta decisión.
+- **Cambia dónde vive la seguridad del enunciado, no cuánto pesa.** El oficial de cumplimiento la
+  vigilaba; el operario **es por donde se rompe**. Está solo, con efectivo, y puede crear giros y
+  pagarlos. Un mecanismo que no lo contemple protege la puerta equivocada, y por eso las reglas que
+  lo acotan —segunda autorización sobre el umbral, mínimo privilegio, traza inalterable— son las que
+  más trabajo hacen en [`business-rules.md`](../business-rules.md).
+- **El cumplimiento no desaparece: deja de ser una persona.** Tamizaje, retención y reporte siguen
+  siendo obligación del negocio y están en las reglas `BR-04`, `BR-06` y `BR-15`. Lo que se pierde
+  es su voz en D1, y hay que decirlo porque cuesta: **nadie deduce ya desde adentro de la empresa.**
+  Las tensiones T1 y T2 conservan el conflicto —la retención que nadie puede explicar— pero ahora la
+  sufre quien está en el mostrador, no quien la ordenó.
+- **Rosa pierde el canal digital de origen y gana un código.** Su flujo pasa de cuatro pasos a siete,
+  y aparece un objeto nuevo que el modelo anterior no tenía: el código que **solo ella** puede
+  transmitir. De ahí sale una prohibición que antes no existía —que SendIt no se lo dé a Elena— y sin
+  la cual la cancelación no sería ejecutable.
+- **El agente pagador deja de ser un tercero al que el diseño no puede mandarle.** En el modelo
+  anterior era la frontera de sistemas que producía el peor defecto de consistencia; ahora el
+  mostrador es parte de la red y el diseño sí manda sobre él. El defecto no desaparece —se muda al
+  corte de la operación a la mitad, que es el caso malo de Kevin.
+
+---
+
 ## Decisiones pendientes
 
 Lo que todavía no se puede decidir, con la pregunta que lo destraba. Se marca con el formato del
@@ -258,7 +305,7 @@ NoSQL o mixta. El caso tiene una tensión interna real: el registro contable del
 transacción e invariantes duros, y el tamizaje de cumplimiento —listas que cambian sin aviso,
 evidencia que hay que conservar tal como se vio— no.
 
-> `[CLARIFY: ¿qué arquitectura y qué persistencia sostienen a la vez el invariante contable del envío y la conservación inmutable de la evidencia sobre la que Marco decidió?]`
+> `[CLARIFY: ¿qué arquitectura y qué persistencia sostienen a la vez el invariante contable del envío y la conservación inmutable de la evidencia sobre la que se decidió una retención?]`
 
 **Qué la destraba:** el orden de magnitud que entregue `E` —si el sistema es de decenas o de
 cientos de servidores— y el backlog cerrado. Decidirla antes convierte a `D` en una decisión sin
@@ -276,7 +323,8 @@ elegida —exposición cambiaria, prefinanciamiento del corredor— se registra 
 [`D`](../redale/D-disenar-servicio/README.md), no acá.
 
 **P-04 — Qué se le dice a Rosa cuando no se le puede decir nada (tensión T2).** Rosa exige saber por
-qué se detuvo su dinero. Marco tiene **prohibido** decírselo cuando hay un reporte de por medio. No
+qué se detuvo su dinero. Kevin, que es la cara de SendIt frente a ella, tiene **prohibido** decírselo
+cuando hay un reporte de por medio, y ni siquiera fue él quien lo decidió. No
 se resuelve redactando mejor un mensaje.
 
 > `[CLARIFY: ¿qué recibe Rosa durante una retención reservada — plazo máximo sin motivo, silencio, o una consecuencia automática al vencer el plazo — sin que eso revele la existencia del reporte?]`
