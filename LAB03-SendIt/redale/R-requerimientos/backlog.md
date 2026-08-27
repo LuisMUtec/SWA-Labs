@@ -115,7 +115,7 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 |---|---|---|---|---|
 | RF-34 | el sistema exigirá el código del giro para autorizar un pago - Elena | Elena | BR-09 | P0 |
 | RF-85 | el sistema exigirá un documento de identidad cuyo titular coincida con el receptor designado - Elena | Elena | BR-09 | P0 |
-| RF-86 | el sistema exigirá que el documento del receptor esté vigente, salvo cuando RF-122 lo releva - Elena | Elena | BR-09 | P0 |
+| RF-86 | el sistema exigirá que el documento del receptor esté vigente, salvo cuando responde correctamente el desafío - Elena | Elena | BR-09 | P0 |
 | RF-68 | el sistema exigirá al emisor registrar al crear el giro una pregunta acordada con el receptor, y su respuesta - Rosa | Rosa | BR-09 | P0 |
 | RF-101 | el sistema no transmitirá a nadie la respuesta del desafío, ni siquiera a quien registró la pregunta - Rosa | Rosa | BR-09 | P0 |
 | RF-102 | el sistema impedirá que el punto de atención cobre al receptor por recibir su dinero - Elena | Elena | BR-01 | P0 |
@@ -135,7 +135,7 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-90 | el sistema permitirá al receptor declarar por llamada o mensaje de texto que el dinero recibido no coincide con el informado - Elena | Elena | BR-13 | P0 |
 | RF-91 | el sistema ofrecerá al emisor otro punto de atención del mismo distrito que el elegido cuando ese no puede pagar - Rosa | Rosa | BR-02 | P0 |
 | RF-105 | el sistema no cambiará el punto de atención elegido sin la respuesta del emisor - Rosa | Rosa | BR-02 | P0 |
-| RF-111 | el sistema devolverá al emisor el giro cuyo punto no puede pagar y cuya respuesta no llega dentro del plazo que le informó RF-116 - Rosa | Rosa | BR-12 | P0 |
+| RF-111 | el sistema devolverá al emisor el giro cuyo punto no puede pagar y cuya respuesta no llega dentro del plazo que se le informó al ofrecerle otro - Rosa | Rosa | BR-12 | P0 |
 | RF-116 | el sistema informará al emisor, al ofrecerle otro punto de atención, dentro de cuánto debe responder - Rosa | Rosa | BR-11 | P0 |
 | RF-39 | el sistema entregará al operario, ante cada giro que no puede pagar ni crear, una salida concreta que ofrecerle a quien está delante - Kevin | Kevin | BR-16 | P0 |
 | RF-40 | el sistema omitirá al operario el motivo de un rechazo cuando revelarlo esté prohibido - Kevin | Kevin | BR-16 | P0 |
@@ -182,7 +182,7 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-64 | el sistema dará el giro por cerrado en el momento en que el receptor recibe el dinero - Elena | Elena | BR-10 | P0 |
 | RF-65 | el sistema avisará al emisor por llamada o mensaje de texto que su giro fue cobrado - Rosa | Rosa | BR-01 | P0 |
 | RF-66 | el sistema mostrará al emisor que su giro está retenido y hasta qué fecha - Rosa | Rosa | BR-06 | P0 |
-| RF-67 | el sistema avisará al emisor por llamada o mensaje de texto, dentro del plazo que le informó RF-115, cuando su giro pase a estar retenido - Rosa | Rosa | BR-06 | P0 |
+| RF-67 | el sistema avisará al emisor por llamada o mensaje de texto, dentro del plazo de aviso que le informó antes de pagar, cuando su giro pase a estar retenido - Rosa | Rosa | BR-06 | P0 |
 
 ### Registro y privilegio
 
