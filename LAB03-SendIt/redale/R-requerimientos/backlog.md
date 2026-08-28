@@ -34,30 +34,30 @@ razonamiento que un título no puede cargar vive en [`insumos.md`](insumos.md); 
 
 | ID | Título | Persona | Regla | Prioridad |
 |---|---|---|---|---|
-| RF-01 | el sistema identificará al emisor contra un documento oficial vigente antes de crear un giro - Rosa | Rosa | BR-03 | P0 |
+| RF-01 | el sistema identificará al emisor contra un documento oficial vigente antes de recibir su efectivo - Rosa | Rosa | BR-03 | P0 |
 | RF-02 | el sistema entregará al receptor su dinero en efectivo, sin exigirle cuenta bancaria - Elena | Elena | BR-01 | P0 |
 | RF-79 | el sistema dará el giro por creado en el momento en que registra la recepción del efectivo - Kevin | Kevin | BR-03 | P0 |
 | RF-03 | el sistema exigirá un único receptor designado por giro - Rosa | Rosa | BR-02 | P0 |
 | RF-04 | el sistema exigirá un único país destino por giro - Rosa | Rosa | BR-02 | P0 |
 | RF-63 | el sistema permitirá al emisor elegir el punto de atención donde cobrará el receptor, entre los disponibles en el país destino - Rosa | Rosa | BR-02 | P0 |
 | RF-05 | el sistema informará al emisor el monto exacto en moneda destino antes de que entregue el efectivo - Rosa | Rosa | BR-07 | P0 |
-| RF-06 | el sistema conservará ese monto sin recalcularlo durante toda la vida del giro - Rosa | Rosa | BR-07 | P0 |
-| RF-07 | el sistema producirá y fechará la cotización de la que sale ese monto - Rosa | Rosa | BR-07 | P0 |
+| RF-06 | el sistema conservará sin recalcularlo, durante toda la vida del giro, el monto en moneda destino que informó al emisor - Rosa | Rosa | BR-07 | P0 |
+| RF-07 | el sistema producirá y fechará la cotización de la que sale el monto en moneda destino - Rosa | Rosa | BR-07 | P0 |
+| RF-157 | el sistema producirá y fechará la comisión que aplica a cada giro - Rosa | Rosa | BR-07 | P0 |
+| RF-158 | el sistema producirá y fechará el margen que aplica sobre la cotización - Rosa | Rosa | BR-07 | P0 |
 | RF-08 | el sistema rechazará, antes de que el operario reciba el efectivo, el giro que haga al emisor superar su límite por operación - Rosa | Rosa | BR-04 | P0 |
 | RF-09 | el sistema rechazará, antes de que el operario reciba el efectivo, el giro que haga al emisor superar su acumulado en la ventana vigente `[ASSUMPTION: la ventana es de 30 días corridos]` - Rosa | Rosa | BR-04 | P0 |
-| RF-10 | el sistema contará esos límites sobre la identidad del emisor y no sobre el punto de atención - Kevin | Kevin | BR-04 | P0 |
+| RF-10 | el sistema contará el límite por operación y el acumulado sobre la identidad del emisor y no sobre el punto de atención - Kevin | Kevin | BR-04 | P0 |
 | RF-11 | el sistema hará llegar el código de seguimiento al emisor por llamada o mensaje de texto al teléfono que él registró - Rosa | Rosa | BR-08 | P0 |
-| RF-112 | el sistema impedirá que quien atiende el mostrador vuelva a consultar un código ya entregado - Kevin | Kevin | BR-16 | P0 |
 | RF-113 | el sistema impedirá que quien atiende el mostrador lea o transcriba el código de seguimiento - Kevin | Kevin | BR-08 | P0 |
 | RF-125 | el sistema confirmará al operario que el código salió hacia el emisor, sin mostrárselo - Kevin | Kevin | BR-08 | P0 |
 | RF-114 | el sistema recibirá la respuesta del desafío del propio receptor, sin que quien atiende pueda leerla ni digitarla - Elena | Elena | BR-09 | P0 |
 | RF-94 | el sistema no volverá a entregar un código ya emitido, ni siquiera al emisor que lo perdió - Rosa | Rosa | BR-08 | P0 |
-| RF-110 | el sistema permitirá al emisor cancelar un giro cuyo código se perdió, mientras el dinero no esté a disposición del receptor - Rosa | Rosa | BR-12 | P0 |
+| RF-149 | el sistema dejará no pagable el giro del que no tiene constancia de que el código llegó a su emisor - Kevin | Kevin | BR-08 | P0 |
 | RF-117 | el sistema permitirá rehacer al mismo receptor el giro cancelado por código perdido - Rosa | Rosa | BR-12 | P0 |
 | RF-134 | el sistema conservará en el giro rehecho la cotización que fijó el giro cancelado - Rosa | Rosa | BR-07 | P0 |
-| RF-135 | el sistema no volverá a cobrar la comisión del giro rehecho - Rosa | Rosa | BR-07 | P1 |
+| RF-135 | el sistema no volverá a cobrar la comisión del giro rehecho - Rosa | Rosa | BR-07 | P0 |
 | RF-123 | el sistema volverá a correr sobre el giro rehecho los mismos controles que sobre uno nuevo, incluida la identificación del emisor contra su documento - Kevin | Kevin | BR-06 | P0 |
-| RF-12 | el sistema comprobará la respuesta del desafío sin mostrarla a quien atiende el mostrador - Kevin | Kevin | BR-09 | P0 |
 | RF-13 | el sistema exigirá la autorización de un segundo rol antes de que el operario reciba el efectivo de un giro sobre el umbral reforzado - Kevin | Kevin | BR-05 | P0 |
 | RF-14 | el sistema avisará al emisor por llamada o mensaje de texto que su devolución está disponible y en qué punto retirarla - Rosa | Rosa | BR-12 | P0 |
 
@@ -77,7 +77,8 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-16 | el sistema rechazará el giro cuando los dos reguladores impongan condiciones incompatibles, en vez de elegir una - Kevin | Kevin | BR-17 | P0 |
 | RF-17 | el sistema reportará a la autoridad de origen el giro que supere su umbral de reporte transfronterizo `[ASSUMPTION: USD 10 000 por operación, o el que fije cada regulador si es menor]` - Kevin | Kevin | BR-17 | P0 |
 | RF-139 | el sistema reportará a la autoridad del país de destino el giro que supere el umbral de reporte de esa jurisdicción - Kevin | Kevin | BR-17 | P0 |
-| RF-140 | el sistema registrará la fecha de nacimiento del emisor y del receptor cuando el reporte a una autoridad la exige - Kevin | Kevin | BR-17 | P1 |
+| RF-140 | el sistema registrará la fecha de nacimiento del emisor cuando el reporte a una autoridad la exige - Kevin | Kevin | BR-17 | P1 |
+| RF-161 | el sistema registrará la fecha de nacimiento del receptor cuando el reporte a una autoridad la exige - Kevin | Kevin | BR-17 | P1 |
 | RF-18 | el sistema conservará el registro de un giro por el plazo más largo de los dos países que lo tocaron - Kevin | Kevin | BR-17 | P1 |
 | RF-19 | el sistema informará al emisor que un país destino no puede atenderse antes de que entregue el efectivo - Rosa | Rosa | BR-02 | P0 |
 | RF-20 | el sistema exigirá efectivo disponible en el corredor de destino antes de dar un giro por fondeado - Kevin | Kevin | BR-11 | P0 |
@@ -89,10 +90,10 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | ID | Título | Persona | Regla | Prioridad |
 |---|---|---|---|---|
 | RF-26 | el sistema contrastará al emisor contra las listas de sanciones antes de aceptar el efectivo - Kevin | Kevin | BR-06 | P0 |
+| RF-167 | el sistema rechazará la creación de un giro mientras no pueda contrastar a las dos puntas contra listas vigentes - Kevin | Kevin | BR-06 | P0 |
 | RF-119 | el sistema contrastará al receptor designado contra las listas de sanciones antes de aceptar el efectivo - Kevin | Kevin | BR-06 | P0 |
 | RF-27 | el sistema contrastará al receptor contra las listas vigentes al momento de autorizar el pago - Kevin | Kevin | BR-06 | P0 |
 | RF-97 | el sistema volverá a tamizar los giros aún no pagados cuando cambia una lista de sanciones - Kevin | Kevin | BR-06 | P1 |
-| RF-108 | el sistema informará por llamada o mensaje de texto a quien deja de poder cobrar por un cambio de lista que su giro será devuelto al emisor - Elena | Elena | BR-06 | P0 |
 | RF-28 | el sistema separará una coincidencia exacta de sanciones de una coincidencia por homonimia - Kevin | Kevin | BR-06 | P0 |
 | RF-78 | el sistema resolverá la coincidencia por homonimia en `[ASSUMPTION: 24 horas]`, plazo más corto que el de la coincidencia exacta - Kevin | Kevin | BR-06 | P1 |
 | RF-29 | el sistema dejará retenido el giro con coincidencia de sanciones, ni pagable ni cancelable - Kevin | Kevin | BR-06 | P0 |
@@ -107,19 +108,23 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-96 | el sistema informará al emisor, antes de que entregue el efectivo, cuánto puede durar como máximo la retención de su giro - Rosa | Rosa | BR-06 | P0 |
 | RF-115 | el sistema informará al emisor, antes de que entregue el efectivo, dentro de cuánto le avisará si su giro queda retenido - Rosa | Rosa | BR-06 | P0 |
 | RF-133 | el sistema no dejará pasar más de `[ASSUMPTION: 1 hora]` entre la retención de un giro y el aviso a su emisor - Rosa | Rosa | BR-06 | P0 |
-| RF-89 | el sistema mantendrá disponible la devolución no retirada hasta el plazo de prescripción del giro - Rosa | Rosa | BR-12 | P2 |
-| RF-137 | el sistema dará por prescrita la devolución que nadie retiró al vencer el plazo de prescripción del giro - Rosa | Rosa | BR-14 | P2 |
+| RF-89 | el sistema mantendrá disponible la devolución no retirada durante `[ASSUMPTION: 12 meses]` contados desde que quedó disponible - Rosa | Rosa | BR-12 | P2 |
+| RF-137 | el sistema dará por prescrita la devolución que nadie retiró al vencer su plazo de disponibilidad - Rosa | Rosa | BR-14 | P2 |
 | RF-74 | el sistema devolverá también la comisión cobrada cuando el giro no llegó a pagarse - Rosa | Rosa | BR-12 | P0 |
 | RF-33 | el sistema permitirá liberar un giro retenido únicamente al rol de cumplimiento - Kevin | Kevin | BR-06 | P0 |
 | RF-87 | el sistema registrará el motivo de cada liberación de un giro retenido - Kevin | Kevin | BR-06 | P1 |
+| RF-163 | el sistema mostrará al rol de cumplimiento el motivo con que se liberó cada giro retenido - Kevin | Kevin | BR-06 | P1 |
 | RF-127 | el sistema avisará al emisor por llamada o mensaje de texto cuando su giro deja de estar retenido - Rosa | Rosa | BR-06 | P0 |
 | RF-93 | el sistema retendrá el giro cuyo receptor superó su acumulado de cobros en la ventana `[ASSUMPTION: 30 días corridos]` - Kevin | Kevin | BR-04 | P0 |
+| RF-159 | el sistema fijará por jurisdicción de destino el acumulado de cobros que un receptor no puede superar en la ventana - Kevin | Kevin | BR-04 | P0 |
+| RF-165 | el sistema dejará de contar en el acumulado del receptor los cobros anteriores a la ventana vigente - Kevin | Kevin | BR-04 | P0 |
 
 ### Pago
 
 | ID | Título | Persona | Regla | Prioridad |
 |---|---|---|---|---|
 | RF-34 | el sistema exigirá el código del giro para autorizar un pago - Elena | Elena | BR-09 | P0 |
+| RF-147 | el sistema recibirá el código del giro del propio receptor, sin que quien atiende pueda leerlo ni digitarlo - Elena | Elena | BR-08 | P0 |
 | RF-85 | el sistema exigirá un documento de identidad cuyo titular coincida con el receptor designado - Elena | Elena | BR-09 | P0 |
 | RF-86 | el sistema exigirá que el documento del receptor esté vigente, salvo cuando responde correctamente el desafío - Elena | Elena | BR-09 | P0 |
 | RF-68 | el sistema exigirá al emisor registrar al crear el giro una pregunta acordada con el receptor, y su respuesta - Rosa | Rosa | BR-09 | P0 |
@@ -131,29 +136,39 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-103 | el sistema devolverá al emisor el giro cuyos intentos de desafío se agotaron - Kevin | Kevin | BR-09 | P0 |
 | RF-83 | el sistema caducará la respuesta del desafío junto con el giro que la lleva - Kevin | Kevin | BR-09 | P0 |
 | RF-84 | el sistema decidirá qué diferencias de escritura cuentan como coincidencia de titular, y no el operario - Kevin | Kevin | BR-09 | P0 |
+| RF-148 | el sistema resolverá con el desafío, y no con el criterio del operario, la duda sobre si la fotografía del documento corresponde al receptor - Elena | Elena | BR-09 | P0 |
 | RF-36 | el sistema no habilitará el pago de un giro cuyos fondos de origen no estén confirmados - Kevin | Kevin | BR-11 | P0 |
 | RF-24 | el sistema liquidará con el agente el efectivo que puso de su caja, en el plazo acordado con él `[ASSUMPTION: al cierre del día hábil siguiente]` - Kevin | Kevin | BR-01 | P0 |
 | RF-37 | el sistema avisará al receptor por llamada o mensaje de texto si su giro quedó retenido - Elena | Elena | BR-06 | P0 |
 | RF-59 | el sistema repondrá al emisor o al receptor, según a quién le faltó, toda diferencia comprobada entre el monto fijado y el entregado - Elena | Elena | BR-13 | P0 |
+| RF-154 | el sistema decidirá en un rol ajeno al punto donde ocurrió si una diferencia declarada queda comprobada - Kevin | Kevin | BR-13 | P0 |
+| RF-155 | el sistema pagará al receptor en efectivo, en el punto donde cobró, la diferencia repuesta a su favor - Elena | Elena | BR-13 | P0 |
+| RF-156 | el sistema avisará al receptor por llamada o mensaje de texto que su reposición está disponible y en qué punto retirarla - Elena | Elena | BR-13 | P0 |
 | RF-104 | el sistema no aplicará a la liquidación del agente ningún descuento por diferencia que no le haya informado antes con la evidencia que lo sustenta - Elena | Elena | BR-13 | P0 |
 | RF-143 | el sistema descontará de la liquidación del agente la diferencia repuesta que se originó en su punto - Elena | Elena | BR-13 | P0 |
-| RF-145 | el sistema admitirá del agente una objeción a un descuento por diferencia antes de aplicarlo a su liquidación - Kevin | Kevin | BR-13 | P1 |
+| RF-145 | el sistema admitirá del agente una objeción a un descuento por diferencia antes de aplicarlo a su liquidación - Kevin | Kevin | BR-13 | P0 |
+| RF-153 | el sistema resolverá toda objeción del agente a un descuento por diferencia dentro de `[ASSUMPTION: 5 días hábiles]` - Kevin | Kevin | BR-13 | P0 |
 | RF-60 | el sistema informará al emisor por llamada o mensaje de texto toda diferencia registrada sobre el giro - Rosa | Rosa | BR-13 | P1 |
 | RF-121 | el sistema informará al receptor por llamada o mensaje de texto toda diferencia registrada sobre el giro - Elena | Elena | BR-13 | P1 |
 | RF-90 | el sistema permitirá al receptor declarar por llamada o mensaje de texto que el dinero recibido no coincide con el informado - Elena | Elena | BR-13 | P0 |
+| RF-166 | el sistema admitirá del receptor, en el mostrador donde cobró, la declaración de que el dinero recibido no coincide con el informado - Elena | Elena | BR-13 | P0 |
 | RF-126 | el sistema identificará como el receptor designado a quien declara una diferencia fuera del mostrador, antes de admitir su declaración - Elena | Elena | BR-09 | P0 |
-| RF-91 | el sistema ofrecerá al emisor otro punto de atención del mismo distrito que el elegido cuando ese no puede pagar - Rosa | Rosa | BR-02 | P0 |
+| RF-91 | el sistema ofrecerá al emisor por llamada o mensaje de texto otro punto de atención del mismo distrito que el elegido cuando ese no puede pagar - Rosa | Rosa | BR-02 | P0 |
 | RF-129 | el sistema devolverá al emisor el giro para el que no queda ningún punto de atención capaz de pagarlo en el distrito elegido - Rosa | Rosa | BR-12 | P0 |
 | RF-105 | el sistema no cambiará el punto de atención elegido sin la respuesta del emisor - Rosa | Rosa | BR-02 | P0 |
 | RF-111 | el sistema devolverá al emisor el giro cuyo punto no puede pagar y cuya respuesta no llega dentro del plazo que se le informó al ofrecerle otro - Rosa | Rosa | BR-12 | P0 |
-| RF-116 | el sistema informará al emisor, al ofrecerle otro punto de atención, dentro de cuánto debe responder, y ese plazo no será menor que `[ASSUMPTION: 24 horas]` - Rosa | Rosa | BR-11 | P0 |
-| RF-39 | el sistema asociará al menos una acción ofrecible a todo giro rechazado, retenido o no pagable - Kevin | Kevin | BR-16 | P0 |
+| RF-164 | el sistema devolverá al emisor el giro cuyo punto no puede pagar y cuyo cambio de punto el emisor rechazó - Rosa | Rosa | BR-12 | P0 |
+| RF-116 | el sistema informará al emisor por llamada o mensaje de texto, al ofrecerle otro punto de atención, dentro de cuánto debe responder, y ese plazo no será menor que `[ASSUMPTION: 24 horas]` - Rosa | Rosa | BR-11 | P0 |
+| RF-39 | el sistema asociará al menos una acción ofrecible a todo giro rechazado - Kevin | Kevin | BR-16 | P0 |
+| RF-150 | el sistema asociará al menos una acción ofrecible a todo giro retenido - Kevin | Kevin | BR-16 | P0 |
+| RF-151 | el sistema asociará al menos una acción ofrecible a todo giro no pagable - Kevin | Kevin | BR-16 | P0 |
+| RF-152 | el sistema asociará al giro cuyo motivo de rechazo está prohibido revelar una acción ofrecible que no permita deducirlo - Kevin | Kevin | BR-16 | P0 |
 | RF-130 | el sistema mostrará al operario la acción ofrecible del giro que tiene delante - Kevin | Kevin | BR-16 | P0 |
 | RF-40 | el sistema omitirá al operario el motivo de un rechazo cuando revelarlo esté prohibido - Kevin | Kevin | BR-16 | P0 |
 | RF-25 | el sistema avisará al receptor que hay un giro a su nombre por llamada o mensaje de texto - Elena | Elena | BR-09 | P0 |
 | RF-41 | el sistema informará al receptor por llamada o mensaje de texto, antes de que viaje, el monto que cobrará - Elena | Elena | BR-09 | P0 |
 | RF-75 | el sistema informará al receptor por llamada o mensaje de texto si el punto elegido puede pagarle - Elena | Elena | BR-11 | P0 |
-| RF-109 | el sistema volverá a avisar al receptor si el punto elegido deja de poder pagarle - Elena | Elena | BR-11 | P0 |
+| RF-109 | el sistema volverá a avisar al receptor por llamada o mensaje de texto si el punto elegido deja de poder pagarle - Elena | Elena | BR-11 | P0 |
 | RF-124 | el sistema informará al receptor por llamada o mensaje de texto a qué otro punto de atención puede ir, una vez que el cambio de punto queda en firme - Elena | Elena | BR-11 | P0 |
 | RF-76 | el sistema registrará el efectivo que cada punto de atención declara al abrir y al cerrar su caja - Kevin | Kevin | BR-01 | P0 |
 | RF-92 | el sistema informará al operario el efectivo disponible en su punto antes de habilitarle un pago o una devolución - Kevin | Kevin | BR-01 | P0 |
@@ -161,7 +176,7 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-141 | el sistema informará al agente la diferencia entre el efectivo esperado y el declarado en cada cierre de caja de sus puntos - Kevin | Kevin | BR-01 | P1 |
 | RF-77 | el sistema informará al emisor la fecha desde la cual el giro estará disponible para cobro, antes de que entregue el efectivo - Rosa | Rosa | BR-07 | P0 |
 | RF-136 | el sistema informará al emisor la comisión que se le cobra por el giro, antes de que entregue el efectivo - Rosa | Rosa | BR-07 | P0 |
-| RF-142 | el sistema informará al emisor el margen que se aplica sobre la cotización, antes de que entregue el efectivo - Rosa | Rosa | BR-07 | P1 |
+| RF-142 | el sistema informará al emisor el margen que se aplica sobre la cotización, antes de que entregue el efectivo - Rosa | Rosa | BR-07 | P0 |
 
 ### Interrupción y consistencia
 
@@ -181,7 +196,7 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | ID | Título | Persona | Regla | Prioridad |
 |---|---|---|---|---|
 | RF-46 | el sistema permitirá al emisor cancelar su giro mientras el dinero no esté a disposición del receptor - Rosa | Rosa | BR-12 | P0 |
-| RF-47 | el sistema devolverá al emisor, al cancelar, el efectivo que entregó, comisión incluida - Rosa | Rosa | BR-12 | P0 |
+| RF-47 | el sistema devolverá al emisor, al cancelar, el efectivo que entregó por el giro - Rosa | Rosa | BR-12 | P0 |
 | RF-48 | el sistema admitirá la cancelación de un giro únicamente del emisor que lo creó - Rosa | Rosa | BR-12 | P0 |
 | RF-49 | el sistema dejará no pagable el giro cuyo plazo de prescripción venció - Rosa | Rosa | BR-14 | P0 |
 | RF-50 | el sistema devolverá al emisor el monto del giro prescrito - Rosa | Rosa | BR-14 | P0 |
@@ -193,7 +208,7 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | ID | Título | Persona | Regla | Prioridad |
 |---|---|---|---|---|
 | RF-52 | el sistema permitirá al emisor consultar el estado de sus giros sin depender del receptor - Rosa | Rosa | BR-01 | P0 |
-| RF-128 | el sistema permitirá al receptor consultar el estado de los giros a su nombre sin depender del emisor - Elena | Elena | BR-01 | P0 |
+| RF-128 | el sistema permitirá al receptor consultar por llamada o mensaje de texto el estado de los giros a su nombre sin depender del emisor - Elena | Elena | BR-01 | P0 |
 | RF-53 | el sistema distinguirá al emisor el giro disponible para cobro del que todavía no lo está - Rosa | Rosa | BR-01 | P0 |
 | RF-64 | el sistema dará el giro por cerrado en el momento en que el receptor recibe el dinero - Elena | Elena | BR-10 | P0 |
 | RF-65 | el sistema avisará al emisor por llamada o mensaje de texto que su giro fue cobrado - Rosa | Rosa | BR-01 | P0 |
@@ -209,10 +224,14 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-70 | el sistema impedirá alterar el receptor designado de un giro después de creado - Rosa | Rosa | BR-09 | P0 |
 | RF-61 | el sistema exigirá la autorización de un segundo rol para corregir el monto de un giro pagado - Kevin | Kevin | BR-13 | P0 |
 | RF-57 | el sistema limitará lo que el operario ve a los datos de la operación que está atendiendo, excluida la respuesta del desafío - Kevin | Kevin | BR-16 | P0 |
-| RF-80 | el sistema conservará la evidencia de la identificación del emisor y del receptor de cada giro - Kevin | Kevin | BR-15 | P1 |
+| RF-80 | el sistema conservará la evidencia de la identificación del emisor de cada giro - Kevin | Kevin | BR-15 | P1 |
+| RF-160 | el sistema conservará la evidencia de la identificación del receptor de cada giro - Kevin | Kevin | BR-15 | P1 |
+| RF-168 | el sistema conservará la evidencia, firmada por el receptor, de que recibió el efectivo - Kevin | Kevin | BR-15 | P1 |
 | RF-98 | el sistema conservará constancia de cada aviso enviado - Elena | Elena | BR-15 | P1 |
+| RF-162 | el sistema opondrá la constancia del aviso a quien alegue no haber sido avisado - Elena | Elena | BR-15 | P1 |
 | RF-131 | el sistema registrará si el aviso llegó a su destinatario, cuando el canal lo reporta - Elena | Elena | BR-15 | P1 |
 | RF-132 | el sistema tratará como no avisado a quien no tenga constancia de que el aviso llegó - Elena | Elena | BR-15 | P1 |
+| RF-169 | el sistema no descartará ningún aviso por falta de capacidad del canal - Elena | Elena | BR-15 | P0 |
 | RF-99 | el sistema descartará a los `[ASSUMPTION: 3 días]` la evidencia de identificación de un emisor que no llegó a crear un giro - Rosa | Rosa | BR-16 | P2 |
 | RF-81 | el sistema suprimirá a pedido los datos personales de quien los entregó, y de nadie más - Rosa | Rosa | BR-16 | P2 |
 
@@ -230,8 +249,9 @@ nunca puede ser falso, y que por lo tanto se comprueba en cualquier momento.
 |---|---|---|---|---|
 | RNF-01 | el sistema mantendrá ilegibles los datos de identidad para quien administre la infraestructura | Nadie que tenga acceso al almacenamiento reconstruye un documento de identidad | BR-08, BR-16 | P0 |
 | RNF-15 | el sistema mantendrá ilegible el código de seguimiento para quien administre la infraestructura y para quien atiende el mostrador | Ni quien administra la infraestructura ni quien atiende el mostrador reconstruye un código: el sistema lo comprueba sin mostrárselo a ninguno de los dos | BR-08 | P0 |
-| RNF-17 | el sistema mantendrá ilegible la respuesta del desafío para quien administre la infraestructura | El sistema puede comprobar una respuesta sin poder mostrarla | BR-08 | P0 |
-| RNF-02 | el sistema impedirá que una misma identidad ejerza dos roles sobre un giro, y que quien atiende un mostrador inicie una corrección sobre un giro pagado | Ninguna identidad aparece dos veces en la cadena crear → autorizar → pagar → liberar → corregir de un mismo giro, y ninguna identidad que opere un mostrador inicia la corrección del monto de un giro ya pagado | BR-05 | P0 |
+| RNF-17 | el sistema mantendrá ilegible la respuesta del desafío para quien administre la infraestructura y para quien atiende el mostrador | Ni quien administra la infraestructura ni quien atiende el mostrador reconstruye una respuesta: el sistema la comprueba sin mostrársela a ninguno de los dos | BR-08 | P0 |
+| RNF-02 | el sistema impedirá que una misma identidad ejerza dos roles sobre un giro | Ninguna identidad aparece dos veces en la cadena crear → autorizar → pagar → liberar → corregir de un mismo giro | BR-05 | P0 |
+| RNF-18 | el sistema impedirá que quien atiende un mostrador inicie una corrección sobre un giro pagado | Ninguna identidad que opere un mostrador inicia la corrección del monto de un giro ya pagado, en ningún punto y en ningún momento | BR-05 | P0 |
 | RNF-03 | el sistema conservará inalterable el registro de actos | Ningún acto registrado se modifica ni se borra, cualquiera sea quien lo pida — y esa conservación prevalece sobre toda supresión | BR-15 | P0 |
 | RNF-04 | el sistema dejará traza de todo acceso a datos de identidad | Todo acceso tiene autor, momento y giro; ninguno es anónimo | BR-16 | P1 |
 
@@ -253,7 +273,7 @@ nunca puede ser falso, y que por lo tanto se comprueba en cualquier momento.
 | RNF-09 | el sistema resolverá en un tiempo acotado la parte de una atención que solo depende de él | `[ASSUMPTION: menos de 3 minutos]` desde que alguien llega al mostrador, incluida la verificación del documento contra el sistema. La espera por un segundo rol tiene su propio techo de `[ASSUMPTION: 10 minutos]`, y la de una lista externa el de RNF-11 | P0 |
 | RNF-10 | el sistema dejará un giro fondeado disponible para cobro en el destino en un tiempo acotado | `[ASSUMPTION: menos de 15 minutos]` desde su creación | P0 |
 | RNF-11 | el sistema sostendrá la capacidad de crear y de pagar giros | `[ASSUMPTION: 99,9 % mensual]`, medida sobre crear y pagar, no sobre consultar | P1 |
-| RNF-12 | el sistema operará con más de un país de origen desde el primer día | Ninguna cifra ni regla del sistema supone un solo país de origen. Los corredores concretos los fija el supuesto único de la tabla de abajo | P0 |
+| RNF-12 | el sistema no supondrá un solo país de origen en ninguna cifra ni en ninguna regla | Ninguna cifra ni regla del sistema queda falsa al agregar un país de origen, y agregarlo no exige reescribir ninguna. Los corredores concretos del lanzamiento los fija el supuesto único de la tabla de abajo | P0 |
 | RNF-14 | el sistema operará con más de una moneda destino desde el primer día | Ninguna cifra del sistema supone una sola moneda de destino | P0 |
 
 ---
@@ -263,19 +283,19 @@ nunca puede ser falso, y que por lo tanto se comprueba en cualquier momento.
 | Tensión | Entre | Cómo se decide | Ítem |
 |---|---|---|---|
 | **T1** Control ↔ rapidez | Rosa ↔ Kevin | **A favor del control, con precio acotado.** El tamizaje corre *antes* de aceptar el efectivo, de modo que se detiene en vez de revertir; a cambio, toda retención nace con plazo y se resuelve sola al vencerlo | RF-26 · RF-31 · RF-32 |
-| **T2** Explicación ↔ reserva | Rosa ↔ Kevin | **Se decide en los dos mostradores.** Cuando revelar el motivo está prohibido, el operario recibe **una salida concreta que ofrecer, no la razón** (RF-39, RF-40): atiende sin saber y sin poder deducir. Y del lado de Rosa: ve **que** está retenido y **hasta cuándo**, nunca por qué, y sabe de antemano dentro de cuánto le avisarán (RF-66, RF-67, RF-115) | RF-39 · RF-40 · RF-66 · RF-67 · RF-115 |
-| **T3** Identidad del receptor | Elena ↔ Kevin | **Se parte, como T5.** La regla dura queda: el documento tiene que estar **vigente** (RF-86), y **qué cuenta como coincidencia lo decide el sistema, no el operario** (RF-84). La salida al documento vencido es el desafío: el emisor registra una pregunta **acordada con el receptor** (RF-68), el sistema le entrega la pregunta por su canal (RF-69) y **autoriza el pago cuando la responde** (RF-122), sin transmitir la respuesta a nadie (RF-101) y comprobándola sin mostrarla (RF-12, RF-114), con intentos acotados (RF-82) | RF-86 · RF-84 · RF-68 · RF-69 · RF-122 · RF-101 · RF-12 · RF-114 · RF-82 |
+| **T2** Explicación ↔ reserva | Rosa ↔ Kevin | **Se decide en los dos mostradores, y la reserva de la ronda 11 queda cerrada.** Cuando revelar el motivo está prohibido, el operario recibe **una salida concreta que ofrecer, no la razón** (RF-39, RF-40) y esa salida **no permite deducir el motivo** (RF-152): atiende sin saber y sin poder deducir. Y del lado de Rosa: ve **que** está retenido y **hasta cuándo**, nunca por qué, y sabe de antemano dentro de cuánto le avisarán (RF-66, RF-67, RF-115) | RF-39 · RF-40 · RF-152 · RF-66 · RF-67 · RF-115 |
+| **T3** Identidad del receptor | Elena ↔ Kevin | **Se parte, como T5, y sus tres ejes quedan decididos.** La regla dura queda: el documento tiene que estar **vigente** (RF-86); **qué cuenta como coincidencia de escritura lo decide el sistema, no el operario** (RF-84); y **la duda sobre la fotografía tampoco la decide el operario, la resuelve el desafío** (RF-148). La salida al documento vencido es el mismo desafío: el emisor registra una pregunta **acordada con el receptor** (RF-68), el sistema le entrega la pregunta por su canal (RF-69) y **autoriza el pago cuando la responde** (RF-122), sin transmitir la respuesta a nadie (RF-101) y comprobándola sin mostrarla ni a la infraestructura ni al mostrador (RF-114, RNF-17), con intentos acotados (RF-82) | RF-86 · RF-84 · RF-148 · RF-68 · RF-69 · RF-122 · RF-101 · RF-114 · RNF-17 · RF-82 |
 | **T4** Certeza del monto ↔ exposición cambiaria | Rosa ↔ la empresa | **A favor de Rosa.** El monto de destino se fija al crear el giro y no se recalcula nunca, con una cotización que el sistema produce y fecha. La empresa carga el movimiento | RF-05 · RF-06 · RF-07 |
-| **T5** El canal de Rosa ↔ el de Elena | Rosa ↔ Elena | **Se parte en dos, y ahora los dos canales están nombrados — incluido el del secreto.** El **código** llega **solo al emisor**, por llamada o mensaje de texto al teléfono que él registró (RF-11), y ni quien atiende el mostrador puede leerlo o transcribirlo (RF-113, RNF-15) ni el sistema lo reemite (RF-94): al receptor se lo pasa Rosa, nunca el sistema. Para que el operario no quede mudo, RF-125 le confirma que el código salió sin mostrárselo. La **respuesta del desafío** es lo único que el sistema no transmite a nadie (RF-101). Todo lo demás —aviso, monto, disponibilidad, pregunta del desafío, mala noticia— viaja **por llamada o mensaje de texto a los dos**, porque ninguno origina desde una aplicación | RF-11 · RF-113 · RF-125 · RNF-15 · RF-94 · RF-101 · RF-25 · RF-41 · RF-69 · RF-14 · RF-65 · RF-67 |
-| **T6** Cerrar ↔ cerrar de verdad | Rosa ↔ Elena | **A favor de Elena, ahora con ítem que lo diga.** El giro cierra en el momento en que el receptor recibe el dinero, no al fondearse ni al quedar disponible. Y el límite de la cancelación se corre para que Rosa no pueda anular con Elena en la ventanilla: no es «mientras no esté pagado» sino **mientras el dinero no esté a disposición del receptor**, y RF-110 —la cancelación por código perdido— usa ahora ese mismo borde y no otro | RF-64 · RF-65 · RF-46 · RF-110 |
-| **T7** El código perdido | Rosa ↔ Elena | **A favor del secreto, con salida.** El código no se reemite nunca (RF-94) — es el «nunca debe» de Rosa y RNF-15 lo hace imposible. Lo que se decide es la salida que faltaba: el emisor **cancela y rehace** el giro mientras nadie lo haya cobrado (RF-110). El dinero deja de quedar atrapado hasta prescribir, y el secreto sigue siendo secreto | RF-94 · RF-110 · RNF-15 |
+| **T5** El canal de Rosa ↔ el de Elena | Rosa ↔ Elena | **Se parte en dos, y el secreto tiene ahora decididos sus dos extremos: por dónde sale y por dónde entra.** El **código** llega **solo al emisor**, por llamada o mensaje de texto al teléfono que él registró (RF-11), y ni quien atiende el mostrador puede leerlo o transcribirlo (RF-113, RNF-15) ni el sistema lo reemite (RF-94): al receptor se lo pasa Rosa, nunca el sistema. En el mostrador **lo introduce el propio receptor, sin que quien atiende pueda leerlo ni digitarlo** (RF-147), igual que la respuesta del desafío (RF-114). Para que el operario no quede mudo, RF-125 le confirma que el código salió sin mostrárselo, y el giro del que no hay constancia de que llegó queda **no pagable con acción ofrecible** (RF-149, RF-151) en vez de quedar mudo. La **respuesta del desafío** es lo único que el sistema no transmite a nadie (RF-101). Todo lo demás —aviso, monto, disponibilidad, pregunta del desafío, mala noticia— viaja **por llamada o mensaje de texto a los dos**, porque ninguno origina desde una aplicación | RF-11 · RF-113 · RF-147 · RF-125 · RF-149 · RNF-15 · RF-94 · RF-101 · RF-25 · RF-41 · RF-69 · RF-14 · RF-65 · RF-67 |
+| **T6** Cerrar ↔ cerrar de verdad | Rosa ↔ Elena | **A favor de Elena, ahora con ítem que lo diga.** El giro cierra en el momento en que el receptor recibe el dinero, no al fondearse ni al quedar disponible. Y el límite de la cancelación se corre para que Rosa no pueda anular con Elena en la ventanilla: no es «mientras no esté pagado» sino **mientras el dinero no esté a disposición del receptor** — un solo borde y un solo título, desde que RF-110 se retiró por decir lo mismo que RF-46 | RF-64 · RF-65 · RF-46 |
+| **T7** El código perdido | Rosa ↔ Elena | **A favor del secreto, con salida, y sin que la salida cueste dos veces.** El código no se reemite nunca (RF-94) — es el «nunca debe» de Rosa y RNF-15 lo hace imposible. Lo que se decide es la salida que faltaba: el emisor **cancela** el giro mientras nadie lo haya cobrado (RF-46) y **lo rehace al mismo receptor** (RF-117), conservando la cotización (RF-134) y **sin volver a pagar comisión** (RF-135, ahora P0 como el rehacer que la necesita). El dinero deja de quedar atrapado hasta prescribir, y el secreto sigue siendo secreto | RF-94 · RF-46 · RF-117 · RF-134 · RF-135 · RNF-15 |
 
 ## Reparto de prioridad
 
 | | P0 | P1 | P2 |
 |---|---|---|---|
-| Funcionales | 115 | 18 | 5 |
-| No funcionales | 14 | 3 | 0 |
+| Funcionales | 132 | 20 | 5 |
+| No funcionales | 15 | 3 | 0 |
 
 ## Supuestos y ambigüedades
 
@@ -291,6 +311,9 @@ nunca puede ser falso, y que por lo tanto se comprueba en cualquier momento.
 | `[ASSUMPTION: umbral de reporte transfronterizo — USD 10 000 por operación, o el que fije cada regulador si es menor]` | RF-17 · RF-22 · RF-139 | **Cerrada en la iteración 11** — era una cifra sin productor que `E` había inventado |
 | `[ASSUMPTION: la ventana del acumulado es de 30 días corridos]` | RF-09 · RF-93 | **Cerrada en la iteración 11** |
 | `[ASSUMPTION: la homonimia se resuelve en 24 horas; 3 intentos de desafío; 3 días para descartar la identificación sin giro; 72 horas de custodia; 24 horas de piso para responder un cambio de punto; liquidación al cierre del día hábil siguiente]` | RF-78 · RF-82 · RF-99 · RF-116 · RF-138 · RF-24 | **Cerradas en la iteración 11** — las seis cifras que la ronda 10 encontró sin productor |
+| `[ASSUMPTION: la objeción del agente a un descuento se resuelve en 5 días hábiles]` | RF-153 | **Abierta en la ronda 12** — es el terminador que le faltaba a la objeción de RF-145 |
+| `[ASSUMPTION: la devolución no retirada queda disponible 12 meses desde que quedó disponible, y no hasta la prescripción del giro que la originó]` | RF-89 · RF-137 | **Abierta en la ronda 12** — cierra la devolución que nacía vencida |
+| `[ASSUMPTION: la comisión y el margen los fija el sistema y quedan fechados, como la cotización]` | RF-157 · RF-158 | **Abierta en la ronda 12** — eran las dos cifras con lectores y sin productor |
 
 ## Identificadores retirados
 
@@ -309,3 +332,7 @@ cometieron ese error.
 | `RF-58` | Duplicado encubierto: contar el acumulado del receptor está contenido en retenerlo por superarlo, y estaba un escalón de prioridad por debajo | RF-93 |
 | `RF-107` | Duplicado encubierto: caso particular de avisar al receptor toda devolución, porque RF-47 hace de la cancelación una devolución | RF-106 vía RF-47 |
 | `RF-21` | Duplicado encubierto: caso particular de informar el monto **en moneda destino**, y estaba dos escalones de prioridad por debajo | RF-05 |
+| `RF-112` | Duplicado encubierto: no volver a consultar un código está contenido en no poder leerlo | RF-113 y RNF-15 |
+| `RF-12` | Duplicado encubierto: comprobar sin mostrar al mostrador está contenido en recibirla del receptor sin que el mostrador pueda leerla, una vez que RNF-17 se extendió al mostrador | RF-114 y RNF-17 |
+| `RF-110` | Duplicado encubierto: caso particular de cancelar, con el mismo borde palabra por palabra desde que T6 lo alineó | RF-46 |
+| `RF-108` | Duplicado encubierto: caso particular de avisar al receptor — y además anunciaba una devolución que ningún título ordena: un cambio de lista **retiene** (RF-29) y la devolución la produce el vencimiento de la retención (RF-32) | RF-37 y RF-106 |
