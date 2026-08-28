@@ -20,6 +20,7 @@ se decidió: se justificó. Lo que cuesta va escrito con el mismo cuidado que lo
 | [D-05](#d-05--las-iteraciones-del-diseño-son-iteraciones-del-diagrama-de-componentes) | «Las iteraciones del diseño» son del diagrama | Qué se entrega como iteración y en qué orden se construye |
 | [D-06](#d-06--el-backlog-adopta-el-formato-literal-del-profesor) | El backlog adopta el formato del profesor | La forma exacta de cada ítem del único artefacto puntuado |
 | [D-07](#d-07--sendit-opera-el-modelo-western-union) | SendIt opera el modelo Western Union | El canal de origen, quién es la tercera persona y la mitad de las reglas de seguridad |
+| [D-08](#d-08--spec-kit-se-instala-como-harness-y-no-produce-specs) | Spec Kit se instala como harness y no produce specs | Qué herramienta sostiene la disciplina y quién conserva la autoridad sobre los requerimientos |
 
 ---
 
@@ -279,6 +280,61 @@ El teléfono de Rosa sirve para consultar el estado y para pasarle el código a 
   anterior era la frontera de sistemas que producía el peor defecto de consistencia; ahora el
   mostrador es parte de la red y el diseño sí manda sobre él. El defecto no desaparece —se muda al
   corte de la operación a la mitad, que es el caso malo de Kevin.
+
+---
+
+## D-08 — Spec Kit se instala como harness y no produce specs
+
+**Contexto.** El [Caso #2](https://github.com/LuisMUtec/SWA-LAB02-Lease) corrió sobre
+[Spec Kit](https://github.com/github/spec-kit): plantillas en `.specify/`, skills `/speckit-*`, y un
+`specs/<n>/spec.md` como artefacto con autoridad. Este caso heredó de ahí la rúbrica, la regla de
+asimetría y la plantilla de personas, pero llegó **sin el harness**. Traerlo choca de frente con una
+restricción del [enunciado](LAB-03-ARQ-2026.2.md): los requerimientos van en **formato backlog, con
+un título claro y entendible y sin descripción** (D-06). Un `spec.md` es exactamente lo contrario.
+
+**Opciones.**
+
+| Opción | A favor | En contra |
+|---|---|---|
+| No instalarlo | Cero ambigüedad sobre quién manda, y cero archivos que no se usan | Se pierde la altitud de gobierno: la regla de dirección seguiría viviendo solo en el README del EVAL, sin documento que la haga vinculante para los seis pasos |
+| Instalarlo y migrar `R` a `specs/001-.../spec.md` | Los dos casos quedan idénticos y comparables archivo por archivo, y las diez skills funcionan | Viola la restricción del enunciado y deja al EVAL puntuando un artefacto que el curso no pidió |
+| **Instalarlo y dejar el backlog como autoridad** | Se gana la constitución y la estructura compartida sin mover el artefacto puntuado | Nueve de las diez skills quedan instaladas y muertas |
+
+**Decisión.** Se instala el harness completo —misma estructura que el Caso #2— y **el backlog
+conserva la autoridad**.
+
+**Corre una sola skill: `/speckit-constitution`.** Conviene decirlo con el número, porque la
+expectativa razonable es la contraria. `/speckit-clarify` exige un `specs/<n>/spec.md`,
+`/speckit-checklist` exige un `plan.md` y `/speckit-analyze` exige los tres archivos; sin ellos
+abortan contra `.specify/scripts/bash/check-prerequisites.sh` antes de leer nada. Este caso no
+produce ninguno de los tres, así que las nueve restantes quedan **inertes por decisión declarada**,
+no por olvido.
+
+La instalación se hizo con `specify init --here --integration claude --script sh`, versión
+`1.0.2.dev0`. El Caso #2 quedó en `0.16.6.dev0`: misma estructura de archivos, contenido más nuevo.
+
+**Consecuencias.**
+
+- **Aparece una altitud que faltaba.** [`.specify/memory/constitution.md`](../.specify/memory/constitution.md)
+  es el documento de gobierno, y con él la regla de dirección —*los requerimientos bajan, nunca
+  suben*— deja de vivir solo en el README del EVAL y pasa a ser vinculante para los seis pasos.
+- **El EVAL gana un insumo y no cambia de vara.** El agregador lee la constitución para D2, igual que
+  en el Caso #2. La rúbrica, los pesos y el gate son los mismos de D-04: instalar una herramienta no
+  reabre una decisión de puntaje.
+- **Nueve skills instaladas que no se corren es deuda, y se paga declarándola.** La salida barata
+  sería despertarlas creando un `specs/001-.../spec.md` mínimo; sería la peor de todas, porque ese
+  archivo agregaría comportamiento sin pasar por el backlog — que es exactamente la violación de la
+  regla de dirección que D4 cobra como *decisión sin requerimiento*. Borrarlas rompería los manifests
+  de Spec Kit; por eso se quedan, y por eso el conteo está escrito en el [README](../README.md) y en
+  la constitución en vez de quedar para que alguien lo descubra corriéndolas.
+- **El saldo honesto es una skill y un documento.** Si el harness valiera solo por las herramientas,
+  esta decisión sería mala. Vale por la constitución: es la primera vez que existe un documento que
+  prevalece sobre los seis pasos, y sin él la regla de dirección era una convención del aparato de
+  EVAL sobre pasos que no lo leen.
+- **Los dos repos vuelven a ser comparables en forma, no en contenido.** `.specify/` y
+  `.claude/skills/speckit-*` son la misma estructura en los dos casos. Lo que no se unifica es el
+  artefacto: allá una spec, acá un backlog. Un lector que espere `specs/` acá no lo va a encontrar, y
+  esta entrada existe para que no lo busque.
 
 ---
 
