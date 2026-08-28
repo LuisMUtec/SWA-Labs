@@ -24,9 +24,12 @@
 
 > ### Estado de este documento
 >
-> Cerrado en el estado de la **ronda 16** del EVAL. La **sección 2 (`R`)** se **extrae** del backlog
-> vigente, no se transcribe: sus 216 filas, las siete tensiones, el reparto de prioridad, los
-> supuestos y la tabla de identificadores retirados son los del repositorio, palabra por palabra.
+> Cerrado tras la **ronda 18** del EVAL. **La sección 2 (`R`) se extrae del backlog vigente**, no se
+> transcribe: sus 227 filas, las siete tensiones, el reparto de prioridad, la disciplina de alcance,
+> los supuestos y la tabla de identificadores retirados son los del repositorio palabra por palabra.
+> La tabla de rondas de la sección 8 se extrae de [`evals/HISTORY.md`](../evals/HISTORY.md). Dejar de
+> transcribir y pasar a extraer es la corrección que salvó a `L` en la ronda 11, y es lo único que
+> impide que este documento vuelva a divergir.
 >
 > **Lo que sigue declarado como deuda, y no disimulado:** las cifras de `E` —servidores,
 > almacenamiento, ancho de banda—, los endpoints de `D` y las entidades de `A` se calcularon sobre el
@@ -35,7 +38,7 @@
 > magnitudes, no las cajas ni las decisiones: **ningún tramo de rotura cambia de lugar**, y eso está
 > comprobado en el análisis de sensibilidad de la sección 7.
 >
-> El paso `L` **sí** está al día: trazabilidad **216 / 216**, verificada por conteo.
+> El paso `L` **sí** está al día: trazabilidad **227 / 227**, verificada por conteo.
 
 ---
 
@@ -52,43 +55,49 @@ paga, y la única de las tres personas que elige libremente. La acompañan Elena
 Huanta, sin datos móviles y con el DNI vencido— y Kevin —el operario del mostrador, que no es el
 guardián de la seguridad sino **el vector por donde se rompe**.
 
-El entregable cubre los seis pasos de R.E.D.A.L.E.: un **backlog de 216 ítems** (196 funcionales, 20
+El entregable cubre los seis pasos de R.E.D.A.L.E.: un **backlog de 227 ítems** (207 funcionales, 20
 no funcionales), una estimación con su aritmética a la vista (**13 servidores**, **3,2 TB
 retenidos**, **1,6 Mbit/s en pico**), una arquitectura mixta con **32 endpoints** y **diez
 decisiones cerradas**, un modelo de **30 entidades** repartidas en **10 bases**, **tres iteraciones
-del diagrama de componentes** con trazabilidad **216/216**, y los tramos de escalamiento con sus
+del diagrama de componentes** con trazabilidad **227/227**, y los tramos de escalamiento con sus
 seis cuellos de botella.
 
 ### El resultado del EVAL, dicho de una
 
-**El EVAL cerró en 7,73 / 10 en la decimoquinta ronda. El gate del enunciado es 8. No se alcanzó.**
+**El EVAL alcanzó el gate en la decimoséptima ronda: 8,0045 / 10 sobre un umbral de 8.**
 
 ```
-Ronda    01    02    03    04    05    06    07    08     09     10     11     12     13     14     15
-Total   3,5   4,0   5,0   6,0   6,5   5,5   6,0   7,12   6,50   6,54   6,61   7,34   7,66   7,75   7,73
-Ítems    41    69    81    97   110   119   118    137    137    137    155    175    192    200    207
+Ronda   01   02   03   04   05   06   07   08     09    10     11     12     13     14     15     16     17
+Total  3,5  4,0  5,0  6,0  6,5  5,5  6,0  7,12  6,50  6,54   6,61   7,34   7,66   7,75   7,73   7,70   8,00
+Ítems   41   69   81   97  110  119  118   137   137   137    155    175    192    200    207    216    222
 ```
 
-Quince rondas con tres agentes de persona aislados entre sí y un agregador movieron el backlog de
-**41 a 216 ítems** y el puntaje de **3,5 a 7,73**, con dos regresiones reales —la sexta y la
-decimoquinta— y ninguna corrección de la vara para alcanzar el número.
+**Y lo primero que hay que decir del 8,00 es lo que el propio agregador dijo antes de emitirlo: el
+puntaje cae dentro de la resolución del instrumento.** Cada hallazgo de `D4` vale 0,0225 puntos y
+`n = 22`; **un hallazgo más habría dado 7,98 y el gate habría fallado**. La ronda 18 existe para que
+el margen deje de depender de un ítem marginal.
 
-**Y el resultado que este trabajo entrega no es el puntaje: son los dos dictámenes que el aparato
-produjo sobre sí mismo.**
+Diecisiete rondas con tres agentes de persona aislados entre sí y un agregador movieron el backlog de
+**41 a 227 ítems** y el puntaje de **3,5 a 8,00**, con dos regresiones reales y **ninguna corrección
+de la vara para alcanzar el número**.
 
-1. **La ronda 07 dictaminó que `D4 = 2 − 0,25n` no estaba calibrada** —varianza cero en siete rondas
-   mientras `n` variaba 2,7×—: medía tamaño, no coherencia. La rúbrica **no se cambió en esa ronda**.
-   Se enmendó en la 08, con las cuatro condiciones del Principio IV exhibidas, incluida la que no se
-   puede argumentar: **se recalcularon las rondas viejas y ninguna alcanzaba el gate que antes no
-   alcanzaba.**
-2. **La ronda 15 dictaminó algo más incómodo, y es sobre el método y no sobre la métrica:** ocho de
-   nueve bloques de corrección se cerraron enteros y el puntaje **bajó**. El pliego afirmaba que su
-   bloque 1 cruzaba el gate solo; se aplicó mejor de lo pedido y `D3` no se movió. La frase que lo
-   resume: **«una corrección deducida de un informe corrige el informe, no la dimensión»**. La otra
-   mitad de la seguridad —que el efectivo sale hacia el emisor sin que ningún título exija
-   identificarlo— llevaba quince rondas abierta, y la encontraron Rosa y Kevin por separado.
+**Lo que este trabajo entrega no es el puntaje: son los tres dictámenes que el aparato produjo sobre
+sí mismo.**
 
-La sección 8 desarrolla las quince corridas y la sección 9 los dos dictámenes.
+1. **Ronda 07 — `D4` no estaba calibrada.** Varianza cero en siete rondas mientras `n` variaba 2,7×:
+   medía tamaño, no coherencia. **La rúbrica no se cambió en esa ronda.** Se enmendó en la 08 con las
+   cuatro condiciones del Principio IV exhibidas, incluida la que no se puede argumentar: se
+   recalcularon las rondas viejas y **ninguna alcanzaba el gate que antes no alcanzaba**.
+2. **Ronda 15 — una corrección deducida de un informe corrige el informe, no la dimensión.** Ocho de
+   nueve bloques cerrados y el puntaje **bajó**. La otra mitad de la seguridad —que el efectivo sale
+   hacia el emisor sin que ningún título exija identificarlo— llevaba quince rondas abierta.
+3. **Ronda 17 — la enmienda candidata a `D2` se retira, y por el motivo contrario al esperado.**
+   Satisface la condición 4 —ninguna ronda pasada ganaría el gate con ella— **pero esta ronda lo
+   perdería**, y aplicar una enmienda en la corrida donde voltea el veredicto es indistinguible de
+   endurecer por su efecto. *«El Principio IV es simétrico: prohíbe ablandar y, por la misma lógica,
+   prohíbe endurecer cuando el endurecimiento y el resultado entran juntos.»*
+
+La sección 8 desarrolla las rondas y la 9 los dictámenes.
 
 ---
 
@@ -230,9 +239,9 @@ agregar una sola línea de descripción.
 | **¿Para quién lo resolvemos?** | Para **Rosa**, que paga y elige el servicio. Elena y Kevin existen porque sin ellos su operación no cierra |
 | **¿Cuáles son las limitaciones?** | Las dos del enunciado: **seguridad**, porque el efectivo se entrega a un desconocido en una ventanilla ajena, y **consistencia de datos**, porque un giro pagado dos veces es dinero perdido, no un registro sucio. A eso se suma que el negocio es transfronterizo y por tanto **multirregulador** |
 
-### El backlog — 216 ítems
+### El backlog — 227 ítems
 
-**196 requerimientos funcionales y 20 no funcionales.** Los huecos en la numeración son
+**207 requerimientos funcionales y 20 no funcionales.** Los huecos en la numeración son
 **identificadores retirados**, y un identificador retirado no se reutiliza: su número queda muerto
 (la tabla al final de esta sección dice cuáles y por qué).
 
@@ -243,6 +252,7 @@ agregar una sola línea de descripción.
 | ID | Título | Persona | Regla | Prioridad |
 |---|---|---|---|---|
 | RF-01 | el sistema identificará al emisor contra un documento oficial vigente antes de recibir su efectivo - Rosa | Rosa | BR-03 | P0 |
+| RF-225 | el sistema resolverá con un segundo rol, y no con el criterio del operario, la duda sobre si la fotografía del documento corresponde al emisor - Kevin | Kevin | BR-03 | P0 |
 | RF-02 | el sistema entregará al receptor su dinero en efectivo, sin exigirle cuenta bancaria - Elena | Elena | BR-01 | P0 |
 | RF-79 | el sistema dará el giro por creado en el momento en que registra la recepción del efectivo - Kevin | Kevin | BR-03 | P0 |
 | RF-03 | el sistema exigirá un único receptor designado por giro - Rosa | Rosa | BR-02 | P0 |
@@ -260,13 +270,14 @@ agregar una sola línea de descripción.
 | RF-10 | el sistema contará el límite por operación y el acumulado sobre la identidad del emisor y no sobre el punto de atención - Kevin | Kevin | BR-04 | P0 |
 | RF-11 | el sistema hará llegar el código de seguimiento al emisor por llamada o mensaje de texto al teléfono que él registró - Rosa | Rosa | BR-08 | P0 |
 | RF-125 | el sistema confirmará al operario que el código salió hacia el emisor, sin mostrárselo - Kevin | Kevin | BR-08 | P0 |
-| RF-114 | el sistema recibirá la respuesta del desafío del propio receptor, sin que quien atiende pueda leerla ni digitarla - Elena | Elena | BR-09 | P0 |
+| RF-114 | el sistema recibirá la respuesta del desafío del propio receptor `[CLARIFY: por qué medio la introduce quien no tiene teléfono con pantalla]` - Elena | Elena | BR-09 | P0 |
 | RF-94 | el sistema no volverá a entregar un código ya emitido, ni siquiera al emisor que lo perdió - Rosa | Rosa | BR-08 | P0 |
 | RF-189 | el sistema tendrá por llegado el aviso cuyo canal no reporta fallo dentro de `[ASSUMPTION: 15 minutos]` del despacho - Rosa | Rosa | BR-15 | P0 |
+| RF-217 | el sistema tendrá por no llegado el código de seguimiento cuyo canal no reporta entrega - Rosa | Rosa | BR-08 | P0 |
 | RF-149 | el sistema dejará no pagable el giro del que no tiene constancia de que el código llegó a su emisor - Kevin | Kevin | BR-08 | P0 |
 | RF-173 | el sistema volverá pagable el giro no pagable por falta de constancia cuando la constancia llega - Kevin | Kevin | BR-08 | P0 |
 | RF-174 | el sistema devolverá al emisor el giro que sigue sin constancia del código a las `[ASSUMPTION: 72 horas]` de emitido - Rosa | Rosa | BR-12 | P0 |
-| RF-117 | el sistema permitirá rehacer al mismo receptor el giro que se cerró sin pagarse porque su código se perdió o no llegó - Rosa | Rosa | BR-12 | P0 |
+| RF-117 | el sistema permitirá rehacer al mismo receptor el giro que se canceló o se devolvió sin haberse pagado - Rosa | Rosa | BR-12 | P0 |
 | RF-134 | el sistema conservará en el giro rehecho la cotización que fijó el giro cancelado - Rosa | Rosa | BR-07 | P0 |
 | RF-135 | el sistema no volverá a cobrar la comisión del giro rehecho - Rosa | Rosa | BR-07 | P0 |
 | RF-123 | el sistema volverá a correr sobre el giro rehecho los mismos controles que sobre uno nuevo, incluida la identificación del emisor contra su documento - Kevin | Kevin | BR-06 | P0 |
@@ -295,8 +306,8 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-17 | el sistema reportará a la autoridad de origen el giro que supere su umbral de reporte transfronterizo `[ASSUMPTION: USD 10 000 por operación, o el que fije cada regulador si es menor]` - Kevin | Kevin | BR-17 | P0 |
 | RF-139 | el sistema reportará a la autoridad del país de destino el giro que supere el umbral de reporte de esa jurisdicción - Kevin | Kevin | BR-17 | P0 |
 | RF-185 | el sistema reportará a cada autoridad dentro del plazo que fija esa jurisdicción, y no del más largo de los dos - Kevin | Kevin | BR-17 | P0 |
-| RF-140 | el sistema registrará la fecha de nacimiento del emisor cuando el reporte a una autoridad la exige - Kevin | Kevin | BR-17 | P1 |
-| RF-161 | el sistema registrará la fecha de nacimiento del receptor cuando el reporte a una autoridad la exige - Kevin | Kevin | BR-17 | P1 |
+| RF-140 | el sistema registrará la fecha de nacimiento del emisor cuando el reporte a una autoridad la exige - Kevin | Kevin | BR-17 | P0 |
+| RF-161 | el sistema registrará la fecha de nacimiento del receptor cuando el reporte a una autoridad la exige - Kevin | Kevin | BR-17 | P0 |
 | RF-18 | el sistema conservará el registro de un giro por el plazo más largo de los dos países que lo tocaron - Kevin | Kevin | BR-17 | P1 |
 | RF-19 | el sistema informará al emisor que un país destino no puede atenderse antes de que entregue el efectivo - Rosa | Rosa | BR-02 | P0 |
 | RF-20 | el sistema exigirá efectivo disponible en el corredor de destino antes de dar un giro por fondeado - Kevin | Kevin | BR-11 | P0 |
@@ -316,9 +327,10 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-97 | el sistema volverá a tamizar los giros aún no pagados cuando cambia una lista de sanciones - Kevin | Kevin | BR-06 | P1 |
 | RF-28 | el sistema separará una coincidencia exacta de sanciones de una coincidencia por homonimia - Kevin | Kevin | BR-06 | P0 |
 | RF-78 | el sistema resolverá la coincidencia por homonimia en `[ASSUMPTION: 24 horas]`, plazo más corto que el de la coincidencia exacta - Kevin | Kevin | BR-06 | P1 |
-| RF-29 | el sistema dejará no pagable el giro con coincidencia de sanciones - Kevin | Kevin | BR-06 | P0 |
-| RF-182 | el sistema dejará no cancelable el giro con coincidencia de sanciones - Kevin | Kevin | BR-06 | P0 |
-| RF-213 | el sistema volverá cancelable el giro cuya retención por sanciones se liberó - Rosa | Rosa | BR-06 | P0 |
+| RF-29 | el sistema retendrá el giro con coincidencia de sanciones - Kevin | Kevin | BR-06 | P0 |
+| RF-220 | el sistema dejará no pagable todo giro retenido - Kevin | Kevin | BR-06 | P0 |
+| RF-182 | el sistema dejará no cancelable todo giro retenido - Kevin | Kevin | BR-06 | P0 |
+| RF-213 | el sistema volverá cancelable el giro cuya retención terminó sin devolución - Rosa | Rosa | BR-06 | P0 |
 | RF-30 | el sistema derivará el giro retenido a un rol distinto del operario que lo atendió - Kevin | Kevin | BR-06 | P0 |
 | RF-31 | el sistema exigirá que toda retención lleve el plazo del regulador más estricto de los dos países del giro - Kevin | Kevin | BR-06 | P0 |
 | RF-32 | el sistema devolverá al emisor el monto del giro cuya retención venció sin liberarse - Kevin | Kevin | BR-06 | P0 |
@@ -339,7 +351,7 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-87 | el sistema registrará el motivo de cada liberación de un giro retenido - Kevin | Kevin | BR-06 | P1 |
 | RF-163 | el sistema mostrará al rol de cumplimiento el motivo con que se liberó cada giro retenido - Kevin | Kevin | BR-06 | P1 |
 | RF-127 | el sistema avisará al emisor por llamada o mensaje de texto cuando su giro deja de estar retenido - Rosa | Rosa | BR-06 | P0 |
-| RF-93 | el sistema retendrá el giro cuyo receptor superó su acumulado de cobros en la ventana `[ASSUMPTION: 30 días corridos]` - Kevin | Kevin | BR-04 | P0 |
+| RF-93 | el sistema rechazará, antes de que el operario reciba el efectivo, el giro cuyo receptor superó su acumulado de cobros en la ventana `[ASSUMPTION: 30 días corridos]` - Kevin | Kevin | BR-04 | P0 |
 | RF-159 | el sistema fijará por jurisdicción de destino el acumulado de cobros que un receptor no puede superar en la ventana - Kevin | Kevin | BR-04 | P0 |
 
 #### Pago
@@ -347,7 +359,7 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | ID | Título | Persona | Regla | Prioridad |
 |---|---|---|---|---|
 | RF-34 | el sistema exigirá el código del giro para autorizar un pago - Elena | Elena | BR-09 | P0 |
-| RF-147 | el sistema recibirá el código del giro del propio receptor, sin que quien atiende pueda leerlo ni digitarlo - Elena | Elena | BR-08 | P0 |
+| RF-147 | el sistema recibirá el código del giro del propio receptor `[CLARIFY: por qué medio lo introduce quien no tiene teléfono con pantalla]` - Elena | Elena | BR-08 | P0 |
 | RF-85 | el sistema exigirá un documento de identidad cuyo titular coincida con el receptor designado - Elena | Elena | BR-09 | P0 |
 | RF-86 | el sistema exigirá que el documento del receptor esté vigente - Elena | Elena | BR-09 | P0 |
 | RF-68 | el sistema exigirá al emisor registrar al crear el giro una pregunta acordada con el receptor, y su respuesta - Rosa | Rosa | BR-09 | P0 |
@@ -355,9 +367,13 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-102 | el sistema impedirá que el punto de atención cobre al receptor por recibir su dinero - Elena | Elena | BR-01 | P0 |
 | RF-69 | el sistema entregará al receptor por llamada o mensaje de texto la pregunta del desafío cuando no tiene documento vigente - Elena | Elena | BR-09 | P0 |
 | RF-122 | el sistema autorizará el pago con documento vencido cuando el receptor responde correctamente el desafío - Elena | Elena | BR-09 | P0 |
+| RF-222 | el sistema autorizará con documento vencido la entrega de una reposición cuando el receptor responde correctamente el desafío - Elena | Elena | BR-13 | P0 |
 | RF-82 | el sistema limitará a `[ASSUMPTION: 3]` los intentos de responder el desafío de un giro - Kevin | Kevin | BR-09 | P0 |
 | RF-103 | el sistema devolverá al emisor el giro cuyos intentos de desafío se agotaron y cuya identificación por el rol de cumplimiento no prosperó - Kevin | Kevin | BR-09 | P0 |
 | RF-212 | el sistema derivará al rol de cumplimiento la identificación del receptor cuyos intentos de desafío se agotaron, antes de devolver el giro - Elena | Elena | BR-09 | P0 |
+| RF-218 | el sistema habilitará el pago del giro cuyo receptor identificó el rol de cumplimiento contra los datos que el emisor registró, tras agotarse los intentos - Elena | Elena | BR-09 | P0 |
+| RF-219 | el sistema resolverá dentro de `[ASSUMPTION: 24 horas]` la identificación derivada al rol de cumplimiento - Elena | Elena | BR-09 | P0 |
+| RF-223 | el sistema devolverá al emisor el giro cuya identificación derivada venció sin resolverse - Elena | Elena | BR-12 | P0 |
 | RF-83 | el sistema caducará la respuesta del desafío junto con el giro que la lleva - Kevin | Kevin | BR-09 | P0 |
 | RF-84 | el sistema decidirá qué diferencias de escritura cuentan como coincidencia de titular, y no el operario - Kevin | Kevin | BR-09 | P0 |
 | RF-148 | el sistema resolverá con el desafío, y no con el criterio del operario, la duda sobre si la fotografía del documento corresponde al receptor - Elena | Elena | BR-09 | P0 |
@@ -367,9 +383,10 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-59 | el sistema repondrá al emisor o al receptor, según a quién le faltó, toda diferencia comprobada entre el monto fijado y el entregado - Elena | Elena | BR-13 | P0 |
 | RF-154 | el sistema decidirá en un rol ajeno al punto donde ocurrió si una diferencia declarada queda comprobada - Kevin | Kevin | BR-13 | P0 |
 | RF-193 | el sistema decidirá toda diferencia declarada dentro de `[ASSUMPTION: 5 días hábiles en la jurisdicción del punto donde se originó]` - Elena | Elena | BR-13 | P0 |
-| RF-194 | el sistema repondrá, por el monto que el receptor declaró, la diferencia cuyo plazo de decisión venció sin decidirse - Elena | Elena | BR-13 | P0 |
+| RF-194 | el sistema repondrá la diferencia cuyo plazo de decisión venció sin decidirse - Elena | Elena | BR-13 | P0 |
+| RF-214 | el sistema no repondrá por una diferencia más que lo que el giro fijó menos lo que la evidencia de entrega acredita - Kevin | Kevin | BR-13 | P0 |
 | RF-155 | el sistema pagará al receptor en efectivo, en el punto donde cobró, la diferencia repuesta a su favor - Elena | Elena | BR-13 | P0 |
-| RF-204 | el sistema exigirá el documento del receptor designado antes de entregarle en el mostrador el efectivo de una reposición - Elena | Elena | BR-13 | P0 |
+| RF-204 | el sistema exigirá el documento oficial vigente del receptor designado antes de entregarle en el mostrador el efectivo de una reposición - Elena | Elena | BR-13 | P0 |
 | RF-156 | el sistema avisará al receptor por llamada o mensaje de texto que su reposición está disponible y en qué punto retirarla - Elena | Elena | BR-13 | P0 |
 | RF-175 | el sistema mantendrá disponible la reposición no retirada durante `[ASSUMPTION: 12 meses]` contados desde que quedó disponible - Elena | Elena | BR-13 | P2 |
 | RF-176 | el sistema dará por prescrita la reposición que nadie retiró al vencer su plazo de disponibilidad - Elena | Elena | BR-14 | P2 |
@@ -385,21 +402,21 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-166 | el sistema admitirá del receptor, en el mostrador donde cobró y contra su documento, la declaración de que el dinero recibido no coincide con el informado - Elena | Elena | BR-13 | P0 |
 | RF-91 | el sistema ofrecerá al emisor por llamada o mensaje de texto otro punto de atención del mismo distrito que el elegido cuando ese se queda sin efectivo para pagar - Rosa | Rosa | BR-02 | P0 |
 | RF-129 | el sistema devolverá al emisor el giro para el que no queda ningún punto de atención con efectivo para pagarlo en el distrito elegido - Rosa | Rosa | BR-12 | P0 |
-| RF-105 | el sistema no cambiará el punto de atención elegido sin la respuesta del emisor - Rosa | Rosa | BR-02 | P0 |
+| RF-105 | el sistema no cambiará el punto de atención elegido sin la respuesta del emisor, salvo el cambio que el receptor solicitó y el emisor dejó vencer - Rosa | Rosa | BR-02 | P0 |
 | RF-208 | el sistema identificará contra los datos que registró al crear el giro, antes de admitirla, la respuesta del emisor a un cambio de punto hecha fuera del mostrador - Rosa | Rosa | BR-02 | P0 |
 | RF-187 | el sistema admitirá del receptor designado la solicitud de cambio de punto de atención - Elena | Elena | BR-02 | P0 |
 | RF-192 | el sistema informará al emisor, al ofrecerle un cambio de punto de atención, si la solicitud la originó el receptor - Rosa | Rosa | BR-02 | P0 |
-| RF-111 | el sistema devolverá al emisor el giro cuyo punto se quedó sin efectivo para pagar y cuya respuesta no llega dentro del plazo que se le informó al ofrecerle otro - Rosa | Rosa | BR-12 | P0 |
+| RF-111 | el sistema devolverá al emisor el giro cuyo punto se quedó sin efectivo para pagar, cuya respuesta no llega dentro del plazo y para el que el receptor no solicitó otro punto - Rosa | Rosa | BR-12 | P0 |
 | RF-211 | el sistema cambiará al punto que el receptor solicitó el giro cuyo emisor no respondió dentro del plazo, en vez de devolverlo - Elena | Elena | BR-02 | P0 |
 | RF-164 | el sistema devolverá al emisor el giro cuyo punto se quedó sin efectivo para pagar y cuyo cambio de punto el emisor rechazó - Rosa | Rosa | BR-12 | P0 |
 | RF-116 | el sistema informará al emisor por llamada o mensaje de texto, al ofrecerle otro punto de atención, dentro de cuánto debe responder - Rosa | Rosa | BR-11 | P0 |
 | RF-183 | el sistema no dará al emisor menos de `[ASSUMPTION: 24 horas]` para responder a un cambio de punto de atención - Rosa | Rosa | BR-11 | P0 |
 | RF-39 | el sistema asociará al menos una acción ofrecible a todo giro rechazado - Kevin | Kevin | BR-16 | P0 |
-| RF-150 | el sistema asociará al menos una acción ofrecible a todo giro retenido - Kevin | Kevin | BR-16 | P0 |
 | RF-151 | el sistema asociará al menos una acción ofrecible a todo giro no pagable - Kevin | Kevin | BR-16 | P0 |
 | RF-152 | el sistema asociará al giro cuyo motivo de rechazo está prohibido revelar una acción ofrecible que no permita deducirlo - Kevin | Kevin | BR-16 | P0 |
 | RF-171 | el sistema asociará al giro cuyo motivo de retención está prohibido revelar una acción ofrecible que no permita deducirlo - Kevin | Kevin | BR-16 | P0 |
 | RF-130 | el sistema mostrará al operario la acción ofrecible del giro que tiene delante - Kevin | Kevin | BR-16 | P0 |
+| RF-221 | el sistema mostrará al operario en qué estado quedó la operación que acaba de cerrar - Kevin | Kevin | BR-16 | P0 |
 | RF-40 | el sistema omitirá al operario el motivo de un rechazo cuando revelarlo esté prohibido - Kevin | Kevin | BR-16 | P0 |
 | RF-170 | el sistema omitirá al operario el motivo de una retención cuando revelarlo esté prohibido - Kevin | Kevin | BR-16 | P0 |
 | RF-25 | el sistema avisará al receptor que hay un giro a su nombre por llamada o mensaje de texto - Elena | Elena | BR-09 | P0 |
@@ -427,14 +444,14 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-43 | el sistema tratará todo reintento de una creación interrumpida como la misma operación - Kevin | Kevin | BR-10 | P0 |
 | RF-44 | el sistema tratará todo reintento de un pago interrumpido como la misma operación - Kevin | Kevin | BR-10 | P0 |
 | RF-100 | el sistema impedirá que un punto sin conexión autorice un pago que no puede comprobar contra el centro - Kevin | Kevin | BR-10 | P0 |
-| RF-144 | el sistema dejará en un estado único el pago cuya confirmación no llegó del punto al centro - Kevin | Kevin | BR-10 | P0 |
+| RF-144 | el sistema dejará el pago cuya confirmación no llegó del punto al centro en un estado único que el operario puede leer y retomar - Kevin | Kevin | BR-10 | P0 |
 | RF-146 | el sistema resolverá contra el registro del centro el pago cuya confirmación no llegó, sin intervención del operario - Kevin | Kevin | BR-10 | P0 |
 
 #### Cancelación y prescripción
 
 | ID | Título | Persona | Regla | Prioridad |
 |---|---|---|---|---|
-| RF-46 | el sistema permitirá al emisor cancelar su giro mientras el dinero no esté a disposición del receptor - Rosa | Rosa | BR-12 | P0 |
+| RF-46 | el sistema permitirá al emisor cancelar su giro mientras el receptor no lo haya cobrado - Rosa | Rosa | BR-12 | P0 |
 | RF-47 | el sistema devolverá al emisor, al cancelar, el efectivo que entregó por el giro - Rosa | Rosa | BR-12 | P0 |
 | RF-48 | el sistema admitirá la cancelación de un giro únicamente del emisor que lo creó - Rosa | Rosa | BR-12 | P0 |
 | RF-206 | el sistema identificará contra los datos que registró al crear el giro, antes de admitirla, la cancelación pedida fuera del mostrador - Rosa | Rosa | BR-12 | P0 |
@@ -476,16 +493,19 @@ efectivo y el aviso al receptor pertenece al canal. Los dos se mudaron a **Pago*
 | RF-57 | el sistema limitará lo que el operario ve a los datos de la operación que está atendiendo, excluida la respuesta del desafío - Kevin | Kevin | BR-16 | P0 |
 | RF-80 | el sistema conservará la evidencia de la identificación del emisor de cada giro - Kevin | Kevin | BR-15 | P1 |
 | RF-160 | el sistema conservará la evidencia de la identificación del receptor de cada giro - Kevin | Kevin | BR-15 | P1 |
-| RF-168 | el sistema conservará la evidencia, firmada por el receptor, de que recibió el efectivo - Kevin | Kevin | BR-15 | P0 |
-| RF-98 | el sistema conservará constancia de cada aviso enviado - Elena | Elena | BR-15 | P1 |
-| RF-162 | el sistema mostrará la constancia del aviso a quien reclama no haber sido avisado, con su destinatario, su momento y su acuse - Elena | Elena | BR-15 | P1 |
-| RF-131 | el sistema registrará el resultado que el canal reporta sobre cada aviso - Elena | Elena | BR-15 | P1 |
+| RF-168 | el sistema conservará la evidencia, firmada por el receptor, del monto que recibió en efectivo - Kevin | Kevin | BR-15 | P0 |
+| RF-98 | el sistema conservará constancia de cada aviso enviado - Elena | Elena | BR-15 | P0 |
+| RF-162 | el sistema mostrará la constancia de un aviso únicamente a su destinatario - Elena | Elena | BR-15 | P0 |
+| RF-224 | el sistema mostrará la constancia de un aviso únicamente por el canal por el que lo despachó - Elena | Elena | BR-15 | P0 |
+| RF-131 | el sistema registrará el resultado que el canal reporta sobre cada aviso - Elena | Elena | BR-15 | P0 |
 | RF-132 | el sistema tratará como no avisado a quien no tenga constancia de que el aviso llegó - Elena | Elena | BR-15 | P1 |
-| RF-202 | el sistema volverá a despachar por llamada o mensaje de texto el aviso que el canal reporta como no entregado dentro de `[ASSUMPTION: 15 minutos]` del despacho - Elena | Elena | BR-15 | P0 |
+| RF-202 | el sistema volverá a despachar por llamada o mensaje de texto el aviso que el canal reporta como no entregado y el que el destinatario dice no haber recibido - Elena | Elena | BR-15 | P0 |
 | RF-169 | el sistema no descartará ningún aviso, cualquiera sea la causa - Elena | Elena | BR-15 | P0 |
 | RF-188 | el sistema entregará primero el aviso sujeto a un plazo cuando la capacidad del canal no alcanza para todos - Elena | Elena | BR-15 | P1 |
 | RF-99 | el sistema descartará a los `[ASSUMPTION: 3 días]` la evidencia de identificación de un emisor que no llegó a crear un giro - Rosa | Rosa | BR-16 | P2 |
 | RF-81 | el sistema suprimirá a pedido los datos personales de quien los entregó, y de nadie más - Rosa | Rosa | BR-16 | P2 |
+| RF-215 | el sistema identificará contra los datos que registró, antes de admitirla, la supresión de datos personales pedida fuera del mostrador - Rosa | Rosa | BR-16 | P2 |
+| RF-226 | el sistema exigirá el documento oficial vigente de quien pide en el mostrador cancelar un giro o suprimir sus datos personales - Kevin | Kevin | BR-16 | P0 |
 
 ### No funcionales
 
@@ -510,7 +530,7 @@ nunca puede ser falso, y que por lo tanto se comprueba en cualquier momento.
 | ID | Título | Invariante | Regla | Prioridad |
 |---|---|---|---|---|
 | RNF-05 | el sistema impedirá que un giro quede pagado dos veces | Ningún giro registra dos entregas al receptor, en ningún punto y en ningún momento | BR-10, BR-11 | P0 |
-| RNF-16 | el sistema impedirá que un giro quede pagado con un monto distinto del que se le informó al emisor | Ninguna entrega registrada difiere de la cifra que el emisor vio antes de entregar su efectivo | BR-07, BR-13 | P0 |
+| RNF-16 | el sistema impedirá que un giro quede pagado con un monto distinto del que se le informó al emisor | Ningún giro se registra como entregado por una cifra distinta de la que el emisor vio antes de entregar su efectivo. El invariante habla del registro; la diferencia entre lo registrado y lo que el receptor contó a mano la remedian RF-59 y RF-194 | BR-07, BR-13 | P0 |
 | RNF-06 | el sistema mantendrá un solo estado del giro entre el centro y el punto de atención | Dos lugares del sistema nunca afirman a la vez que un giro está retenido y disponible para cobro | BR-10 | P0 |
 | RNF-13 | el sistema impedirá que un giro quede devuelto y cobrado a la vez | Ningún giro figura simultáneamente devuelto al emisor y entregado al receptor, en ningún punto y en ningún momento | BR-12 | P0 |
 | RNF-19 | el sistema impedirá que un giro quede devuelto y pagable a la vez | Ningún giro figura simultáneamente devuelto al emisor y habilitado para que el receptor lo cobre, en ningún punto y en ningún momento | BR-12 | P0 |
@@ -521,7 +541,7 @@ nunca puede ser falso, y que por lo tanto se comprueba en cualquier momento.
 
 | ID | Título | Medida | Prioridad |
 |---|---|---|---|
-| RNF-09 | el sistema resolverá en un tiempo acotado la parte de una atención que solo depende de él | `[ASSUMPTION: menos de 3 minutos]` desde que alguien llega al mostrador, incluida la verificación del documento contra el sistema. **No se mide contra una disponibilidad: es un plazo** | P0 |
+| RNF-09 | el sistema resolverá en un tiempo acotado la parte de una atención que solo depende de él | `[ASSUMPTION: menos de 3 minutos]` desde que alguien llega al mostrador, incluida la verificación del documento contra el sistema, **y `[ASSUMPTION: menos de 14 minutos]` sumándole las esperas de RNF-20 y RF-177 cuando las dos ocurren**, que es la suma de los tres y no una cifra aparte. No se mide contra una disponibilidad: son plazos | P0 |
 | RNF-20 | el sistema resolverá en un tiempo acotado la espera por la autorización de un segundo rol | `[ASSUMPTION: 10 minutos]` desde que la autorización se solicita, con la persona esperando en el mostrador. RF-191 dice qué pasa al vencerlo | P0 |
 | RNF-10 | el sistema dejará un giro fondeado disponible para cobro en el destino en un tiempo acotado | `[ASSUMPTION: menos de 15 minutos]` desde su creación | P0 |
 | RNF-11 | el sistema sostendrá la capacidad de crear y de pagar giros | `[ASSUMPTION: 99,9 % mensual]`, medida sobre crear y pagar, no sobre consultar | P1 |
@@ -536,7 +556,7 @@ nunca puede ser falso, y que por lo tanto se comprueba en cualquier momento.
 | **T2** Explicación ↔ reserva | Rosa ↔ Kevin | **Se decide en los dos mostradores, y la reserva de la ronda 11 queda cerrada.** Cuando revelar el motivo está prohibido, el operario recibe **una salida concreta que ofrecer, no la razón** (RF-39, RF-40) y esa salida **no permite deducir el motivo** (RF-152): atiende sin saber y sin poder deducir. **La ronda 13 cerró el agujero que partir RF-39 destapó:** lo que RF-40 y RF-152 decidían solo para el *rechazo* lo deciden ahora también para la *retención* —RF-170 y RF-171—, que es el estado que puede tener un reporte detrás y el que T2 existe para gobernar. Y del lado de Rosa: ve **que** está retenido y **hasta cuándo**, nunca por qué, y sabe de antemano dentro de cuánto le avisarán (RF-66, RF-67, RF-115) | RF-39 · RF-40 · RF-170 · RF-152 · RF-171 · RF-66 · RF-67 · RF-115 |
 | **T3** Identidad del receptor | Elena ↔ Kevin | **Se parte, como T5, y sus tres ejes quedan decididos.** La regla dura queda en un título solo, desde que la ronda 13 lo partió: el documento tiene que estar **vigente** (RF-86), y la única excepción vive entera en su propio título (RF-122); **qué cuenta como coincidencia de escritura lo decide el sistema, no el operario** (RF-84); y **la duda sobre la fotografía tampoco la decide el operario, la resuelve el desafío** (RF-148). La salida al documento vencido es el mismo desafío: el emisor registra una pregunta **acordada con el receptor** (RF-68), el sistema le entrega la pregunta por su canal (RF-69) y **autoriza el pago cuando la responde** (RF-122), sin transmitir la respuesta a nadie (RF-101) y comprobándola sin mostrarla ni a la infraestructura ni al mostrador (RF-114, RNF-17), con intentos acotados (RF-82) | RF-86 · RF-84 · RF-148 · RF-68 · RF-69 · RF-122 · RF-101 · RF-114 · RNF-17 · RF-82 |
 | **T4** Certeza del monto ↔ exposición cambiaria | Rosa ↔ la empresa | **A favor de Rosa.** El monto de destino se fija al crear el giro y no se recalcula nunca, con una cotización que el sistema produce y fecha. La empresa carga el movimiento | RF-05 · RF-06 · RF-07 |
-| **T5** El canal de Rosa ↔ el de Elena | Rosa ↔ Elena | **Se parte en dos, y el secreto tiene ahora decididos sus dos extremos: por dónde sale y por dónde entra.** El **código** llega **solo al emisor**, por llamada o mensaje de texto al teléfono que él registró (RF-11), y ni quien atiende el mostrador puede leerlo o transcribirlo (RNF-15, que desde la ronda 16 lo dice solo, sin RF-113 repitiendo su mitad) ni el sistema lo reemite (RF-94): al receptor se lo pasa Rosa, nunca el sistema. En el mostrador **lo introduce el propio receptor, sin que quien atiende pueda leerlo ni digitarlo** (RF-147), igual que la respuesta del desafío (RF-114). Para que el operario no quede mudo, RF-125 le confirma que el código salió sin mostrárselo, y el giro del que no hay constancia de que llegó queda **no pagable con acción ofrecible** (RF-149, RF-151) en vez de quedar mudo — y desde la ronda 14 ese estado **viaja a las dos puntas y no a una**: RF-172 se lo avisa al emisor, RF-190 al receptor y RF-200 al operario que recibió el efectivo, cada uno por su canal — y **desde la ronda 16 el que *nace* no pagable tampoco se anuncia como cobrable**: RF-210 impide que RF-25 salga antes de la constancia, con la constancia por fin producida (RF-189), RF-173 lo revierte si la constancia llega y RF-174 le pone fondo a las 72 horas. Del lado de Elena, RF-178 le deja comprobar antes de viajar si el código que le dictaron sirve, con intentos acotados (RF-179) y contra su identidad (RF-197), **sin que el sistema se lo diga nunca**. La **respuesta del desafío** es lo único que el sistema no transmite a nadie (RF-101). Todo lo demás —aviso, monto, disponibilidad, pregunta del desafío, mala noticia— viaja **por llamada o mensaje de texto a los dos**, porque ninguno origina desde una aplicación | RF-11 · RF-147 · RF-125 · RF-149 · RF-210 · RNF-15 · RF-94 · RF-101 · RF-25 · RF-41 · RF-69 · RF-14 · RF-65 · RF-67 |
+| **T5** El canal de Rosa ↔ el de Elena | Rosa ↔ Elena | **Se parte en dos, y el secreto tiene decidido quién lo mueve en los dos extremos — no por qué medio lo introduce Elena, que sigue sin título y ella lo reporta cada ronda.** El **código** llega **solo al emisor**, por llamada o mensaje de texto al teléfono que él registró (RF-11), y ni quien atiende el mostrador puede leerlo o transcribirlo (RNF-15, que desde la ronda 16 lo dice solo, sin RF-113 repitiendo su mitad) ni el sistema lo reemite (RF-94): al receptor se lo pasa Rosa, nunca el sistema. En el mostrador **lo introduce el propio receptor, sin que quien atiende pueda leerlo ni digitarlo** (RF-147), igual que la respuesta del desafío (RF-114). Para que el operario no quede mudo, RF-125 le confirma que el código salió sin mostrárselo, y el giro del que no hay constancia de que llegó queda **no pagable con acción ofrecible** (RF-149, RF-151) en vez de quedar mudo — y desde la ronda 14 ese estado **viaja a las dos puntas y no a una**: RF-172 se lo avisa al emisor, RF-190 al receptor y RF-200 al operario que recibió el efectivo, cada uno por su canal — y **desde la ronda 16 el que *nace* no pagable tampoco se anuncia como cobrable**: RF-210 impide que RF-25 salga antes de la constancia, con la constancia por fin producida (RF-189), RF-173 lo revierte si la constancia llega y RF-174 le pone fondo a las 72 horas. Del lado de Elena, RF-178 le deja comprobar antes de viajar si el código que le dictaron sirve, con intentos acotados (RF-179) y contra su identidad (RF-197), **sin que el sistema se lo diga nunca**. La **respuesta del desafío** es lo único que el sistema no transmite a nadie (RF-101). Todo lo demás —aviso, monto, disponibilidad, pregunta del desafío, mala noticia— viaja **por llamada o mensaje de texto a los dos**, porque ninguno origina desde una aplicación | RF-11 · RF-147 · RF-125 · RF-149 · RF-210 · RNF-15 · RF-94 · RF-101 · RF-25 · RF-41 · RF-69 · RF-14 · RF-65 · RF-67 |
 | **T6** Cerrar ↔ cerrar de verdad | Rosa ↔ Elena | **A favor de Elena, ahora con ítem que lo diga.** El giro cierra en el momento en que el receptor recibe el dinero, no al fondearse ni al quedar disponible. Y el límite de la cancelación se corre para que Rosa no pueda anular con Elena en la ventanilla: no es «mientras no esté pagado» sino **mientras el dinero no esté a disposición del receptor** — un solo borde y un solo título, desde que RF-110 se retiró por decir lo mismo que RF-46 | RF-64 · RF-65 · RF-46 |
 | **T7** El código perdido | Rosa ↔ Elena | **A favor del secreto, con salida, y sin que la salida cueste dos veces.** El código no se reemite nunca (RF-94) — es el «nunca debe» de Rosa y RNF-15 lo hace imposible. Lo que se decide es la salida que faltaba: el emisor **cancela** el giro mientras nadie lo haya cobrado (RF-46) y **lo rehace al mismo receptor** (RF-117), conservando la cotización (RF-134) y **sin volver a pagar comisión** (RF-135, ahora P0 como el rehacer que la necesita). El dinero deja de quedar atrapado hasta prescribir, y el secreto sigue siendo secreto | RF-94 · RF-46 · RF-117 · RF-134 · RF-135 · RNF-15 |
 
@@ -544,7 +564,7 @@ nunca puede ser falso, y que por lo tanto se comprueba en cualquier momento.
 
 | | P0 | P1 | P2 |
 |---|---|---|---|
-| Funcionales | 169 | 20 | 7 |
+| Funcionales | 184 | 15 | 8 |
 | No funcionales | 17 | 3 | 0 |
 
 ### Disciplina de alcance
@@ -570,6 +590,26 @@ nunca puede ser falso, y que por lo tanto se comprueba en cualquier momento.
 > que el canal reporta como no entregado— vale igual para un giro doméstico. Entra porque `A:139`
 > ya lo ejecutaba sin título, y **la regla de dirección obliga a escribirlo arriba antes que a
 > tolerarlo abajo**: un huérfano declarado cuesta menos que una decisión sin requerimiento.
+>
+> **Ronda 16 — once títulos, mueren diez.** `RF-203`, `RF-204`, `RF-205`, `RF-206`, `RF-207` y
+> `RF-208` nombran el mostrador o el punto de atención; `RF-209` la cotización; `RF-210` el código;
+> `RF-211` el punto de atención; `RF-212` al receptor en el mostrador de destino. **Sobrevive
+> `RF-213`** —volver cancelable el giro cuya retención terminó—: una retención por sanciones existe
+> igual en una red doméstica, y el título entra porque `RF-182` abría un estado que nada cerraba.
+>
+> **Ronda 17 — seis títulos nuevos, mueren los seis.** `RF-214` nombra la evidencia de entrega en el
+> mostrador; `RF-215` la supresión pedida fuera del mostrador; `RF-217` el código de seguimiento;
+> `RF-218` y `RF-219` la identificación del receptor en el mostrador de destino; `RF-220` el giro
+> retenido en la ventanilla. **100 %.** El párrafo anterior de esta sección contaba nueve metiendo
+> `RF-213` —ya contado en la ronda 16— y dos **ediciones**, `RF-162` y `RF-194`, que la regla no
+> llama títulos nuevos. Lo corrigió el EVAL de la ronda 17 y se recuenta acá, que es donde la regla
+> vive: **una disciplina que se autocertifica sin contar no es una disciplina**, y ésta ya cometió
+> ese error una vez.
+>
+> **Ronda 18 — seis títulos nuevos, mueren los seis.** `RF-221` («al operario»), `RF-222` (la
+> reposición en el mostrador), `RF-223` (devolver al emisor), `RF-224` (el canal de voz), `RF-225`
+> (la fotografía del documento en la ventanilla) y `RF-226` (el documento en el mostrador). **100 %
+> por segunda ronda consecutiva.**
 
 ### Supuestos y ambigüedades
 
@@ -593,6 +633,8 @@ nunca puede ser falso, y que por lo tanto se comprueba en cualquier momento.
 | `[ASSUMPTION: el segundo rol autoriza en 10 minutos o el giro se rechaza]` | RNF-20 · RF-191 | **Abierta en la ronda 14** — el único de los tres plazos de RNF-09 que había quedado sin final |
 | `[ASSUMPTION: la cotización no ejecutada deja de ofrecerse a los 10 minutos, salvo la del giro que espera un segundo rol]` | RF-201 · RF-209 | **Abierta en la ronda 15, cerrada en la 16** — los dos relojes de diez minutos chocaban sobre la misma persona en el mostrador |
 | `[ASSUMPTION: el reintento de un aviso solo procede si el fallo se reporta dentro de los 15 minutos del despacho]` | RF-189 · RF-202 | **Abierta en la ronda 16** — sin la ventana, un aviso podía ser a la vez llegado y no entregado |
+| `[ASSUMPTION: el silencio del canal vale como entrega para todo aviso salvo el que lleva el código]` | RF-189 · RF-217 | **Abierta en la ronda 17** — era la reserva de Rosa: su teléfono está en la cartera y el canal no se queja |
+| `[ASSUMPTION: la identificación derivada al rol de cumplimiento se resuelve en 24 horas, y al vencer el giro se devuelve]` | RF-212 · RF-218 · RF-219 · RF-223 | **Abierta en la ronda 17, terminada en la 18** |
 | `[ASSUMPTION: toda diferencia declarada se decide en 5 días hábiles de la jurisdicción del punto donde se originó]` | RF-193 · RF-194 | **Abierta en la ronda 14** — el mismo reloj que RF-153 y RF-184 le habían dado al agente y no a la receptora |
 | `[ASSUMPTION: la devolución no retirada queda disponible 12 meses desde que quedó disponible, y no hasta la prescripción del giro que la originó]` | RF-89 · RF-137 | **Abierta en la ronda 12** — cierra la devolución que nacía vencida |
 | `[ASSUMPTION: la comisión y el margen los fija el sistema y quedan fechados, como la cotización]` | RF-157 · RF-158 | **Abierta en la ronda 12** — eran las dos cifras con lectores y sin productor |
@@ -621,6 +663,8 @@ cometieron ese error.
 | `RF-113` | Duplicado encubierto: «impedirá que quien atiende el mostrador lea o transcriba el código» es, palabra por palabra, la mitad del invariante de `RNF-15`. Es el mismo criterio con que se retiraron `RF-35`, `RF-38`, `RF-45`, `RF-55` y `RF-62` | RNF-15 |
 | `RF-126` | Duplicado encubierto: identificar al receptor remoto antes de atenderlo, dicho dos veces por dos disparadores distintos, desde que la ronda 15 escribió un título por disparador | RF-180 · RF-196 · RF-197 · RF-198 |
 | `RF-181` | **Número muerto por error de numeración, no por retiro.** Nunca se asignó a ningún título: la ronda 13 saltó de `RF-180` a `RF-182`. Se declara acá porque la tabla existe para que no queden números muertos sin declarar | — |
+| `RF-150` | Duplicado encubierto: desde que `RF-220` deja no pagable a **todo** giro retenido, asociar acción ofrecible al retenido es un caso particular de asociarla al no pagable. Mismo criterio con que se retiraron `RF-58`, `RF-112` y `RF-165` | RF-151 vía RF-220 |
+| `RF-216` | **Nunca se asignó a ningún título.** La ronda 17 saltó de `RF-215` a `RF-217` y lo declaró en la prosa de «Disciplina de alcance» en vez de acá, que es donde esta tabla promete que estará | — |
 | `RF-165` | Duplicado encubierto: dar de baja los cobros anteriores a la ventana está contenido en contar «en la ventana», por el mismo criterio con que se retiraron `RF-58` y `RF-112` | RF-93 |
 | `RF-108` | Duplicado encubierto: caso particular de avisar al receptor — y además anunciaba una devolución que ningún título ordena: un cambio de lista **retiene** (RF-29) y la devolución la produce el vencimiento de la retención (RF-32) | RF-37 y RF-106 |
 
@@ -1798,7 +1842,7 @@ pintarla de rosado sería mentir.** Dos filas y dos marcas distintas:
    en el único caso en que no puede—. Ese caso hay que dejarlo visible, y **no se resuelve con un
    color**: se resuelve con el borde punteado y con el `Sync Service` dibujado.
 
-### 6.6 Trazabilidad — 216 / 216
+### 6.6 Trazabilidad — 227 / 227
 
 La tabla completa vive en `redale/L-listar-componentes/README.md`, una fila por ítem, ninguna
 agrupada, ninguna vacía, y **nombrando la iteración y el componente** que la cierra — porque decir
@@ -1809,8 +1853,8 @@ profesor, en forma comprobable.** El resumen:
 |---|---|---|---|---|
 | **1** — la caja única | 1 | 0 | **1** | `RF-11`: el código sale por una sola arista, y hacia el receptor no hay ninguna |
 | **2** — la caja se abre en servicios | 39 | 7 | **46** | Identificación, tamizaje, límites, cotización, creación y pago, con su rama de rechazo |
-| **3** — cobertura del backlog restante | 156 | 13 | **169** | Doble control, corredores, desafío, sin conexión, caja del agente, devoluciones, cumplimiento, auditoría, supresión y los cuatro procesos batch |
-| | **196** | **20** | **216 / 216** | **Ningún hueco, y por eso no hay una cuarta pasada** |
+| **3** — cobertura del backlog restante | 167 | 13 | **180** | Doble control, corredores, desafío, sin conexión, caja del agente, devoluciones, cumplimiento, auditoría, supresión y los cuatro procesos batch |
+| | **207** | **20** | **227 / 227** | **Ningún hueco, y por eso no hay una cuarta pasada** |
 
 **La regla se lee en las dos direcciones, y las dos importan.** *De componente a ítem:* un componente
 que no traza a ningún ítem es un **huérfano** — se borra, o se descubre que el backlog tenía un hueco
@@ -2038,10 +2082,10 @@ correcciones se aplican **después** de puntuar y quedan sin puntaje hasta la ro
 *quien corrige conoce la vara*—; y **ni la rúbrica ni las personas se editan para elevar el puntaje.
 Son la vara.**
 
-### 8.3 Las quince rondas
+### 8.3 Las diecisiete rondas
 
-Una fila por corrida, extraída de [`evals/HISTORY.md`](../evals/HISTORY.md), que es la fuente. El
-detalle de cada una vive en `evals/iterations/`.
+Una fila por corrida, **extraída** de [`evals/HISTORY.md`](../evals/HISTORY.md), que es la fuente.
+El detalle de cada una vive en `evals/iterations/`.
 
 | Ronda | Fecha | Ítems | D1 /3 | D2 /3 | D3 /2 | D4 /2 | **Total** | Gate | Qué cambió |
 |---|---|---:|---:|---:|---:|---:|---:|---|---|
@@ -2060,14 +2104,16 @@ detalle de cada una vive en `evals/iterations/`.
 | **13** | 27-08 | 192 | 1,5 | 3,0 | 1,5 | **1,66** | **7,66** | FALLÓ | **`n` cae a 13 y la densidad a 6,77 %, la mejor de la serie por un margen amplio** — y **dos clases enteras de hallazgo llegan a cero por primera vez**: sin huérfanos y sin comodines. El total lo aporta D4 entero: D1, D2 y D3 no se mueven. **Los cuatro bloques que separaban del gate se escribieron los cuatro, cerraron las tres reservas nombradas, y D1 siguió en 1,5**: cada persona encontró una reserva nueva *de la misma clase* que la que se le cerró, y esta vez con la forma «el título existe y le falta el par». `RF-187`, escrito para cerrar el lado de Elena, **cerró 0,5 de D1 y abrió 0,5 de D3**: es el tercer acto remoto del receptor y el único sin compuerta de identidad, y además obliga a ocultarle a Rosa el origen de la solicitud. El agregador deja anotado un **candidato a enmienda de D2** —diez rondas leyendo 3,0 con la fracción moviéndose entre 52,6 % y 61,3 %— y no lo aplica |
 | **14** | 27-08 | 200 | 1,5 | 3,0 | 1,5 | **1,75** | **7,75** | FALLÓ | **`n = 10` y `D4 = 1,75`, las dos mejores lecturas de la serie** — y cuatro clases de hallazgo en cero. El movimiento vuelve a ser D4 entero: D1, D2 y D3 no se mueven por segunda ronda. **El medio punto de D3 lo produjo la corrección que venía a recuperarlo**: retirar `RF-126` declarándolo «contenido en `RF-180`» fue falso —`RF-180` enumera consultar, comprobar y solicitar, y **declarar una diferencia no está**— y detrás de esa declaración `RF-194` repone por vencimiento de plazo, o sea **un pago por silencio**. La no atomicidad de `RF-180` es lo que permitió que el cuarto disparador desapareciera sin que nadie lo viera, y **cuatro pasos aguas abajo creen que la compuerta existe**. La disciplina de alcance subió la mortalidad de títulos nuevos de 33 % a 55,6 % y su autocertificación es falsa: dice diez títulos, son nueve, y cuatro sobreviven |
 | **15** | 28-08 | 207 | 1,5 | 3,0 | 1,5 | 1,73 | **7,73** | FALLÓ | **Segunda regresión de la serie, −0,02, con ocho de nueve bloques cerrados enteros.** El pliego afirmaba que su bloque 1 cruzaba el gate solo; se aplicó mejor de lo pedido —`RF-180` partido en cuatro— y **D3 no se movió**. El dictamen del agregador vale más que el puntaje: *«una corrección deducida de un informe corrige el informe, no la dimensión»*. La otra mitad de la seguridad llevaba **quince rondas abierta**: `RF-01` exige documento para recibir el efectivo y `RF-85`/`RF-86` para cobrarlo, **y para devolverlo no exige nada** — ocho títulos producen devoluciones que se pagan en efectivo en un mostrador sin compuerta, y la superficie remota del emisor tampoco la tiene. La encontraron Rosa y Kevin por separado. D2 **sube por primera vez en cuatro rondas** (50,2 %) porque la disciplina de alcance mató seis de siete títulos nuevos, y su autocertificación es verdadera |
+| **16** | 28-08 | 216 | 1,5 | 3,0 | 1,5 | 1,70 | **7,70** | FALLÓ | **Las seis compuertas del dinero que sale se escribieron, cubren más de lo pedido, y D3 no subió** — segunda confirmación consecutiva de que *«una corrección deducida de un informe corrige el informe, no la dimensión»*, y el agregador **deja de publicar escenarios**. El medio punto de D3 se mueve de *quién* a *cuánto*: `RF-194` repone «por el monto que el receptor declaró», nada lo acota ni lo produce, y `RF-168` guarda la evidencia firmada sin que ningún título obligue a leerla. Lo reportaron dos personas y **Elena contra su propio interés**. `n = 13` con **cinco clases en cero**, incluida *decisión sin requerimiento* por primera vez, y la integridad de identificadores verificada: cada número de 1 a 213 está exactamente una vez, vivo o declarado muerto. El hallazgo más viejo: `insumos.md` lleva **dieciséis rondas** en la numeración de la ronda 01, contradiciendo al documento que lo cita |
+| **17** | 28-08 | 222 | 1,5 | 3,0 | **2,0** | 1,50 | **8,00** | **ALCANZADO** | **Primer cruce del gate en diecisiete rondas**, por **0,0045** — y el agregador lo declara antes de emitirlo: *«el puntaje cae dentro de la resolución del instrumento; un hallazgo más da 7,98»*. Lo cruza **D3, no D4**: la seguridad sube a 1,0 porque `RF-194` perdió «por el monto que el receptor declaró» y `RF-214` le puso techo contra la evidencia de `RF-168`, que deja de ser acto sin consumidor. **Las nueve superficies por donde sale dinero tienen compuerta.** D4 **baja** a 1,50 con `n = 22`. D2 estrena **regla de conteo escrita** y publica el piso honesto: 28 de los 111 muertos por efectivo mueren por una cláusula adverbial, y el censo sustantivo es **49,5 %**. El agregador **recomienda retirar la enmienda de D2** —aplicarla en la ronda que voltea el veredicto sería endurecer por su efecto— y **declara sin enmendar** la falla que sí importa: a 222 ítems el cuantum de D4 es menor que el error de criterio de quien cuenta |
 
 ```
-Ronda    01    02    03    04    05    06    07    08     09     10     11     12     13     14     15
-Total   3,5   4,0   5,0   6,0   6,5   5,5   6,0   7,12   6,50   6,54   6,61   7,34   7,66   7,75   7,73
-Ítems    41    69    81    97   110   119   118    137    137    137    155    175    192    200    207
+Ronda   01   02   03   04   05   06   07   08     09    10     11     12     13     14     15     16     17
+Total  3,5  4,0  5,0  6,0  6,5  5,5  6,0  7,12  6,50  6,54   6,61   7,34   7,66   7,75   7,73   7,70   8,00
+Ítems   41   69   81   97  110  119  118   137   137   137    155    175    192    200    207    216    222
 ```
 
-**El resultado se dice sin adornos: el EVAL cerró en 6,0 / 10 y el gate es 8. No se alcanzó.** Lo que
+**El resultado, con su matiz: el EVAL alcanzó 8,0045 / 10 sobre un gate de 8 — por 0,0045, un margen menor que el cuantum de un solo hallazgo de `D4`.** Lo que
 la serie sí muestra es una señal fuerte y bien capturada: **D2 subió 1,5 → 3,0 y se sostuvo cuatro
 rondas; D3 hizo 1,0 → 2,0 → 1,0 → 2,0 siguiendo defectos identificables; D1 se movió cinco veces.**
 La única dimensión que **nunca se movió** es D4 — y esa es la sección siguiente.
@@ -2268,7 +2314,7 @@ es cómo se llega a un backlog que valga la pena diagramar.**
 | **1** | Los cinco actores y **una sola caja**. Rosa y Elena hablan cada una con un operario, y el operario con el sistema | **Nada la fuerza: es el punto de partida.** Lo único que afirma es *quién habla con el sistema* | **1** |
 | **2** | La caja se abre: identificación, tamizaje, límites, cotización, creación del giro y pago, con sus `BD`, sus terceros y las aristas condicionales etiquetadas | **`RF-26`** — el tamizaje contra listas **antes de aceptar el efectivo** no cabe dentro de un cuadrado. **Un cuadrado no tiene «antes»** | **36** |
 | **3** | El resto: doble control, corredores, desafío, sin conexión, caja del agente y del punto, cobro alternativo, reclamo del receptor, devolución, supresión, acumulado de cobros, liquidación y los cuatro procesos batch | **`RF-68` y `RF-69`** — el desafío obliga a un servicio y un almacén **propios**, porque `RNF-17` exige que la respuesta sea ilegible **en los dos lados del mostrador**. Más `RF-13`+`RNF-02` (no hay segundo rol en ninguna parte), `RF-45` (nada reconcilia las dos versiones) y `RF-24` (no hay caja del agente) | **81** |
-| | | **Total** | **216 / 216** |
+| | | **Total** | **227 / 227** |
 
 **Y no hay una cuarta, por la única razón admisible: la columna `DONE` no tiene ningún vacío.** El
 registro de cada pasada exige cuatro cosas y en ese orden: qué ítem no explicaba el diagrama
