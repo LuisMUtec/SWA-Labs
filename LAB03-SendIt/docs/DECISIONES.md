@@ -21,6 +21,8 @@ se decidió: se justificó. Lo que cuesta va escrito con el mismo cuidado que lo
 | [D-06](#d-06--el-backlog-adopta-el-formato-literal-del-profesor) | El backlog adopta el formato del profesor | La forma exacta de cada ítem del único artefacto puntuado |
 | [D-07](#d-07--sendit-opera-el-modelo-western-union) | SendIt opera el modelo Western Union | El canal de origen, quién es la tercera persona y la mitad de las reglas de seguridad |
 | [D-08](#d-08--spec-kit-se-instala-como-harness-y-no-produce-specs) | Spec Kit se instala como harness y no produce specs | Qué herramienta sostiene la disciplina y quién conserva la autoridad sobre los requerimientos |
+| [D-09](#d-09--d4-se-enmienda-para-puntuar-por-densidad) | D4 se enmienda para puntuar por densidad | Cuándo se puede tocar la vara, y qué hay que demostrar para tocarla |
+| [D-10](#d-10--el-codigo-perdido-es-la-septima-tension) | El código perdido es la séptima tensión | Cuántas tensiones exige D4 decididas, y qué se le responde a Rosa cuando pierde el código |
 
 ---
 
@@ -338,62 +340,107 @@ La instalación se hizo con `specify init --here --integration claude --script s
 
 ---
 
+## D-09 — D4 se enmienda para puntuar por densidad
+
+**Contexto.** El dictamen de la [iteración 07](../evals/iterations/2026-08-27-07.md) no fue sobre el
+backlog sino sobre el aparato: `D4 = 2 − 0,25n` con piso en `n ≥ 8`. En siete rondas el backlog creció
+de 41 a 118 ítems y `n` osciló entre 15 y 41 —un rango de 2,7×—, y **D4 marcó 0,00 las siete veces.
+Varianza cero.** Una dimensión que devuelve el mismo número para el peor y el mejor backlog de la
+serie no está midiendo coherencia: mide tamaño, porque los hallazgos escalan con la superficie.
+
+Y hay un choque de gobierno: el Principio IV de la [constitución](../.specify/memory/constitution.md)
+dice que un puntaje bajo el gate corrige el backlog, **nunca la vara**.
+
+**Opciones.**
+
+| Opción | A favor | En contra |
+|---|---|---|
+| Dejar D4 como estaba | Respeta la letra del Principio IV y ninguna corrida deja de ser comparable | Deja dos puntos muertos en una rúbrica de diez: con el piso en `n ≥ 8`, `D4 > 0` exigía un backlog de a lo sumo 31 ítems a la mejor densidad alcanzada. **El gate se vuelve inalcanzable por aritmética, no por calidad** |
+| Subir el piso o bajar el paso por hallazgo | Cambio mínimo, la fórmula se mantiene | Es exactamente el ablandamiento que el Principio IV prohíbe: mueve el número sin arreglar qué mide |
+| **Puntuar por densidad** | Mide `n` contra el tamaño, que es lo que la dimensión decía medir. Normaliza igual que D2, que siempre se reportó como razón —«4 de 41», «78 de 118»— | Las corridas 01 a 07 dejan de ser comparables con las siguientes |
+
+**Decisión.** **Densidad**, en vigor desde la ronda 08: `D4 = 2 × (1 − d/D)` acotado a `[0, 2]`, con
+`d = n / ítems` y `D = 0,40` fijada por encima de la peor densidad observada (36,6 % en la ronda 01),
+de modo que un backlog peor que cualquiera de los siete puntúe 0 y uno sin hallazgos puntúe 2.
+
+**El choque con el Principio IV se resuelve enmendando el principio, no ignorándolo.** La constitución
+pasa a v1.1.0 y distingue **calibrar el instrumento** de **ablandar la vara**, con cuatro condiciones
+que hay que exhibir las cuatro. Esta enmienda las cumple, y la cuarta es la que la separa de una
+trampa: recalculadas con la fórmula nueva, **ninguna ronda pasada alcanza el gate que con la vara
+vieja no alcanzaba** — la ronda 08 con la fórmula vieja habría dado 6,0, idéntico a la 07. La
+evidencia completa está en [`evals/ENMIENDA-PROPUESTA-D4.md`](../evals/ENMIENDA-PROPUESTA-D4.md) y el
+procedimiento en [`evals/README.md`](../evals/README.md).
+
+**Consecuencias.**
+
+- **La serie se parte en dos.** Las corridas 01 a 07 y las 08 en adelante no son comparables entre sí.
+  No se recalculan: quedan como se emitieron, con la vara con que se emitieron. Cualquier lectura de
+  la tendencia que cruce la ronda 08 es inválida, y hay que decirlo cada vez que se muestre el
+  historial completo.
+- **La vara deja de ser intocable y pasa a ser enmendable bajo prueba**, que es una pérdida real: un
+  aparato que se puede cambiar es un aparato que se puede negociar. Lo que lo sostiene es la condición
+  cuarta, la única que no se argumenta sino que se calcula.
+- **La densidad tiene su propio punto ciego, y ya apareció.** La auditoría de la
+  [ronda 09](../evals/iterations/2026-08-27-09.md) mostró que la ronda tocó el 18 % del backlog y
+  produjo el 81 % de los hallazgos: un factor de 19× que el promedio aplana hasta volverlo invisible.
+  La fórmula mide mejor que la anterior, no mide bien.
+
+---
+
+## D-10 — El código perdido es la séptima tensión
+
+**Contexto.** Las tensiones entre personas eran seis y se creían completas. La
+[iteración 07](../evals/iterations/2026-08-27-07.md) encontró una séptima, y la encontró de la peor
+manera: **dos rondas la habían revertido en direcciones opuestas**, cada una costando un punto entero
+de D3, sin que nadie la nombrara. Rosa **nunca debe** poder recuperar el código por un canal de
+SendIt, porque eso lo volvería obtenible por cualquiera que se haga pasar por ella. Y Elena **no puede
+cobrar sin él**.
+
+**Opciones.**
+
+| Opción | A favor | En contra |
+|---|---|---|
+| Tratarla como defecto de dos ítems | No toca la lista de tensiones | Es lo que se intentó dos veces, y las dos rondas siguientes lo revirtieron. Un conflicto que no está nombrado se «arregla» hacia un lado y hacia el otro para siempre |
+| Reponer el código por un canal verificado | Elena cobra, Rosa no pierde el dinero | Un secreto reponible deja de ser secreto: el procedimiento de excepción *es* el agujero |
+| **Nombrarla T7 y decidirla en el backlog** | Queda bajo el techo duro de D4, que obliga a decidirla en vez de esquivarla | Sube a siete el denominador de las tensiones y obliga a rebarrer los documentos que decían seis |
+
+**Decisión.** **T7 existe y se decide por cancelación, no por reposición.** El código no se repone
+nunca (RF-94); el emisor cancela el giro cuyo código se perdió mientras el dinero no esté a
+disposición del receptor (RF-110) y lo rehace al mismo receptor (RF-117), conservando la cotización
+del cancelado (RF-134) y sin volver a cobrar comisión (RF-135). El giro rehecho vuelve a correr todos
+los controles, incluida la identificación contra documento (RF-123).
+
+**Consecuencias.**
+
+- **El dinero deja de quedar atrapado hasta prescribir sin que el secreto deje de serlo.** Es la única
+  salida que no abre una ruta de lectura, y cuesta: Rosa tiene que volver a la ventanilla.
+- **El techo duro de D4 ahora se cuenta sobre siete.** Dos tensiones sin decidir siguen dejando D4 en
+  1,0, pero el denominador cambió y hay que barrer todo documento que dijera «seis» — cosa que la
+  ronda que la introdujo **no terminó de hacer**.
+- **La forma de esta tensión es la que hay que recordar, no su contenido.** Dos correcciones opuestas
+  y sucesivas sobre los mismos ítems no son dos errores: son la firma de un conflicto que nadie
+  nombró. Buscar esa firma es más barato que descubrir la tensión a la tercera ronda.
+
+---
+
 ## Decisiones pendientes
 
-Lo que todavía no se puede decidir, con la pregunta que lo destraba. Se marca con el formato del
-repositorio —`[CLARIFY: pregunta]` cuando la respuesta determina el contenido— y **nunca se rellena
-en silencio**. Una decisión tomada antes de tiempo es indistinguible de una inventada.
+**Ninguna. Las cinco quedaron cerradas.**
 
-**P-01 — Los supuestos numéricos del paso `E`.** El enunciado no da **ni una cifra**: ni usuarios,
-ni envíos, ni monto, ni latencia. Los tres cálculos del paso —servidores, almacenamiento, ancho de
-banda— no tienen entrada.
+Se registraron cuando el backlog estaba vacío y ninguna se podía decidir sin él. Se cierran ahora
+porque el trabajo que las destrababa se hizo, y **ninguna se rellenó en silencio**: cada una se
+decidió en la altitud que le correspondía, y esta tabla dice cuál. Las que se resolvieron **dentro de
+un paso** no ascienden a `D-nn` — la regla de admisión de este archivo las deja gobernadas por el
+contrato de su paso.
 
-> `[CLARIFY: ¿qué carga objetivo se asume —usuarios activos, envíos por día, factor de pico— si el enunciado no fija ninguna, y esas cifras se declaran como supuesto propio o se piden al curso?]`
+| # | La pregunta que la destrababa | Dónde se decidió | Qué se decidió |
+|---|---|---|---|
+| **P-01** | Qué carga objetivo se asume, si el enunciado no da ni una cifra | [`E-estimar`](../redale/E-estimar/README.md) | Cifras propias, cada una con su `[ASSUMPTION: …]` y la calibración contra la que se defiende. **No se pidieron al curso** |
+| **P-02** | Qué arquitectura y qué persistencia sostienen a la vez el invariante contable y la evidencia inmutable | [`D-disenar-servicio`](../redale/D-disenar-servicio/README.md) | Resuelto en sus secciones 1 y 2, y en las seis decisiones que el paso registra —empezando por dónde vive la verdad del dinero y la idempotencia |
+| **P-03** | Cuándo se fija el tipo de cambio, y quién carga el movimiento (T4) | El **backlog**: RF-05 · RF-06 · RF-07 | Se fija al crear el giro y no se recalcula nunca, contra una cotización que el sistema produce y fecha. **La empresa carga el movimiento** |
+| **P-04** | Qué recibe Rosa durante una retención reservada, sin revelar el reporte (T2) | El **backlog**: RF-39 · RF-40 · RF-66 · RF-67 | Rosa ve **que** está retenido y **hasta cuándo**, nunca por qué. Y el operario recibe **la acción y no el motivo**, para que no pueda deducirlo ni filtrarlo |
+| **P-05** | Si el diseño debe sostenerse para cualquier corredor o basta con uno | El **backlog**: RNF-12 y su supuesto | Más de un país de origen desde el primer día, con **dos corredores declarados** al lanzamiento —Estados Unidos → Perú y Estados Unidos → México—, que es lo que impide que una sola moneda destino se cuele como supuesto tácito |
 
-**Qué la destraba:** primero, el backlog cerrado, porque las operaciones que producen carga salen de
-ahí y no de la nada; después, o el curso fija una carga objetivo, o
-[`E-estimar`](../redale/E-estimar/README.md) declara sus cifras como `[ASSUMPTION: …]` con la fuente
-a la vista. Lo que no es admisible es una cifra sin origen: todo el paso, y los tramos de
-[`E-escalar`](../redale/E-escalar/README.md), cuelgan de ella.
-
-**P-02 — La arquitectura y la persistencia del paso `D`.** Monolito, tres capas o servicios; SQL,
-NoSQL o mixta. El caso tiene una tensión interna real: el registro contable del dinero exige
-transacción e invariantes duros, y el tamizaje de cumplimiento —listas que cambian sin aviso,
-evidencia que hay que conservar tal como se vio— no.
-
-> `[CLARIFY: ¿qué arquitectura y qué persistencia sostienen a la vez el invariante contable del envío y la conservación inmutable de la evidencia sobre la que se decidió una retención?]`
-
-**Qué la destraba:** el orden de magnitud que entregue `E` —si el sistema es de decenas o de
-cientos de servidores— y el backlog cerrado. Decidirla antes convierte a `D` en una decisión sin
-requerimiento, que es una deducción de D4.
-
-**P-03 — Cuándo se fija el tipo de cambio (tensión T4).** Rosa necesita que el monto en soles quede
-fijo al pagar, para poder prometer una cifra. Fijarlo deja a SendIt cargando el movimiento del
-cambio hasta que Elena cobre — que puede ser nunca.
-
-> `[CLARIFY: ¿la tasa queda fija cuando Rosa paga, cuando el dinero se pone a disposición en el agente, o cuando Elena cobra — y quién carga el movimiento entre ese instante y el cobro?]`
-
-**Qué la destraba:** nadie de afuera. **La decide el backlog**, con un título que la enuncie, y el
-EVAL la cobra en D4 como *tensión esquivada* si ningún ítem la decide. La consecuencia de la opción
-elegida —exposición cambiaria, prefinanciamiento del corredor— se registra en
-[`D`](../redale/D-disenar-servicio/README.md), no acá.
-
-**P-04 — Qué se le dice a Rosa cuando no se le puede decir nada (tensión T2).** Rosa exige saber por
-qué se detuvo su dinero. Kevin, que es la cara de SendIt frente a ella, tiene **prohibido** decírselo
-cuando hay un reporte de por medio, y ni siquiera fue él quien lo decidió. No
-se resuelve redactando mejor un mensaje.
-
-> `[CLARIFY: ¿qué recibe Rosa durante una retención reservada — plazo máximo sin motivo, silencio, o una consecuencia automática al vencer el plazo — sin que eso revele la existencia del reporte?]`
-
-**Qué la destraba:** también el backlog. Es la tensión donde más fácil se cuela un título comodín
-—«informar al cliente sobre el estado de su envío»— que aparenta decidirla sin decidir nada.
-
-**P-05 — El corredor modelado.** Las tres personas asumen el corredor Estados Unidos → Perú, y está
-marcado como `[ASSUMPTION: …]` en [`Rosa.MD`](../personas/Rosa.MD). El enunciado dice *«diferentes
-países»*, en plural, y no nombra ninguno.
-
-> `[CLARIFY: ¿el diseño debe sostenerse para cualquier corredor, o basta con uno bien resuelto y el resto se declara fuera de alcance?]`
-
-**Qué la destraba:** el curso, o una decisión propia declarada. Pesa en D2 —el rasgo *cruza una
-frontera* se puntúa contra dos jurisdicciones concretas— y en `A`, porque la identidad de Elena, las
-listas de sancionados y el registro de la red pagadora cambian de forma según la jurisdicción.
+**Que la lista esté vacía no significa que no quede nada abierto.** Lo que queda abierto son
+correcciones del backlog, no decisiones de arquitectura, y viven donde les corresponde:
+[`evals/CORRECCIONES-RONDA-12.md`](../evals/CORRECCIONES-RONDA-12.md).

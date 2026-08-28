@@ -26,7 +26,7 @@ siguiente es un ítem del backlog que el cuadrado no explica.
 |---|---|---|---|
 | **1** | Los cuatro actores y **una sola caja**. Rosa y Elena hablan cada una con un operario, y el operario con el sistema — bajo el modelo Western Union las dos puntas pasan por una ventanilla | Nada la fuerza: es el punto de partida. Lo único que afirma es **quién habla con el sistema** | **1** — RF-11, que se demuestra por la *ausencia* de una arista hacia el receptor |
 | **2** | La caja se abre: identificación, tamizaje, creación del giro y pago, con sus `BD`, sus sistemas externos y las aristas condicionales etiquetadas | **RF-26** — el tamizaje contra listas antes de aceptar el efectivo no cabe dentro de un cuadrado que no distingue quién decide qué | **36** — 29 RF y 7 RNF |
-| **3** | El resto: devolución, desafío, caja por punto, cobro alternativo, reclamo del receptor, supresión, acumulado de cobros y liquidación con el agente | **RF-68 y RF-69** — el desafío obliga a un servicio y un almacén propios, porque RNF-17 exige que la respuesta sea ilegible **en los dos lados del mostrador** | **118** — 111 RF y 7 RNF |
+| **3** | El resto: devolución, desafío, caja por punto, cobro alternativo, reclamo del receptor, supresión, acumulado de cobros y liquidación con el agente | **RF-68 y RF-69** — el desafío obliga a un servicio y un almacén propios, porque RNF-17 exige que la respuesta sea ilegible **en los dos lados del mostrador** | **118** — 108 RF y 10 RNF |
 
 **Total: 155 de 155.** La tercera pasada **creció de 81 a 118 filas** entre las rondas 05 y 11 del EVAL
 sin que hiciera falta una cuarta: casi todo ítem nuevo cayó dentro de un componente que ya existía.

@@ -1,15 +1,25 @@
 #!/usr/bin/env bash
 # Convierte docs/ENTREGA.md en un PDF con los diagramas renderizados.
 #   uso: scripts/entrega-a-pdf.sh
-# Requiere: pandoc y Google Chrome. Mermaid va empaquetado, sin red.
+# Requiere: pandoc y Google Chrome. Mermaid se baja una vez y queda cacheado,
+# de modo que la segunda corrida y las siguientes no necesitan red.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 MD=docs/ENTREGA.md
 HTML=docs/ENTREGA.html
 PDF=docs/ENTREGA.pdf
+MERMAID=scripts/mermaid.min.js
+MERMAID_URL=https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js
 CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
 [ -f "$MD" ] || { echo "falta $MD"; exit 1; }
+
+# 0 · mermaid: 3,2 MB de dependencia. No se versiona (ver .gitignore); se cachea.
+if [ ! -f "$MERMAID" ]; then
+  echo "bajando mermaid a $MERMAID (una sola vez)..."
+  curl -fsSL "$MERMAID_URL" -o "$MERMAID" || {
+    echo "no se pudo bajar mermaid. Con red: curl -fsSL $MERMAID_URL -o $MERMAID"; exit 1; }
+fi
 
 # 1 · cuerpo desde markdown, con los bloques mermaid marcados para el renderer
 pandoc "$MD" -f gfm -t html --no-highlight \
@@ -49,7 +59,7 @@ strong { font-weight:600; }
 </style></head><body>
 CSS
 cat /tmp/_cuerpo.html
-echo '<script>'; cat scripts/mermaid.min.js; echo '</script>'
+echo '<script>'; cat "$MERMAID"; echo '</script>'
 cat <<'JS'
 <script>
 mermaid.initialize({ startOnLoad:false, theme:'neutral', securityLevel:'loose',

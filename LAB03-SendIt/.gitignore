@@ -11,3 +11,6 @@ Thumbs.db
 
 # Intermedio del conversor: se regenera con scripts/entrega-a-pdf.sh
 docs/ENTREGA.html
+
+# Dependencia del conversor: 3,2 MB. La baja scripts/entrega-a-pdf.sh y la cachea
+scripts/mermaid.min.js

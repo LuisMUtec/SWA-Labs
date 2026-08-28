@@ -104,8 +104,9 @@ las tres que elige libremente —Elena recibe por donde Rosa mandó y Kevin atie
 pantalla: la promesa que ella necesita la cumple o la rompe Elena en la bodega de Huanta, y la
 sostiene o la pierde Kevin en el mostrador.
 
-Las tres se contradicen entre sí en **seis tensiones** (T1–T6) que el backlog tiene que decidir, no
-esquivar. Están enunciadas, con su lado y su costo, en [`personas/README.md`](personas/README.md).
+Las tres se contradicen entre sí en **siete tensiones** (T1–T7) que el backlog tiene que decidir, no
+esquivar. La séptima —el código perdido— no se enunció al principio: **la encontró el EVAL**, después
+de que dos rondas la revirtieran en direcciones opuestas sin nombrarla ([D-10](docs/DECISIONES.md)). Están enunciadas, con su lado y su costo, en [`personas/README.md`](personas/README.md).
 
 ## Dónde vive cada cosa
 
@@ -140,7 +141,7 @@ distinto. **Cada afirmación ocurre una sola vez, en su altitud.**
 | **D1** Satisfacción de las personas | 3 | El flujo de Rosa, Elena y Kevin corre de extremo a extremo en el backlog, **incluido cuando sale mal**. 1 pt por persona, **solo deducciones** | Los 3 agentes de persona |
 | **D2** Ajuste al problema | 3 | Ataca la remesa internacional —frontera, moneda, efectivo sin banco— y no un «enviar plata» genérico. 1 pt por rasgo | Agregador |
 | **D3** Cobertura de seguridad y consistencia | 2 | Las dos exigencias que el enunciado nombra, con medida o invariante y no como adjetivo. 1 pt cada una | Agregador |
-| **D4** Coherencia del backlog | 2 | Sin huérfanos ni duplicados encubiertos, títulos atómicos y entendibles sin descripción, las seis tensiones decididas, prioridad asignada | Agregador |
+| **D4** Coherencia del backlog | 2 | Sin huérfanos ni duplicados encubiertos, títulos atómicos y entendibles sin descripción, las siete tensiones decididas, prioridad asignada | Agregador |
 
 **Gate: ≥ 8/10.** Se pueden perder dos puntos, no más. Un puntaje por debajo no baja la vara: se
 corrige el backlog y se vuelve a evaluar, en un SHA nuevo.
@@ -184,49 +185,41 @@ son indistinguibles si no se anota.
 
 ## Estado
 
-**El aparato está entero y el backlog por escribir.** Lo que está escrito:
+**Los seis pasos llenos, once rondas de EVAL, y el gate sin alcanzar.** Lo que está:
 
+- El **backlog**, que es el único artefacto puntuado: **155 ítems — 138 funcionales y 17 no
+  funcionales**, cada uno con su persona, su regla `BR-nn` y su prioridad.
 - Las **tres personas** —[Rosa](personas/Rosa.MD), [Elena](personas/Elena.MD),
-  [Kevin](personas/Operario.MD)—, en `status: proto` y con cada afirmación inventada marcada
-  `[ASSUMPTION: …]`. Usuario modelo designado y seis tensiones enunciadas.
-- Las **dieciséis reglas de negocio**, `BR-01` a `BR-16` en
-  [`business-rules.md`](business-rules.md), que es donde vive el cumplimiento desde que dejó de ser
-  una persona (D-07).
-- El **aparato de EVAL**: rúbrica, regla de asimetría, protocolo del agente de persona, las tres
-  pruebas de cobertura contra un título, los techos duros de D4 y los cuatro rebarridos de
-  propagación.
-- Los **cuatro jueces** en [`.claude/agents/`](.claude/agents/): uno por persona
-  —`sendit-rosa`, `sendit-elena`, `sendit-kevin`— y el agregador. D1 es computable.
-- **Ocho decisiones** registradas (`D-01` a `D-08`) y **cinco pendientes** (`P-01` a `P-05`) con la
-  pregunta que destraba cada una, en [`docs/DECISIONES.md`](docs/DECISIONES.md).
-- El **método** y el **contrato entre pasos**: qué consume cada paso y qué queda inválido si el
-  anterior cambia.
-- La lectura del **ejemplo de clase**, que es de donde sale qué cuenta como iteración del diseño.
-- El **harness de Spec Kit**, con la misma estructura del Caso #2, y la **constitución** v1.0.0 que
-  antes no existía: la regla de dirección —*los requerimientos bajan, nunca suben*— deja de vivir
-  solo en el README del EVAL y pasa a obligar a los seis pasos.
-- **Una corrida del EVAL**, [la 01](evals/iterations/2026-08-26-01.md): **3,5/10, gate fallado.**
+  [Kevin](personas/Operario.MD)— en `status: proto`, el usuario modelo designado y las **siete
+  tensiones**, cero de ellas sin decidir en la última ronda.
+- Las **diecisiete reglas de negocio**, `BR-01` a `BR-17` en [`business-rules.md`](business-rules.md).
+- **Once corridas del EVAL**, de **3,5 a 6,61**, en [`evals/iterations/`](evals/iterations/) y
+  resumidas en [`HISTORY.md`](evals/HISTORY.md). Cada una diagnostica cómo *mutó* el modo de falla, no
+  solo qué falló.
+- Los **cinco pasos aguas abajo llenos**: `E` con cifras calibradas, `D` con su arquitectura, su
+  persistencia y el mecanismo de seguridad, `A` con el modelo de datos, `L` con **tres iteraciones del
+  diagrama** y la trazabilidad de las 155 filas, y `E-escalar` por tramos con su cuello de botella.
+- La **bitácora** de [`redale/ITERACIONES.md`](redale/ITERACIONES.md), con las dos tablas llenas.
+- **Diez decisiones** registradas (`D-01` a `D-10`) y **ninguna pendiente**: las cinco que había se
+  cerraron y [`docs/DECISIONES.md`](docs/DECISIONES.md) dice dónde se decidió cada una.
+- El **harness de Spec Kit** y la **constitución**, ahora en v1.1.0.
+- El **documento de entrega**, [`docs/ENTREGA.md`](docs/ENTREGA.md), con su PDF.
 
 Lo que **no** está, y hay que decirlo así:
 
-- **El backlog está vacío, y no por descuido.**
-  [`redale/R-requerimientos/backlog.md`](redale/R-requerimientos/backlog.md) tiene sus tablas con
-  guiones porque el profesor indicó no escribirlo todavía, y el que existía cuando corrió la 01
-  quedó descartado. Es el único artefacto puntuado, de modo que hoy no hay nada que evaluar.
-- **No hay puntaje vigente.** El 3,5 de la 01 midió aquel backlog descartado, un modelo anterior al
-  Western Union (D-07) y un oficial de cumplimiento que ya no existe. La corrida se conserva sin
-  reescribir —un registro de evaluación que se maquilla deja de decir qué se juzgó—, pero **su
-  número no describe el repositorio de hoy**. Lo que sobrevive es de método: el censo que mostró que
-  la frontera no era exigible, y las **diez correcciones** con las que se va a escribir el backlog
-  real.
-- **La corrida no está en la bitácora.** La fila 01 de *Iteraciones del EVAL* en
-  [`redale/ITERACIONES.md`](redale/ITERACIONES.md) sigue con guiones: la iteración existe en
-  `evals/` y no en el registro que la cruza con los pasos que invalidó.
-- **Ninguna iteración del diseño corrida.** La otra tabla de la bitácora está con guiones, y no hay
-  diagrama.
-- Los pasos `E`, `D`, `A`, `L` y `E` tienen su README con el contrato y las tablas sin llenar. La
-  01 dejó anotado, además, que varios ya afirman cosas que ningún requerimiento exige —una tabla de
-  almacenamiento, una ruta, una caja del diagrama—, y esa deuda es de `R`: la corrección va arriba.
+- **El gate no está alcanzado: 6,61 sobre un umbral de 8.** Las correcciones que faltan están
+  derivadas y escritas en [`evals/CORRECCIONES-RONDA-12.md`](evals/CORRECCIONES-RONDA-12.md), sin
+  aplicar. Proyectan ≈9,0 con los tres primeros bloques, y los dos primeros son dieciséis ediciones de
+  título.
+- **La serie de puntajes está partida en dos.** `D4` se enmendó en la ronda 08 para puntuar por
+  densidad ([D-09](docs/DECISIONES.md)), de modo que **las corridas 01 a 07 no son comparables con las
+  siguientes**. Ninguna lectura de la tendencia puede cruzar esa ronda.
+- **El documento de entrega quedó atrás.** [`docs/ENTREGA.md`](docs/ENTREGA.md) y su PDF están
+  congelados en el estado de la **ronda 07**: afirman un backlog de 118 ítems y un EVAL que llega a
+  6,0, cuando el backlog tiene 155 y el EVAL va por la 11. **Hay que rehacerlo antes de subirlo**, y
+  el propio documento lo dice arriba de todo.
+- Las personas siguen en `status: proto`: cada afirmación inventada está marcada
+  `[ASSUMPTION: …]` y ninguna se validó contra una persona real.
 
 ## Proyectos hermanos
 

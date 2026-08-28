@@ -1,18 +1,21 @@
 <!--
 Sync Impact Report
-Cambio de versión: ninguna → 1.0.0 (ratificación inicial)
-Principios modificados: ninguno (primera versión)
-Secciones agregadas:
-  - Principios I–V
-  - Ambigüedad y supuestos
-  - Flujo de trabajo
-  - Gobernanza
+Cambio de versión: 1.0.0 → 1.1.0
+Principios modificados:
+  - IV. El gate del EVAL es 8/10 — se amplía con la excepción de calibración: enmendar una
+    dimensión que no mide lo que dice medir está permitido bajo cuatro condiciones demostrables.
+    La prohibición de corregir la vara para alcanzar el gate no se toca
+Secciones agregadas: ninguna
 Secciones eliminadas: ninguna
-Plantillas que requieren actualización:
-  - .specify/templates/spec-template.md — sin cambio. Este caso no produce specs: el artefacto
-    con autoridad es el backlog del paso R (Principio IV)
-  - .specify/templates/plan-template.md, tasks-template.md — sin cambio, inertes por el mismo motivo
+Documentos que requieren actualización:
+  - evals/README.md — HECHO: se escribió el procedimiento operativo de enmienda, que la
+    enmienda de D4 ya citaba sin que existiera
+  - docs/DECISIONES.md — HECHO: D-09 registra la enmienda de D4 con sus cuatro condiciones
+  - .specify/templates/* — sin cambio, inertes (D-08)
 TODOs pendientes: ninguno
+
+Sync Impact Report (1.0.0, ratificación inicial)
+Secciones agregadas: Principios I–V · Ambigüedad y supuestos · Flujo de trabajo · Gobernanza
 -->
 
 # Constitución de SendIt
@@ -67,6 +70,25 @@ ocho.
 Los agentes de persona **solo pueden restar**: su trabajo es detectar la falla, no certificar el
 éxito. Un puntaje por debajo del gate corrige el backlog, **nunca la vara**. Cada corrida queda
 versionada, para que la mejora sea evidencia y no afirmación.
+
+**Calibrar el instrumento no es ablandar la vara, y la diferencia se demuestra.** Una dimensión que
+no distingue un backlog bueno de uno malo no está midiendo lo que dice medir, y conservarla intacta
+no es rigor: es un punto muerto en una rúbrica de diez. Enmendarla está permitido, y **solo** bajo
+las cuatro condiciones siguientes, las cuatro:
+
+1. **La fuerza una falla observada del instrumento, no un puntaje.** Se cita la corrida que la
+   detectó y la evidencia —varianza, rango, correlación con algo que la dimensión no debía medir.
+2. **Se escribe antes de aplicarse**, y se aplica **en su propia ronda**: la ronda que la estrena no
+   corrige nada más, para que el movimiento del puntaje sea atribuible.
+3. **Se declara qué corridas dejan de ser comparables.** No se recalculan las viejas: quedan como se
+   emitieron, con la vara con que se emitieron.
+4. **Se demuestra que no compra el gate.** Se recalculan las rondas pasadas con la fórmula nueva y
+   se publica el resultado. Si alguna alcanza el gate que con la vara vieja no alcanzaba, la
+   enmienda es un ablandamiento y se rechaza.
+
+Una enmienda que no puede exhibir las cuatro es una corrección de la vara para alcanzar el gate, que
+es lo que el párrafo anterior prohíbe. El procedimiento operativo vive en
+[`evals/README.md`](../../evals/README.md); esta es la autorización y su límite.
 
 `E`, `D`, `A`, `L` y `E` son entregable exigido, no puntaje. Lo que impide que diverjan del backlog
 no es puntuarlos, sino la regla de dirección del Principio I.
@@ -151,4 +173,4 @@ El cumplimiento se revisa en cada corrida del EVAL y en cada transición entre p
 Un paso que viole un principio se corrige antes de avanzar; la complejidad que un principio prohíbe
 se justifica por escrito o se descarta.
 
-**Versión**: 1.0.0 | **Ratificada**: 2026-08-27 | **Última enmienda**: 2026-08-27
+**Versión**: 1.1.0 | **Ratificada**: 2026-08-27 | **Última enmienda**: 2026-08-27
