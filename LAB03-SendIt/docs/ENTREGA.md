@@ -22,6 +22,28 @@
 
 ---
 
+> ### ⚠ Este documento quedó atrás del repositorio — **no subirlo sin rehacerlo**
+>
+> Se cerró en el estado de la **ronda 07** y el trabajo siguió cuatro rondas más. Lo que afirma y ya
+> no es cierto:
+>
+> | Afirma | Es |
+> |---|---|
+> | Un backlog de **118 ítems** (101 RF + 17 RNF) | **155 ítems** — 138 RF + 17 RNF |
+> | Trazabilidad **118 / 118** en el paso `L` | **155 / 155** |
+> | El EVAL llega a la ronda **07**, con **6,0** | Once rondas, **6,61** |
+> | **Seis** tensiones | **Siete** — falta `T7`, el código perdido ([D-10](DECISIONES.md)) |
+> | Ocho decisiones | **Diez**, y ninguna pendiente |
+>
+> Las cifras de `E`, el reparto de prioridad y los conteos de trazabilidad se **rederivan** del
+> backlog vigente; no se corrigen a mano. **No se hizo un barrido cosmético a propósito:** cambiar
+> «seis» por «siete» en los títulos dejaría el documento con apariencia de vigente y los conteos
+> viejos adentro, que es peor que un documento declarado atrasado.
+>
+> El PDF de al lado se generó de esta misma versión y arrastra lo mismo.
+
+---
+
 ## Resumen
 
 SendIt es una red de remesas con **efectivo en las dos puntas**, modelo Western Union: quien envía
