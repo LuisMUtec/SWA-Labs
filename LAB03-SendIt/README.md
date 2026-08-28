@@ -184,33 +184,49 @@ son indistinguibles si no se anota.
 
 ## Estado
 
-**Andamiaje completo, contenido pendiente.** Lo que está escrito:
+**El aparato está entero y el backlog por escribir.** Lo que está escrito:
 
 - Las **tres personas** —[Rosa](personas/Rosa.MD), [Elena](personas/Elena.MD),
   [Kevin](personas/Operario.MD)—, en `status: proto` y con cada afirmación inventada marcada
   `[ASSUMPTION: …]`. Usuario modelo designado y seis tensiones enunciadas.
+- Las **dieciséis reglas de negocio**, `BR-01` a `BR-16` en
+  [`business-rules.md`](business-rules.md), que es donde vive el cumplimiento desde que dejó de ser
+  una persona (D-07).
 - El **aparato de EVAL**: rúbrica, regla de asimetría, protocolo del agente de persona, las tres
   pruebas de cobertura contra un título, los techos duros de D4 y los cuatro rebarridos de
   propagación.
+- Los **cuatro jueces** en [`.claude/agents/`](.claude/agents/): uno por persona
+  —`sendit-rosa`, `sendit-elena`, `sendit-kevin`— y el agregador. D1 es computable.
+- **Ocho decisiones** registradas (`D-01` a `D-08`) y **cinco pendientes** (`P-01` a `P-05`) con la
+  pregunta que destraba cada una, en [`docs/DECISIONES.md`](docs/DECISIONES.md).
 - El **método** y el **contrato entre pasos**: qué consume cada paso y qué queda inválido si el
   anterior cambia.
 - La lectura del **ejemplo de clase**, que es de donde sale qué cuenta como iteración del diseño.
 - El **harness de Spec Kit**, con la misma estructura del Caso #2, y la **constitución** v1.0.0 que
   antes no existía: la regla de dirección —*los requerimientos bajan, nunca suben*— deja de vivir
   solo en el README del EVAL y pasa a obligar a los seis pasos.
+- **Una corrida del EVAL**, [la 01](evals/iterations/2026-08-26-01.md): **3,5/10, gate fallado.**
 
 Lo que **no** está, y hay que decirlo así:
 
-- **El backlog está vacío.** [`redale/R-requerimientos/backlog.md`](redale/R-requerimientos/backlog.md)
-  tiene sus tablas con guiones. Es el único artefacto puntuado, de modo que hoy no hay nada que
-  evaluar.
-- **Ningún EVAL corrido.** [`evals/iterations/`](evals/iterations/) solo tiene su plantilla y
-  [`HISTORY.md`](evals/HISTORY.md) solo su fila de ejemplo. No hay puntaje.
-- **Ninguna iteración del diseño corrida.** Las dos tablas de
-  [`redale/ITERACIONES.md`](redale/ITERACIONES.md) están con guiones, y no hay diagrama.
-- **Los agentes de persona todavía no están los tres.** Sin los tres veredictos, D1 no es
-  computable, y la precondición de la rúbrica prohíbe emitir un total.
-- Los pasos `E`, `D`, `A`, `L` y `E` tienen su README con el contrato y las tablas sin llenar.
+- **El backlog está vacío, y no por descuido.**
+  [`redale/R-requerimientos/backlog.md`](redale/R-requerimientos/backlog.md) tiene sus tablas con
+  guiones porque el profesor indicó no escribirlo todavía, y el que existía cuando corrió la 01
+  quedó descartado. Es el único artefacto puntuado, de modo que hoy no hay nada que evaluar.
+- **No hay puntaje vigente.** El 3,5 de la 01 midió aquel backlog descartado, un modelo anterior al
+  Western Union (D-07) y un oficial de cumplimiento que ya no existe. La corrida se conserva sin
+  reescribir —un registro de evaluación que se maquilla deja de decir qué se juzgó—, pero **su
+  número no describe el repositorio de hoy**. Lo que sobrevive es de método: el censo que mostró que
+  la frontera no era exigible, y las **diez correcciones** con las que se va a escribir el backlog
+  real.
+- **La corrida no está en la bitácora.** La fila 01 de *Iteraciones del EVAL* en
+  [`redale/ITERACIONES.md`](redale/ITERACIONES.md) sigue con guiones: la iteración existe en
+  `evals/` y no en el registro que la cruza con los pasos que invalidó.
+- **Ninguna iteración del diseño corrida.** La otra tabla de la bitácora está con guiones, y no hay
+  diagrama.
+- Los pasos `E`, `D`, `A`, `L` y `E` tienen su README con el contrato y las tablas sin llenar. La
+  01 dejó anotado, además, que varios ya afirman cosas que ningún requerimiento exige —una tabla de
+  almacenamiento, una ruta, una caja del diagrama—, y esa deuda es de `R`: la corrección va arriba.
 
 ## Proyectos hermanos
 
