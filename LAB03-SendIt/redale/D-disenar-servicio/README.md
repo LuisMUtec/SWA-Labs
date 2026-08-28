@@ -244,7 +244,7 @@ lo que cuesta están en la decisión **(b)**.
 | `POST` | `/liquidaciones/descuentos/{id}/objecion` | **Agente afiliado → centro**, sobre un descuento que ya le fue informado | Recibe la objeción del agente a un descuento por diferencia **antes de que se aplique a su liquidación** (`RF-145`). Mientras la objeción vive, el descuento no entra en ninguna corrida de `POST /liquidaciones`: `RF-104` ya exigía el aviso previo con evidencia, y `RF-145` agrega que el aviso tiene que poder ser contestado — un aviso que no admite respuesta es una notificación, no un control. Solo-adición: la objeción no se edita, se resuelve con otra fila. `IDEMP` | `RF-145`, `RF-104`, `RF-143` |
 | `POST` | `/supresiones` | Rosa → proceso interno | Suprime los datos personales **de quien los pide y de nadie más**, destruyendo la clave de su evidencia. No toca la traza de actos, que prevalece. `IDEMP` | `RF-81`, `RF-99`, `RNF-03` |
 
-**Cuarenta rutas para cuarenta y siete capacidades**, contra un backlog de **155 ítems** —de la ronda 11; el vigente tiene **207**, y las rutas de los ítems posteriores están pendientes— 138
+**Cuarenta rutas para cuarenta y siete capacidades**, contra un backlog de **155 ítems** —de la ronda 11; el vigente tiene **227**, y las rutas de los ítems posteriores están pendientes— 138
 funcionales y 17 no funcionales—. El conteo anterior —35 y 36— quedó sin valor cuando el backlog pasó
 de 137 a 155, y rehacerlo no fue sumar: **cinco rutas nuevas** aparecieron porque cinco capacidades
 no tenían ninguna —la superficie del receptor (`RF-196`, `RF-128`), el vencimiento de la custodia

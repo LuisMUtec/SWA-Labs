@@ -14,12 +14,12 @@
 > misma condición. La correspondencia autorizada es la del propio backlog y la de la trazabilidad
 > de [`L`](../L-listar-componentes/README.md).
 >
-> Lo encontró el agregador en la **ronda 16**, dieciséis rondas después de escribirse.
-
-
-> **La numeración de este documento es anterior al backlog y no es autoritativa.** Sus `RF-nn`
-> y `RNF-nn` no corresponden con los del [backlog](backlog.md), que es el único documento puntuado.
-> Los `[CLARIFY]` que aparezcan más abajo están **cerrados allí** como supuestos declarados.
+> Los `[CLARIFY]` que aparezcan más abajo están **cerrados en el backlog** como supuestos declarados.
+>
+> Lo encontró el agregador en la **ronda 16**, dieciséis rondas después de escribirse; el aviso más
+> viejo que decía la mitad de esto se retiró en la **18**, porque dejar los dos era la corrección
+> entrando sin barrer lo que ya lo decía — el defecto de esta serie, dentro de la corrección del
+> hallazgo más viejo de la serie.
 
 
 **Esto no es el entregable.** El artefacto que el enunciado puntúa es el
