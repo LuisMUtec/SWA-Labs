@@ -66,6 +66,31 @@ El segundo `E` aparece aunque el material del curso lo marque como *«esto no lo
 enunciado pide **todos** los entregables del framework. La tensión y cómo se resuelve están en
 [`docs/DECISIONES.md`](docs/DECISIONES.md) (D-03).
 
+## El harness
+
+R.E.D.A.L.E. dice qué producir; no dice quién sostiene la disciplina mientras se produce. Eso lo
+aporta [Spec Kit](https://github.com/github/spec-kit), heredado del
+[Caso #2](https://github.com/LuisMUtec/SWA-LAB02-Lease) e instalado acá con la misma forma: las
+plantillas y los scripts en [`.specify/`](.specify/), las skills en `.claude/skills/`.
+
+**Spec Kit no desplaza al backlog.** El enunciado fija el formato de los requerimientos y la
+constitución lo vuelve vinculante: el backlog es el único artefacto con autoridad y el único
+puntuado. Y conviene decir el saldo sin adornarlo — **de las diez skills instaladas, corre una**:
+
+| Skill | Qué exige para correr | Estado |
+|---|---|---|
+| `/speckit-constitution` | Nada. Opera sobre [`.specify/memory/constitution.md`](.specify/memory/constitution.md) | **En uso** — v1.0.0 escrita |
+| `/speckit-clarify` | Un `specs/<n>/spec.md` | Inerte |
+| `/speckit-checklist` | Un `specs/<n>/plan.md` | Inerte |
+| `/speckit-analyze` | `spec.md` + `plan.md` + `tasks.md` | Inerte |
+| `/speckit-specify` · `/speckit-plan` · `/speckit-tasks` · `/speckit-implement` · `/speckit-converge` · `/speckit-taskstoissues` | Producen specs, planes, tareas y código, y este caso no entrega código | Inertes |
+
+Las nueve inertes abortan en su primer paso, contra
+`.specify/scripts/bash/check-prerequisites.sh`. **Lo que el harness aporta de verdad es la altitud
+que faltaba** —la constitución, que antes no existía en ningún archivo— y la estructura compartida
+con el Caso #2. Por qué se instala igual, y por qué no se despiertan las nueve inventando un
+`specs/`, está en [D-08](docs/DECISIONES.md).
+
 ## Las personas y el usuario modelo
 
 | Persona | Rol en la remesa | Qué ancla |
@@ -89,6 +114,7 @@ distinto. **Cada afirmación ocurre una sola vez, en su altitud.**
 
 | Altitud | Documento | Afirma |
 |---|---|---|
+| Gobierno | [`.specify/memory/constitution.md`](.specify/memory/constitution.md) | Por qué existe el proyecto y cómo se juzga el trabajo. Prevalece: donde un documento aguas abajo la contradiga, el equivocado es el documento |
 | Enunciado | [`docs/LAB-03-ARQ-2026.2.md`](docs/LAB-03-ARQ-2026.2.md) | Qué pidió el curso, con sus hints, restricciones y metadatos de entrega. Se transcribe, no se interpreta |
 | Método | [`redale/README.md`](redale/README.md) | Qué pregunta cada paso de R.E.D.A.L.E. y qué entrega. Vale para cualquier caso, no solo SendIt |
 | Precedente | [`docs/EJEMPLO-CLASE-TOP-DOWN.md`](docs/EJEMPLO-CLASE-TOP-DOWN.md) | Qué significa «iteraciones del diseño», leído del excalidraw de clase. Aporta el método, no el contenido: el caso del ejemplo es Leasing |
@@ -169,6 +195,9 @@ son indistinguibles si no se anota.
 - El **método** y el **contrato entre pasos**: qué consume cada paso y qué queda inválido si el
   anterior cambia.
 - La lectura del **ejemplo de clase**, que es de donde sale qué cuenta como iteración del diseño.
+- El **harness de Spec Kit**, con la misma estructura del Caso #2, y la **constitución** v1.0.0 que
+  antes no existía: la regla de dirección —*los requerimientos bajan, nunca suben*— deja de vivir
+  solo en el README del EVAL y pasa a obligar a los seis pasos.
 
 Lo que **no** está, y hay que decirlo así:
 
