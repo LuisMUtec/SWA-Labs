@@ -13,6 +13,7 @@ umbral en **8/10**. Eso decide el alcance de este documento: se puntúa el backl
 | [`personas/Rosa.MD`](../personas/Rosa.MD) · [`Elena.MD`](../personas/Elena.MD) · [`Operario.MD`](../personas/Operario.MD) | Las lee cada agente de persona: la suya y el backlog, nada más |
 | [`personas/README.md`](../personas/README.md) | La lee el agregador. De ahí salen las siete tensiones que D4 exige decididas y la designación del usuario modelo |
 | [`docs/LAB-03-ARQ-2026.2.md`](../docs/LAB-03-ARQ-2026.2.md) | La lee el agregador. Fija el problema contra el que mide D2 y nombra las dos exigencias que cuenta D3 |
+| [`.specify/memory/constitution.md`](../.specify/memory/constitution.md) | La lee el agregador. El enunciado dice cuál es el problema; la constitución dice **qué se hace con un ítem que no lo ataca** — el Principio III fija la prueba de D2, y el I la regla de dirección que D4 cobra como *decisión sin requerimiento* |
 
 ### Los demás pasos de R.E.D.A.L.E. no se puntúan
 
