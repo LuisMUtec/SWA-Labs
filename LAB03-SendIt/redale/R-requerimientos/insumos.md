@@ -1,5 +1,22 @@
 # R — Insumos del backlog
 
+> ### ⚠ Los identificadores de este archivo son los de la ronda 01 y **no** son los del backlog
+>
+> Este documento se escribió antes de la primera corrida del EVAL y **nunca se renumeró**. Su
+> `RF-11`, su `RF-15` y su `RF-17` no son los del [backlog](backlog.md): allá esos números dicen
+> otra cosa, y dos de ellos están retirados. Leerlo como si compartiera numeración produce
+> exactamente la **deriva semántica** que la tabla de identificadores retirados del backlog declara
+> como la lección de la iteración 05.
+>
+> **Qué conserva su valor:** el razonamiento —de dónde sale cada necesidad, qué se descartó y por
+> qué—, que es para lo que el backlog lo cita. **Qué no:** ningún identificador `RF-nn` ni `RNF-nn`
+> de este archivo resuelve contra el backlog vigente. La tabla `BR` → `RF` del final está en la
+> misma condición. La correspondencia autorizada es la del propio backlog y la de la trazabilidad
+> de [`L`](../L-listar-componentes/README.md).
+>
+> Lo encontró el agregador en la **ronda 16**, dieciséis rondas después de escribirse.
+
+
 > **La numeración de este documento es anterior al backlog y no es autoritativa.** Sus `RF-nn`
 > y `RNF-nn` no corresponden con los del [backlog](backlog.md), que es el único documento puntuado.
 > Los `[CLARIFY]` que aparezcan más abajo están **cerrados allí** como supuestos declarados.
