@@ -72,7 +72,7 @@ cuanto alguien demuestre una falla concreta con una cita concreta.
 | ¿Ataca la remesa internacional o un envío genérico? | Agregador | Cada persona ve un rasgo del problema; ninguna ve los tres |
 | ¿Seguridad y consistencia están enunciadas con medida? | Agregador | La forma del enunciado es ajena a la perspectiva de cualquier persona |
 | ¿Hay huérfanos, duplicados encubiertos o títulos comodín? | Agregador | Requiere el conjunto entero a la vista |
-| ¿Las seis tensiones están decididas? | Agregador | Cada agente ve su lado de la tensión y lo da por bueno; ninguno ve el conflicto |
+| ¿Las siete tensiones están decididas? | Agregador | Cada agente ve su lado de la tensión y lo da por bueno; ninguno ve el conflicto |
 | ¿La prioridad está bien asignada? | Agregador | Es una comparación entre ítems, no dentro de uno |
 | ¿Algún paso aguas abajo afirma lo viejo? | Agregador | La propagación solo es visible desde fuera del paso corregido |
 
@@ -316,6 +316,35 @@ sin puntaje hasta la ronda siguiente, que las mide en un SHA nuevo. Corregir dur
 destruye la medición: quien corrige conoce la vara, y el segundo número diría tanto sobre el backlog
 corregido como sobre la corrección ajustada al número.
 
-**Ni la rúbrica ni las personas se editan para elevar el puntaje.** Son la vara. Si una regla de esta
-rúbrica resulta equivocada se cambia por escrito, en su propia ronda, y las corridas anteriores dejan de
-ser comparables — que es exactamente lo que hay que declarar cuando eso pasa.
+**Ni la rúbrica ni las personas se editan para elevar el puntaje.** Son la vara.
+
+## Cómo se enmienda la rúbrica
+
+Hay un caso, y uno solo, en que la vara sí se toca: cuando **una dimensión deja de distinguir un
+backlog bueno de uno malo**. Una dimensión así no está midiendo lo que dice medir, y conservarla
+intacta no es rigor — es un punto muerto en una rúbrica de diez. La autorización y su límite están en
+el Principio IV de la [constitución](../.specify/memory/constitution.md); acá va el procedimiento.
+
+**Las cuatro condiciones. Se exhiben las cuatro, o no hay enmienda:**
+
+| # | Condición | Cómo se comprueba |
+|---|---|---|
+| 1 | **La fuerza una falla del instrumento, no un puntaje** | Se cita la corrida que la detectó y la evidencia numérica: varianza, rango, correlación con algo que la dimensión no debía medir |
+| 2 | **Se escribe antes de aplicarse, y corre en su propia ronda** | La ronda que la estrena no corrige nada más del backlog, para que el movimiento del puntaje sea atribuible a la enmienda y no a las correcciones |
+| 3 | **Se declara qué corridas dejan de ser comparables** | Una línea en [`HISTORY.md`](HISTORY.md) y el aviso en la dimensión enmendada. Las viejas **no se recalculan**: quedan como se emitieron, con la vara con que se emitieron |
+| 4 | **Se demuestra que no compra el gate** | Se recalculan las rondas pasadas con la fórmula nueva y se publica la tabla. **Si alguna alcanza el gate que con la vara vieja no alcanzaba, la enmienda es un ablandamiento y se rechaza** |
+
+La cuarta es la que separa una calibración de una trampa, y es la única que no se puede argumentar:
+se calcula. Un aparato que solo puede corregirse hacia arriba no es un aparato, es una expectativa.
+
+**Dónde vive cada cosa.** La enmienda se redacta en un archivo propio de `evals/` —con la evidencia
+de la condición 1 y la tabla de la condición 4— y el resultado se aplica a la dimensión de este
+documento con la fecha y la ronda en que entró en vigor. El archivo **no se borra después de
+aplicarla**: es donde queda la prueba de que las cuatro condiciones se cumplieron, y sin él la
+dimensión enmendada solo afirma que alguna vez lo estuvieron.
+
+Registro de enmiendas hasta hoy:
+
+| Ronda | Dimensión | Qué falló en el instrumento | Evidencia |
+|---|---|---|---|
+| 08 | **D4** | Puntuaba por cuenta de hallazgos, no por densidad: en siete rondas `n` varió 2,7× y D4 no se movió una sola vez. Medía tamaño | [`ENMIENDA-PROPUESTA-D4.md`](ENMIENDA-PROPUESTA-D4.md) |
