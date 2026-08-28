@@ -5,12 +5,32 @@
 > [**L** — Listar los componentes](../L-listar-componentes/README.md) · bitácora:
 > [`ITERACIONES.md`](../ITERACIONES.md)
 
-**Estado: andamiaje.** No hay campos definidos ni motores elegidos. Las entidades están **nombradas
-y sin campos** a propósito: nombrarlas es reconocer que el dominio las tiene; darles campos es
-decidir, y eso se hace contra el backlog ya evaluado.
+**Estado: entregado.** **Treinta y cuatro** entidades con campos concretos, motor elegido por entidad
+contra el requisito que lo obliga, otros almacenamientos decididos y las cuatro tensiones propias del
+caso —el desafío, la frontera de la inmutabilidad, el trato de los datos personales y la retención
+por jurisdicción— resueltas y con su precio escrito. **Toda clave foránea de la tabla de campos
+apunta a una entidad que existe en esa misma tabla**, y eso se comprueba leyendo las dos columnas de
+la derecha: es la única forma de que el modelo sea un modelo y no una lista. Lo que sigue abierto lleva `[CLARIFY: …]` y dice
+qué lo destraba; no hay ninguna celda vacía.
 
 El material pide cuatro cosas: **tablas**, **campos**, **opciones de base de datos** y **otros tipos
 de almacenamiento** (archivos, caché, almacenamiento de objetos, sistemas de archivos distribuidos).
+
+**Las diez `BD` que [`L`](../L-listar-componentes/README.md) dibuja se deciden acá, y no hay una
+undécima.** Cada entidad de este documento declara en qué `BD` del diagrama vive, y ninguna entidad
+inventa un almacén que el diagrama no tenga: `BD identidad`, `BD giros`, `BD cumplimiento`,
+`BD cotizaciones`, `BD contable`, `BD intentos`, `BD corredores y reguladores`,
+`BD puntos de atención y efectivo`, `BD auditoría` y `BD desafíos`. Esa correspondencia es el
+contrato con `L`, y se lee en las dos direcciones: una `BD` sin entidad es una elipse decorativa, y
+una entidad sin `BD` es una tabla que nadie escribe.
+
+**Una convención que atraviesa todo el modelo y conviene enunciar antes que las tablas: nadie se
+identifica por su documento.** Toda persona —emisor, receptor, operario, rol de cumplimiento— entra
+en el modelo por un **seudónimo estable** `persona_ref`, opaco y sin significado, y es ese seudónimo
+el que viaja al asiento contable, a la traza y a los acumulados. El nombre y el documento viven en
+una sola tabla, cifrados, detrás de otro control de acceso. Esa decisión es la que hace ejecutables
+a la vez a `RNF-03` —que no se borra nada del registro de actos— y a `RF-81` —que se borran los
+datos personales de quien los entregó—, y está justificada entera en la sección 6.
 
 ---
 
@@ -18,10 +38,10 @@ de almacenamiento** (archivos, caché, almacenamiento de objetos, sistemas de ar
 
 | | |
 |---|---|
-| **Consume de D** | El tipo de persistencia por familia de dato, y —sobre todo— las cinco decisiones abiertas de `D`. Tres de ellas *son* decisiones de modelo de datos disfrazadas de arquitectura: dónde vive la verdad del dinero decide si hay tabla de movimientos; la idempotencia decide si hay entidad de clave de intento; el momento del tamizaje decide qué estados existen |
+| **Consume de D** | El tipo de persistencia por familia de dato, y —sobre todo— las seis decisiones abiertas de `D`. Cuatro de ellas *son* decisiones de modelo de datos disfrazadas de arquitectura: dónde vive la verdad del dinero decide si hay tabla de movimientos; la idempotencia decide si hay entidad de clave de intento; el momento del tamizaje decide qué estados existen; y dónde vive la respuesta del desafío —y por dónde entra y sale, que es lo que `RF-113` y `RF-114` agregaron a esa decisión— decide si hay entidad para un secreto que nadie puede leer, con qué columna se prueba por dónde salió y cuál valor **no** admite el enum del que entró |
 | **Consume de E** | El volumen por tipo de dato y los años de retención, que deciden qué entidad puede vivir en una fila y cuál necesita almacenamiento de objetos |
 | **Entrega a L** | Las bases de datos del diagrama. En el ejemplo de clase hay **varias `BD`, no una sola**: cada grupo de servicios tiene la suya, y cuál es cuál se decide acá |
-| **Queda inválido si D cambia** | La entidad cuyo mecanismo se reeligió. Reabrir (a) borra o crea la tabla de movimientos; reabrir (c) cambia los estados del envío; reabrir (e) cambia qué se guarda y en qué momento |
+| **Queda inválido si D cambia** | La entidad cuyo mecanismo se reeligió. Reabrir (a) borra o crea la tabla de movimientos; reabrir (c) cambia los estados del giro y lo que el punto de atención sostiene sin conexión; reabrir (e) cambia qué se guarda y en qué momento |
 | **Queda inválido si E cambia** | La elección de motor que se justificó por volumen, y la política de retención por entidad |
 
 ---
@@ -34,62 +54,144 @@ en `R`.
 
 | Entidad candidata | Por qué es candidata |
 |---|---|
-| **Remitente** | Rosa. Es quien paga y quien tiene que ser identificable antes de que el dinero se mueva |
-| **Destinatario** | Elena. No es un campo del envío: es una persona con identidad propia, que se verifica y que cobra. Modelarla como texto dentro del envío hace imposible reconocer que dos envíos van a la misma persona, que es justo lo que el tamizaje necesita ver |
-| **Envío** | La operación completa, de extremo a extremo. Su cierre no es «despachado» sino «Elena contó los billetes» (tensión T6) |
+| **Emisor** | Rosa. Entrega el efectivo y tiene que ser identificable contra un documento oficial vigente antes de que el dinero se mueva (`RF-01`, `RF-02`) |
+| **Receptor** | Elena. No es un campo del giro: es una persona con identidad propia, que se verifica y que cobra contra código y documento (`RF-34`, `RF-85`). Modelarla como texto dentro del giro hace imposible reconocer que dos giros van a la misma persona, que es justo lo que el tamizaje necesita ver —`RF-119` la contrasta **antes** de aceptar el efectivo y `RF-27` otra vez al autorizar el pago— y lo que `RF-93` obliga a contar para poder retener |
+| **Giro** | La operación completa, de extremo a extremo. Su cierre no es «despachado» ni «disponible»: es el momento en que el receptor recibe el dinero (`RF-64`, tensión T6) |
+| **Código de seguimiento** | El objeto que este modelo introduce y el anterior no tenía. `RF-11` lo hace llegar **únicamente al emisor, por llamada o mensaje de texto al teléfono que él registró**, y `RNF-15` exige que quede ilegible **para quien administra la infraestructura y para quien atiende el mostrador** — los dos lectores que el invariante nombra: no es un identificador público del giro, es el secreto que vuelve ejecutable la cancelación (`BR-08`) |
+| **Desafío** | La pregunta y la respuesta que `RF-68` obliga al emisor a registrar al crear el giro, y contra las que el receptor cobra cuando su documento no está vigente (`RF-69`, `RF-86`). No es un campo del giro y no puede serlo: `RF-12` prohíbe mostrárselo a quien atiende y `RNF-17` a quien administra el almacenamiento, `RF-82` acota los intentos —que son un dato aparte y sobre el mismo secreto— y `RF-83` lo caduca con el giro |
+| **Devolución** | El camino de vuelta del dinero, con estado y plazo propios: nace de la cancelación (`RF-47`), de la retención vencida (`RF-32`), de la prescripción (`RF-50`), de los intentos de desafío agotados (`RF-103`), del distrito sin punto capaz de pagar (`RF-129`), de la oferta de punto alternativo no contestada (`RF-111`) y —desde esta ronda— del **efectivo en custodia que nadie retomó** (`RF-138`); es siempre en efectivo (`RF-71`) y en la moneda que el emisor entregó (`RF-88`); se retira en el punto que el emisor elija (`RF-72`), se le avisa dónde (`RF-14`), incluye la comisión cuando el giro no llegó a pagarse (`RF-74`) y queda disponible hasta la prescripción si nadie la retira (`RF-89`), que es cuando `RF-137` la da por prescrita y deja de mantenerla disponible. Un estado más del giro no sostiene un plazo propio ni un punto de retiro distinto del de cobro |
+| **Caja del punto de atención** | El efectivo que cada punto declara al abrir y al cerrar (`RF-76`), y que `RF-92` obliga a poner delante del operario antes de habilitarle **un pago o una devolución**. Es un saldo por punto y por jornada, no el efectivo del corredor que `RF-20` exige antes de dar un giro por fondeado: dos cifras distintas que hoy nada distingue. Y su cierre produce un dato con destinatario nombrado: `RF-141` obliga a informarle **al agente** la diferencia entre el efectivo esperado y el declarado |
+| **Declaración de diferencia del receptor** | La voz de Elena **fuera del mostrador**: `RF-90` la deja declarar **por llamada o mensaje de texto** que el dinero recibido no coincide con el informado, y `RF-126` obliga a identificarla como el receptor designado **antes de admitir la declaración**. Es un hecho asentado por quien no es usuaria del sistema, contra un monto que `RNF-16` declara intocable y una diferencia que `RF-59` repone a quien le faltó y `RF-143` descuenta al agente en cuyo punto se originó. Sin entidad, esa declaración solo existiría si el operario la escribiera — y es sobre él que se declara, así que no puede depender de él |
+| **Acumulado de cobros del receptor** | `RF-93` retiene el giro del receptor que superó su acumulado de cobros en la ventana vigente, y para retenerlo hay que contarlos. Es el espejo del acumulado del emisor, pero sobre una persona que **no es clienta de SendIt** y de la que solo existe lo que el mostrador capturó: el contador decide una retención, así que su identidad tiene que resolverse igual entre giros |
+| **Supresión** | La solicitud de `RF-81`: borrar los datos personales de quien los entregó, de nadie más, y salvo los que el registro de actos debe conservar (`RNF-03`). Es un acto con solicitante, alcance, momento y resultado — y es él mismo un acto que la traza registra. Sin entidad no hay forma de demostrar qué se borró ni de defender por qué algo no |
+| **Acumulado del emisor** | `RF-08` rechaza el giro que supere el límite por operación y `RF-09` el que supere el acumulado de la ventana vigente; `RF-10` obliga a contarlos **sobre la identidad del emisor y no sobre el punto de atención**. Un contador que vive dentro de la fila del punto no puede cumplir eso |
+| **Segunda autorización** | El acto de un segundo rol, con su identidad y su momento: `RF-13` la exige **antes** de crear un giro sobre el umbral reforzado —y `RF-79` da el giro por creado al registrar la recepción del efectivo, así que la autorización tiene que existir antes de ese instante— y `RF-61` la exige para corregir un giro pagado. `RNF-02` obliga a poder compararla con las demás identidades del mismo giro |
+| **Prescripción** | El plazo del giro no cobrado y su terminador: `RF-49` lo deja no pagable, `RF-50` pone el monto a disposición del emisor y `RF-51` avisa antes de que ocurra. Un plazo que nadie hace vencer no vence |
+| **Jurisdicción** | Los dos reguladores que tocan un mismo giro: `RF-15` aplica las reglas de los dos, `RF-31` toma el plazo de retención del más estricto y `RF-18` el de conservación del más largo. Sin entidad, esos plazos quedan como constantes globales — que es exactamente lo que `RNF-03` prohíbe al exigir que se calculen por giro |
+| **Recepción de efectivo en custodia** | El efectivo que Kevin ya contó y guardó cuando la creación se cortó antes de existir el giro. `RF-118` obliga a dejarlo *en un estado único que el operario puede leer y retomar*, y ese estado no puede ser una clave de intento con vencimiento: `BR-01` vuelve ese dinero deuda de SendIt desde que entra al cajón. Lo que **sí** tiene ahora es un terminador, y lo pone `RF-138`: a las `[ASSUMPTION: 72 horas]` sin que nadie la retome, **la custodia se cierra devolviendo el efectivo al emisor**. Una deuda que expira sola es una deuda que alguien se quedó; una deuda que se cierra devolviendo el dinero es una deuda saldada, y esa es la diferencia entre un TTL y `RF-138` |
+| **Acción ofrecible** | El catálogo que `RF-39` volvió obligatorio al pedir que **todo** giro rechazado, retenido o no pagable **lleve asociada al menos una acción**, y que `RF-130` obliga a **mostrarle al operario** sobre el giro que tiene delante. Son dos ítems y por eso son dos cosas: la cobertura es una restricción de tabla (`RF-39`), la exhibición es una lectura del mostrador (`RF-130`). Un texto compuesto en la pantalla no se puede auditar por cobertura ni versionar, y sobre todo no se puede comprobar que exista para los tres estados |
+| **Oferta de punto alternativo** | El ofrecimiento de `RF-91` con las tres cosas que un campo del giro no sostiene: el plazo que `RF-116` le comunicó al emisor, la respuesta que `RF-105` exige antes de mover nada, y el vencimiento que `RF-111` convierte en devolución. Tres ítems distintos sobre un mismo hecho que dura horas |
 | **Movimiento contable** | El asiento. Existe si `D`(a) decide que la verdad del dinero es una suma de movimientos y no un campo |
-| **Tasa aplicada / cotización** | La promesa de cuántos soles. Tiene momento de emisión, vencimiento y valor; no es un número dentro del envío |
+| **Tasa aplicada / cotización** | La promesa de cuánto cobra el receptor en moneda destino. `RF-07` obliga a producirla y fecharla y `RF-06` a no recalcularla nunca: tiene momento de emisión, vencimiento y valor propios, no es un número dentro del giro |
 | **Verificación de identidad** | El acto de haber comprobado quién es alguien, con su evidencia, su momento y su resultado. Distinto de la persona verificada |
 | **Caso de cumplimiento** | El expediente de cumplimiento: la coincidencia, la evidencia, la decisión, el plazo y su vencimiento |
 | **Traza de auditoría** | Quién vio qué, quién decidió qué, cuándo. Crece con las lecturas, no solo con las escrituras |
 
-Faltan por decidir, y hay que decidirlas: si el **punto de pago** es entidad del modelo —con su
-caja, su efectivo disponible, su estado de conexión y el momento de su última sincronización— o solo
-un identificador dentro del envío; si **quien atiende el mostrador** es un usuario del sistema con
-su propia identidad o únicamente un dato en la traza de quién pagó; si la **clave de idempotencia**
-es entidad propia; si el **aviso enviado a Elena** se guarda como prueba de haber avisado. Las dos
-primeras ya no son «referencias a un sistema externo»: el punto es de SendIt y corre sobre su
-sistema, así que si no está modelado, no está modelado y punto — no hay un tercero que lo tenga.
+### Las cinco que faltaban por decidir, decididas
+
+Cada una se decide contra el ítem que la obliga, no por gusto. Las cinco dan entidad: ninguna
+sobrevive como campo.
+
+| Candidata | Decisión | Contra qué ítem |
+|---|---|---|
+| **Punto de atención** | **Entidad propia**, en `BD puntos de atención y efectivo`. `RF-63` deja que el emisor lo elija entre los del país destino, así que tiene que ser **listable antes de que el giro exista** —un campo de texto dentro del giro no se puede listar— y `RF-91` deja cobrar en otro punto cuando el elegido no puede pagar, así que el giro lleva **dos** referencias distintas: `punto_eleccion_id`, que `RF-105` congela salvo que el emisor conteste, y `punto_pago_id`, que se resuelve al pagar. Cuando en el distrito no queda ninguno capaz de pagar, `RF-129` devuelve el giro en vez de dejarlo colgado | `RF-63`, `RF-91`, `RF-105`, `RF-129`, `RF-76`, `RF-92` |
+| **Agente** | **Entidad distinta del punto**, en la misma `BD`. Un agente opera uno o varios puntos, y `RF-24` obliga a liquidarle **el efectivo que puso de su caja**: el saldo a liquidar se agrega por agente y no por punto, y la `Caja del agente` que `L` dibuja con borde grueso es una cuenta del libro con `agente_id`, no una columna del punto | `RF-24`, `RF-20`, `RF-102` |
+| **Operario** | **Identidad propia** en `BD identidad`, no un texto en la traza. `RNF-02` exige que **ninguna identidad aparezca dos veces** en la cadena crear → autorizar → pagar → liberar → corregir de un mismo giro, y además que **ninguna identidad que opere un mostrador inicie la corrección del monto de un giro ya pagado**: la segunda mitad del invariante no se comprueba sin saber si la identidad tiene `punto_id`, y eso es una columna, no un rol declarado en una sesión. `RF-30` y `RF-33` piden lo mismo del rol | `RF-54`, `RF-30`, `RF-33`, `RF-61`, `RNF-02` |
+| **Clave de idempotencia** | **Entidad propia**, en `BD intentos`, con vida acotada y motor distinto del resto. `RF-43` y `RF-44` obligan a tratar el reintento como la misma operación, y para eso la clave tiene que persistirse **antes** de mover un centavo y devolver el resultado original —no un error— al segundo intento. Es la única entidad del modelo que **caduca sola y no deja registro contable**, y por eso mismo **no puede cargar con `RF-42` ni con `RF-118`**, ni en este documento ni en el componente que `L` dibuja: un estado que el operario debe poder leer y retomar no se puede confiar a una fila que se borra sola, y el efectivo de `RF-118` menos todavía, porque `RF-138` lo cierra **devolviéndolo**, que es un asiento y no una expiración. La prohibición se declara de este lado y no se negocia: lo interrumpido vive en `Giro.estado` y en `Recepción de efectivo en custodia`; la clave solo dice que el reintento es el mismo intento | `RF-43`, `RF-44`, `RF-117` |
+| **Aviso enviado** | **Entidad propia**, y ya no por conveniencia: `RF-98` obliga a conservar constancia de cada aviso, `RF-131` a **registrar si llegó** cuando el canal lo reporta y `RF-132` a **tratar como no avisado a quien no tenga constancia de que llegó** — tres ítems y no uno, y el tercero es el que vuelve la fila oponible en vez de decorativa. Son **veintidós** tipos colgando de ítems distintos, y los que la ronda partió llegan de a dos sobre el mismo hecho —la diferencia se avisa al emisor por `RF-60` y al receptor por `RF-121`; la prescripción, por `RF-51` y `RF-120`—, de modo que la clave natural es `(giro o caja, tipo, destinatario)` y no `(giro, tipo)`. Un campo `avisado` no distingue cuál se envió, no distingue a quién, no sabe si llegó, y sobre todo **no se opone a nadie**: oponer exige saber qué se dijo, que un tercero lo acuse, y que `RF-132` pueda leer el acuse para decidir que no hubo aviso | `RF-98`, `RF-131`, `RF-132`, `RF-121`, `RF-120`, `RF-106` |
+
+El punto corre el software de SendIt, así que lo que no esté modelado no lo tiene nadie más; pero el
+efectivo y el local son del agente, y esa frontera es de `RF-24` y está modelada como dos entidades y
+una cuenta del libro, no como un comentario.
 
 ### Campos
 
-Una sección por entidad. Vacías.
+Una fila por entidad, con la `BD` de [`L`](../L-listar-componentes/README.md) en la que vive. El
+formato es el del material —*«Tabla: Video · Campos: Titulo, FechaCreacion, Autor, Categoría,
+Puntaje, Comentarios(FK)»*— con dos columnas más que este caso obliga: la clave, porque de ella
+depende que `RNF-05` y `RNF-13` sean restricciones y no buenas intenciones, y las relaciones, porque
+de ellas depende que `RF-81` pueda borrar sin arrastrar el asiento.
 
-| Entidad | Campos | Clave | Relaciones |
+Convenciones de los nombres de campo: `*_ref` es un seudónimo opaco de persona, `*_cif` es una
+columna cifrada con llave por corredor, `*_hmac` es un verificador que se compara y no se lee, y
+`*_id` es una clave foránea corriente.
+
+| Entidad · `BD` | Campos | Clave | Relaciones |
 |---|---|---|---|
-| Remitente | — | — | — |
-| Destinatario | — | — | — |
-| Envío | — | — | — |
-| Movimiento contable | — | — | — |
-| Tasa aplicada | — | — | — |
-| Verificación de identidad | — | — | — |
-| Caso de cumplimiento | — | — | — |
-| Traza de auditoría | — | — | — |
+| **Emisor** · `BD identidad` | `persona_ref`, `token_documento` (HMAC determinista, llave en el módulo de claves), `tipo_documento`, `pais_documento`, `documento_cif`, `nombre_cif`, `fecha_nacimiento_cif` (**solo para el reporte a la autoridad**, `RF-140`), `telefono_cif` (el teléfono registrado al que `RF-11` hace llegar el código), `jurisdiccion_origen_id`(FK), `declarante`=`emisor`, `giro_captura_id`(FK), `estado_supresion`, `creado_en` | `persona_ref` | 1→N `Giro` por `emisor_ref` · 1→N `Verificación de identidad` · 1→1 `Acumulado del emisor` · 1→N `Supresión`. `fecha_nacimiento_cif` **no la lee ninguna ruta de atención**: su único lector es `Reporte Service`, sobre un giro que superó un umbral de `RF-17` o de `RF-139` |
+| **Receptor** · `BD identidad` | `persona_ref`, `token_documento`, `nombre_designado_cif` (lo escribe el emisor al crear), `nombre_verificado_cif` (lo captura el mostrador de destino), `fecha_nacimiento_cif` (**mismo uso único y mismo lector**, `RF-140`), `telefono_cif`, `pais_destino`, `declarante`=`receptor`, `punto_captura_id`(FK), `es_cliente`=`false`, `estado_supresion` | `persona_ref` | 1→N `Giro` por `receptor_ref` · 1→1 `Acumulado de cobros del receptor` · 1→N `Verificación de identidad` |
+| **Identidad de actor** (operario, segundo rol, cumplimiento) · `BD identidad` | `identidad_id`, `persona_ref`, `rol`, `agente_id`(FK), `punto_id`(FK), `alta_en`, `baja_en`, `activa` | `identidad_id` | N→1 `Punto de atención` · 1→N `Traza de auditoría` · 1→N `Segunda autorización` |
+| **Giro** · `BD giros` | `giro_id`, `emisor_ref`(FK), `receptor_ref`(FK, **uno solo por giro** (`RF-03`) y **sin `UPDATE` concedido después de crear** (`RF-70`)), `jurisdiccion_origen_id`(FK), `jurisdiccion_destino_id`(FK), `version_regla_jurisdiccion` (congelada al crear), `monto_origen`, `moneda_origen`, `monto_destino`, `moneda_destino`, `comision`, `comision_informada_en` (**`RF-136`**: la comisión se le informa al emisor **antes** de que entregue el efectivo, y la fecha es la prueba de que precedió), `cotizacion_id`(FK), `punto_eleccion_id`(FK), `punto_pago_id`(FK), `estado` (proyección), `version_estado`, `disponible_desde` (**`RF-77`**: la fecha que se le informó al emisor antes del efectivo), `plazo_devolucion_informado` (`RF-73`), `duracion_maxima_retencion_informada` (`RF-96`), `prescribe_en`, `conservar_hasta`, `plazo_aviso_retencion` (el que `RF-115` le informó al emisor **antes** del efectivo, congelado al crear, y acotado por el techo de `RF-133`), `accion_ofrecible_id`(FK, **obligatorio cuando `estado` es rechazado, retenido o no pagable**, `RF-39`; lo que el mostrador lee de ahí es `RF-130`), `rehecho_de_giro_id`(FK, nulo salvo `RF-117`), `comision_ya_cobrada` (bool, `RF-135`), `custodia_id`(FK, nulo salvo cuando nació de una custodia de `RF-118`), `clave_idempotencia`(FK), `creado_en`, `creada_por_identidad_id`(FK) | `giro_id` | 1→1 `Código de seguimiento`, `Desafío`, `Prescripción` · 1→0..1 `Pago`, `Devolución`, `Recepción de efectivo en custodia`, `Giro` (el rehecho, por `rehecho_de_giro_id`) · 1→N `Movimiento contable`, `Traza de auditoría`, `Aviso enviado`, `Resultado de tamizaje`, `Oferta de punto alternativo` |
+| **Código de seguimiento** · `BD giros` | `giro_id`(PK,FK), `codigo_hmac` (verificador, llave en el módulo de claves), `llave_id`, `emitido_en`, `entregado_por` ∈ {`llamada`,`sms`} (**y ningún otro valor**: `RF-11` nombra el canal y el teléfono registrado, y ninguna otra salida tiene título que la autorice), `telefono_token_destino` (el del emisor, no el del receptor), `acuse_entrega`, `acuse_mostrado_al_operario_en` (`RF-125`: al operario se le confirma **que salió**, y esta columna es todo lo que se le sirve), `consumido_en` | `giro_id`; `UNIQUE(codigo_hmac)` | 1→1 `Giro`. **Ninguna columna guarda el código ni parte de él en claro** (`RNF-15`), y no hay ruta de lectura: `RF-94` prohíbe reemitirlo y `RF-112` volver a consultarlo, así que la tabla se compara y no se lee. `entregado_por` prueba **por dónde salió**, nunca **qué salió**, y `acuse_mostrado_al_operario_en` es la única columna de esta tabla que el mostrador puede leer — lo que `RF-125` concede y `RF-113` acota |
+| **Desafío** · `BD desafíos` | `giro_id`(PK), `pregunta_cif` (se le entrega al receptor por `RF-69`, nunca al operario), `verificador` = HMAC de la respuesta normalizada con llave del módulo, `llave_id`, `normalizacion_version` (`RF-84`, congelada al crear), `intentos_fallidos`, `intentos_max`, `caduca_en`, `origen_respuesta` ∈ {`dispositivo_cliente`} (`RF-114`: no hay valor para *tecleado por el operario*, y esa ausencia es la restricción), `dispositivo_sello_id`, `releva_vigencia_documento` (bool, `RF-122`), `estado` ∈ {`vigente`,`agotado`,`caducado`,`consumido`} | `giro_id` | 1→1 `Giro`, **por referencia y sin clave foránea comprobable desde `BD giros`**: quien administra la base del giro no alcanza esta |
+| **Pago** · `BD giros` | `pago_id`, `giro_id`(FK, **ÚNICO**), `punto_id`(FK), `identidad_operario_id`(FK), `monto_entregado`, `moneda`, `entregado_en`, `verificacion_receptor_id`(FK), `desafio_usado` (bool, nunca el valor), `fondos_confirmados_en` (`RF-36`: sin esta fecha el pago no se habilita), `confirmacion` ∈ {`confirmada`,**`en_duda`**,`resuelta_como_pagada`,`resuelta_como_no_pagada`} (**`RF-144`**), `resuelta_en`, `resuelta_contra` = `registro_del_centro` (**`RF-146`**: el estado se resuelve contra el registro del centro, **sin intervención del operario**, y por eso el enum no tiene un valor `resuelta_por_el_operario`), `asiento_id`(FK), `clave_idempotencia`(FK) | `pago_id`; `UNIQUE(giro_id)` | 1→1 `Giro` · 1→0..N `Declaración de diferencia del receptor`. **El `UNIQUE` es `RNF-05`**: no hay forma de escribir dos entregas del mismo giro, en ningún punto y en ningún momento |
+| **Devolución** · `BD giros` | `devolucion_id`, `giro_id`(FK, **ÚNICO**, nulo solo cuando la devolución nace de una custodia sin giro), `custodia_id`(FK, **nulo salvo la causa `custodia_no_retomada`**), `causa` ∈ {`cancelacion`,`retencion_vencida`,`prescripcion`,`intentos_agotados`,`sin_punto_capaz`,`oferta_no_contestada`,`lista_de_sanciones`,**`custodia_no_retomada`**}, `monto`, `moneda` (= `giro.moneda_origen`), `incluye_comision`, `punto_retiro_id`(FK), `disponible_desde`, `disponible_hasta` (= `giro.prescribe_en`), `estado` ∈ {`disponible`,`retirada`,`prescrita`}, `retirada_en`, `prescrita_en` (`RF-137`), `asiento_id`(FK) | `devolucion_id`; `UNIQUE(giro_id)` **y** `UNIQUE(custodia_id)` | 1→1 `Giro` · 1→0..1 `Recepción de efectivo en custodia`. `UNIQUE(giro_id)` sobre `Pago` **y** sobre `Devolución`, más la exclusión mutua entre las dos, es `RNF-13`. **`custodia_no_retomada` es la causa que faltaba**: `RF-138` devuelve el efectivo en custodia a las `[ASSUMPTION: 72 horas]`, y una devolución sin giro necesita `giro_id` nulo y `custodia_id` no nulo — por eso son dos claves únicas y no una. `RF-129` aporta `sin_punto_capaz`, `RF-111` `oferta_no_contestada` y `RF-108` `lista_de_sanciones`. `cancelacion` cubre a la vez `RF-46` —mientras el dinero no esté a disposición del receptor— y `RF-110`, y solo la abre el emisor que creó el giro (`RF-48`), lo que se comprueba contra `giro.emisor_ref` y no contra quien llama |
+| **Recepción de efectivo en custodia** · `BD giros` + asiento en `BD contable` | `custodia_id`, `punto_id`(FK), `identidad_operario_id`(FK), `emisor_ref`(FK, nulo si la identificación no llegó a cerrar), `monto`, `moneda`, `recibido_en`, `retomar_hasta` (**fecha absoluta** = `recibido_en + [ASSUMPTION: 72 horas]`, `RF-138`), `giro_id`(FK, nulo hasta que el giro se completa), `devolucion_id`(FK, nulo salvo cuando venció), `estado` ∈ {`abierta`,`aplicada_al_giro`,`devuelta`}, `asiento_id`(FK), `cerrada_en`, `clave_idempotencia`(FK) | `custodia_id` | 1→0..1 `Giro` · 1→0..1 `Devolución` · N→1 `Punto de atención` · 1→N `Movimiento contable`. **Es la entidad de `RF-118`, y existe porque el efectivo de Rosa ya entró al cajón**: `BR-01` lo vuelve pasivo de SendIt con giro o sin él. **El ciclo de vida tiene ahora tres salidas y ninguna es la nada:** `abierta` → `aplicada_al_giro` cuando el operario la retoma (`RF-118`), `abierta` → `devuelta` cuando el emisor la cancela, y `abierta` → `devuelta` **por vencimiento de `retomar_hasta`** (`RF-138`), que abre una `Devolución` con `causa = custodia_no_retomada`. La transición por vencimiento **existe y no caduca nada**: convierte un pasivo abierto en un pasivo saldado con asiento, que es lo contrario de un TTL. Sin ella el pasivo de `BR-01` quedaba abierto para siempre, que es el defecto que esta ronda corrigió |
+| **Movimiento contable** · `BD contable` | `movimiento_id`, `asiento_id`, `secuencia`, `giro_id`(FK), `cuenta` ∈ {`efectivo_origen`,`obligacion_receptor`,`caja_agente`,`comision`,`diferencia_cambio`}, `debe`, `haber`, `moneda`, `tipo_hecho`, `identidad_autor_id`(FK), `ocurrido_en`, `registrado_en`, `compensa_movimiento_id`(FK, `RF-56`), `hash_anterior` | `movimiento_id`; `UNIQUE(asiento_id, cuenta)` | N→1 `Giro` · N→1 `Liquidación con el agente`. **Restricción de asiento:** `SUM(debe) − SUM(haber) = 0` por `asiento_id` — es `RNF-07` escrito como constraint, no como intención |
+| **Cotización** · `BD cotizaciones` | `cotizacion_id`, `par_monedas`, `tasa`, `proveedor`, `emitida_en`, `vence_en`, `margen_aplicado` (**`RF-142`**: el margen que se aplica sobre la cotización), `margen_informado_al_emisor_en` (**la fecha en que se le dijo, que `RF-142` obliga a que sea anterior a la entrega del efectivo**), `giro_id`(FK, nulo hasta congelarse), `congelada_en`, `giro_rehecho_id`(FK, nulo salvo `RF-134`), `reusada_en` | `cotizacion_id` | 1→0..2 `Giro` — **el original y, cuando `RF-117` lo rehace, el que lo reemplaza**. Una cotización con `giro_id` no nulo es la que `RF-06` prohíbe recalcular; una con `giro_id` nulo caduca sola por `vence_en`. `giro_rehecho_id` es lo que hace ejecutable a **`RF-134`** —*conservará en el giro rehecho la cotización que fijó el giro cancelado*—: el giro nuevo **no recotiza aunque `vence_en` haya pasado**, porque lo que se conserva es la promesa que Rosa ya recibió, no una oferta de mercado vigente. **`margen_aplicado` dejó de ser un campo sin lector:** hasta esta ronda ninguna persona lo veía y ningún título lo exigía; `RF-142` lo pone delante del emisor antes del efectivo, y por eso lleva ahora su propia fecha de comunicación — sin ella, «se le informó antes» no es comprobable |
+| **Verificación de identidad** · `BD identidad` | `verificacion_id`, `persona_ref`(FK), `giro_id`(FK), `rol` ∈ {`emisor`,`receptor`}, `proposito` ∈ {`creacion`,`pago`,**`declaracion_de_diferencia`** (`RF-126`),**`consulta_del_receptor`** (`RF-128`)}, `momento`, `resultado`, `fuente` ∈ {`RENIEC`,`verificación documental del corredor`,**`canal_de_voz_o_sms`**}, `documento_vigente` (bool), `relevo_por_desafio` (bool) y `relevo_veredicto_en` (**el único relevo de vigencia que `RF-122` admite**: lo escribe el centro contra el veredicto del desafío, nunca el mostrador, y sin él `RF-86` cierra la puerta), `evidencia_uri` (almacenamiento de objetos), `evidencia_hash`, `llave_objeto_id`, `regla_coincidencia_version`, `identidad_operario_id`(FK) | `verificacion_id` | N→1 `Emisor` o `Receptor` · N→1 `Giro`. `evidencia_uri` **no es un binario en la fila**: es la referencia que la sección 3 justifica |
+| **Resultado de tamizaje** · `BD cumplimiento` | `tamizaje_id`, `giro_id`(FK), `sujeto_ref`(FK), `rol`, `momento` ∈ {`creacion`,`autorizacion_pago`,`retamizaje`}, `lista`, `version_lista`, `consultada_en`, `veredicto`, `grado` ∈ {`exacta`,`homonimia`,`sin_coincidencia`}, `nombre_contrastado_cif` (el valor tal como se vio, no un puntero), `payload_proveedor` (documento), `hash` | `tamizaje_id` | N→1 `Giro` · 1→0..1 `Caso de cumplimiento`. Son **tres filas por giro como mínimo** —`RF-26` sobre el emisor y `RF-119` sobre el receptor designado antes del efectivo, `RF-27` sobre el receptor al autorizar el pago— y una más por cada `RF-97`. `sujeto_ref` y `rol` existen porque las tres no son del mismo sujeto |
+| **Caso de cumplimiento** · `BD cumplimiento` | `caso_id`, `giro_id`(FK), `tamizaje_id`(FK, **nulo solo cuando el caso no nace de un tamizaje**), `tipo` ∈ {`exacta`,`homonimia`,**`acumulado_receptor`**}, `abierto_en`, `plazo_vence_en`, `derivado_a_rol`, `identidad_excluida_id`(FK, la del operario que atendió), `estado`, `motivo_liberacion_cif`, `liberado_por_identidad_id`(FK), `liberado_en` | `caso_id` | 1→1 `Retención` · N→1 `Giro`. `motivo_liberacion_cif` vive **en esta tabla y no en la retención**: es el dato cuyo lector es distinto. **`acumulado_receptor` es el tipo que faltaba:** la retención de `RF-93` no nace de una lista de sanciones, pero nace igual, y sin caso quedaba sin `derivado_a_rol` (`RF-30`), sin rol que la libere (`RF-33`), sin motivo escrito (`RF-87`) y sin plazo (`RF-31`) — es decir, abierta para siempre. `tamizaje_id` nulo es lo único que la distingue de las otras dos |
+| **Retención** · `BD cumplimiento` | `retencion_id`, `giro_id`(FK), `caso_id`(FK, **NOT NULL**), `origen` ∈ {`sancion`,`acumulado_receptor`}, `jurisdiccion_id`(FK, **la del regulador más estricto de los dos**), `version_regla` (la que el giro obedeció), `vence_en`, `avisar_al_emisor_hasta` (`abierto_en + giro.plazo_aviso_retencion`, con el techo de `RF-133`: la fecha absoluta que hace exigible la promesa de `RF-115` y vencible el aviso de `RF-67`), `avisado_al_emisor_en`, `estado`, `liberada_en` | `retencion_id` | 1→1 `Caso de cumplimiento` · N→1 `Giro` · N→1 `Jurisdicción` por `(jurisdiccion_id, version_regla)`. **`caso_id` dejó de ser nulo, y ese cambio es el que cierra la retención de `RF-93`.** Antes, la que nacía del acumulado del receptor (BR-04) no colgaba de ningún caso, y todo el aparato de liberación con motivo —`RF-33` el rol, `RF-87` el motivo, `RF-30` la exclusión de quien atendió— colgaba del caso: la retención quedaba abierta y sin ruta de salida. Ahora **toda retención abre su caso**, con `tipo = acumulado_receptor` cuando la origina `RF-93`, y por lo tanto tiene plazo (`RF-31`), liberación con motivo (`RF-33`, `RF-87`) y terminador por vencimiento (`RF-32`) igual que las de sanciones. **La existencia y la fecha se sirven al emisor (`RF-66`); el motivo no está en esta tabla y por eso no se puede filtrar por descuido** |
+| **Punto de atención** · `BD puntos de atención y efectivo` | `punto_id`, `agente_id`(FK), `nombre`, `pais`, `distrito` (`RF-91` ofrece **del mismo distrito**), `jurisdiccion_id`(FK), `direccion`, `habilitado_cobro`, `habilitado_devolucion`, `dispositivo_cliente_id` (la superficie que el operario no lee, `RF-113`, `RF-114`), `capacidad_pago_declarada`, `ultima_sincronizacion_en`, `estado_conexion` | `punto_id` | N→1 `Agente` · N→1 `Jurisdicción` · 1→N `Caja del punto`, `Pago`, `Traza de auditoría`, `Oferta de punto alternativo`. Es el destino de **todas** las claves foráneas `punto_*_id` del modelo: `punto_eleccion_id` y `punto_pago_id` del giro, `punto_retiro_id` de la devolución, `punto_captura_id` del receptor, `punto_atribuido_id` de la declaración de diferencia, `punto_origen_id` del descuento por diferencia, `punto_id` de la custodia y de la caja |
+| **Agente** · `BD puntos de atención y efectivo` | `agente_id`, `razon_social`, `pais`, `jurisdiccion_id`(FK), `plazo_liquidacion`, `moneda_liquidacion`, `cuenta_libro` | `agente_id` | 1→N `Punto de atención` · 1→N `Liquidación con el agente` |
+| **Caja del punto** · `BD puntos de atención y efectivo` | `caja_id`, `punto_id`(FK), `jornada`, `turno`, `moneda`, `declarado_apertura`, `declarado_cierre`, `saldo_corriente` (`RF-95` lo descuenta en **cada pago y cada devolución**, sin esperar al cierre), `declarada_por_identidad_id`(FK), `abierta_en`, `cerrada_en`, `efectivo_esperado_cierre` (= `declarado_apertura − pagos − devoluciones` del turno, derivado del libro), `diferencia_cierre` (= `declarado_cierre − efectivo_esperado_cierre`), `diferencia_informada_al_agente_en` (**`RF-141`**) | `caja_id`; `UNIQUE(punto_id, jornada, turno)` | N→1 `Punto de atención` · N→1 `Agente` por `punto.agente_id` · 1→0..1 `Aviso enviado` con `rol = agente`. **No es el efectivo del corredor** que `RF-20` exige: ese se agrega sobre esta tabla por `jurisdiccion_id`, y son dos cifras distintas. **`diferencia_cierre` tiene ahora destinatario:** hasta esta ronda se calculaba y no llegaba a nadie —un número que el cierre producía y ninguna persona leía—; `RF-141` obliga a informársela **al agente** en cada cierre de caja de sus puntos, y por eso las dos columnas nuevas son la cifra esperada (para poder mostrar contra qué se comparó) y la fecha del aviso (para poder probar que se informó) |
+| **Liquidación con el agente** · `BD puntos de atención y efectivo` + asiento en `BD contable` | `liquidacion_id`, `agente_id`(FK), `periodo_desde`, `periodo_hasta`, `total_efectivo_puesto`, `total_descuentos_por_diferencia` (`RF-143`), `total_liquidado`, `moneda`, `estado`, `asiento_id`(FK), `archivo_export_uri`, `corrida_en` | `liquidacion_id` | N→1 `Agente` · 1→N `Movimiento contable` · 1→N `Descuento por diferencia`. Lo que la puebla es cada `Pago` con el `punto_id` de un punto de ese agente, menos los descuentos que `RF-143` origina |
+| **Descuento por diferencia** · `BD puntos de atención y efectivo` + asiento en `BD contable` | `descuento_id`, `agente_id`(FK), `liquidacion_id`(FK, nulo hasta que se aplica), `declaracion_id`(FK), `punto_origen_id`(FK), `monto`, `moneda`, `evidencia_uri`, `evidencia_hash`, `informado_al_agente_en` (**NOT NULL antes de que `liquidacion_id` deje de ser nulo**, `RF-104`), `objecion_recibida_en`, `objecion_texto`, `objecion_resuelta_en`, `estado` ∈ {`informado`,`objetado`,`aplicado`,`desistido`} | `descuento_id` | N→1 `Agente` · N→1 `Liquidación con el agente` · 1→1 `Declaración de diferencia del receptor`. **La restricción es `RF-104` escrita como constraint y no como intención:** ningún descuento entra en una liquidación con `informado_al_agente_en` nulo, y el aviso lleva la evidencia (`evidencia_uri`) porque el título exige informarlo *con la evidencia que lo sustenta*. `RF-145` es lo que hacen las tres columnas de objeción: el agente puede objetar **antes** de que se aplique, y `estado = objetado` bloquea el pase a `aplicado` |
+| **Acción ofrecible** · `BD giros` | `accion_id`, `clase_estado` ∈ {`rechazado`,`retenido`,`no_pagable`}, `version`, `texto_operario` (lo que Kevin lee y puede repetir en voz alta), `requiere_linea` (bool: la acción que exige centro no sirve en un punto caído), `vigente_desde`, `vigente_hasta` | `(accion_id, version)`; `UNIQUE(clase_estado, version) WHERE vigente_hasta IS NULL` | 1→N `Giro` por `accion_ofrecible_id`. **La clave no lleva motivo ni causa, y esa ausencia es `RF-40`**: si la acción dependiera del motivo, mostrarla lo revelaría. El `UNIQUE` es la cobertura de `RF-39` escrita como restricción — ninguna de las tres clases de estado puede quedarse sin acción vigente. `texto_operario` es lo que `RF-130` sirve al mostrador sobre el giro que tiene delante: **la cobertura y la exhibición son dos ítems, y por eso son una restricción y una lectura, no una sola cosa** |
+| **Oferta de punto alternativo** · `BD giros` | `oferta_id`, `giro_id`(FK), `punto_origen_id`(FK, el que no puede pagar), `punto_ofrecido_id`(FK, del mismo distrito), `motivo` ∈ {`sin_efectivo`,`inhabilitado`,`sin_conexion`}, `ofrecida_en`, `plazo_comunicado` (tal como se le dijo al emisor, `RF-116`), `responde_hasta` (**fecha absoluta**, derivada del anterior), `avisada_al_receptor_en` (`RF-109`, `RF-124`), `estado` ∈ {`ofrecida`,`aceptada`,`rechazada`,`vencida`}, `respondida_en`, `devolucion_id`(FK, cuando vence) | `oferta_id`; `UNIQUE(giro_id) WHERE estado = 'ofrecida'` | N→1 `Giro` · N→2 `Punto de atención` · 1→0..1 `Devolución`. **`plazo_comunicado` y `responde_hasta` son dos columnas y no una**: `RF-111` devuelve el giro por el plazo que `RF-116` **informó**, no por uno recalculado al vencer. Mientras la oferta vive, `giro.punto_eleccion_id` no se toca (`RF-105`) |
+| **Acumulado del emisor** · `BD giros` | `emisor_ref`(FK), `jurisdiccion_origen_id`(FK), `ventana_desde`, `ventana_hasta`, `monto_acumulado`, `giros_contados`, `limite_operacion`, `limite_ventana`, `actualizado_en` | `(emisor_ref, jurisdiccion_origen_id, ventana_desde)` | N→1 `Emisor`. La clave **no lleva `punto_id`**, y esa ausencia es literalmente `RF-10` |
+| **Acumulado de cobros del receptor** · `BD cumplimiento` | `receptor_ref`(FK), `pais_destino`, `ventana_desde`, `ventana_hasta` (ventana de `[ASSUMPTION: 30 días corridos]`, `RF-93`), `cobros_contados`, `limite_ventana`, `actualizado_en` | `(receptor_ref, pais_destino, ventana_desde)` | N→1 `Receptor` · 1→N `Retención` por `RF-93`. Sobrevive a una supresión porque no tiene ningún atributo personal: solo el seudónimo y un número |
+| **Segunda autorización** · `BD auditoría`, con la compuerta en `BD giros` | `autorizacion_id`, `secuencia`, `giro_id`(FK), `motivo` ∈ {`umbral_reforzado`,`correccion_monto`}, `identidad_solicitante_id`(FK), `identidad_autorizante_id`(FK), `rol_autorizante`, `otorgada_en`, `resultado`, `hash_anterior` | `autorizacion_id` | N→1 `Giro`. **Restricción `RNF-02`, y ahora son dos y no una:** (1) `identidad_autorizante_id` no puede aparecer en ninguna otra fila de la cadena crear → autorizar → pagar → liberar → corregir del mismo `giro_id`; y (2) cuando `motivo = correccion_monto`, `identidad_solicitante_id` **no puede ser una identidad con `punto_id` no nulo** — *ninguna identidad que opere un mostrador inicia la corrección del monto de un giro ya pagado*. La segunda mitad se comprueba contra `Identidad de actor.punto_id` y por eso el operario es entidad y no texto |
+| **Prescripción** · `BD giros` | `giro_id`(PK,FK), `prescribe_en`, `jurisdiccion_origen_id`(FK), `version_regla`, `aviso_previo_enviado_en`, `ejecutada_en`, `devolucion_id`(FK) | `giro_id` | 1→1 `Giro` · 1→0..1 `Devolución`. `prescribe_en` es **fecha absoluta congelada al crear**, no un plazo que se recalcula |
+| **Jurisdicción** · `BD corredores y reguladores` | `jurisdiccion_id`, `version`, `pais`, `regulador`, `plazo_conservacion_anios`, `plazo_retencion_horas`, `plazo_prescripcion_meses`, `umbral_reporte`, `limite_operacion`, `limite_acumulado_ventana`, `umbral_reforzado`, `motivo_revelable` (bool, `RF-40`), `vigente_desde`, `vigente_hasta` | `(jurisdiccion_id, version)` | 1→N `Corredor` · 1→N `Giro`. **Versionada**: el giro congela la versión que obedeció, porque `RNF-03` exige calcular por giro y no por política global |
+| **Corredor** · `BD corredores y reguladores` | `corredor_id`, `jurisdiccion_origen_id`(FK), `jurisdiccion_destino_id`(FK), `pais_destino` (**uno por giro**, `RF-04`), `habilitado`, `incompatibilidad` (`RF-16`), `rechazado_en_destino` (bool, `RF-23`), `monedas_destino` (**más de una en la tabla**, `RNF-14`), `plazo_devolucion` (`RF-73`), `duracion_maxima_retencion` (`RF-96`), `plazo_aviso_retencion` (`RF-115`), `disponible_desde_offset` (`RF-77`), `motivo_no_atendible` (`RF-19`) | `corredor_id` | N→2 `Jurisdicción`. Es la entidad que hace que `RF-15` aplique **las dos**, `RF-16` rechace en vez de elegir y `RF-23` no cree en origen lo que el regulador de destino ya rechazó. **La tabla tiene más de una jurisdicción de origen y más de una moneda destino desde la primera fila**, y eso es `RNF-12` y `RNF-14` escritos como forma de tabla y no como intención: ninguna columna del modelo supone un solo país de origen ni una sola moneda de destino. Los cuatro plazos que `RF-73`, `RF-96`, `RF-115` y `RF-77` obligan a informar antes del efectivo se copian de acá al giro al crearlo, y por eso viven en las dos tablas |
+| **Aviso enviado** · `BD auditoría` | `aviso_id`, `secuencia`, `giro_id`(FK, **nulo solo para el aviso de cierre de caja**), `caja_id`(FK, nulo salvo ese), `destinatario_ref`(FK, nulo cuando el destinatario es un agente), `agente_id`(FK, nulo salvo entonces), `rol` ∈ {`emisor`,`receptor`,**`agente`**}, `tipo` (uno de los **veintidós**, y el tipo decide el texto tanto como el destinatario: **al emisor por su canal**, `RF-14`, `RF-51`, `RF-60`, `RF-65`, `RF-67`, `RF-116`, `RF-127`; **al receptor por su canal**, `RF-25`, `RF-37`, `RF-41`, **`RF-69`**, `RF-75`, `RF-106`, `RF-108`, `RF-109`, `RF-120`, `RF-121`, `RF-124`; **al emisor en el mostrador, antes del efectivo**, `RF-136` y `RF-142`; **al agente**, `RF-104` y `RF-141`), `canal` ∈ {`llamada`,`sms`,`mostrador`}, `telefono_token`, `enviado_en`, `texto_hash` (**qué se dijo**, no solo que se llamó), `acuse`, `acuse_operador_id` (el identificador que devuelve el operador del canal), `llego_en` (**`RF-131`**: cuándo el canal reportó la llegada, nulo si no la reporta), `resultado` ∈ {`entregado`,`no_entregado`,`sin_acuse`}, `intentos`, `resumen_contenido`, `hash_anterior` | `aviso_id`; `UNIQUE(giro_id, caja_id, tipo, destinatario_ref, agente_id)` | N→1 `Giro` · N→1 `Caja del punto` · N→1 `Agente`. `telefono_token` y no el número: la constancia de `RF-98` tiene que sobrevivir a la supresión del contacto, y sobrevive porque no lo contiene. **Tres ítems y no uno viven en esta fila:** `RF-98` conserva la constancia, `RF-131` registra **si llegó** cuando el canal lo reporta, y `RF-132` la lee para **tratar como no avisado a quien no tenga constancia de que llegó**. Eso le da por fin lector a `resultado`, que hasta esta ronda no lo tenía: quien lo consulta es la regla de `RF-132`, y lo que hace con él es reencolar el aviso y **no dar por cumplida** ninguna obligación que dependa de haber avisado —el plazo de `RF-67`, la oferta de `RF-116`, la mala noticia de `RF-108`—. `texto_hash` prueba qué se dijo, `acuse_operador_id` lo prueba **con un tercero**, y `llego_en` separa *entregado* de *despachado*. **Y `RF-69` está en la lista porque `RF-98` dice *cada* aviso:** la pregunta del desafío viaja por el canal del receptor igual que las otras diez, y faltaba — un aviso sin constancia es exactamente el que Elena podría negar |
+| **Declaración de diferencia del receptor** · `BD giros` | `declaracion_id`, `giro_id`(FK), `pago_id`(FK), `monto_informado`, `monto_declarado_recibido`, `moneda`, `declarada_en`, `canal` ∈ {`llamada`,`sms`} (**`RF-90`**: se declara **fuera del mostrador**, no en él), `identificacion_declarante_id`(FK a `Verificación de identidad`, **NOT NULL**, `RF-126`), `telefono_token_origen`, `comprobada_en` (`RF-59` repone *toda diferencia **comprobada***, así que la reposición cuelga de esta fecha y no de `declarada_en`), `punto_atribuido_id`(FK, el punto donde se pagó, `RF-143`), `reposicion_movimiento_id`(FK, `RF-59`), `descuento_id`(FK, nulo hasta que `RF-143` lo origina), `identidad_operario_id`(FK, el del pago), `estado` ∈ {`declarada`,`comprobada`,`desestimada`}, `correccion_movimiento_id`(FK) | `declaracion_id` | N→1 `Pago` · N→1 `Punto de atención` · 1→0..1 `Descuento por diferencia` · N→1 `Verificación de identidad`. **La declaración ya no entra por el mostrador:** `RF-90` la deja hacer por llamada o mensaje de texto, que es lo que la vuelve una voz de Elena y no una nota de Kevin — el punto atribuido es el del pago y el operario registrado es aquel **sobre el que** se declara, así que hacerla pasar por él era pedirle que se acusara solo. `identificacion_declarante_id` es `RF-126` escrito como restricción: sin una verificación que diga que quien llama es el receptor designado, la fila no se admite. Y `RF-59` repone a quien le faltó —al emisor o al receptor— **toda diferencia comprobada**; `RF-143` es lo que después la descuenta al agente, y son dos columnas distintas porque son dos ítems distintos |
+| **Reporte a la autoridad** · `BD auditoría` + archivo plano | `reporte_id`, `giro_id`(FK), `autoridad`, `lado` ∈ {`origen` (`RF-17`),`destino` (`RF-139`)}, `jurisdiccion_id`(FK), `umbral_aplicado`, `base_del_umbral`=`giro_completo` (`RF-22`), `exige_fecha_nacimiento` (bool: es el único predicado que autoriza a leer `fecha_nacimiento_cif`, `RF-140`), `enviado_en`, `acuse`, `archivo_uri`, `hash_anterior` | `reporte_id`; `UNIQUE(giro_id, lado)` | N→1 `Giro`. **`lado` existe porque son dos ítems y dos umbrales:** `RF-17` reporta a la autoridad de origen y `RF-139` a la del país de destino, cada una con el umbral de su jurisdicción, así que un mismo giro puede producir dos filas y nunca dos por el mismo lado. **No tiene ninguna relación hacia `Retención` ni hacia el estado que ve el emisor**, y esa ausencia es la garantía de que su existencia no se deduce |
+| **Traza de auditoría** · `BD auditoría` | `traza_id`, `secuencia`, `giro_id`(FK), `tipo_acto` (incluidas las **lecturas** de identidad, `RNF-04`), `identidad_autor_id`(FK), `rol`, `punto_id`(FK), `entidad_objetivo`, `id_objetivo`, `valores_relevantes` (documento con el valor que se vio, no un puntero), `ocurrido_en`, `registrado_en`, `conservar_hasta`, `hash_anterior` | `traza_id` | N→1 `Giro`. Crece con las lecturas: cada consulta de Kevin sobre un expediente es una fila |
+| **Supresión** · `BD auditoría`, ejecuta sobre `BD identidad` y el almacenamiento de objetos | `supresion_id`, `solicitante_ref`(FK), `rol_declarante`, `solicitada_en`, `alcance` (lista de campos y objetos), `ejecutada_en`, `campos_borrados`, `objetos_criptoborrados`, `conservado_por_regla` (qué **no** se borró y qué ítem lo obliga), `identidad_ejecutor_id`(FK), `resultado`, `hash_anterior` | `supresion_id` | N→1 `Emisor` o `Receptor`. Es el acto que **demuestra** el borrado, y por eso no puede vivir en la base que borra |
+| **Clave de idempotencia** · `BD intentos` | `clave`, `operacion` ∈ {`crear`,`pagar`,`cancelar`,`devolver`,`liberar`,`rehacer`}, `punto_id`(FK), `giro_id`(FK, nulo hasta que existe), `huella_contenido`, `estado`, `resultado_serializado`, `creada_en`, `expira_en` (TTL) | `clave` | 1→0..1 `Giro`. **Un reintento con la misma clave y distinta `huella_contenido` es un conflicto y no una operación nueva** — es lo único que impide que un corte convierta un giro en dos. `rehacer` está en el enum porque `RF-117` **crea un giro**: sin él, el reintento del mostrador tras un corte le deja a Rosa dos giros donde había uno, que es el mismo defecto de `RF-43` con otro nombre. Lo que **no** está acá, y este documento lo declara explícitamente porque `L` le asigna al `Idempotencia Service` cosas que esta tabla no puede sostener: **ni el giro interrumpido de `RF-42` ni el efectivo en custodia de `RF-118`**. Los dos exigen *un estado único que el operario puede leer y retomar*, y esta fila caduca por `expira_en`. El de `RF-42` vive en `Giro.estado`; el de `RF-118` vive en `Recepción de efectivo en custodia` y se cierra por `RF-138` **devolviendo el dinero**, no dejándolo expirar. La prohibición sigue siendo la correcta después de esta ronda, y `RF-138` la refuerza en vez de aflojarla: si la custodia colgara de un TTL, el vencimiento de `RF-138` borraría la fila en vez de abrir la devolución |
 
 ## 2. Elección de motor por entidad
-
-| Entidad | Necesidad dominante | Motor | Por qué | Decisión |
-|---|---|---|---|---|
-| — | — | — | — | — |
 
 La elección es **por entidad**, no global — el material lo hace así en su ejemplo, con NoSQL para
 imágenes y SQL para metadata. El criterio no es la preferencia sino qué garantía necesita cada dato:
 integridad transaccional, capacidad de agregar sin bloquear, o volumen barato de solo escritura.
+**El dinero y la traza no toleran lo mismo que un historial de avisos, y por eso no comparten
+motor.**
+
+| Entidad | Necesidad dominante | Motor | Por qué | Decisión |
+|---|---|---|---|---|
+| `Giro`, `Pago`, `Devolución`, `Prescripción`, `Código de seguimiento`, `Declaración de diferencia del receptor`, `Acumulado del emisor`, `Oferta de punto alternativo`, `Recepción de efectivo en custodia`, `Acción ofrecible` | Restricciones de unicidad y transacción sobre varias filas | **Relacional** — `BD giros` | `RNF-05` y `RNF-13` son `UNIQUE(giro_id)` sobre `Pago` y sobre `Devolución` más su exclusión mutua. Ningún motor que resuelva conflictos «el último gana» puede sostener un invariante que dice *ninguno, en ningún punto y en ningún momento*: la unicidad tiene que ser del motor, no de la aplicación | **Relacional, con las restricciones declaradas en el esquema** — a las tres de siempre se suman `UNIQUE(codigo_hmac)`, la oferta única viva por giro (`RF-105`), la custodia que no cierra sin asiento (`RF-118`) y la acción vigente por clase de estado (`RF-39`) |
+| `Movimiento contable`, `Liquidación con el agente` | Suma que cuadra y valor anterior que no desaparece | **Relacional en modo append-only** (`INSERT` únicamente; sin `UPDATE` ni `DELETE` concedidos al servicio) — `BD contable` | `RNF-07` es una restricción aritmética por asiento —`SUM(debe) − SUM(haber) = 0`— y eso pide transacción. `BR-13` y `RF-56` prohíben corregir borrando: la corrección es un movimiento **nuevo** con `compensa_movimiento_id`. Un motor documental daría el `INSERT` barato y no daría el asiento que cuadra | **Relacional append-only, con encadenamiento `hash_anterior` por partición de giro** |
+| `Traza de auditoría`, `Segunda autorización`, `Reporte a la autoridad` | Escritura masiva que nunca se modifica y casi nunca se lee | **Append-only encadenado, particionado por fecha** — `BD auditoría` | `RNF-03` dice *«ningún acto registrado se modifica ni se borra, cualquiera sea quien lo pida»* y `RF-54` le exige autor. `RNF-04` la hace crecer con las **lecturas**, así que el volumen es de escritura pura y el patrón de consulta es por giro y por rango de fechas. Un relacional mutable no da la garantía; un almacén de solo-agregar con encadenamiento la da y además la vuelve comprobable | **Append-only, sin `UPDATE` posible ni para el administrador; conservación por partición, con `conservar_hasta` por fila** |
+| `Aviso enviado` | Volumen alto, valor probatorio bajo, retención corta | **Append-only barato, en la misma `BD auditoría` pero en su propia partición con retención propia** | `RF-98` exige constancia, no exige inalterabilidad de asiento: el aviso prueba que se avisó, no mueve dinero. Ponerlo en la partición del asiento le pagaría a un SMS el precio de conservación de `RF-18` durante cinco años. **Este es el caso que muestra por qué la elección es por entidad: mismo motor, distinta retención, distinta partición** | **Append-only, partición separada, purga al cerrar el giro y sus plazos** |
+| `Cotización` | Serie temporal fechada, escritura durable, lectura por giro y análisis por rango | **Append-only fechado, con lectura columnar para el análisis** — `BD cotizaciones` | `RF-07` obliga a producirla y fecharla y `RF-06` a no recalcularla: es un hecho con momento, no un valor que se actualiza. La lectura del camino crítico es puntual por `giro_id`; la que dimensiona el margen y la diferencia de cambio es un barrido por par de monedas y rango, que es exactamente donde un formato columnar paga | **Append-only fechado; las no congeladas caducan por `vence_en` y no se conservan** |
+| `Emisor`, `Receptor`, `Identidad de actor`, `Verificación de identidad` | Cifrado por columna, control de acceso propio y **borrado selectivo de fila** | **Relacional con cifrado por columna y llave por corredor** — `BD identidad` | `RNF-01` exige que queden ilegibles para quien administra la infraestructura, `RNF-04` que todo acceso deje traza, y `RF-81` que se pueda **borrar** — que es la única entidad del modelo de la que eso se dice. Un motor append-only aquí sería un defecto: haría inejecutable el derecho de supresión | **Relacional, borrable, con la llave fuera del motor** |
+| `Resultado de tamizaje`, `Caso de cumplimiento` | Payload heterogéneo de un tercero, guardado tal como llegó | **Documental**, dentro de `BD cumplimiento` | `RF-26` y `RF-119` contrastan a las dos puntas antes del efectivo, `RF-27` decide contra las listas **vigentes al momento de autorizar el pago** y `RF-28` separa coincidencia exacta de homonimia: hay que guardar el valor que se vio, con su lista y su versión, y el formato lo fija OFAC, ONU o la UE, no nosotros. Un esquema fijo obliga a normalizar la respuesta de un tercero, y normalizar es perder justo lo que la auditoría vendría a mirar | **Documental para la evidencia; relacional para el estado del caso y su plazo, en la misma base** |
+| `Retención`, `Acumulado de cobros del receptor` | Plazo que vence y contador por identidad | **Relacional** — `BD cumplimiento` | `RF-31` le pone plazo a la retención y `RF-32` la termina; `RF-93` cuenta los cobros por identidad de receptor y retiene al superarse la ventana. Las dos son consultas por clave con una fecha o un número, y las dos deciden si el dinero sale: no toleran una lectura desactualizada | **Relacional, sin caché** |
+| `Desafío` | Comparar sin poder leer, con contador de intentos y caducidad | **Clave-valor con llave propia y TTL, en base separada** — `BD desafíos` | `RNF-17` exige ilegibilidad frente a quien administra la infraestructura y `RF-12` frente a quien atiende. Vivir como columna de `BD giros` lo pondría bajo el mismo administrador que el giro; `L` ya lo dibuja como base aparte por esta razón. El acceso es siempre por `giro_id`, nunca por barrido, así que no hace falta un relacional | **Clave-valor, base separada, llave en el módulo de claves, TTL igual a `giro.prescribe_en` (`RF-83`)** |
+| `Clave de idempotencia` | Escritura antes de mover dinero, lectura por clave, muerte por TTL | **Clave-valor durable con TTL** — `BD intentos` | `RF-43` y `RF-44` obligan a que el reintento sea la misma operación, y para eso la clave tiene que persistirse **antes** del primer efecto. Es la única entidad que puede desaparecer sola sin romper nada: no la reclama ningún regulador. Durable y no en memoria, porque una caché perdida convierte un reintento en un giro nuevo | **Clave-valor durable, TTL corto, conflicto explícito ante misma clave y distinto contenido** |
+| `Punto de atención`, `Agente`, `Caja del punto`, `Descuento por diferencia` | Lectura muy frecuente del catálogo, escritura transaccional del saldo, y una restricción de orden entre dos filas | **Relacional** — `BD puntos de atención y efectivo` | `RF-95` descuenta el efectivo del punto **en cada pago y en cada devolución, sin esperar al cierre**: es un saldo que se decrementa bajo concurrencia y decide si Elena cobra. `RF-92` lo lee antes de habilitar cada pago o devolución. Y `RF-104` es una restricción que solo un relacional declara: **ningún descuento entra en una liquidación con `informado_al_agente_en` nulo**, que es «se le informó antes» escrito como `CHECK` y no como orden de ejecución. El catálogo (`RF-63`, `RF-91`) sí se cachea; el saldo no, y por eso están en tablas distintas de la misma base | **Relacional; catálogo cacheable, saldo transaccional** |
+| `Jurisdicción`, `Corredor` | Volumen mínimo, lectura en cada operación, **historial de versiones** | **Relacional versionado** — `BD corredores y reguladores` | `RF-15` aplica las dos, `RF-18` toma el plazo más largo y `RF-31` el más estricto: son constantes que cambian por acto del regulador y de las que el giro tiene que recordar **qué versión obedeció**. Sin `version` en la clave, una norma nueva reescribiría retroactivamente el plazo de giros ya conservados — que es lo que `RNF-03` prohíbe al pedir el cálculo por giro | **Relacional versionado, `(jurisdiccion_id, version)` como clave, cacheable por versión** |
+| `Supresión` | Prueba de un borrado, que no puede vivir donde se borra | **Append-only** — `BD auditoría` | `RF-81` tiene que ser demostrable ante quien lo pidió y defendible ante el regulador, y una constancia de borrado guardada en la base borrada no prueba nada | **Append-only, con el alcance y lo conservado escritos en la propia fila** |
+
+**Lo que este reparto deja dicho de una vez:** ninguna base guarda a la vez el secreto y el dato que
+el secreto protege. El código vive en `BD giros` como verificador y su llave no; la respuesta del
+desafío vive en `BD desafíos` y ni siquiera comparte administrador; el documento vive en
+`BD identidad` cifrado y su llave está fuera del motor. Un administrador con acceso total a una
+cualquiera de las diez bases no reconstruye ninguno de los tres — y del código tampoco lo reconstruye quien atiende el mostrador, que es el segundo lector que `RNF-15` nombra. Eso es `RNF-01`, `RNF-15` y
+`RNF-17` cumplidos por la forma de las tablas.
 
 ## 3. Otros almacenamientos
 
 | Necesidad | Qué guarda | Opción | Por qué | Decisión |
 |---|---|---|---|---|
-| Almacenamiento de objetos | Binarios de identidad, evidencia adjunta de un caso | — | — | — |
-| Caché | — | — | — | — |
-| Sistema de archivos distribuido | — | — | — | — |
-| Archivos planos / exportación | Reportes a la autoridad, cierre de caja de cada punto de pago | — | — | — |
-| Almacén local del punto de pago | Lo que el mostrador tiene que sostener sin conexión: las autorizaciones ya bajadas, los pagos hechos y no informados, y el efectivo contado | — | — | — |
+| Almacenamiento de objetos | Binarios de identidad —la evidencia que `RF-80` obliga a conservar de emisor y receptor—, evidencia adjunta de un caso | **Almacenamiento de objetos, un objeto por verificación, cifrado con una llave por giro**; en la fila queda `evidencia_uri`, `evidencia_hash` y `llave_objeto_id`, nunca el binario | Es la partida que domina el volumen —`RF-80` la captura **dos veces por giro**, en dos países— y la que casi nunca se lee: cientos de kilobytes escritos una vez y consultados solo por auditoría o por un caso. Meterla en la fila haría lento todo lo que sí se consulta. Y una llave por giro es lo que hace ejecutable a `RF-81`: destruirla vuelve el objeto irrecuperable sin tocar el asiento que lo referencia | **Objetos, cifrado por objeto con llave por giro; el hash queda en la fila para poder demostrar que el binario no cambió incluso después de destruirlo** |
+| Caché | El catálogo de puntos de atención que `RF-63` le ofrece al emisor y que `RF-91` usa para proponer otro; las jurisdicciones y corredores de `BD corredores y reguladores`, **cacheados por `version`** | **Caché en memoria, con clave que incluye la versión del dato** | Son los dos únicos datos del sistema que se leen en cada operación, cambian por acto administrativo y **no deciden si el dinero sale**. Cachear por versión hace que una norma nueva invalide la entrada por cambio de clave, en vez de por expiración | **Se cachea el catálogo y la norma. Nada más** |
+| Caché — lo que **no** se cachea, y es la decisión que importa | Estado del giro (`RF-52`, `RF-53`, `RF-66`), saldo de la caja del punto (`RF-92`, `RF-95`), resultado de tamizaje (`RF-27`), efectivo del corredor (`RF-20`), retención y su plazo (`RF-31`), verificador del código y del desafío | **Ninguna. Lectura directa del motor** | Cachear es servir un dato que puede estar viejo, y `RNF-06` declara imposible que dos lugares del sistema afirmen a la vez que un giro está retenido y disponible para cobro. Una caché **es** un segundo lugar que afirma. `RF-27` es todavía más explícito: contrasta contra las listas **vigentes al momento de autorizar el pago**, no contra las que estaban vigentes cuando se llenó la caché | **Prohibido por diseño, no por configuración: estos datos no tienen ruta de lectura cacheada** |
+| Sistema de archivos distribuido | Archivo frío: binarios de identidad y particiones de traza cuyo giro ya cerró pero cuyo `conservar_hasta` sigue corriendo; los lotes de re-tamizaje de `RF-97`, que barren todos los giros no pagados cuando cambia una lista | **Sistema de archivos distribuido, escritura por lote, lectura por barrido** | El plazo de `RF-18` —el más largo de los dos reguladores, con piso de cinco años— produce un cuerpo de datos que hay que conservar y casi nunca leer, y que si se deja en el motor caliente paga precio de disponibilidad por nada. `RF-97`, en cambio, necesita justo lo contrario: leer **todo** de una vez, que es donde un barrido secuencial gana | **Archivo frío al vencer el plazo de prescripción del giro, no al pagarse — `RF-89` mantiene viva la devolución no retirada hasta ahí** |
+| Archivos planos / exportación | Reportes a la autoridad de origen (`RF-17`), liquidación con cada agente (`RF-24`) | **Archivo plano firmado por corrida, con su `acuse` y su `hash` guardados en `BD auditoría`** | Los dos salen del sistema hacia alguien que no es SendIt y que responde con un acuse: el formato lo fija el receptor —FinCEN, SEPBLAC, UIF-Perú, o el contrato con el agente— y no nosotros. Lo que se modela acá no es el archivo sino **la prueba de haberlo entregado**: `reporte_id`, `enviado_en`, `acuse`, `archivo_uri`. Un reporte no entregado es incumplimiento regulatorio, no un mensaje perdido | **El archivo vive en el almacenamiento de objetos; la constancia y el acuse en `BD auditoría`** |
+| Almacén local del punto de atención | Lo que el mostrador tiene que sostener sin conexión: el arrendamiento vivo que `D`(c) le emitió antes de caerse, los pagos hechos y no informados, lo interrumpido que `RF-42` y `RF-118` obligan a poder retomar, el efectivo declarado al abrir y al cerrar (`RF-76`, `RF-92`) y —si la comparación del desafío corriera ahí— algo derivado de una respuesta que `RNF-17` prohíbe que sea legible en el local de un tercero | **Base embebida en el equipo del punto, cifrada en reposo con llave del dispositivo, con dos tablas y nada más: `arrendamiento_vigente` (un giro, un punto, con `vence_en` corto y no renovable sin línea) y `hecho_local_pendiente` (append-only, se vacía al sincronizar)** | La lista de estados prohibidos que `RNF-05`, `RNF-06` y `RNF-13` vuelven imposibles —pagado dos veces, retenido y disponible a la vez, devuelto y cobrado a la vez— no se puede bajar completa al local: una retención nace en el centro mientras el punto está caído. Por eso `D`(c) no baja «autorizaciones» abiertas sino **exclusividad sobre un giro concreto, obtenida solo en línea**: sin arrendamiento vivo no hay pago que sostener. `RF-100` lo cierra sin margen: *«el sistema impedirá que un punto sin conexión autorice un pago que no puede comprobar contra el centro»*. **Del desafío no baja nada al local — ni el verificador, ni la pregunta, ni el contador—, y el sobre de `RF-114` tampoco se abre acá: se encola sellado y sube tal cual** | **Sin línea no se paga: se retoma lo pendiente, se declara caja y se encolan hechos. `RF-69` no se ejerce, y los hechos locales suben como filas nuevas, nunca como estados que pisan** |
 
 **Un aviso sobre la caché en este dominio.** Cachear es servir un dato que puede estar viejo. El
-monto que Rosa vio, el estado de un envío retenido y el resultado de un tamizaje son exactamente los
-datos que no toleran estar viejos, y son los que más se consultan. Lo que se cachee y lo que no se
-decide aquí y hay que justificarlo por dato, no por capa.
+monto que Rosa vio, el estado de un giro retenido que `RF-66` le muestra y el resultado de un
+tamizaje son exactamente los datos que no toleran estar viejos, y son los que más se consultan. Por
+eso la tabla de arriba lleva **dos filas de caché y no una**: la que dice qué se cachea y la que dice
+qué no, con su ítem cada una. Justificar la caché por capa —«las lecturas van por caché»— habría
+metido el estado del giro adentro sin que nadie lo decidiera, y `RNF-06` no admite ese segundo lugar
+que afirma.
 
 ---
 
@@ -97,106 +199,376 @@ decide aquí y hay que justificarlo por dato, no por capa.
 
 | Dato | ¿Se guarda? | En claro / cifrado / tokenizado / hash / no se guarda | Quién puede leerlo | Bajo qué condición | Por qué así |
 |---|---|---|---|---|---|
-| Documento de identidad del remitente | — | — | — | — | — |
-| Imagen del documento | — | — | — | — | — |
-| Documento de identidad del destinatario | — | — | — | — | — |
-| Instrumento de pago de Rosa | — | — | — | — | — |
-| Domicilio | — | — | — | — | — |
-| Teléfono de Elena | — | — | — | — | — |
-| Resultado de tamizaje y su coincidencia | — | — | — | — | — |
-| Existencia de un reporte a la autoridad | — | — | — | — | — |
+| Documento de identidad del emisor | Sí, **partido en dos columnas** | `token_documento` tokenizado (HMAC determinista, llave en el módulo) **y** `documento_cif` cifrado con llave por corredor | El token: `Limits Service` y `Cobros del Receptor Service`, sin descifrar nada. El número: solo `Identity Service`, y solo al verificar | Con `giro_id` de la operación que se está atendiendo, y dejando fila en `Traza de auditoría` | Contar límites *sobre la identidad del emisor* (`RF-10`) exige reconocer que dos giros son de la misma persona; **no exige leer su documento**. Partirlo en token y cifrado es lo que permite lo primero sin conceder lo segundo, y es lo que hace que `RNF-01` se cumpla contra quien administra la infraestructura y no solo contra quien roba el disco |
+| Imagen del documento (`RF-80`) | Sí | En almacenamiento de objetos, **cifrada con llave por giro**; en la fila solo `evidencia_uri`, `evidencia_hash` y `llave_objeto_id` | `Identity Service` al verificar; el rol de cumplimiento sobre un caso abierto | Con caso o verificación en curso, y con traza obligatoria (`RNF-04`) | Es el dato voluminoso, el que domina el cálculo 2 de `E` y el que `RF-81` puede tener que borrar. Llave por giro convierte el borrado en **destrucción de llave**: instantáneo, demostrable, y sin tocar la fila que lo referencia |
+| Documento de identidad del receptor (`RF-85`, `RF-86`) | Sí, igual que el del emisor | Tokenizado + cifrado, con `declarante`=`receptor` y `punto_captura_id` | Igual que arriba, más `Payout Service` para comparar titularidad | Al pagar, y solo sobre el giro que se paga (`RF-57`) | `RF-84` obliga a que **el sistema** decida qué diferencia de escritura cuenta como coincidencia: eso es una comparación entre `nombre_designado_cif` y `nombre_verificado_cif` con `regla_coincidencia_version` guardada, no un juicio del operario. Y `declarante` es lo que hace que `RF-81` sepa que este dato lo entregó Elena y no Rosa |
+| Código de seguimiento del giro (`RNF-15`, `RF-112`, `RF-113`, `RF-125`) | **No en claro, en ninguna base** | `codigo_hmac` con la llave en el módulo. **Ninguna columna guarda el código ni una parte de él en claro**, ni siquiera para localizarlo: se compara, no se busca | Nadie — **ni quien administra la infraestructura ni quien atiende el mostrador**, que son los dos lectores que `RNF-15` nombra. **Ningún servicio tiene ruta de lectura**: `Payout Service` compara y recibe un booleano | El mostrador teclea lo que el receptor trae **sobre un `giro_id` que ya tiene delante**, y el centro responde coincide / no coincide. **La salida hacia el emisor no pasa por ahí**: `RF-11` la manda por llamada o mensaje de texto al teléfono que el emisor registró, `entregado_por` guarda por dónde salió y nunca qué salió, y al operario `RF-125` le confirma **que salió**, sin mostrárselo | `RF-11` lo hace llegar solo al emisor y por su canal, `RF-94` prohíbe reemitirlo aun al emisor que lo perdió, `RF-112` prohíbe que quien atiende vuelva a consultarlo, `RF-113` que lo lea o lo transcriba y `RF-34` obliga a exigirlo para pagar. Juntas describen **comparación sin lectura**: una columna que guarda un verificador y ninguna que guarde el valor. **Y la búsqueda no necesita ninguna pista en claro.** El cobro siempre llega con el giro identificado —el receptor da su documento y el mostrador resuelve el giro por `receptor_ref` y `punto_id`—, así que la comparación es `WHERE giro_id = ?` y no un barrido. Cuando hace falta resolver *desde* el código, el módulo de claves calcula el HMAC completo del valor tecleado y se busca por `UNIQUE(codigo_hmac)`, que es un índice sobre el verificador entero: **un índice sobre el HMAC no filtra nada; un prefijo del valor sí**, y por eso el prefijo de cuatro caracteres que este documento traía **se retira** — ningún título lo autorizaba y contradecía la frase que lo precede y a `RNF-15` |
+| Pregunta del desafío (`RF-68`) | Sí | `pregunta_cif`, cifrada, en `BD desafíos` | `Desafío Service`, para entregársela al receptor por su canal (`RF-69`) | Solo cuando `Identity Service` reporta documento no vigente sobre ese giro | La pregunta **sí** se muestra —a Elena, por el canal de `RF-69`— y **no** al operario: `RF-12` y `RF-57` lo excluyen de los dos lados del desafío. Que pregunta y respuesta tengan trato distinto es la razón de que sean dos columnas y no un blob |
+| Respuesta del desafío (`RF-12`, `RF-101`, `RF-114`, `RNF-17`) | **No.** Se guarda un verificador, no el valor | `verificador` = HMAC con llave que **nunca sale del módulo de claves**, sobre la respuesta normalizada; `normalizacion_version` al lado | Nadie, en ninguna forma. El módulo compara y devuelve veredicto | **Elena la escribe ella misma** en el dispositivo orientado al cliente (`RF-114`: quien atiende no puede leerla **ni digitarla**), el punto transporta el sobre sellado y el centro responde correcta / incorrecta / intentos agotados | `RF-101` dice que el sistema **no la transmite a nadie, ni siquiera a quien registró la pregunta**: eso descarta cifrado reversible, porque una llave que descifra es una ruta de lectura. El detalle entero, con su precio, está abajo |
+| Intentos fallidos del desafío (`RF-82`) | Sí | `intentos_fallidos` en claro, pero **dentro de `BD desafíos`** y no de `BD giros` | El operario ve *«quedan N intentos»*, nunca la fila | Sobre la operación que atiende (`RF-57`) | Un contador es un dato **sobre** el secreto: puesto en la fila del giro, delata que hubo desafío y cuántas veces falló a cualquiera que consulte el giro. Puesto donde vive el secreto, hereda su control de acceso. `RF-103` lee ese contador para devolver el giro al agotarse |
+| Domicilio | **No se guarda** | Ninguna forma: no existe la columna | Nadie, porque no hay dato | Ninguna condición lo habilita | Ningún ítem del backlog lo pide: ni `RF-01`, ni `RF-80`, ni `RF-17`. Un dato personal que no tiene requerimiento que lo exija es superficie de ataque sin dueño y una fila más que `RF-81` tendría que borrar. Si un regulador de `RF-15` llegara a exigirlo, entra como **evidencia de identidad en el almacenamiento de objetos bajo su jurisdicción**, con el plazo de esa jurisdicción — no como columna del emisor, que lo volvería global |
+| Teléfono de Elena (`RF-25`, `RF-41`, `RF-121`) | Sí, **mientras haya avisos pendientes** | `telefono_cif` en `BD identidad`; en la constancia de `RF-98` solo `telefono_token` | `Notification Service` al despachar; nadie más | Con un aviso pendiente sobre un giro vivo | Es el caso claro de `RF-81` y el que prueba si el modelo sabe borrar sin romper nada: borrar `telefono_cif` deja intacta la constancia del aviso, porque la constancia guarda el token y no el número. Si el aviso guardara el número, o `RF-98` o `RF-81` tendría que ceder |
+| Resultado de tamizaje y su coincidencia | Sí, **con el valor que se vio** | `nombre_contrastado_cif` cifrado + `payload_proveedor` como documento, con `lista` y `version_lista` | Rol de cumplimiento sobre un caso; nunca el operario | Caso abierto, con traza | `RF-27` decide contra las listas **vigentes al momento de autorizar el pago**: guardar un puntero a la persona no reconstruye la decisión, porque el nombre pudo cambiar y la lista seguro cambió. Hay que guardar el valor congelado — y eso significa que el tamizaje **conserva un dato personal que `RF-81` no alcanza**, por la excepción de `RNF-03` |
+| Existencia de un reporte a la autoridad | Sí | Fila propia en `BD auditoría`, **sin relación alguna hacia `Retención` ni hacia el estado que ve el emisor** | Rol de cumplimiento y `Reporte Service` | Nunca por la ruta de `Consulta Service` ni la de `Punto de Atención Service` | La existencia no está declarada secreta por ningún ítem; lo que se oculta es el **motivo** (`RF-40`), y a Rosa se le sirve el hecho y la fecha (`RF-66`) sin el porqué. Que sean dos tablas con lectores distintos —`Retención` sin motivo, `Caso de cumplimiento` con él— es lo que impide deducir uno del otro. Ocultarlo en la interfaz no bastaba (tensión T2) |
+| Motivo de una retención y de su liberación (`RF-40`, `RF-87`) | Sí | `motivo_liberacion_cif` en `Caso de cumplimiento`, **no en `Retención`** | Solo el rol de cumplimiento | Sobre el caso que tiene asignado, con traza | `RF-33` reserva la liberación a ese rol y `RF-87` obliga a que deje motivo escrito; `RF-40` se lo omite al operario y `RF-30` prohíbe que lo toque quien atendió. Un motivo en la misma fila que el estado se filtra por cualquier consulta que traiga la fila entera |
+| Identidad de quien ejecutó cada acto (`RF-54`, `RNF-02`) | Sí, siempre | `identidad_autor_id` como clave foránea, nunca como texto | Auditoría y rol de cumplimiento | Sin condición: no hay acto anónimo | `RNF-02` exige comprobar que ninguna identidad aparece dos veces en la cadena del mismo giro. Eso es una comparación entre claves, y una traza que guarde *«Kevin R.»* no la puede hacer |
 
 **Por qué esto es decisión de modelo de datos y no de infraestructura.** Cifrar el disco protege
-contra el robo del disco. No protege contra la consulta legítima que no debía ocurrir — y el permiso
-de Kevin dice literalmente que **no debe ver el historial de un cliente más allá de la operación que
-lo justifique**. Esa garantía se cumple decidiendo dónde vive el dato, detrás de qué referencia, con
-qué llave y con qué registro de acceso: es la forma de las tablas, no la configuración del servidor.
+contra el robo del disco. No protege contra la consulta legítima que no debía ocurrir — y `RF-57`
+limita al operario **a los datos de la operación que está atendiendo**, mientras `RNF-01` exige que
+los datos de identidad queden ilegibles para quien administra la infraestructura, `RNF-15` lo mismo
+del código de seguimiento **y además frente a quien atiende el mostrador**, `RNF-17` lo mismo de la
+respuesta del desafío frente a quien administra la infraestructura —y frente a quien atiende, por
+`RF-12`, que es el ítem que lo dice— y `RNF-04` que todo
+acceso a datos de identidad deje autor, momento y giro. Esas garantías se cumplen decidiendo
+dónde vive el dato, detrás de qué referencia, con qué llave y con qué registro de acceso: es la
+forma de las tablas, no la configuración del servidor.
 
-Tres consecuencias concretas que la tabla tiene que resolver:
+Cuatro consecuencias concretas que la tabla tiene que resolver:
 
-- **Tokenizar cambia la forma de la entidad.** Si el instrumento de pago se guarda como referencia,
-  deja de ser un campo del remitente y pasa a ser una relación con otro almacén, con otra llave y
-  otro control de acceso. Eso no es un detalle: es una tabla menos y una frontera más.
-- **Hay un dato cuya sola existencia es secreta.** La de un reporte a la autoridad. El cumplimiento tiene
-  prohibido revelarla (tensión T2), y una tabla donde el reporte es una fila más deja que cualquiera
-  con acceso de lectura deduzca lo que la ley prohíbe decir. Ocultarlo en la interfaz no basta.
-- **El dato del destinatario lo captura el mostrador, y el mostrador es nuestro.** Elena se
-  identifica ante un punto de pago propio, sobre el sistema de SendIt: no hay tercero a quien
-  atribuirle la captura, la custodia ni el error. Eso cierra una pregunta y abre otras dos. Cierra:
-  la responsabilidad sobre ese dato es de SendIt entera. Abre: **qué se le exige a Elena lo decide
-  la regla que vive de este lado**, y quien la atiende no puede saltarla aunque sepa que es ella
-  —eso es T3, y con un punto propio se agrava en vez de aliviarse, porque la falta de margen ahora
-  es una decisión de diseño y no un límite ajeno—; y qué queda escrito en el mostrador mientras el
-  punto opera sin conexión, dónde vive mientras tanto y quién puede leerlo después. Rosa sigue
-  teniendo prohibido verlo.
+- **Sacar el documento y el código de la fila cambia la forma de la entidad.** `RNF-01` exige que
+  los datos de identidad queden ilegibles para quien administra la infraestructura, y `RNF-15` lo
+  mismo del código de seguimiento **frente a esa persona y frente a quien atiende el mostrador**. Si cualquiera de los dos se guarda detrás de una referencia —con
+  otra llave y otro control de acceso— deja de ser un campo del emisor o del giro y pasa a ser una
+  relación con otro almacén: una tabla más y una frontera más. Y el código tiene una exigencia que
+  el documento no tiene: `RF-11` lo hace llegar solo al emisor por su canal y `RF-34` obliga a exigirlo para
+  autorizar el pago, así que el modelo tiene que permitir **comprobarlo en el mostrador sin poder
+  mostrárselo a quien atiende** (`RNF-15`, `RF-113`) — comparación sin lectura, que es una forma de tabla y no una regla de
+  pantalla.
+- **La respuesta del desafío es un secreto compartido, y ahí está el problema de modelado más duro
+  de este paso.** `RF-68` obliga al emisor a registrarla al crear el giro y `RF-69` deja cobrar con
+  un documento no vigente a quien la responde, que es la única excepción a la vigencia que `RF-86`
+  admite: hay que guardarla, no es opcional. Y a la vez `RF-12` prohíbe mostrarla a quien atiende,
+  `RNF-17` a quien administra la infraestructura y `RF-101` prohíbe transmitirla a nadie **ni
+  siquiera a quien registró la pregunta**. Está resuelto abajo, con lo que se pierde escrito al
+  lado.
+- **Del reporte a la autoridad, lo que se oculta es el motivo, no el hecho.** Ningún ítem declara
+  secreta la existencia del reporte; lo que el backlog decide es más fino y hay que modelarlo así.
+  Al operario: `RF-39` obliga a que **todo giro rechazado, retenido o no pagable lleve asociada al
+  menos una acción ofrecible**, y a mostrársela; `RF-40` le **omite el motivo** cuando revelarlo está
+  prohibido. La diferencia no es de estilo, es de tabla: «mostrarle una acción» se puede servir desde
+  la pantalla, pero «asociarla a todo giro» de esos tres estados es una **clave foránea con cobertura
+  comprobable** —ningún estado de esa clase sin fila—, y además tiene que elegirse por clase de
+  estado y nunca por causa, o la acción filtraría el motivo que `RF-40` calla. Al emisor: `RF-66` le muestra **que** su giro
+  está retenido y **hasta qué fecha**, y `RF-67` le avisa cuando pasa a estarlo. Motivo y hecho son
+  entonces dos datos con lectores distintos —no una fila que se muestra u oculta entera—, y el
+  modelo tiene que permitir servir el segundo sin que el primero se deduzca. `RF-57` acota quién
+  llega al motivo y `RNF-04` obliga a que ese acceso quede trazado. Ocultarlo en la interfaz no
+  basta (tensión T2).
+- **El dato del receptor lo captura el mostrador de un agente, y ahí hay una frontera contable.**
+  Elena se identifica ante un punto de atención que corre el software de SendIt, pero el efectivo
+  que se le entrega sale de la caja del agente y SendIt se lo liquida después (`RF-24`): sí hay un
+  tercero, y la custodia del dato y la del dinero no caen del mismo lado. Eso cierra una cosa y abre
+  tres. Cierra: el registro es de SendIt, porque el software lo es. Abre: **qué se le exige a Elena
+  lo decide la regla de este lado** —código (`RF-34`), documento del titular designado (`RF-85`) y
+  vigencia salvo desafío respondido (`RF-86`, `RF-69`)—, y quien la atiende no puede saltarla aunque
+  sepa que es ella, ni decidir por su cuenta si el nombre coincide (`RF-84`)
+  —eso es T3, y con `RF-57` limitando lo que ve, tiene todavía menos margen—; **qué queda
+  escrito en el equipo del local del agente** mientras el punto opera sin conexión, dónde vive
+  mientras tanto y quién puede leerlo después; y **qué parte del asiento es del agente y cuál de
+  SendIt**, cuando la liquidación de `RF-24` y la conservación de `RF-18` piden cosas distintas del
+  mismo hecho. Qué de ese dato puede ver el emisor no lo decide ningún ítem todavía: ni se lo
+  concede ni se lo niega, y eso es un hueco para `R`, no una licencia para este paso.
+
+### El desafío: un secreto que se comprueba y no se lee
+
+Es el problema de modelado más interesante del paso porque las tres salidas obvias están cerradas por
+un ítem cada una, y hay que verlas cerradas antes de aceptar la cuarta.
+
+| Salida obvia | Qué la cierra |
+|---|---|
+| Guardar la respuesta en claro | `RNF-17` — la vuelve legible para quien administra `BD desafíos`, que es exactamente el lector que el invariante nombra |
+| Guardarla cifrada con llave del sistema | `RF-101` — *no transmitirá a nadie la respuesta*. Una llave que descifra **es** una ruta de lectura: quien la tiene reconstruye el valor, y el invariante de `RNF-17` no dice «difícil de leer», dice que el sistema puede comprobarla **sin poder mostrarla** |
+| No guardar nada | `RF-69` — sin nada guardado no hay contra qué comparar, y la única excepción a la vigencia del documento que `RF-86` admite deja de existir. Elena vuelve a quedarse sin cobrar, que es la tensión T3 sin resolver |
+
+**Lo que se guarda, entonces.** Un **verificador** y ninguna forma del valor:
+
+```
+Tabla: Desafío  ·  BD desafíos  ·  clave: giro_id
+Campos: giro_id, pregunta_cif, verificador, llave_id, normalizacion_version,
+        intentos_fallidos, intentos_max, caduca_en, estado
+```
+
+`verificador = HMAC(llave_del_módulo, normalizar(respuesta, normalizacion_version))`
+
+Cuatro decisiones de modelo, cada una contra su ítem, y ninguna es de infraestructura porque todas
+cambian qué columnas existen:
+
+1. **La llave nunca sale del módulo de claves, y la derivación corre dentro de él.** No es lo mismo
+   que un hash con sal guardado en la fila. El espacio de respuestas de este dominio es
+   diminuto —el nombre de un perro, el pueblo de la abuela, un apodo— así que un hash con sal
+   robado se rompe con un diccionario en una tarde. Con la llave adentro del módulo, quien copia
+   `BD desafíos` entera se lleva verificadores que no puede atacar sin el módulo, y el módulo no
+   responde «cuál es» sino «coincide». Eso es lo que hace verdadero el invariante de `RNF-17`
+   frente a **quien administra la infraestructura**, y no solo frente a quien roba el disco.
+2. **`normalizacion_version` es una columna, no una constante del código.** `RF-84` ya le quitó al
+   operario la decisión de qué diferencias de escritura cuentan como coincidencia sobre el nombre
+   del titular; acá vale igual, y la regla —minúsculas, sin tildes, sin puntuación, sin espacios en
+   los extremos— se congela **al crear el giro** y viaja en la fila. Sin esa columna, cambiar la
+   regla mañana invalidaría en silencio todos los verificadores vigentes y nadie podría saber
+   cuáles: no hay forma de recalcularlos, porque no hay dónde leer el valor original.
+3. **El contador vive en esta tabla y no en la del giro.** `RF-82` acota los intentos y `RF-103`
+   devuelve el giro al agotarlos, así que el contador decide sobre dinero; pero es un dato **sobre**
+   el secreto, y en la fila del giro delataría a cualquier lector que hubo desafío y cuántas veces
+   falló. Al mostrador le llega *«quedan N intentos»*, que es lo que `RF-57` le concede.
+4. **La comparación corre en el centro y devuelve un veredicto.** `RF-100` lo cierra sin margen:
+   un punto sin conexión no autoriza un pago que no puede comprobar contra el centro. Del desafío
+   **no baja nada al almacén local del punto** — ni verificador, ni pregunta, ni contador—, y por lo
+   tanto la salida de `RF-69` no existe mientras el punto está incomunicado. Es la respuesta de este
+   paso a `D`(f), y se apoya en un ítem P0, no en una preferencia.
+5. **Caducar es destruir, no marcar.** `RF-83` la caduca junto con el giro: al vencer, se borran
+   `verificador` y `pregunta_cif` y la fila queda con `estado = caducado` y su traza en
+   `BD auditoría`. Dejarla marcada e inservible mantendría el material atacable durante los cinco
+   años de `RF-18` para nada — el asiento no la necesita, y la sección 6 lo dice: la respuesta es el
+   único dato de este modelo cuyo plazo es **más corto** que todo lo demás.
+
+**Qué se pierde, que es la mitad de la respuesta.** Cinco cosas, y ninguna es recuperable después:
+
+- **No se puede corregir un error de tipeo.** Si Rosa escribió mal la respuesta en el mostrador,
+  nadie —ni ella, ni Kevin, ni SendIt— puede leerla para verificar qué pasó. La única salida es
+  agotar los intentos y devolver el giro (`RF-103`), que es una devolución causada por un error de
+  tipeo.
+- **La regla de normalización no se puede revisar sobre datos vivos.** Descubrir que `«Ancash»` y
+  `«Áncash»` deberían coincidir solo arregla los giros creados después: los vigentes conservan su
+  `normalizacion_version` y no hay forma de migrarlos.
+- **No hay analítica, ni detección de respuestas débiles, ni aviso al emisor de que eligió mal.**
+  El sistema no puede saber que la respuesta es `«1234»`, y por tanto no puede desaconsejarla.
+- **El módulo de claves se vuelve dependencia dura del camino de pago.** Si no responde, `RF-69` no
+  se puede ejercer y Elena con documento vencido no cobra. Es un tercer punto de falla junto a la
+  verificación documental y las listas, y `E`(escalar) tiene que contarlo como tal.
+- **La ilegibilidad es de ida.** Ningún requerimiento futuro que necesite leer una respuesta
+  —una disputa, una investigación, un pedido judicial— se va a poder cumplir sobre giros ya
+  creados. Eso es un costo aceptado, no un descuido: `RF-101` no admite excepción de lector.
 
 ---
 
 ## 5. Qué es inmutable y qué no
 
-El cumplimiento necesita que su decisión y la evidencia sobre la que la tomó **no se puedan editar** (`BR-15`). Su
-permiso lo dice: nunca debe borrar ni editar una decisión suya ya registrada. Su señal de éxito lo
-dice: un año después, la decisión, su momento, su evidencia y la versión de la lista contra la que
-se tomó siguen siendo recuperables y nadie pudo haberlas alterado.
+No hace falta invocar a nadie: lo exige el backlog y con ítems que se pueden contar. `RNF-03`
+declara que ningún acto registrado se modifica ni se borra, cualquiera sea quien lo pida —y que esa
+conservación prevalece sobre toda supresión—; `RF-54` ata cada acto a la identidad de
+quien lo ejecutó; `RF-33` reserva la liberación de un giro retenido al rol de cumplimiento y `RF-87`
+obliga a que toda liberación deje registrado su motivo —son dos ítems y dicen dos cosas, y hasta esta
+ronda este documento citaba el número del primero con el texto del segundo—;
+`RF-56` obliga a que la corrección de un giro pagado sea un movimiento **nuevo** y `RF-61` a que
+lleve la autorización de un segundo rol; y `RNF-03` conserva todo eso inalterable por el plazo más
+largo de los dos reguladores del giro, calculado **por giro y no por política global** (`BR-15`,
+`RF-18`).
 
 **Un modelo donde todo se actualiza en el sitio no puede darle eso.** Un `UPDATE` no deja rastro del
 valor anterior; una fila de estado que pasa de `retenido` a `liberado` no dice quién, cuándo, ni con
-qué a la vista. Y el problema es más agudo de lo que parece: se decidió mirando un dato que
-**después cambió** —una lista se actualizó, un patrón se movió—, así que guardar un puntero al dato
-no basta. Hay que guardar el valor que tenía en el momento de decidir.
+qué a la vista — y `RF-54` pide exactamente esas tres cosas. El problema es más agudo de lo que
+parece: se decide mirando un dato que **después cambia**, y el backlog lo asume explícitamente al
+obligar a contrastar al receptor contra las listas **vigentes al momento de autorizar el pago**
+(`RF-27`) y no contra las de la creación (`RF-26`). Guardar un puntero al dato no basta: hay que
+guardar el valor que tenía en el momento de decidir.
+
+**La frontera, en una frase:** *se agrega lo que describe un **acto**; se actualiza lo que describe
+un **estado derivado de esos actos**; y cuando los dos difieren, manda el acto.* Eso cierra `D`(a)
+desde este lado: existe libro de movimientos, y `giro.estado` es una **proyección** con
+`version_estado`, no la verdad.
 
 | Dato | ¿Se actualiza en el sitio o solo se agrega? | Quién lo exige | Decisión |
 |---|---|---|---|
-| Estado del envío | — | — | — |
-| Movimiento contable | — | — | — |
-| Decisión de cumplimiento | — | — | — |
-| Evidencia sobre la que se decidió | — | — | — |
-| Versión de la lista consultada | — | — | — |
-| Cotización emitida | — | — | — |
-| Datos de contacto del remitente | — | — | — |
+| Estado del giro | **Se actualiza** — es proyección | `RF-52`, `RF-53`, `RF-66`, `RNF-06` | Fila mutable en `BD giros` con `version_estado`, derivada de los hechos. Se puede reconstruir entera desde `BD contable` y `BD auditoría`, y **eso es lo que la hace segura de actualizar**: si se pierde o se corrompe, no se perdió nada |
+| Código de seguimiento | **Se agrega una vez y no se toca nunca más** — salvo el acuse que `RF-125` le muestra al operario | `RF-11`, `RF-94`, `RF-125`, `RNF-15` | `INSERT` al crear el giro, sin `UPDATE` concedido sobre `codigo_hmac`; `acuse_mostrado_al_operario_en` es la única columna que se escribe después, y no contiene nada del código. `RF-94` prohíbe reemitirlo aun al emisor que lo perdió, así que **no hay ninguna operación legítima que reescriba esa fila** |
+| Respuesta del desafío y su cuenta de intentos (`RF-82`, `RF-83`) | **Mixto, y es deliberado**: el verificador se agrega una vez; el contador se actualiza; la caducidad **destruye** | `RF-68`, `RF-82`, `RF-83`, `RF-103`, `RNF-17` | El verificador es un hecho (`INSERT` único); el contador es estado (`UPDATE`); la caducidad borra verificador y pregunta y deja `estado = caducado`. Es la única entidad del modelo donde borrar es lo correcto, y lo es porque `RF-83` le da plazo propio y ningún regulador la reclama |
+| Punto de atención donde se cobra (`RF-63`, `RF-91`) | **Dos campos, uno de cada clase** | `RF-63`, `RF-91`, `RF-105` | `punto_eleccion_id` se agrega al crear y solo cambia con respuesta del emisor —`RF-105` lo exige y cada cambio deja acto en `BD auditoría`—; `punto_pago_id` se escribe una vez, al pagar, y nunca se corrige. Un solo campo mutable habría borrado en silencio la elección de Rosa |
+| Estado de la devolución y su plazo (`RF-14`, `RF-89`) | **El estado se actualiza; el asiento que la origina se agrega** | `RF-47`, `RF-32`, `RF-50`, `RF-89`, `RNF-13` | `disponible_hasta` se fija una vez —igual a `giro.prescribe_en`— y no se prorroga; `estado` recorre disponible → retirada. El movimiento contable de la devolución es `INSERT` en `BD contable`, nunca un `UPDATE` que revierta el original |
+| Efectivo declarado por el punto al abrir y al cerrar (`RF-76`) | **Se agrega**: dos declaraciones por punto, jornada y turno | `RF-76`, `RF-92`, `RF-95` | `declarado_apertura` y `declarado_cierre` son hechos con autor y momento, y `UNIQUE(punto_id, jornada, turno)` impide redeclarar. `saldo_corriente` **sí** se actualiza —`RF-95` lo descuenta en **cada pago y cada devolución**— y su cuadre contra los movimientos del turno es lo que el `Cierre de Caja Job <EOD>` compara: si `declarado_cierre ≠ declarado_apertura − pagos − devoluciones`, ahí aparece `diferencia_cierre`. **Y esa cifra ya no muere en el trabajo que la calcula:** `RF-141` obliga a informársela al agente dueño del punto en cada cierre, así que el trabajo escribe la fila de `Aviso enviado` con `rol = agente` y `diferencia_informada_al_agente_en` la fecha. Un número que se calcula y no le llega a nadie no es un control, es un residuo |
+| Declaración de diferencia del receptor (`RF-90`, `RF-126`) | **Se agrega. Nunca se corrige ni se retira** | `RF-90`, `RF-126`, `RF-59`, `RF-143`, `RF-60` | Es la única versión de los hechos que no escribió el punto al que `RF-143` le descuenta la diferencia. Si se pudiera editar, la editaría quien la sufre o quien la causó — y por eso `RF-90` la hace entrar **por llamada o mensaje de texto** y no por el mostrador sobre el que se declara, con `RF-126` identificando antes al declarante como el receptor designado. Su comprobación y su resolución son otras filas —`comprobada_en`, `reposicion_movimiento_id`, `descuento_id`—, no un cambio de esta |
+| Efectivo recibido sin giro creado (`RF-118`, `RF-138`) | **Se agrega el hecho; se actualiza su estado, y vence hacia una devolución — nunca hacia la nada** | `RF-118`, `RF-138`, `RF-42`, `RF-79`, `RNF-07`, `BR-01` | La recepción es un hecho con asiento (`INSERT` en `BD contable`) y la custodia es su estado abierto: recorre `abierta` → `aplicada_al_giro` cuando el operario la retoma, o `abierta` → `devuelta` por cancelación **o por el vencimiento de `retomar_hasta`** que `RF-138` fija en `[ASSUMPTION: 72 horas]`. **La corrección de esta ronda es justamente ese vencimiento:** antes se declaraba que *no hay transición por vencimiento*, y el efecto era un pasivo de `BR-01` abierto para siempre — el dinero de Rosa quieto en un cajón sin fecha en que alguien tuviera que hacer algo. La transición por vencimiento **no borra la fila**: abre una `Devolución` con `causa = custodia_no_retomada` y su asiento. El efectivo de Rosa sigue sin poder dejar de existir por un TTL; ahora tampoco puede quedarse ahí para siempre |
+| Oferta de punto alternativo y su plazo (`RF-91`, `RF-116`, `RF-111`) | **Se agrega la oferta; su estado se actualiza una sola vez** | `RF-91`, `RF-105`, `RF-116`, `RF-111` | `plazo_comunicado` y `responde_hasta` se escriben al ofrecer y **no se prorrogan**: prorrogar es cambiar lo que se le informó al emisor después de habérselo informado. El estado va de `ofrecida` a `aceptada`, `rechazada` o `vencida`, y la transición a `vencida` la escribe el `Vencimiento Job` contra la fecha absoluta, no contra un cálculo |
+| Giro rehecho y su cotización (`RF-117`, `RF-134`, `RF-135`, `RF-123`) | **Se agrega un giro nuevo; no se reabre el cancelado** | `RF-117`, `RF-134`, `RF-135`, `RF-123`, `RF-110`, `RF-06` | Rehacer **no revive** el giro cancelado: `RF-117` crea otro con `rehecho_de_giro_id` apuntando al primero, `RF-134` copia la tasa congelada de su cotización —`giro_rehecho_id` en `Cotización`— y `RF-135` marca `comision_ya_cobrada` para que el asiento de comisión no se repita. Son tres ítems y tres columnas, porque el que partió el ítem original partió también sus efectos. Y `RF-123` obliga a que las filas de control se escriban **enteras otra vez**: tamizaje de las dos puntas, acumulados, segunda autorización si aplica. Reusar las del giro viejo sería tratar un giro nuevo como una continuación |
+| Movimiento contable | **Solo se agrega** | `RF-56`, `RF-61`, `RNF-07`, `RNF-03`, `BR-13` | Corregir el monto de un giro pagado es un movimiento **nuevo** con `compensa_movimiento_id` y con la autorización de un segundo rol. `hash_anterior` encadena la partición del giro, de modo que quitar una fila del medio se detecta sin comparar contra una copia |
+| Decisión de cumplimiento | **Se agrega** — cada transición es una fila | `RF-29`, `RF-33`, `RF-87`, `RF-30` | Un `UPDATE` de `retenido` a `liberado` no dice quién, ni cuándo, ni con qué a la vista, y `RF-87` obliga a las tres. La liberación lleva `liberado_por_identidad_id`, `liberado_en` y `motivo_liberacion_cif`, y `RF-30` obliga a que esa identidad sea distinta de la que atendió |
+| Evidencia sobre la que se decidió | **Se agrega, con el valor y no con el puntero** | `RF-26`, `RF-27`, `RF-28`, `RNF-03` | `nombre_contrastado_cif` y `payload_proveedor` guardan lo que se vio. Un puntero a `Receptor` no reconstruye la decisión: el nombre pudo cambiar y la persona pudo pedir supresión. **Este es el caso donde guardar el valor es la única forma de auditar** |
+| Versión de la lista consultada | **Se agrega** | `RF-27`, `RF-97` | `lista`, `version_lista` y `consultada_en` en cada fila de tamizaje. Sin ellos, `RF-97` no sabe qué giros re-tamizar cuando cambia una lista, y ninguna auditoría puede decir contra qué se aprobó lo que se aprobó |
+| Cotización emitida | **Se agrega. `RF-06` prohíbe el `UPDATE` por definición** | `RF-05`, `RF-06`, `RF-07`, `RNF-16` | Congelarla es ponerle `giro_id` y `congelada_en`, no reescribir la tasa. `RNF-16` —ninguna entrega difiere de la cifra que el emisor vio— solo es comprobable si esa cifra sigue existiendo tal cual al momento del pago |
+| Datos de contacto del emisor | **Se actualiza, y además se borra** | `RF-25`, `RF-75`, `RF-81` | Es el único dato de esta tabla del que `RF-81` dice *sí*. Se actualiza porque un teléfono cambia y los avisos pendientes tienen que llegar; se borra a pedido, y no rompe nada porque la constancia de `RF-98` guarda `telefono_token` y no el número |
+| Constancia de aviso enviado (`RF-98`, `RF-131`, `RF-132`) | **Se agrega, y con qué se dijo adentro; `llego_en` y `resultado` se actualizan cuando el canal reporta** | `RF-98`, `RF-131`, `RF-132`, `RF-121`, `RF-60` | Prueba que se avisó **y se opone a quien alegue lo contrario**: para eso la fila lleva `texto_hash`, `acuse_operador_id`, `llego_en` y `resultado`, y no solo `enviado_en`. `RF-131` es lo que escribe la llegada cuando el canal la reporta —lo único que se actualiza de esta fila, y por eso la partición es append-only para el hecho y mutable solo en ese par de columnas— y `RF-132` es su lector: **quien no tenga constancia de que el aviso llegó se trata como no avisado**, con lo que el aviso se reencola y ninguna obligación que dependa de haber avisado se da por cumplida. Un campo `avisado` en el giro se sobrescribiría con el aviso siguiente y no probaría ninguno de los veintidós; una fila sin acuse prueba que SendIt marcó el envío, que no es lo mismo que avisar |
+| Segunda autorización (`RF-13`, `RF-61`) | **Se agrega** | `RF-13`, `RF-61`, `RNF-02` | `BR-15` es explícita: *la segunda autorización solo es un control si después se puede probar quién autorizó qué*. Un booleano `autorizado` en el giro no prueba nada y no permite comprobar ninguna de las **dos** mitades de `RNF-02`: ni que ninguna identidad aparezca dos veces en la cadena del giro, ni que ninguna identidad que opere un mostrador **inicie** la corrección del monto de un giro pagado — la segunda se comprueba sobre `identidad_solicitante_id`, que solo existe si la autorización es una fila |
+| Traza de auditoría | **Solo se agrega, y ni el administrador tiene `UPDATE`** | `RF-54`, `RNF-03`, `RNF-04` | `RNF-03` dice *cualquiera sea quien lo pida*: eso es un privilegio que no se concede, no una política que se escribe. Y `RNF-04` la hace crecer con las **lecturas** |
+| Solicitud de supresión y su ejecución (`RF-81`) | **Se agrega** | `RF-81`, `RF-54`, `RNF-03` | El acto que demuestra el borrado no puede vivir en lo que se borra, ni poder editarse después. Guarda `alcance`, `campos_borrados`, `objetos_criptoborrados` y `conservado_por_regla` |
+| Acumulados del emisor y del receptor | **Se actualizan** — son proyecciones | `RF-09`, `RF-10`, `RF-93` | Contadores derivados de giros y pagos. Reconstruibles desde `BD giros` y `BD contable`, y por eso seguros de actualizar. El del receptor sobrevive a su supresión porque no contiene ningún atributo personal |
 
-**La pregunta de fondo, planteada y sin responder:** ¿el envío es una fila que cambia de estado, o
-una secuencia de hechos de la que el estado se deriva? Las dos formas soportan la aplicación de
-Rosa. Solo una soporta una auditoría. Y si conviven —hechos para lo que se audita, fila mutable
-para lo que se consulta— hay que decidir cuál manda cuando difieren, que es la misma pregunta que
-`D`(a) dejó abierta.
+**La pregunta de fondo, respondida:** el giro es **las dos cosas, y el orden entre ellas está
+decidido.** Los hechos —movimientos, autorizaciones, tamizajes, pagos, avisos— se agregan y son la
+verdad; `giro.estado` es una proyección que existe porque `RF-52`, `RF-53` y `RF-66` le deben a Rosa
+una consulta barata, y porque `RNF-11` mide la disponibilidad sobre crear y pagar y no sobre
+consultar. **Cuando difieren manda el hecho**, y la proyección se recalcula: es reconstruible entera
+desde `BD contable` y `BD auditoría`, y esa reconstruibilidad es lo único que autoriza a tener una
+fila mutable en un sistema que `RNF-03` obliga a conservar inalterable. La regla operativa es
+estrecha: **ningún servicio decide contra la proyección.** `Payout Service` no consulta
+`giro.estado` para autorizar un pago; consulta la ausencia de fila en `Pago` y en `Devolución` —las
+dos con `UNIQUE(giro_id)`— y la ausencia de `Retención` vigente. La proyección se lee para mostrar,
+nunca para permitir.
 
-**Y hay un tercer lector que no aparece en el material: el mostrador que estuvo sin conexión.** Una
-fila que cambia de estado no se fusiona con la que el punto trae al reconectar —una de las dos pisa
-a la otra y la que pierde desaparece sin dejar rastro—. Una secuencia de hechos sí se fusiona, al
-precio de admitir que dos hechos contradictorios sobre el mismo envío convivan en el registro hasta
-que alguien decida cuál vale. Cuál de esos dos precios se paga es `D`(c), y aquí se materializa en
-la forma de las tablas.
+**Y hay un tercer lector que no aparece en el material: el punto de atención que estuvo sin
+conexión.** Una fila que cambia de estado no se fusiona con la que el punto trae al reconectar —una
+de las dos pisa a la otra y la que pierde desaparece sin dejar rastro, que es lo que `RNF-03`
+prohíbe—. Por eso el almacén local **no sostiene estados: sostiene hechos**. `hecho_local_pendiente`
+es append-only y sube como filas nuevas al `Sync Service`, que las inserta en `BD contable` y
+`BD auditoría` con `ocurrido_en` (el reloj del punto) y `registrado_en` (el del centro) **separados**
+— dos columnas y no una, porque un pago hecho a las 10:40 en Huanta y registrado a las 17:05 es un
+solo hecho con dos momentos, y confundirlos hace irreconstruible el orden.
+
+El precio se paga y se nombra: **dos hechos contradictorios pueden convivir en el registro** —el
+pago que subió tarde y la devolución que el `Vencimiento Job` ya asentó—. `RNF-06` no tolera que esa
+convivencia sea **observable como estado**, y no lo es: la proyección no se recalcula hasta que la
+contradicción se resuelve, y mientras tanto el giro se muestra en un solo estado. `RNF-08` no tolera
+que resolverla dependa del operario, y no depende: `UNIQUE(giro_id)` sobre `Pago` y sobre
+`Devolución` hace que el segundo `INSERT` **falle en el motor**, y el hecho rechazado no se descarta
+sino que se asienta como movimiento de excepción con su contrapartida, que es lo que el
+`Cierre de Caja Job <EOD>` cuadra. Nadie tiene que contar nada. Eso materializa `D`(c) en la forma de
+las tablas: **la divergencia se detecta por restricción de unicidad, se acota por el vencimiento del
+arrendamiento exclusivo que `D`(c) emitió, y se salda como asiento.**
+
+**Y el estado intermedio tiene columna, y tiene terminador.** El pago cuya confirmación no llegó del
+punto al centro es `Pago.confirmacion = en_duda` (`RF-144`): una fila que ya existe —porque el
+`UNIQUE(giro_id)` la reservó— y que no afirma todavía que el dinero salió. `RF-146` es lo que la
+cierra: el estado **se resuelve contra el registro del centro** —el libro, y el diario del punto que
+sube al reconectar—, **sin intervención del operario**, hacia `resuelta_como_pagada` o
+`resuelta_como_no_pagada`, y cada resolución escribe su asiento. Por eso el enum no tiene ningún
+valor que nombre al operario: no es que no se le pregunte por cortesía, es que `RF-146` y `RNF-08`
+prohíben que su respuesta sea la fuente. Un estado sin terminador habría sido otro pasivo abierto,
+que es el mismo defecto que `RF-138` corrigió del lado de la custodia.
 
 ---
 
 ## 6. Retención
 
-Dos obligaciones reales caen sobre el mismo registro y **ninguna anula a la otra**: el cliente puede
-exigir que se borren sus datos, y la regulación obliga a conservar la operación durante años. Un
-modelo que solo sabe hacer una de las dos cosas incumple la otra.
+Dos obligaciones caen sobre el mismo registro y **ninguna anula a la otra**: el cliente puede exigir
+que se borren sus datos, y la regulación obliga a conservar la operación durante años — `RF-18` por
+el plazo más largo de los **dos** países que tocaron el giro y `RNF-03` calculado por giro y no por
+política global. **Las dos tienen ítem, y la asimetría que esta sección registraba ya no existe:**
+`RF-81` suprime a pedido los datos personales de quien los entregó, y le pone dos límites que son
+exactamente lo que el modelo tiene que poder ejecutar — **de nadie más**, así que hay que saber cuál
+de las dos personas de un giro entregó cada dato, cuando el receptor no es cliente y sus datos los
+capturó el mostrador; y **salvo los que el registro de actos debe conservar**, que es la frontera de
+`RNF-03`. Un derecho de supresión con excepción nombrada no se cumple con una política: se
+cumple si la fila del dato personal se puede borrar sin arrastrar el asiento, y no se cumple si no.
+Lo que sigue abierto no es si la obligación existe, ni **quién ejecuta cada plazo** —el
+`Vencimiento Job <diario>` que `L` dibuja, contra fechas absolutas y no contra cálculos— ni qué queda
+en pie después: las dos cosas se deciden al cierre de esta sección. Lo que sigue abierto es una sola
+cifra, y lleva su marca.
+
+La columna de plazo se apoya en el supuesto ya cerrado del backlog —*conservación = el plazo más
+largo de los dos reguladores del giro, con un piso de cinco años*—; si `E` lo reabre, esta tabla se
+rehace entera.
 
 | Dato | Plazo de conservación | ¿Se borra a pedido del cliente? | Qué lo obliga | Qué se rompe si se borra |
 |---|---|---|---|---|
-| Registro del envío | — | — | — | — |
-| Movimiento contable | — | — | — | — |
-| Imagen del documento de identidad | — | — | — | — |
-| Resultado de tamizaje | — | — | — | — |
-| Caso de cumplimiento | — | — | — | — |
-| Traza de auditoría | — | — | — | — |
-| Datos de contacto | — | — | — | — |
-| Cotizaciones no ejecutadas | — | — | — | — |
+| Registro del giro | El más largo de los dos reguladores, piso de 5 años | No mientras corra el plazo — es la operación, no el dato personal | `RF-18`, `RNF-03`, `BR-15` | El reporte a la autoridad (`RF-17`) queda sin respaldo y el giro deja de ser demostrable ante cualquiera de los dos reguladores |
+| Movimiento contable | El del giro que lo originó | No — `RF-81` lo excluye por vía de `RNF-03` | `RNF-03`, `RNF-07`, `BR-13` | La prueba de que la suma cuadra: sin asiento no se demuestra `RNF-07`, y el pasivo de `BR-01` queda sin contrapartida |
+| Imagen del documento de identidad (`RF-80`) | El del giro. Es el dato voluminoso y el primer candidato a archivo frío al vencer la prescripción | **Sí, a pedido** —es dato personal de quien lo entregó— y **también al vencer `conservar_hasta`**, por cripto-borrado de la llave por giro. Nunca se anonimiza: anonimizar sería reescribir, y el hash quedaría sin verificar | `RF-80`, `RF-18`, `RNF-01`, `RF-81` | La evidencia de que la identificación de `RF-01` y `RF-85` ocurrió. Queda la afirmación de que se verificó, sin nada detrás |
+| Pregunta y respuesta del desafío | Caduca con el giro (`RF-83`) — más corto que todo lo demás de esta tabla | Se extingue sola; borrarla antes deja a `RF-69` sin salida | `RF-83`, `RNF-17` | Nada del asiento. Pero si caduca antes de que el receptor llegue, el documento no vigente deja de poder cobrarse y `RF-86` vuelve a cerrar la puerta que `RF-69` abrió |
+| Resultado de tamizaje | El del giro | No — sostiene la decisión, no la identidad | `RF-26`, `RF-119`, `RF-27`, `RNF-03` | La defensa de por qué se retuvo o se dejó pasar. `RF-27` decide contra listas **vigentes al momento del pago**: sin el valor guardado, esa decisión no se puede reconstruir |
+| Caso de cumplimiento | El del giro, con su plazo de retención propio (`RF-31`) vencido adentro | No | `RF-29`, `RF-33`, `RF-87`, `RF-93`, `RNF-03` | El motivo de la liberación que `RF-87` obliga a registrar, y con él la trazabilidad de quién dejó salir el dinero. **Toda retención tiene caso, incluida la de `RF-93`**: sin él no hay rol que libere ni motivo que registrar, y la retención queda abierta |
+| Declaración de diferencia del receptor (`RF-90`) y su identificación (`RF-126`) | El del giro | No — es un acto, y los actos no se borran | `RF-90`, `RF-126`, `RF-59`, `RF-143`, `RNF-03` | La única versión de los hechos que no escribió el punto al que `RF-143` le descuenta la diferencia — y la prueba de que quien la declaró por teléfono era el receptor designado, sin la cual `RF-126` no es comprobable |
+| Traza de auditoría | El del giro, inalterable (`RNF-03`) | No — es la excepción que `RF-81` nombra | `RF-54`, `RNF-03`, `RNF-04` | El no repudio entero, y también la prueba de que la supresión pedida se ejecutó |
+| Solicitud de supresión y su alcance (`RF-81`) | El del registro de actos | No — es el acto que demuestra el borrado | `RF-81`, `RF-54`, `RNF-03` | La capacidad de demostrarle a quien lo pidió qué se borró, y de defender ante el regulador por qué algo no |
+| Datos de contacto | Mientras el giro esté vivo y queden avisos pendientes | **Sí — es el caso claro de `RF-81`**, y el que prueba si el modelo sabe borrar sin romper nada | `RF-25`, `RF-41`, `RF-60`, `RF-75`, `RF-81` | Los avisos pendientes se quedan sin destino: la devolución disponible (`RF-14`), el aviso previo a la prescripción (`RF-51`) y el de giro cobrado (`RF-65`). El asiento no se toca |
+| Cotizaciones no ejecutadas | **Hasta `vence_en`, y no más.** Es el plazo más corto del sistema junto con el de la clave de idempotencia | Sí, si quedaron atadas a una persona | `RF-07` | Nada del registro contable — salvo que la cotización sea la que `RF-06` congeló en un giro creado, y entonces ya no es «no ejecutada»: tiene `giro_id` y hereda el plazo del giro |
+| Código de seguimiento (`codigo_hmac`) | El del giro. **No se borra a pedido y tampoco hace falta**: no es un dato personal, es un verificador sin sujeto | No | `RF-11`, `RF-94`, `RNF-15` | La capacidad de demostrar que el pago se autorizó contra el código correcto. Y borrarlo antes del cierre haría incobrable el giro, porque `RF-94` prohíbe reemitirlo |
+| Constancia de aviso enviado (`RF-98`, `RF-131`, `RF-132`) | **Hasta que el giro cierra y se saldan sus plazos.** Partición propia, la más corta de `BD auditoría` | No mientras corra; el **contacto** sí se borra, la constancia no | `RF-98`, `RF-131`, `RF-132`, `RF-121`, `RF-60` | La prueba **oponible** de haber avisado —`texto_hash`, `acuse_operador_id`, `llego_en`, `resultado`— y, con ella, la única forma de aplicar `RF-132`: sin la fila no se sabe a quién hay que tratar como no avisado. Es que es lo que sostiene a SendIt cuando Elena dice que nadie la llamó. Es el ejemplo de que la retención se decide por dato: un SMS no merece los cinco años del asiento, y ponerlo ahí sería pagar conservación regulatoria por un mensaje |
+| Evidencia de identificación de un emisor que no llegó a crear un giro | **Se descarta.** `RF-99` lo ordena expresamente | No aplica: se descarta sola, sin que nadie lo pida | `RF-99`, `RNF-01` | Nada. Es el único borrado del modelo que **no** es a pedido y **no** tiene excepción: sin giro no hay operación que conservar, y guardar el binario sería acumular datos de identidad sin requerimiento que los sostenga |
+| Clave de idempotencia | **TTL corto**, medido en horas. La única entidad que muere sola sin dejar rastro | No aplica: caduca antes de que nadie pueda pedirlo | `RF-43`, `RF-44`, `RF-117` | Nada, si el TTL supera la ventana de reintento realista de un mostrador. Si se acorta de más, un reintento tardío crea un segundo giro — y ese es el defecto que `RF-43` nombra. **Lo que ya no cuelga de este TTL es el efectivo en custodia de `RF-118`**, que tiene fila y plazo propios abajo |
+| Recepción de efectivo en custodia (`RF-118`, `RF-138`) | **El del giro que la cierra**; si se devuelve el efectivo, el de la devolución. **Nunca un TTL** — `retomar_hasta` no purga la fila, dispara la devolución de `RF-138` | No — es dinero recibido, no un intento | `RF-118`, `RF-138`, `RNF-07`, `RNF-03`, `BR-01` | La contrapartida del efectivo que Rosa entregó y que todavía no es giro. Es la fila que impide los dos peores errores de este modelo: **que el dinero de Rosa expire con un plazo técnico**, y **que se quede en el cajón sin fecha en que alguien tenga que devolvérselo** |
+| Oferta de punto alternativo y su plazo (`RF-116`) | El del giro que la llevó | No — es un acto sobre la operación | `RF-91`, `RF-116`, `RF-111`, `RNF-03` | La prueba de qué plazo se le informó al emisor. Sin `plazo_comunicado` guardado, la devolución de `RF-111` no se puede defender: quedaría ejecutada contra un plazo que nadie puede mostrar |
+| Reporte a la autoridad y su acuse (`RF-17`, `RF-139`) | El del giro, y por el plazo del **regulador que lo recibió**, que puede ser más largo que el otro | No — no es dato del cliente, es constancia frente a la autoridad. **La fecha de nacimiento de `RF-140` se conserva mientras se conserve el reporte que la exigió, y no más** | `RF-17`, `RF-139`, `RF-140`, `RF-22`, `RF-18`, `RNF-03` | La prueba de haber reportado. Un reporte sin acuse conservado equivale a no haber reportado el día que la autoridad pregunte |
+| Caja del punto y sus declaraciones (`RF-76`, `RF-141`) | El del giro más largo cuyos pagos tocaron esa jornada — en la práctica, el plazo de conservación del corredor | No — es un acto del operario, no un dato personal del cliente | `RF-76`, `RF-95`, `RF-141`, `RNF-05` | El cuadre del `Cierre de Caja Job <EOD>`, que es donde aparece el doble pago si apareció; y la cifra que `RF-141` obliga a informarle al agente, que sin las dos declaraciones no se puede calcular ni defender |
+| Acumulado de cobros del receptor (`RF-93`) | La ventana vigente, más el plazo del último giro que contó | **No, y no hace falta**: sobrevive a la supresión porque no contiene ningún atributo personal, solo `receptor_ref` y un número | `RF-93`, `RF-81` | La capacidad de retener a quien superó su acumulado. Es la fila que muestra por qué el seudónimo es una decisión de modelo: con el nombre adentro, `RF-81` habría tenido que elegir entre el derecho de Elena y `RF-93` |
+| Versión de jurisdicción que el giro obedeció (`version_regla_jurisdiccion`) | El del giro. **La versión vieja se conserva aunque el regulador ya la haya reemplazado** | No | `RF-15`, `RF-18`, `RF-31`, `RNF-03` | La posibilidad de defender por qué se conservó cinco años y no siete, o por qué la retención duró 72 horas. Sin la versión congelada, el plazo de un giro de 2026 se recalcularía con la norma de 2031 |
 
 **Lo que esta tabla decide sin que lo parezca.** Si el nombre y el documento de Rosa viven **dentro**
-de la fila del envío, borrar a Rosa destruye el asiento contable y con él la posibilidad de demostrar
-que la suma cuadra. Si viven **detrás de una referencia**, se puede borrar la identidad y dejar en
-pie la operación. Es decir: **la convivencia entre el derecho de supresión y la obligación de
-conservación se resuelve en el diseño de las tablas, y solo ahí.** Ninguna política escrita en un
-documento la resuelve si el modelo no la permite.
+de la fila del giro, borrar a Rosa destruye el asiento contable y con él la posibilidad de demostrar
+que la suma cuadra, que es el invariante de `RNF-07`. Si viven **detrás de una referencia**, se
+puede borrar la identidad y dejar en pie la operación. Es decir: **la convivencia entre el derecho
+de supresión y la obligación de conservación se resuelve en el diseño de las tablas, y solo ahí.**
+Ninguna política escrita en un documento la resuelve si el modelo no la permite — y `RF-81` ya no
+deja tratarla como hipótesis: la excepción que nombra («salvo los que el registro de actos debe
+conservar») es una frontera entre dos tablas, no una cláusula.
 
-Falta decidir además qué pasa al vencer el plazo: ¿se borra, se anonimiza, se archiva en frío? Y
-quién ejecuta ese vencimiento, porque un plazo que nadie hace vencer no vence — el mismo defecto que
-se sufre con las retenciones sin plazo.
+**Y la pregunta que quedaba abierta se cierra acá, porque es de este paso: sí, el receptor entra en
+esa referencia.** Sus datos los entregó él en el mostrador, así que `RF-81` lo alcanza igual que al
+emisor, y la columna `declarante` de `BD identidad` es lo que permite ejecutar el *«y de nadie
+más»*: sobre un mismo giro hay dos filas de persona con dos declarantes distintos, y una supresión
+pedida por Rosa no toca la de Elena. El contador de cobros de `RF-93` sobrevive porque **no está en
+`BD identidad`**: vive en `BD cumplimiento`, con `receptor_ref` y un número, sin un solo atributo
+personal. Borrar a Elena de `BD identidad` deja el contador intacto y `RF-93` sigue pudiendo retener
+el giro de quien superó su acumulado — sobre un seudónimo que ya no resuelve a ninguna persona
+legible. Esa es toda la diferencia entre un modelo que puede cumplir `RF-81` y uno que tiene que
+elegir cuál de los dos ítems incumple.
+
+**El único plazo que este paso no puede fijar solo:**
+`[CLARIFY: la ventana de vida de la clave de idempotencia (BD intentos). El backlog no la da —RNF-09
+acota la operación de ventanilla y RNF-10 la disponibilidad, ninguno la vida de un intento— y
+depende de cuánto tarda un mostrador en reintentar tras un corte. La destraba una cifra de D(b) o
+una medición de campo del tiempo entre corte y reintento; mientras tanto el modelo la trata como
+columna `expira_en` y no como constante, así que cambiarla no rehace ninguna tabla.]`
+
+### El plazo se calcula por giro: qué campo lo lleva
+
+`RNF-03` exige conservar *«calculado por giro y no por política global»* y `RF-18` fija el criterio:
+el plazo más largo de los **dos** países que tocaron el giro. Eso no se cumple con una constante en
+un archivo de configuración —una constante es exactamente una política global— y tampoco con una
+consulta a la tabla de jurisdicciones al momento de purgar, porque para entonces la norma puede haber
+cambiado. Se cumple con **tres fechas absolutas, congeladas al crear el giro**, y con la versión de
+la norma que las produjo:
+
+| Campo | Dónde vive | Cómo se calcula | Qué ítem lo fija |
+|---|---|---|---|
+| `giro.conservar_hasta` | `Giro`, en `BD giros`; se copia a `traza.conservar_hasta` y a la partición del asiento | `creado_en + MAX(origen.plazo_conservacion_anios, destino.plazo_conservacion_anios)`, con piso de 5 años | `RF-18` — **el más largo** de los dos · `RNF-03` |
+| `retencion.vence_en` | `Retención`, en `BD cumplimiento` | `abierto_en + MIN_estricto(origen.plazo_retencion_horas, destino.plazo_retencion_horas)`, piso de 72 h; y `[ASSUMPTION: 24 horas]` cuando `caso.tipo = homonimia`, **plazo más corto que el de la coincidencia exacta** | `RF-31` — **el más estricto** · `RF-78` — **el que trae la cifra y la diferencia de plazo**, que hasta esta ronda este documento inventaba |
+| `giro.prescribe_en` | `Giro` y `Prescripción`, en `BD giros` | `creado_en + origen.plazo_prescripcion_meses`, 12 meses a falta de norma expresa | `RF-49`, `RF-50` · `BR-14` — el del **regulador de origen**, y solo ese |
+| `giro.plazo_aviso_retencion` → `retencion.avisar_al_emisor_hasta` | El plazo, en `Giro`; la fecha, en `Retención` (`BD cumplimiento`) | El plazo se **copia del corredor al giro al crearlo**, que es cuando `RF-115` se lo informa a Rosa; la fecha absoluta se calcula al abrir la retención: `abierto_en + giro.plazo_aviso_retencion`, con techo de `[ASSUMPTION: 1 hora]` | `RF-115` — el plazo **prometido antes del efectivo** · `RF-133` — el techo de una hora entre la retención y el aviso, que es un ítem propio y no una cláusula de `RF-115` · `RF-67` — el aviso que lo cumple |
+| `oferta.plazo_comunicado` → `oferta.responde_hasta` | `Oferta de punto alternativo`, en `BD giros` | El plazo se fija y se comunica al ofrecer (`RF-116`); la fecha absoluta sale de `ofrecida_en + plazo_comunicado` y **no se prorroga** | `RF-116` — el plazo **informado al ofrecer** · `RF-111` — la devolución cuando vence |
+
+**Cinco reglas distintas y ninguna se puede derivar de las otras** — tres sobre los mismos dos
+reguladores, y **dos que no vienen de ningún regulador sino de una promesa que SendIt le hizo a
+Rosa.** Esa es la diferencia que la tabla tiene que sostener con columnas: un plazo regulatorio se
+puede recalcular contra la norma vigente y sigue siendo defendible; un plazo prometido, no. `RF-115`
+y `RF-116` obligan a guardar **lo que se dijo** —`plazo_aviso_retencion`, `plazo_comunicado`— además
+de la fecha que produce, porque el día que Rosa reclame, lo que se le opone es la promesa y no el
+cálculo.
+Guardarlas como plazo relativo —«cinco años», «72 horas»— y resolverlas al vencer haría que una norma
+nueva reescribiera retroactivamente el plazo de giros ya creados; guardarlas como fecha absoluta con
+`version_regla_jurisdiccion` al lado las vuelve defendibles una por una. Ese es el campo que lleva la
+retención por jurisdicción, y es una columna del giro y no una línea de configuración.
+
+### Qué pasa al vencer, y quién lo ejecuta
+
+Un plazo que nadie hace vencer no vence. El ejecutor es uno solo y ya está dibujado en `L`: el
+`Vencimiento Job <diario>`, que barre por fecha absoluta y no por cálculo — con una salvedad de
+frecuencia que el propio modelo impone: tres de estos plazos se miden en horas —el aviso de
+`RF-133`, la respuesta al punto alternativo y la custodia de `RF-138`—, así que el barrido que los
+sirve corre **minutado y no diario**. Los **diez** plazos y qué hace cada uno:
+
+| Plazo | Qué ejecuta el vencimiento | Ítem |
+|---|---|---|
+| Retención sin liberar | Devuelve al emisor y avisa al receptor por su canal | `RF-31`, `RF-32` |
+| Giro no cobrado | Lo deja no pagable, pone el monto a disposición del emisor, y avisa antes | `RF-49`, `RF-50`, `RF-51` |
+| Respuesta del desafío | **Borra** `verificador` y `pregunta_cif`; deja `estado = caducado` y su traza | `RF-83` |
+| Devolución no retirada | Se mantiene disponible hasta `giro.prescribe_en`, no antes | `RF-89` |
+| Devolución no retirada que llegó a `disponible_hasta` | **La da por prescrita** (`estado = prescrita`, `prescrita_en`) y deja de mantenerla disponible, con el asiento que cierra la obligación | `RF-137`, `RF-89` |
+| Efectivo en custodia sin retomar (`retomar_hasta`) | **No purga la fila: la salda.** A las `[ASSUMPTION: 72 horas]` abre una `Devolución` con `causa = custodia_no_retomada` y su asiento, deja la custodia en `devuelta` y avisa al emisor por su canal dónde retirarla (`RF-14`, `RF-72`). Es el plazo que esta ronda agregó, y el que impide que el pasivo de `BR-01` quede abierto para siempre | `RF-138`, `RF-118`, `RF-14`, `RF-72` |
+| Supresión pedida | Borra los campos del alcance y **destruye las llaves** de los objetos, dejando en pie el asiento y la traza | `RF-81` |
+| Conservación del giro (`conservar_hasta`) | **Cripto-borrado, no anonimización.** Se destruye la llave de corredor de las columnas cifradas y la llave por giro de los objetos; el asiento y la traza quedan enteros con `persona_ref` que ya no resuelve | `RF-18`, `RNF-03` |
+| Aviso de retención al emisor (`avisar_al_emisor_hasta`) | **No borra nada: obliga.** Al acercarse la fecha, despacha el aviso de `RF-67`; si se cumplió, cierra `avisado_al_emisor_en`. Vencerla sin aviso es incumplir la promesa de `RF-115` y el techo de `RF-133`, y queda como fila con `resultado` distinto de `entregado` — que es exactamente el caso que `RF-132` obliga a tratar como **no avisado**, no como avisado sin acuse | `RF-115`, `RF-133`, `RF-67`, `RF-132` |
+| Respuesta del emisor al punto alternativo (`responde_hasta`) | Deja la oferta `vencida`, no toca `punto_eleccion_id` (`RF-105` no fue contestado) y **devuelve el giro al emisor** por el plazo que se le informó, no por uno recalculado | `RF-116`, `RF-111` |
+
+**Por qué cripto-borrado y no anonimizar.** Anonimizar es reescribir filas —un `UPDATE` sobre
+`BD auditoría`, que `RNF-03` prohíbe *cualquiera sea quien lo pida*—. Destruir la llave deja la fila
+byte por byte como estaba y la vuelve ilegible, así que el encadenamiento `hash_anterior` sigue
+verificando y la traza sigue demostrando que el acto ocurrió. **Es la única forma de borrar que no
+rompe lo inmutable**, y es la misma primitiva que ejecuta `RF-81` años antes: la diferencia entre las
+dos no es el mecanismo, es el alcance y quién lo pide.
+
+`RF-81` es el único de los seis que tiene que **dejar en pie** una parte del registro mientras borra
+la otra, y puede hacerlo por una sola razón: la parte que borra y la parte que conserva están en
+tablas distintas, en bases distintas, con llaves distintas. Si vivieran en la misma fila, ninguna
+política escrita lo salvaría.
 
 ---
 
@@ -204,11 +576,12 @@ se sufre con las retenciones sin plazo.
 
 | Si cambia… | Se rehace |
 |---|---|
-| `D`(a) verdad del dinero | Movimiento contable, estado del envío, y la sección 5 completa |
+| `D`(a) verdad del dinero | Movimiento contable, estado del giro, y la sección 5 completa |
 | `D`(b) idempotencia | La entidad que persiste la clave de intento y su ventana de vida |
-| `D`(c) frontera entre el centro y el mostrador | Los estados del envío, el estado que el mostrador sostiene sin conexión, y qué se guarda de lo que el punto informa al reconectar |
+| `D`(c) frontera entre el centro y el punto de atención | Los estados del giro, el estado que el punto sostiene sin conexión, y qué se guarda de lo que informa al reconectar |
 | `D`(d) tipo de cambio | Tasa aplicada, su vencimiento, y la cuenta de diferencia de cambio |
 | `D`(e) momento del tamizaje | Verificación de identidad, caso de cumplimiento, y el orden de los estados |
+| `D`(f) el secreto que no pasa por el operario: dónde vive la respuesta, quién la compara y por dónde entra y sale | La entidad **Desafío**, su llave, su control de acceso y su fila en la tabla de datos personales; el `origen_respuesta` que `RF-114` restringe y el `entregado_por` del **Código de seguimiento** que `RF-113` obliga a registrar; el relevo de vigencia de `RF-122` en la verificación; y qué del secreto sostiene el punto de atención sin conexión |
 | Los años de retención en `E` | La sección 6 y la elección de motor de las entidades voluminosas |
 
 ---

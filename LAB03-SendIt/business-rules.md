@@ -72,7 +72,7 @@ el dinero, no después.
   `[ASSUMPTION: la identificación es presencial contra documento oficial vigente.]`
 - **Afecta:** creación del giro, cumplimiento, seguridad.
 
-### BR-04 — Todo giro tiene un límite por operación y un acumulado por emisor
+### BR-04 — Todo giro tiene un límite por operación, un acumulado por emisor y un acumulado por receptor
 
 Un emisor no puede superar un monto por giro ni un monto acumulado en una ventana de tiempo,
 contados sobre su identidad y no sobre el punto de atención.
@@ -129,7 +129,7 @@ decide comunicárselo al receptor. SendIt no se lo entrega al receptor por su cu
 - **Fuente:** `[ASSUMPTION: nuestra, modelo Western Union.]`
 - **Afecta:** creación del giro, pago, cancelación, seguridad.
 
-### BR-09 — El receptor cobra contra código **y** documento, nunca contra uno solo
+### BR-09 — El receptor cobra contra código **y** documento. Cuando el documento no está vigente, el tercer factor es el desafío que el emisor registró al crear el giro: el receptor cobra contra código, documento y respuesta
 
 El pago exige que quien se presenta exhiba el código del giro y un documento de identidad
 que coincida con el receptor designado por el emisor. Ninguna de las dos cosas basta sola.
@@ -160,7 +160,7 @@ La disponibilidad para cobrar no se anticipa a la confirmación.
 - **Fuente:** enunciado — consistencia de datos.
 - **Afecta:** pago, liquidación entre agentes.
 
-### BR-12 — El emisor puede cancelar mientras el giro no esté pagado, y solo él
+### BR-12 — El emisor puede cancelar mientras el dinero no esté a disposición del receptor, y solo él
 
 Hasta que el giro se paga, el emisor puede cancelarlo y recuperar su dinero. Después del
 pago, no. El receptor nunca puede cancelar.
@@ -188,7 +188,7 @@ disposición del emisor.
 
 - **Por qué:** BR-01 dice que el dinero es una obligación. Sin plazo, la obligación es
   perpetua y el pasivo nunca cierra.
-- **Fuente:** `[CLARIFY: el plazo concreto lo fija la regulación de cada país de origen.]`
+- **Fuente:** `[ASSUMPTION: el plazo lo fija el regulador del país de origen; a falta de norma expresa, 12 meses desde la creación del giro]`
 - **Afecta:** pago, contabilidad, cancelación.
 
 ### BR-15 — Toda operación queda registrada con quién la hizo, y ese registro no se altera
@@ -212,3 +212,14 @@ no está pagando.
   datos no es un control.
 - **Fuente:** `[ASSUMPTION: nuestra, mínimo privilegio.]`
 - **Afecta:** pago, seguridad, privacidad.
+
+## BR-17 — Un giro transfronterizo obedece a los dos reguladores, y cuando chocan no se elige uno
+
+Un giro cruza dos jurisdicciones y queda sujeto a las dos a la vez: la del país de origen y la del
+país de destino. Ninguna desplaza a la otra.
+
+De ahí se sigue lo que hace difícil el caso: **cuando las dos imponen condiciones incompatibles, el
+giro no se crea.** Elegir una sería decidir por cuenta propia cuál regulador se incumple.
+
+`[ASSUMPTION: la regla se deduce de que el negocio es transfronterizo y multirregulador, que el
+enunciado marca como limitación. Ninguna norma concreta se cita.]`

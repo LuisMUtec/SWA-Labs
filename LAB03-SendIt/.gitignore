@@ -8,3 +8,6 @@ Thumbs.db
 
 # Claude Code: estado local por maquina (posibles credenciales)
 .claude/settings.local.json
+
+# Intermedio del conversor: se regenera con scripts/entrega-a-pdf.sh
+docs/ENTREGA.html

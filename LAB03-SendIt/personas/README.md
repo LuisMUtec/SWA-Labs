@@ -58,6 +58,7 @@ de estas — y eso lo cobra [D4](../evals/README.md).
 | T4 | Certeza del monto frente a exposición cambiaria | Rosa ↔ la empresa | Rosa necesita que el monto en soles se fije al pagar. Fijarlo deja a SendIt cargando el movimiento del tipo de cambio hasta que Elena cobre — que puede ser nunca |
 | T5 | El canal de Rosa frente al canal de Elena | Rosa ↔ Elena | Rosa origina en la ventanilla y consulta desde su teléfono; Elena solo tiene llamada y mensaje de texto, y el código se lo pasa Rosa, no SendIt. Todo aviso que dependa de una pantalla deja a Elena afuera, y Elena es quien tiene que decidir si viaja |
 | T6 | Cerrar el envío frente a cerrarlo de verdad | Rosa ↔ Elena | Para el sistema es cómodo dar por terminado el envío cuando el dinero llegó al agente. Para Rosa y Elena, termina cuando Elena contó los billetes. Entre esos dos momentos vive el defecto que nadie ve |
+| T7 | El código perdido | Rosa ↔ Elena | Rosa **nunca debe** poder recuperar el código por un canal de SendIt, porque eso lo volvería obtenible por quien se haga pasar por ella. Y Elena **no puede cobrar sin él**. Entre las dos cosas no hay término medio: o el secreto se puede reponer y deja de serlo, o el dinero queda atrapado hasta prescribir. La descubrió el EVAL en la iteración 07, después de que dos rondas la revirtieran en direcciones opuestas, cada una por un punto entero de D3 |
 
 ## Cómo se usan
 

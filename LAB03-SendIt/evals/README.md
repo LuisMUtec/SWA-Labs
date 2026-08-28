@@ -11,7 +11,7 @@ umbral en **8/10**. Eso decide el alcance de este documento: se puntúa el backl
 |---|---|
 | [`redale/R-requerimientos/backlog.md`](../redale/R-requerimientos/backlog.md) | **Lo único puntuado.** El único documento con autoridad sobre qué debe hacer el sistema |
 | [`personas/Rosa.MD`](../personas/Rosa.MD) · [`Elena.MD`](../personas/Elena.MD) · [`Operario.MD`](../personas/Operario.MD) | Las lee cada agente de persona: la suya y el backlog, nada más |
-| [`personas/README.md`](../personas/README.md) | La lee el agregador. De ahí salen las seis tensiones que D4 exige decididas y la designación del usuario modelo |
+| [`personas/README.md`](../personas/README.md) | La lee el agregador. De ahí salen las siete tensiones que D4 exige decididas y la designación del usuario modelo |
 | [`docs/LAB-03-ARQ-2026.2.md`](../docs/LAB-03-ARQ-2026.2.md) | La lee el agregador. Fija el problema contra el que mide D2 y nombra las dos exigencias que cuenta D3 |
 | [`.specify/memory/constitution.md`](../.specify/memory/constitution.md) | La lee el agregador. El enunciado dice cuál es el problema; la constitución dice **qué se hace con un ítem que no lo ataca** — el Principio III fija la prueba de D2, y el I la regla de dirección que D4 cobra como *decisión sin requerimiento* |
 
@@ -122,7 +122,7 @@ otras personas, ni [`personas/README.md`](../personas/README.md), ni los veredic
 historial.
 
 La exclusión de `personas/README.md` es la que más cuesta explicar y la que más importa: ese archivo
-contiene las seis tensiones y el ángulo de las otras dos personas. Un agente que lo lee deja de
+contiene las siete tensiones y el ángulo de las otras dos personas. Un agente que lo lee deja de
 reclamar y empieza a negociar —«entiendo que Kevin necesita tiempo»— y ahí se pierde la única señal que
 el agente existe para producir. Las tensiones las decide el backlog y las juzga el agregador, no la
 persona que las sufre.
@@ -195,7 +195,34 @@ rastro—, y eso es lo que D3 puntúa.
 
 ### D4 — Coherencia del backlog · 2 pts
 
-Empieza en 2 y baja **0,25 por hallazgo independiente**, con piso 0.
+> **Enmendada el 2026-08-27, en la ronda 08, por el dictamen de la
+> [iteración 07](iterations/2026-08-27-07.md).** La versión anterior —«empieza en 2 y baja 0,25 por
+> hallazgo, con piso 0»— **medía tamaño, no coherencia**: en siete rondas `n` varió entre 15 y 41, un
+> rango de 2,7×, y **D4 no se movió una sola vez**. Varianza cero.
+>
+> **Las corridas 01 a 07 dejan de ser comparables con las de aquí en adelante.** No se recalculan:
+> quedan como se emitieron, con la vara con que se emitieron.
+
+**D4 se puntúa por densidad de hallazgos, no por su cuenta.**
+
+```
+d  = n / ítems          densidad observada
+D  = 0,40               densidad de referencia
+D4 = 2 × (1 − d / D)    acotado a [0 , 2]
+```
+
+`D = 0,40` se fija **por encima de la peor densidad que este proyecto observó** (36,6 % en la ronda
+01), de modo que un backlog peor que cualquiera de los siete puntúe 0 y uno sin hallazgos puntúe 2.
+
+**Por qué densidad y no cuenta.** D4 era la única dimensión de esta rúbrica con un conteo absoluto.
+D1 puntúa **por persona**; D2 y D3 son **existenciales**; y el censo de D2 se reportó **siempre como
+razón** —«4 de 41», «78 de 118»—. La rúbrica ya normalizaba en D2 y no lo hacía acá. Los hallazgos
+escalan con la superficie: con el piso en `n ≥ 8`, `D4 > 0` exigía un backlog de a lo sumo **31
+ítems** a la mejor densidad alcanzada, y de **23** a la media. El ejemplo del profesor tiene cinco.
+
+**Qué no cambia.** La lista de hallazgos, cómo se cuentan, los dos techos duros y el contraste
+cruzado quedan **exactamente como estaban**. Lo único que cambia es cómo el número de hallazgos se
+convierte en puntaje.
 
 | Hallazgo | Qué es |
 |---|---|
@@ -205,12 +232,12 @@ Empieza en 2 y baja **0,25 por hallazgo independiente**, con piso 0.
 | Título no entendible | Un **título comodín**, según las pruebas de arriba |
 | Ambigüedad no marcada | Dos lecturas razonables y ningún `[CLARIFY: …]` |
 | Título no atómico | Dos cosas que pueden ser verdaderas o falsas por separado bajo un identificador |
-| Tensión esquivada | Una de las seis de [`personas/README.md`](../personas/README.md) que ningún ítem decide |
+| Tensión esquivada | Una de las siete de [`personas/README.md`](../personas/README.md) que ningún ítem decide |
 | Prioridad ausente | Un ítem sin prioridad |
 
 **Techos duros.** Se aplican después de las deducciones y no se negocian:
 
-- Si **dos o más** de las seis tensiones quedan sin decidir, **D4 no supera 1,0**. Una tensión sin
+- Si **dos o más** de las siete tensiones quedan sin decidir, **D4 no supera 1,0**. Una tensión sin
   decidir no es un hallazgo más: es la decisión que el backlog existía para tomar.
 - Si **todos** los ítems comparten la misma prioridad, **D4 no supera 1,5**. Una lista sin gradiente no
   está priorizada.
