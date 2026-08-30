@@ -8,6 +8,14 @@
 20 `RNF`— tienen componente e iteración. Lo que queda abierto está marcado como abierto y no como
 hecho.
 
+> **La cadena entera quedó al día.** Hasta esta pasada, `L` era el único paso repropagado sobre los
+> 236 ítems, y eso era un problema y no un mérito: **este archivo marcaba `DONE` cinco ítems que `A`
+> y `D` no sostenían** —`RF-218`, `RF-219`, `RF-223`, `RF-225` y `RF-229`—, porque asignaba componente
+> a una capacidad que ningún endpoint exponía y ninguna entidad modelaba. `E`, `D` y `A` se rehicieron
+> contra el backlog vigente, y con eso los cinco `DONE` pasaron a ser verdad: `D` tiene las cinco
+> rutas, `A` tiene las dos entidades con su plazo, y este archivo tiene el componente que faltaba —
+> **`Identificación Derivada Service`**, el único que las rondas 17 a 19 obligaron a crear.
+
 **Repropagación de la ronda 19.** El backlog pasó de 227 a 236 ítems. La ronda 19 decidió en la altitud de `RF-94` el reenvío que la 18 había abierto reescribiendo `RF-202`: `RF-227` redespacha a pedido del destinatario identificado y **`RF-228` excluye de ese alcance el aviso que lleva el código**.
 Este archivo se repropagó **hacia abajo**: las cajas que existían solo para un identificador retirado
 se resolvieron contra el ítem que hoy lo cubre, y ninguna caja de acá subió un requisito al backlog.
@@ -318,6 +326,8 @@ flowchart LR
   IDN --> VDOC["Verificación documental del corredor de origen"]
   IDN --> BDID[("BD identidad")]
   IDN -->|"DOCUMENTO NO VIGENTE"| PDA
+  IDN -->|"DUDA SOBRE LA FOTOGRAFÍA — NO LA DECIDE EL OPERARIO"| DUAL
+  DUAL -->|"NO SE RESUELVE EN 10 MIN — RECHAZO ANTES DEL EFECTIVO"| PDA
   IDN -->|"IDENTIDAD OK"| COR["Corredor Service"]
 
   COR --> BDCR[("BD corredores y reguladores")]
@@ -382,7 +392,12 @@ flowchart LR
   ELENA --> TCL
   TCL -->|"RESPUESTA DIGITADA POR EL RECEPTOR"| DES
   DES --> NOT
-  DES -->|"INTENTOS AGOTADOS"| PDA
+  DES -->|"INTENTOS AGOTADOS"| IDD["Identificación Derivada Service"]
+  IDD --> BDCU
+  IDD -->|"IDENTIFICAR CONTRA LOS DATOS QUE EL EMISOR REGISTRÓ"| TAB
+  TAB -->|"RECEPTOR IDENTIFICADO — PAGO HABILITADO"| PAY
+  IDD -->|"VENCIDA SIN RESOLVER — DEVOLUCIÓN AL EMISOR"| DEV
+  IDD --> NOT
   DES -->|"RESPUESTA CORRECTA — PAGO CON DOCUMENTO VENCIDO"| PAY
   PAY --> CRE["Cobros del Receptor Service"]
   CRE --> BDCU
@@ -428,6 +443,7 @@ flowchart LR
   TAB -->|"NO LIBERADO"| RET
 
   VEN["Vencimiento Job &lt;diario&gt;"] --> RET
+  VEN --> IDD
   VEN --> QUO
   VEN --> NOT
   VEN --> DEV["Devolución Service"]
@@ -503,7 +519,7 @@ flowchart LR
   classDef corte   stroke-dasharray: 6 3,stroke-width:3px;
   classDef agente  stroke-width:4px;
 
-  class PDA,IDM,IDN,COR,SCR,LIM,DUAL,QUO,LIQ,GIR,LED,PAY,RET,DEV,CAN,CON,SYN,CRR,REP,AUD propio;
+  class PDA,IDM,IDN,COR,SCR,LIM,DUAL,QUO,LIQ,GIR,LED,PAY,RET,DEV,CAN,CON,SYN,CRR,REP,AUD,IDD propio;
   class DES,CRE,CPS,PAL,REC,SUP,COD,TCL,REH,CPR,ARS,CUS,DAG propio;
   class NOT,TAB soporte;
   class RENIEC,VDOC,LIST,FX,TEL,AUTO,AUTD externo;
@@ -538,6 +554,7 @@ flowchart LR
 | `Audit Service` | Asocia cada acto a la identidad de quien lo ejecutó, impide modificar o eliminar lo ya ejecutado, deja traza de todo acceso a identidad y conserva por el plazo más largo de los dos países | `A` — entidad *Traza de auditoría* | `RF-18`, `RF-54`, `RNF-03`, `RNF-03`, `RNF-04` |
 | `Notification Service` (ampliado) | El mismo de la iteración 2, con el segundo destinatario que la 2 no tenía: el **emisor**. Le avisa el cobro, la retención, **que su giro dejó de estar retenido** (`RF-127`), la prescripción y su devolución disponible. Y por el mismo canal lleva al receptor todo lo que la 2 no sabía darle: giro retenido, giro devuelto, prescripción inminente, diferencia registrada, punto que dejó de poder pagar y a cuál ir en su lugar, y que su reposición está disponible y en qué punto retirarla (`RF-156`). **Registra si el aviso llegó cuando el canal lo reporta** (`RF-131`) y **trata como no avisado a quien no tenga constancia de que llegó** (`RF-132`): la arista de vuelta desde el `Operador de voz y mensaje de texto` es lo que convierte «se envió» en «se entregó». **Nunca transporta el código ni la respuesta del desafío** | `R` — tensiones T2, T5 y T6 | `RF-98`, `RF-131`, `RF-132`; `RF-60` y `RF-121` desde el `Corrección Service`, `RF-65` desde el `Payout Service`, `RF-67` y `RF-37` desde el `Retención Service`, `RF-127` desde el `Tablero de Cumplimiento`, `RF-51` y `RF-120` desde el `Vencimiento Job`, `RF-14` y `RF-106` desde el `Devolución Service`, `RF-156` desde el `Corrección Service`, `RF-75` y `RF-109` desde el `Caja del Punto Service`, `RF-124` desde el `Punto Alternativo Service` y `RF-69` desde el `Desafío Service` |
 | `Caja del agente` | No es un servicio: es la cuenta contable del efectivo que el agente puso y SendIt todavía no le liquidó. Borde grueso porque es propia en el mando y ajena en la contabilidad | `D`(a) — cuentas del libro | `RF-24`, `RF-20` |
+| `Identificación Derivada Service` | **La salida que el desafío no tenía.** Cuando `RF-82` agota los intentos, abre la derivación al rol de cumplimiento en vez de dejar a Elena delante de un giro no pagable sin camino: `RF-218` la identifica **contra los datos que el emisor registró** —no contra un documento que ella no trae—, `RF-219` le pone `[ASSUMPTION: 24 horas]` y `RF-223` la termina devolviendo el giro al emisor. **Nace de esta repropagación y es el único componente que los veintiún títulos de las rondas 17-19 obligaron a crear.** Su entidad es `A`:`Identificación derivada`, sus rutas son las tres de `D` |
 | `Desafío Service` | Guarda la pregunta que el emisor acordó con el receptor y registra al crear el giro, y **comprueba** la respuesta sin mostrarla: ni al operario del mostrador ni a quien administra la infraestructura. Es lo que autoriza el pago con documento **vencido** (`RF-122`) sin bajar la vara de identificación, y desde la ronda 12 es también donde termina la duda del operario sobre si la **fotografía** corresponde al receptor: la resuelve el desafío y no su criterio (`RF-148`). Acota los intentos, devuelve al agotarlos y caduca con el giro | `R` — tensión T3 · `A` — el secreto se guarda comprobable, no legible | `RF-68`, `RF-69`, `RF-82`, `RF-83`, `RF-101`, `RF-103`, `RF-122`, `RF-148`, `RNF-17`; y `RF-86` junto al `Identity Service` |
 | `Cobros del Receptor Service` | Cuenta cuántos giros cobró **un mismo receptor** en la ventana vigente y **retiene el que la supera**. Es el gemelo del `Limits Service` en la otra punta: aquel cuenta sobre el emisor al crear, este sobre el receptor al pagar. Contar ya no es una fila aparte: `RF-58` se retiró porque contar el acumulado está contenido en retenerlo por superarlo | `R` — `BR-04`; `A` — acumulados por identidad | `RF-93` |
 | `Caja del Punto Service` | El efectivo **por punto**, que el `Liquidez Service` no ve porque mira el corredor entero. Registra lo que cada punto declara al abrir y al cerrar su caja, descuenta cada pago **y cada devolución** sin esperar al cierre, y le dice al operario cuánto tiene antes de habilitarle un pago **o una devolución**. Avisa al receptor si el punto elegido puede pagarle **y vuelve a avisarle si deja de poder**, que es el aviso que evita el viaje inútil | `A` — catálogo de puntos y efectivo · `D`(c) | `RF-75`, `RF-76`, `RF-92`, `RF-95`, `RF-109` |
@@ -681,9 +698,9 @@ ellas, `RF-104`, se había **ejecutado** en dos cajas con el sentido invertido.
 | RF-82 | el sistema limitará a `[ASSUMPTION: 3]` los intentos de responder el desafío de un giro - Kevin | **3** — Desafío Service | `DONE` |
 | RF-103 | el sistema devolverá al emisor el giro cuyos intentos de desafío se agotaron y cuya identificación por el rol de cumplimiento no prosperó - Kevin | **3** — Desafío Service → Devolución Service | `DONE` |
 | RF-212 | el sistema derivará al rol de cumplimiento la identificación del receptor cuyos intentos de desafío se agotaron, antes de devolver el giro - Elena | **3** — Desafío Service → Tablero de Cumplimiento | `DONE` |
-| RF-218 | el sistema habilitará el pago del giro cuyo receptor identificó el rol de cumplimiento contra los datos que el emisor registró, tras agotarse los intentos - Elena | **3** — Tablero de Cumplimiento → Payout Service | `DONE` |
-| RF-219 | el sistema resolverá dentro de `[ASSUMPTION: 24 horas]` la identificación derivada al rol de cumplimiento - Elena | **3** — Tablero de Cumplimiento + Vencimiento Job &lt;diario&gt; | `DONE` |
-| RF-223 | el sistema devolverá al emisor el giro cuya identificación derivada venció sin resolverse - Elena | **3** — Tablero de Cumplimiento → Devolución Service | `DONE` |
+| RF-218 | el sistema habilitará el pago del giro cuyo receptor identificó el rol de cumplimiento contra los datos que el emisor registró, tras agotarse los intentos - Elena | **3** — Identificación Derivada Service → Tablero de Cumplimiento → Payout Service | `DONE` |
+| RF-219 | el sistema resolverá dentro de `[ASSUMPTION: 24 horas]` la identificación derivada al rol de cumplimiento - Elena | **3** — Identificación Derivada Service + Vencimiento Job &lt;diario&gt; | `DONE` |
+| RF-223 | el sistema devolverá al emisor el giro cuya identificación derivada venció sin resolverse - Elena | **3** — Identificación Derivada Service → Devolución Service | `DONE` |
 | RF-83 | el sistema caducará la respuesta del desafío cuando prescribe el giro que la lleva, y no cuando se cierra - Kevin | **3** — Desafío Service → Vencimiento Job &lt;diario&gt; | `DONE` |
 | RF-84 | el sistema decidirá qué diferencias de escritura cuentan como coincidencia de titular, y no el operario - Kevin | **2** — Identity Service | `DONE` |
 | RF-230 | el sistema dejará no pagable el giro cuyo documento presentado no coincide con el receptor designado - Kevin | **3** — Identity Service → Giro Service | `DONE` |
@@ -948,7 +965,7 @@ Están anotados y no ejecutados, que es la diferencia entre un hallazgo y una in
 | ~~**Ningún título obliga a leer el motivo de liberación de `RF-87`.**~~ **Cerrado en la ronda 12 por `RF-163`.** Lo que sigue abajo es el texto con que se abrió: `RF-127` cerró la mitad que faltaba —ahora el emisor **se entera** de que su giro dejó de estar retenido— pero el motivo escrito sigue sin lector obligado | `Tablero de Cumplimiento` → `Audit Service`. El motivo se registra, se conserva y nadie está obligado a mirarlo | El aviso a Rosa no transporta el motivo: `RF-40` y la tensión T2 lo prohíben del lado del operario, y nada dice qué se hace con él del lado de cumplimiento |
 | ~~**El aviso `no_entregado` no es reintentable por ningún título.**~~ **Cerrado en la ronda 15 por `RF-202`**, con la ventana de 15 minutos que la 16 le puso. Texto original: `RF-131` registra si llegó y `RF-132` trata como no avisado a quien no tenga constancia — pero *no avisado* no es *volver a avisar* | `Notification Service` ← `Operador de voz y mensaje de texto`. La arista de vuelta existe y el estado terminal también; el reintento no lo pide nadie | Un reintento automático es una decisión de comportamiento, y este paso dibuja componentes. Sin título, la caja quedaría haciendo algo que nadie exigió |
 | ~~**La retención nacida de `RF-93` no tiene caso de cumplimiento.**~~ **Cerrado: `RF-30`, `RF-31` y `RF-33` dicen «toda retención».** Texto original: Todo el aparato de liberación —`RF-33`, `RF-87`, `RF-127`— cuelga del caso que abre una coincidencia de sanciones | `Cobros del Receptor Service` → `Retención Service` → `Tablero de Cumplimiento` | La arista está dibujada porque `RF-93` retiene; qué rol libera **esa** retención y con qué plazo no lo dice ningún título, y el paso no puede elegirlo por el regulador |
-| **`D:272-274` sigue cerrando toda entrada originada por el receptor.** Este archivo ya la dibuja, porque `RF-90`, `RF-180` y `RF-128` la exigen | `Atención al Receptor Service` | La contradicción es con `D`, no con `R`, y `D` es de otro agente. `L` se alineó con el backlog, que es la autoridad |
+| ~~**`D` cierra toda entrada originada por el receptor.**~~ **Cerrado por la repropagación sobre 236.** `D` abrió la superficie entrante del receptor —`POST /receptores/verificacion`, `GET /giros?receptor={id}`, `POST /giros/{id}/diferencias` y ahora `POST /avisos/{id}/redespacho`— y lo único que le sigue prohibiendo es **cancelar**, que es lo que `RF-48` manda. La nota apuntaba a un número de línea de una versión vieja de `D` y sobrevivió a lo que denunciaba | `Atención al Receptor Service` | Ya no hay contradicción: `D` y `L` dicen lo mismo |
 
 ---
 
