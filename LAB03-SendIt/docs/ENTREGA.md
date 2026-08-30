@@ -67,11 +67,12 @@ Huanta, sin datos móviles y con el DNI vencido— y Kevin —el operario del mo
 guardián de la seguridad sino **el vector por donde se rompe**.
 
 El entregable cubre los seis pasos de R.E.D.A.L.E.: un **backlog de 236 ítems** (216 funcionales, 20
-no funcionales), una estimación con su aritmética a la vista (**13 servidores**, **3,2 TB
-retenidos**, **1,6 Mbit/s en pico**), una arquitectura mixta con **32 endpoints** y **diez
-decisiones cerradas**, un modelo de **30 entidades** repartidas en **10 bases**, **tres iteraciones
-del diagrama de componentes** con trazabilidad **236/236**, y los tramos de escalamiento con sus
-seis cuellos de botella.
+no funcionales), una estimación con su aritmética a la vista (**13 servidores**, **3,3 TB
+retenidos**, **1,7 Mbit/s en pico**), una arquitectura mixta con **48 endpoints** y **siete
+decisiones cerradas**, un modelo de **37 entidades** repartidas en **10 bases**, **tres iteraciones
+del diagrama de componentes** con trazabilidad **236/236**, y el escalamiento entregado dos veces:
+**en la forma del material** —los cinco tramos en usuarios, con el mismo diagrama creciendo— y en la
+del caso, con sus seis cuellos de botella medidos en giros por día.
 
 ### El resultado del EVAL, dicho de una
 
@@ -1983,6 +1984,77 @@ la de este sistema, ni el día uno.
 | `10K – 100K` | Lecturas muy altas | Cache + CDN | **Acá arranca SendIt** (`42 500`). Y la caché **no aplica al dato caliente**: `RNF-05` y `RNF-07` exigen leer del libro. Lo cacheable son catálogos |
 | `100K – 1M` | Cache miss, escrituras lentas | Sharding + réplicas + regiones | **El tramo real**, y llega por donde el material anticipa: el plano único de escritura de `D`(a) deja de caber en una máquina en `19 100` giros/día. La partición es **por giro**, y la decide `RNF-07` |
 | `> 1M` | Todo a la vez | Microservicios + event-driven + multi-región | **No se alcanza con arquitectura.** `1 M` giros/día son `USD 109 500 M/año`, `1,8×` los dos corredores enteros |
+
+### El mismo diagrama, cinco veces
+
+**Tramo 1 · `< 1 000` usuarios** — un servidor y una base. SendIt nunca vive acá.
+
+```mermaid
+flowchart TB
+  U1(("Usuarios")) --> AS1["Application Server"] --> DB1[("Database")]
+```
+
+**Tramo 2 · `1K – 10K` usuarios** — la DB es el cuello: balanceador, varios servidores y réplica.
+
+```mermaid
+flowchart TB
+  U2(("Usuarios")) --> LB2(("Load Balancer"))
+  LB2 --> AS2A["Application Server"]
+  LB2 --> AS2B["Application Server"]
+  AS2A --> PDB2[("Primary DB")]
+  AS2A --> RDB2[("Replica DB")]
+  AS2B --> PDB2
+  AS2B --> RDB2
+```
+
+**Tramo 3 · `10K – 100K` usuarios — donde SendIt arranca.** Entra la caché, y acá la caché **solo
+guarda catálogos**: `RNF-05` y `RNF-07` obligan a leer el dato caliente del libro.
+
+```mermaid
+flowchart TB
+  U3(("Usuarios")) --> LB3(("Load Balancer"))
+  LB3 --> AS3
+  subgraph R3["REGIÓN ×3"]
+    direction TB
+    AS3["Application Server"] --> CA3[("CACHE — solo catálogos")]
+    AS3 --> PDB3[("Primary DB")]
+    AS3 --> RDB3[("Replica DB")]
+  end
+```
+
+**Tramo 4 · `100K – 1M` usuarios** — entra el CDN y la base se parte. **La partición es por giro**, y
+la decide `RNF-07`: dos giros nunca comparten transacción, un giro nunca se parte.
+
+```mermaid
+flowchart TB
+  U4(("Usuarios")) --> CDN4(("CDN"))
+  U4 --> LB4(("Load Balancer"))
+  LB4 --> AS4
+  subgraph R4["REGIÓN ×3"]
+    direction TB
+    AS4["Application Server"] --> CA4[("CACHE")]
+    AS4 --> PDB4[("Primary DBs — particionadas por giro")]
+    AS4 --> RDB4[("Replica DBs")]
+  end
+```
+
+**Tramo 5 · `> 1M` usuarios** — todo a la vez. No se alcanza con arquitectura: `1 M` giros/día son
+`USD 109 500 M/año`, `1,8×` los dos corredores enteros.
+
+```mermaid
+flowchart TB
+  U5(("Usuarios")) --> CDN5(("CDN"))
+  U5 --> LB5(("Load Balancer"))
+  LB5 --> AS5
+  subgraph R5["REGIÓN ×N — una por corredor"]
+    direction TB
+    AS5["Application Servers"] --> CA5[("CACHE")]
+    AS5 --> BUS{{"Bus de eventos"}}
+    AS5 --> PDB5[("Primary DBs Sharded")]
+    AS5 --> RDB5[("Replica DBs Sharded")]
+  end
+  TEL(["Operador de telefonía — cuota por país"]) -.->|"el cuello real, en los cinco tramos"| U5
+```
 
 **Y lo que estas cinco láminas no muestran es el resultado de este paso:** la caja que rompe primero
 no está en ninguna de ellas. Es el **operador de telefonía** —un tercero con cuota diaria— y se agota

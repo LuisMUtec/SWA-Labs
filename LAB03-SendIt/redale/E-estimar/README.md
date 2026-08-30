@@ -384,7 +384,7 @@ quien la hace fuera del mostrador antes de admitirla.
 lecturas**. `132 564 / 86 400 = 1,53 req/s` de promedio; `× 11 = ` **16,9 req/s en pico**. Son
 **32,82 escrituras por giro**, contra las `29,96` de los 155 ítems y las `21,62` de los 137.
 
-**De dónde salen las `8 002` escrituras que esta repropagación agregó sobre las `83 885` anteriores.**
+**De dónde salen las `8 001` escrituras que esta repropagación agregó sobre las `83 885` anteriores.**
 La regla que la ronda 12 fijó —atribuir el delta ítem por ítem hasta que la suma reproduzca la
 cifra— se aplica igual acá, y esta vez el reparto dice algo incómodo: **el 96 % del delta no lo
 producen los ítems nuevos.**

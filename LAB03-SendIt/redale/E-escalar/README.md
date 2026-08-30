@@ -172,73 +172,74 @@ primer tramo del material: arranca en el tercero**, el de `10K – 100K`. La arq
 
 ### El mismo diagrama, cinco veces
 
-```mermaid
-flowchart TB
-  subgraph T1["1 · &lt; 1 000 usuarios"]
-    direction TB
-    U1(("Usuarios")) --> AS1["Application Server"] --> DB1[("Database")]
-  end
-  subgraph T2["2 · 1K – 10K usuarios"]
-    direction TB
-    U2(("Usuarios")) --> LB2(("Load Balancer"))
-    LB2 --> AS2A["Application Server"]
-    LB2 --> AS2B["Application Server"]
-    AS2A --> PDB2[("Primary DB")]
-    AS2A --> RDB2[("Replica DB")]
-    AS2B --> PDB2
-    AS2B --> RDB2
-  end
-```
+**Tramo 1 · `< 1 000` usuarios** — un servidor y una base. SendIt nunca vive acá.
 
 ```mermaid
 flowchart TB
-  subgraph T3["3 · 10K – 100K usuarios — donde SendIt arranca"]
-    direction TB
-    U3(("Usuarios")) --> LB3(("Load Balancer"))
-    subgraph R3["REGIÓN &times;3"]
-      direction TB
-      AS3["Application Server"] --> CA3[("CACHE&lt;br/&gt;solo catálogos")]
-      AS3 --> PDB3[("Primary DB")]
-      AS3 --> RDB3[("Replica DB")]
-    end
-    LB3 --> AS3
-  end
-  subgraph T4["4 · 100K – 1M usuarios"]
-    direction TB
-    U4(("Usuarios")) --> CDN4(("CDN"))
-    U4 --> LB4(("Load Balancer"))
-    subgraph R4["REGIÓN &times;3"]
-      direction TB
-      AS4["Application Server"] --> CA4[("CACHE")]
-      AS4 --> PDB4[("Primary DBs&lt;br/&gt;particionadas por giro")]
-      AS4 --> RDB4[("Replica DBs")]
-    end
-    LB4 --> AS4
-  end
+  U1(("Usuarios")) --> AS1["Application Server"] --> DB1[("Database")]
 ```
+
+**Tramo 2 · `1K – 10K` usuarios** — la DB es el cuello: balanceador, varios servidores y réplica.
 
 ```mermaid
 flowchart TB
-  subgraph T5["5 · &gt; 1M usuarios — no se alcanza con arquitectura"]
-    direction TB
-    U5(("Usuarios")) --> CDN5(("CDN"))
-    U5 --> LB5(("Load Balancer"))
-    subgraph R5["REGIÓN &times;N, una por corredor"]
-      direction TB
-      AS5["Application Servers"] --> CA5[("CACHE")]
-      AS5 --> BUS{{"Bus de eventos"}}
-      AS5 --> PDB5[("Primary DBs&lt;br/&gt;(Sharded)")]
-      AS5 --> RDB5[("Replica DBs&lt;br/&gt;(Sharded)")]
-    end
-    LB5 --> AS5
-  end
-  TEL(["Operador de telefonía&lt;br/&gt;cuota por país"]) -.->|"el cuello real, en los cinco tramos"| U5
+  U2(("Usuarios")) --> LB2(("Load Balancer"))
+  LB2 --> AS2A["Application Server"]
+  LB2 --> AS2B["Application Server"]
+  AS2A --> PDB2[("Primary DB")]
+  AS2A --> RDB2[("Replica DB")]
+  AS2B --> PDB2
+  AS2B --> RDB2
 ```
 
-**Lo que estos cinco dibujos no muestran, y es el resultado de este paso:** la caja que rompe primero
-no está en ninguno de ellos. Es el **operador de telefonía**, que no es un componente de SendIt sino
-un tercero con cuota diaria, y que se agota en `831` giros/día — antes del primer tramo del material.
-Las cinco láminas escalan cómputo y almacenamiento; SendIt no se rompe por ninguno de los dos.
+**Tramo 3 · `10K – 100K` usuarios — donde SendIt arranca.** Entra la caché, y acá la caché **solo
+guarda catálogos**: `RNF-05` y `RNF-07` obligan a leer el dato caliente del libro.
+
+```mermaid
+flowchart TB
+  U3(("Usuarios")) --> LB3(("Load Balancer"))
+  LB3 --> AS3
+  subgraph R3["REGIÓN ×3"]
+    direction TB
+    AS3["Application Server"] --> CA3[("CACHE — solo catálogos")]
+    AS3 --> PDB3[("Primary DB")]
+    AS3 --> RDB3[("Replica DB")]
+  end
+```
+
+**Tramo 4 · `100K – 1M` usuarios** — entra el CDN y la base se parte. **La partición es por giro**, y
+la decide `RNF-07`: dos giros nunca comparten transacción, un giro nunca se parte.
+
+```mermaid
+flowchart TB
+  U4(("Usuarios")) --> CDN4(("CDN"))
+  U4 --> LB4(("Load Balancer"))
+  LB4 --> AS4
+  subgraph R4["REGIÓN ×3"]
+    direction TB
+    AS4["Application Server"] --> CA4[("CACHE")]
+    AS4 --> PDB4[("Primary DBs — particionadas por giro")]
+    AS4 --> RDB4[("Replica DBs")]
+  end
+```
+
+**Tramo 5 · `> 1M` usuarios** — todo a la vez. No se alcanza con arquitectura: `1 M` giros/día son
+`USD 109 500 M/año`, `1,8×` los dos corredores enteros.
+
+```mermaid
+flowchart TB
+  U5(("Usuarios")) --> CDN5(("CDN"))
+  U5 --> LB5(("Load Balancer"))
+  LB5 --> AS5
+  subgraph R5["REGIÓN ×N — una por corredor"]
+    direction TB
+    AS5["Application Servers"] --> CA5[("CACHE")]
+    AS5 --> BUS{{"Bus de eventos"}}
+    AS5 --> PDB5[("Primary DBs Sharded")]
+    AS5 --> RDB5[("Replica DBs Sharded")]
+  end
+  TEL(["Operador de telefonía — cuota por país"]) -.->|"el cuello real, en los cinco tramos"| U5
+```
 
 ### Escalar hacia afuera o hacia arriba (lámina 46)
 
