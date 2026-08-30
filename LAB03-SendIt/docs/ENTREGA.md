@@ -1733,7 +1733,10 @@ flowchart LR
   DES --> BDDE[("BD desafíos")]
   GIR --> DES
   IDN -->|"DOCUMENTO NO VIGENTE — HAY DESAFÍO"| DES
-  DES -->|"INTENTOS AGOTADOS"| PDA
+  DES -->|"INTENTOS AGOTADOS"| IDD["Identificación Derivada Service"]
+  IDD -->|"IDENTIFICAR CONTRA LOS DATOS QUE EL EMISOR REGISTRÓ"| TAB
+  TAB -->|"RECEPTOR IDENTIFICADO — PAGO HABILITADO"| PAY
+  IDD -->|"VENCIDA SIN RESOLVER — DEVOLUCIÓN AL EMISOR"| DEV
   DES -->|"RESPUESTA CORRECTA — SIN MOSTRARLA A NADIE"| PAY
   PAY --> CRE["Cobros del Receptor Service"]
   CRE --> BDCU
@@ -1837,6 +1840,7 @@ iteración 2 siguen ahí con el mismo nombre.
 | `Reporte Service` | Reporta a la autoridad el giro sobre el umbral transfronterizo, midiéndolo **sobre el giro completo** y no sobre su tramo local | `RF-17`, `RF-22` |
 | `Retención Service` | Abre el caso con el plazo del regulador **más estricto de los dos países** —más corto para la homonimia que para la exacta—, lo deriva a un rol distinto del operario que atendió y avisa al emisor **y al receptor** | `RF-30`, `RF-31`, `RF-37`, `RF-78` |
 | `Tablero de Cumplimiento` | Donde trabaja el rol de cumplimiento: es el `Debt Dashboard` de este caso. **Libera solo ese rol**, y toda liberación deja su motivo registrado | `RF-33`, `RF-87` |
+| `Identificación Derivada Service` | **La salida que el desafío no tenía.** Cuando `RF-82` agota los intentos, deriva al rol de cumplimiento en vez de dejar a Elena delante de un giro no pagable sin camino: `RF-218` la identifica **contra los datos que el emisor registró**, `RF-219` le pone `[ASSUMPTION: 24 h]` y `RF-223` la termina devolviendo. **Es el único componente que las rondas 17-19 obligaron a crear** |
 | `Desafío Service` | Guarda la pregunta y **comprueba** la respuesta sin mostrarla: ni al operario ni a quien administra la infraestructura. Es lo que deja cobrar con documento no vigente **sin bajar la vara de identificación**. Acota los intentos y caduca | `RF-114`, `RF-68`, `RF-69`, `RF-82`, `RF-83`, `RNF-17` |
 | `Cobros del Receptor Service` | Cuenta cuántos giros cobró **un mismo receptor** en la ventana y retiene el que la supera. **El gemelo del `Limits Service` en la otra punta**: aquel cuenta sobre el emisor al crear, este sobre el receptor al pagar | `RF-58`, `RF-93` |
 | `Caja del Punto Service` | El efectivo **por punto**, que el `Liquidez Service` no ve porque mira el corredor entero. Registra lo que cada punto declara al abrir y al cerrar, y le dice al operario cuánto tiene antes de habilitarle un pago | `RF-76`, `RF-92`, `RF-95` |
@@ -1863,7 +1867,7 @@ tiene ningún vacío, y por lo tanto no hay iteración 4.**
 | Clase | Cuántos | Cuáles |
 |---|---|---|
 | **Actores** | 5 | Rosa (emisora), Elena (receptora), operario de origen, operario de destino, rol de cumplimiento |
-| **Servicios propios** | 26 | Punto de Atención, Idempotencia, Identity, Corredor, Screening, Limits, Dual Control, Quote, Liquidez, Giro, Ledger, Payout, Desafío, Cobros del Receptor, Caja del Punto, Punto Alternativo, Reclamo, Retención, Cancelación, Devolución, Consulta, Supresión, Corrección, Sync, Reporte, Audit |
+| **Servicios propios** | 27 | Punto de Atención, Idempotencia, Identity, Corredor, Screening, Limits, Dual Control, Quote, Liquidez, Giro, Ledger, Payout, Desafío, Identificación Derivada, Cobros del Receptor, Caja del Punto, Punto Alternativo, Reclamo, Retención, Cancelación, Devolución, Consulta, Supresión, Corrección, Sync, Reporte, Audit |
 | **Soporte** | 2 | Notification Service, Tablero de Cumplimiento |
 | **Procesos batch** | 4 | `Screening Job <actualización de lista>`, `Vencimiento Job <diario>`, `Cierre de Caja Job <EOD>`, `Liquidación Job <plazo del agente>` |
 | **Sistemas externos** (rosados) | 7 | RENIEC · Verificación documental del corredor de origen · Listas OFAC/ONU/UE · Proveedor de tipo de cambio · Autoridad de origen (FinCEN/SEPBLAC) · Autoridad de destino (UIF-Perú) · Operador de voz y mensaje de texto |
