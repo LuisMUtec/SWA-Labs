@@ -1959,12 +1959,48 @@ completo».**
 
 ## 7. E — Escalar
 
-**El material rotula sus tramos en usuarios registrados. Esa unidad no existe en este modelo:**
-`RF-01` identifica al emisor presencialmente contra un documento vigente **cada vez** que crea un
-giro, y no hay cuenta, padrón ni sesión que contar. Un tramo de SendIt se rotula en **giros por día**
-—la unidad que produce la estimación de la sección 3— y se lee junto a tres columnas derivadas que
-**no crecen con el mismo factor**: las operaciones de ventanilla (más de dos por giro), el pico
-diario, y una cuarta que **no es carga sino superficie**: los puntos de atención afiliados.
+**Este paso se entrega dos veces: en la forma del material y en la del caso.** El capítulo 3 lo dibuja
+de una manera concreta —láminas 40 a 45: el mismo diagrama, cinco veces, cada vez con una caja más,
+rotulado en **usuarios**— y esa versión va primero, en 7.0. Después viene el análisis por
+**giros por día**, que es la unidad en la que la sección 3 estimó y en la que las roturas de este caso
+se dejan medir.
+
+### 7.0 Los cinco tramos del material, en su unidad
+
+**Dónde cae SendIt, que es lo primero que hay que decir.** `S-02` cuenta **42 500 emisores distintos
+al mes** para los `2 800` giros diarios del lanzamiento. SendIt **no arranca en el primer tramo del
+material: arranca en el tercero.** La arquitectura de la lámina 40 —un servidor y una base— nunca es
+la de este sistema, ni el día uno.
+
+| Nivel de carga | Problema típico *(material)* | Solución *(material)* | Qué pasa en SendIt |
+|---|---|---|---|
+| `< 1 000` usuarios | Ninguno | 1 servidor + 1 DB | **Tramo que SendIt no vive.** Y si lo viviera, ya tendría roto el canal de voz: la cuota se agota en `831` giros/día |
+| `1K – 10K` | La DB es el cuello | LB + varios app servers + réplica | **La DB no es el cuello de SendIt en ningún tramo.** Lo que aparece acá es el piso de `RF-76`: `9 000` declaraciones de caja diarias que no dependen del volumen |
+| `10K – 100K` | Lecturas muy altas | Cache + CDN | **Acá arranca SendIt** (`42 500`). Y la caché **no aplica al dato caliente**: `RNF-05` y `RNF-07` exigen leer del libro. Lo cacheable son catálogos |
+| `100K – 1M` | Cache miss, escrituras lentas | Sharding + réplicas + regiones | **El tramo real**, y llega por donde el material anticipa: el plano único de escritura de `D`(a) deja de caber en una máquina en `19 100` giros/día. La partición es **por giro**, y la decide `RNF-07` |
+| `> 1M` | Todo a la vez | Microservicios + event-driven + multi-región | **No se alcanza con arquitectura.** `1 M` giros/día son `USD 109 500 M/año`, `1,8×` los dos corredores enteros |
+
+**Y lo que estas cinco láminas no muestran es el resultado de este paso:** la caja que rompe primero
+no está en ninguna de ellas. Es el **operador de telefonía** —un tercero con cuota diaria— y se agota
+en `831` giros/día, antes del primer tramo del material. Las cinco láminas escalan cómputo y
+almacenamiento; **SendIt no se rompe por ninguno de los dos.**
+
+**Escalar hacia afuera o hacia arriba (lámina 46).** Los servicios de aplicación escalan
+**horizontal**: `D` los dejó sin estado y el arrendamiento de `D`(c) vive en el centro. El libro de
+`D`(a) escala **vertical** hasta `19 100` giros/día, porque `RNF-07` pide que el asiento y el estado
+del giro quepan en una transacción; cuando la vertical se acaba, la partición **por giro** es la
+única que ese invariante admite. **Y hay una tercera dirección que el material no tiene porque su
+ejemplo no la necesita:** SendIt escala por **red afiliada**, que no es cómputo y se compra con
+tesorería, no con máquinas.
+
+---
+
+### 7.1 Los tramos en la unidad del caso
+
+**Un tramo de SendIt se rotula en giros por día** —la unidad que produce la estimación de la sección
+3— y se lee junto a tres columnas derivadas que **no crecen con el mismo factor**: las operaciones de
+ventanilla (más de dos por giro), el pico diario, y una cuarta que **no es carga sino superficie**:
+los puntos de atención afiliados.
 
 **Esa cuarta columna es la que rompe la intuición del material.** Los puntos no crecen con los giros:
 `S-12` pone **3 000 desde el día uno**. Y son ellos —no el volumen— los que fijan cuántas cajas
@@ -1979,7 +2015,7 @@ inventar ninguno: `2,11` ventanillas por giro · `3,0` de pico diario · `4,9` a
 | Tramo (giros/día) | Ventanillas/día | Giros/día en pico | Puntos activos | Avisos de voz y SMS/día | Corredores |
 |---|---|---|---|---|---|
 | `< 1 k` | **2 110** — menos que las **9 000** declaraciones de caja del mismo día | 3 000 | **3 000** — piso de `S-12`, no derivado del volumen | 4 900 | 2 |
-| `1 k – 10 k` | **21 100** — **SendIt entra acá**, en `2 800` (`5 921` ventanillas) | 30 000 | 3 000 — la red sigue al `11 %` de su techo de caja | 49 000 | 2 |
+| `1 k – 10 k` | **21 300** — **SendIt entra acá**, en `2 800` (`5 955` ventanillas) | 30 000 | 3 000 — la red sigue al `11 %` de su techo de caja | 80 200 | 2 |
 | `100 k` | 211 000 | 300 000 | **3 200** — primer tramo en que la red deja de estar sobrada | 490 000 | 2, al `18 %` de los dos corredores |
 | `500 k` | 1 055 000 | 1 500 000 | 16 000 | 2 450 000 | **≥ 12** — el `89 %` de los dos corredores es inalcanzable |
 | `1 M` | 2 110 000 | 3 000 000 | 32 000 | 4 900 000 | **≥ 24** — `1,8×` los dos corredores enteros |
@@ -1991,7 +2027,7 @@ paga `N` giros por turno tiene que tener `N × USD 300` inmovilizados en su caj�
 `3 000 × 30 ÷ 0,96 = ` **93 750 giros/día**: por debajo manda `S-12`, por encima manda la tesorería
 del agente.
 
-### 7.1 El hallazgo: el sistema nace pasado su primer cuello
+### 7.2 El hallazgo: el sistema nace pasado su primer cuello
 
 **El primer cuello de botella de SendIt no es técnico, y se rompe por debajo del volumen de
 llegada.**
@@ -2002,16 +2038,19 @@ Pico diario ...........................................  3,0×
 Unidades por giro el día señalado .....................  14,7
 
 Cuota del operador, 10 000/día por país × 2 países ....  20 000
-Techo del tramo:  20 000 ÷ 14,7 = ................  1 360 giros/día
+Techo del tramo:  20 000 ÷ 24,1 = ................    831 giros/día
 
 Volumen de llegada estimado (sección 3) ...........  2 800 giros/día
 ```
 
-**`1 360 < 2 800`. El sistema arranca ya pasado su primer cuello, y por un factor de 2,1.** El día
-señalado se necesitan `41 160` unidades contra `20 000` de cuota.
+**`831 < 2 800`. El sistema arranca ya pasado su primer cuello, y por un factor de 3,4.** El día
+señalado se necesitan `67 401` unidades contra `20 000` de cuota. **Y el factor empeoró en esta
+repropagación sin que entrara un solo ítem nuevo:** `S-14` enumeraba dieciocho avisos y el backlog
+despachaba veinticuatro —faltaban `RF-91`, `RF-156`, `RF-172`, `RF-178`, `RF-190` y `RF-199`—, de
+`6,5` a `8,02` unidades por giro.
 
-**Y no hay plan B, porque el plan B es la persona.** Los cuatro avisos P0 —`RF-25`, `RF-37`, `RF-41`,
-`RF-75`— y el P1 `RF-60` salen por ese canal, y **Elena no tiene aplicación ni datos móviles**: un
+**Y no hay plan B, porque el plan B es la persona.** Los avisos P0 —`RF-25`, `RF-37`, `RF-41`,
+`RF-75`, `RF-199`, `RF-190`— y los P1 `RF-60` y `RF-121` salen por ese canal, y **Elena no tiene aplicación ni datos móviles**: un
 aviso no entregado no degrada, **desaparece**. El sistema se ve sano en todas sus métricas —el giro
 está creado, fondeado y disponible— y nadie lo cobra.
 
@@ -2022,38 +2061,38 @@ pasa a ser **uno por país** —`RNF-12` obliga a contar **dos operadores**, no 
 no en `RF-25` (P0)**, y constancia de `RF-98` también de lo **no** entregado, que hoy solo registra
 lo enviado. El resto se negocia.
 
-**Como contraste, el cuello que un servidor sí arregla llega cuarto y muy arriba:** el plano único de
-escritura de `D`(a), en **34 700 giros/día**. `18,12` escrituras por giro —porque `D`(a) hizo que
+**Como contraste, el cuello que un servidor sí arregla llega tercero y muy arriba:** el plano único de
+escritura de `D`(a), en **19 100 giros/día**. `32,82` escrituras por giro —porque `D`(a) hizo que
 *todo hecho sea un asiento con contrapartida*, incluida la retención de `RF-29`, que no mueve un
 centavo y reclasifica `Obligación con el receptor` contra `Obligación retenida`— dan
-`giros × 18,12 ÷ 86 400 × 11 = 80 req/s`, que es la capacidad de un plano de 16 vCPU. **Ese es el
+`giros × 32,82 ÷ 86 400 × 11 = 80 req/s`, que es la capacidad de un plano de 16 vCPU. **Ese es el
 único de los seis cuellos que se compra.**
 
-### 7.2 Los cinco tramos y qué se rompe primero en cada uno
+### 7.3 Los tramos por giros/día y qué se rompe primero en cada uno
 
 | Tramo | Qué se rompe primero | Por qué | Qué cambia en la arquitectura |
 |---|---|---|---|
-| **`< 1 k`** *(el tramo donde el material dibuja «un servidor y una base»)* | **La cuota del operador de telefonía**, en `1 360` giros/día | `14,7` unidades por giro el día señalado contra `20 000` de cuota. **El tramo se rompe adentro, y por debajo del volumen de llegada** | Nada en el diagrama, todo en el contrato: `Notification Service` **uno por país**, cola con prioridad, constancia de lo no entregado. *En segundo plano ya asoman el mostrador sin línea —los `3 000` puntos de `S-12`— y el piso de `RF-76`: `9 000` declaraciones de caja al día, **`4,3×` la carga que sí se apaga**. Un día sin un solo giro sigue escribiendo `9 000` filas* |
-| **`1 k – 10 k`** *(SendIt entra acá, en `2 800`)* | **La cuota, ya rota, se vuelve estructural**, y aparece el primer límite medido en personas | En el techo del tramo son `49 000` avisos/día y `147 000` el día señalado: **`7,4×` la cuota**. Un factor de dos se negocia en un mes; **uno de siete cambia el modelo comercial del canal**, y con él el `USD 0,24` por giro que `S-14` cargó al costo unitario | El canal deja de ser un adaptador y pasa a ser una **decisión de compra por corredor**. **Es el único cuello del sistema que se renegocia en vez de rediseñarse.** Y la cola de cumplimiento revela **dos términos que no se parecen**: el de sanciones crece como el volumen; el de `RF-93` crece con los cobros por receptor, **que es justo lo que sube cuando el negocio va bien** |
-| **`100 k`** *(el primer tramo en que algo se rompe por volumen — y no es la base de lectura)* | **El plano único de escritura de `D`(a)**, roto desde `34 700` giros/día | `18,12` escrituras por giro. Los tres nodos de `RNF-11` son **un plano con quórum, no tres capacidades**. A `100 k` hacen falta `2,9` | Aparece el **particionamiento del libro, por giro** —porque `RNF-07` exige que las dos líneas del asiento entren juntas y las dos son del mismo giro—. **Lo que queda a caballo**: `RF-81` busca a una persona **a través de** todos sus giros, y `RF-58`/`RF-93` cuentan por identidad de receptor. En paralelo la caja por punto (`3 200` puntos contra `3 000`) hace de `Caja del Punto Service` **el segundo escritor más caliente del libro**, y el `Desafío Service` pasa a ser dependencia dura del pago |
+| **`< 1 k`** *(el tramo donde el material dibuja «un servidor y una base»)* | **La cuota del operador de telefonía**, en `831` giros/día | `24,1` unidades por giro el día señalado contra `20 000` de cuota. **El tramo se rompe adentro, y por debajo del volumen de llegada** | Nada en el diagrama, todo en el contrato: `Notification Service` **uno por país**, cola con prioridad, constancia de lo no entregado. *En segundo plano ya asoman el mostrador sin línea —los `3 000` puntos de `S-12`— y el piso de `RF-76`: `9 000` declaraciones de caja al día, **`4,3×` la carga que sí se apaga**. Un día sin un solo giro sigue escribiendo `9 000` filas* |
+| **`1 k – 10 k`** *(SendIt entra acá, en `2 800`)* | **La cuota, ya rota, se vuelve estructural**, y aparece el primer límite medido en personas | En el techo del tramo son `80 200` avisos/día y `240 600` el día señalado: **`12×` la cuota**. Un factor de dos se negocia en un mes; **uno de siete cambia el modelo comercial del canal**, y con él el `USD 0,24` por giro que `S-14` cargó al costo unitario | El canal deja de ser un adaptador y pasa a ser una **decisión de compra por corredor**. **Es el único cuello del sistema que se renegocia en vez de rediseñarse.** Y la cola de cumplimiento revela **dos términos que no se parecen**: el de sanciones crece como el volumen; el de `RF-93` crece con los cobros por receptor, **que es justo lo que sube cuando el negocio va bien** |
+| **`100 k`** *(el primer tramo en que algo se rompe por volumen — y no es la base de lectura)* | **El plano único de escritura de `D`(a)**, roto desde `19 100` giros/día | `32,82` escrituras por giro. Los tres nodos de `RNF-11` son **un plano con quórum, no tres capacidades**. A `100 k` hacen falta `2,9` | Aparece el **particionamiento del libro, por giro** —porque `RNF-07` exige que las dos líneas del asiento entren juntas y las dos son del mismo giro—. **Lo que queda a caballo**: `RF-81` busca a una persona **a través de** todos sus giros, y `RF-58`/`RF-93` cuentan por identidad de receptor. En paralelo la caja por punto (`3 200` puntos contra `3 000`) hace de `Caja del Punto Service` **el segundo escritor más caliente del libro**, y el `Desafío Service` pasa a ser dependencia dura del pago |
 | **`500 k`** *(deja de ser un tramo de carga)* | **El mercado direccionable, antes que cualquier componente** | `500 000 × USD 300 × 365 = USD 54 750 M/año`: el **`89 %`** de los dos corredores enteros, que valen `USD 61 300 M`. Ningún incumbente de treinta años tiene el `89 %` de un corredor. **No se llega vendiendo más: se llega abriendo corredores** | Lo que crece **no es el número de corredores: son los pares origen–destino** (`o × d`). Y **es el tramo donde una decisión de `D` deja de sostenerse**: con varios orígenes una misma Elena cobra giros de corredores distintos, y el acumulado de `RF-58` que `D` exigió *sin caché y dentro de la transacción* **cruza particiones**. Las dos salidas cuestan: partir por identidad de receptor —y entonces `RNF-07` queda a caballo— o un segundo recurso en el camino crítico de `RNF-09` |
 | **`1 M`** *(no se alcanza con arquitectura)* | **Los supuestos de la estimación, antes que cualquier caja** | `USD 109 500 M/año`: **1,8 veces** los dos corredores de lanzamiento y del orden del `13 %` de todo el flujo mundial de remesas. La cuota del `0,5 %` y el ticket de `USD 300` son las dos entradas de las que todo cuelga en proporción directa; este tramo exige mover una por un factor grande. **Ninguna de las tres cosas es una decisión de arquitectura** | **Se devuelve a la estimación, no se resuelve acá.** Lo que sí es una prueba de arquitectura: **si el corredor enésimo cuesta lo mismo que el segundo.** Si los pares viven como **filas** de `BD corredores y reguladores`, el costo es constante; si viven como **ramas** en el `Corredor Service`, crece con los que ya hay. Y con `[ASSUMPTION: 99 % de enlace por punto]`, en `32 000` mostradores hay **320 que no pueden pagar nada en cualquier instante** — del orden de `9 600` pagos diarios que no ocurren donde Elena fue a buscarlos |
 
-### 7.3 El orden en que este sistema se rompe
+### 7.4 El orden en que este sistema se rompe
 
 Se ordenan **por el tramo en el que caen, no por gravedad**. Cinco de los seis son de personas, de
 tesorería, de contrato o de un tercero.
 
 | Orden | Cuello | Tramo en que cae | Se responde con |
 |---|---|---|---|
-| **1** | La cuota del operador de telefonía | **`1 360` giros/día — debajo del volumen de llegada** | Un contrato, no una máquina |
+| **1** | La cuota del operador de telefonía | **`831` giros/día — a un tercio del volumen de llegada** | Un contrato, no una máquina |
 | **2** | El mostrador sin línea | `< 1 k`, con los `3 000` puntos de `S-12` | Un segundo camino de conectividad, o **aceptar la indisponibilidad por escrito** |
-| **3** | El plano único de escritura de `D`(a) | `34 700` giros/día | Particionar el libro por giro — y asumir lo que queda a caballo |
+| **3** | El plano único de escritura de `D`(a) | `19 100` giros/día | Particionar el libro por giro — y asumir lo que queda a caballo |
 | **4** | La caja por punto de atención | `93 750` giros/día | Tesorería del agente, y `RF-91` como **balanceo** y no como excepción |
 | **5** | La capacidad de decidir dentro del plazo de la retención | `100 k`, creciendo **más rápido** que el volumen por `RF-93` | Personas, o achicar el caudal con `RF-78` — **que es un ítem de `R`, no una caja** |
 | **6** | Los roles distintos por punto y turno (`RNF-02`) | `500 k`, con la red ya ensanchada | Más personas **distintas y simultáneas**, que no es lo mismo que más horas |
 
-**El cuello número 3 es el único de los seis que un servidor arregla, y es el cuarto en llegar.**
+**El cuello número 3 es el único de los seis que un servidor arregla, y es el tercero en llegar.**
 
 **Dos correcciones que este paso obligó a hacer sobre pasos anteriores, y conviene decirlas porque
 son el trabajo real del método.**
