@@ -1097,7 +1097,7 @@ estricta y otra que es un binario de megabytes que nunca se consulta salvo por a
 | Declaraciones de caja (RF-76) | **SQL solo-adición** | RF-76 registra **declaraciones**, no un saldo: una declaración corregida con `UPDATE` borra la única prueba de qué dijo el operario |
 | Estado local del punto sin conexión | **Base embebida, solo-adición, firmada** | RF-100 prohíbe autorizar lo que no se puede comprobar contra el centro: **lo local no decide, solo recuerda.** Nunca es fuente de verdad de un pago |
 
-### 4.3 Diseño de la API — 32 endpoints
+### 4.3 Diseño de la API — 48 endpoints
 
 Los ejemplos del material listan rutas desnudas. Aquí la tabla lleva tres columnas más, y las tres
 son obligatorias: **quién la usa** —una ruta sin llamador identificado es una superficie de ataque
@@ -1142,6 +1142,14 @@ respuesta** y no ejecuta nada; con la misma clave y distinto contenido devuelve 
 | `POST` | `/prescripciones` | Proceso interno, tarea diaria | Deja no pagable el giro vencido, pone el monto a disposición y avisa antes. `IDEMP` | RF-49, RF-50, RF-51 |
 | `POST` | `/correcciones` | Segundo rol, sobre un giro pagado | Registra la corrección como **movimiento nuevo**, nunca editando el anterior. `IDEMP` | RF-56, RF-61, RF-59, RNF-03 |
 | `POST` | `/liquidaciones` | Proceso interno → agente afiliado | Liquida el efectivo que el agente puso de su caja. `IDEMP` por agente y periodo | RF-24 |
+| `POST` | `/identificaciones/{id}/segunda-opinion` | **Segundo rol, nunca el operario que atiende** | Resuelve la duda sobre si la fotografía corresponde al emisor. `RF-225` la saca del criterio del operario | `RF-225` |
+| `POST` | `/identificaciones/{id}/vencimiento` | Proceso interno, tarea minutada | Rechaza el giro cuya duda no se resolvió en `[ASSUMPTION: 10 min]`, **antes de que entre el efectivo**: no hay nada que revertir | `RF-229` |
+| `POST` | `/giros/{id}/identificacion-derivada` | Punto de atención → centro, al agotarse los intentos | **La salida que el desafío no tenía.** Abre la derivación al rol de cumplimiento y arranca el reloj | `RF-218`, `RF-82` |
+| `POST` | `/identificaciones-derivadas/{id}/resolucion` | **Rol de cumplimiento** | Identifica al receptor **contra los datos que el emisor registró** —no contra un documento que no tiene— y habilita el pago | `RF-218` |
+| `POST` | `/identificaciones-derivadas/{id}/vencimiento` | Proceso interno, tarea diaria | **El terminador.** Vence a las `[ASSUMPTION: 24 h]` y devuelve al emisor | `RF-219`, `RF-223` |
+| `POST` | `/reposiciones/{id}/retiro` | Punto elegido por el receptor → centro | Entrega la reposición en efectivo con documento vigente, o vencido si responde el desafío, y **nunca por más de lo que la evidencia acredita** | `RF-194`, `RF-204`, `RF-222`, `RF-214` |
+| `POST` | `/avisos/{id}/redespacho` | Adaptador de canal, por el destinatario identificado | Redespacha el aviso que dice no haber recibido. **Rechaza el que lleva el código** | `RF-227`, `RF-228` |
+| `GET` | `/corredores/{o}/{d}/efectivo` | Proceso interno | Efectivo del corredor **producido a partir de lo que declaran sus puntos** | `RF-235`, `RF-20` |
 | `POST` | `/supresiones` | Rosa → proceso interno | Suprime los datos **de quien los pide y de nadie más**, destruyendo la clave de su evidencia. **No toca la traza** | RF-81, RF-99, RNF-03 |
 
 **Dos ausencias deliberadas, porque una API se define también por lo que no expone.** No hay
@@ -1179,7 +1187,7 @@ Cuatro, y son suyos: ninguno viene del backlog, y cada uno es un número que el 
 
 ## 5. A — Modelo de datos
 
-**Treinta entidades, diez bases, ninguna elipse decorativa y ninguna tabla huérfana.** El material
+**Treinta y siete entidades, diez bases, ninguna elipse decorativa y ninguna tabla huérfana.** El material
 pide cuatro cosas —tablas, campos, opciones de base de datos y otros tipos de almacenamiento— y acá
 se entregan las cuatro, más una quinta que este caso obliga: **en qué `BD` del diagrama de
 componentes vive cada entidad.** Esa columna es el contrato con el paso `L`, y se lee en las dos
@@ -1202,7 +1210,12 @@ no sobre el mostrador que lo atendió.
 columna cifrada con llave por corredor · `*_hmac` y `verificador` son valores que **se comparan y no
 se leen** · `*_id` es una clave foránea corriente.
 
-### 5.1 Las treinta entidades — campos, clave y base
+### 5.1 Las entidades — campos, clave y base
+
+**Treinta y siete en el modelo; las treinta y tres que deciden algo están abajo.** Las cuatro que no
+aparecen —catálogos de jurisdicción, corredor, acción ofrecible y acumulado del emisor— viven en
+[`redale/A-armar-modelo-datos/`](../redale/A-armar-modelo-datos/README.md) y no cargan ninguna
+decisión de este documento.
 
 | # | Entidad · `BD` | Campos | Clave y restricción |
 |---|---|---|---|
@@ -1236,6 +1249,9 @@ se leen** · `*_id` es una clave foránea corriente.
 | 28 | **Traza de auditoría** · `BD auditoría` | `traza_id`, `secuencia`, `giro_id`(FK), `tipo_acto` (incluidas las **lecturas** de identidad, `RNF-04`), `identidad_autor_id`(FK), `rol`, `punto_id`(FK), `entidad_objetivo`, `id_objetivo`, `valores_relevantes` (el valor que se vio, no un puntero), `ocurrido_en`, `registrado_en`, `conservar_hasta`, `hash_anterior` | `traza_id`. **Crece con las lecturas**: cada consulta de Kevin sobre un expediente es una fila |
 | 29 | **Supresión** · `BD auditoría`, ejecuta sobre `BD identidad` y los objetos | `supresion_id`, `solicitante_ref`(FK), `rol_declarante`, `solicitada_en`, `alcance`, `ejecutada_en`, `campos_borrados`, `objetos_criptoborrados`, `conservado_por_regla` (**qué no se borró y qué ítem lo obliga**), `identidad_ejecutor_id`(FK), `resultado`, `hash_anterior` | `supresion_id`. Es el acto que **demuestra** el borrado, y por eso no puede vivir en la base que borra |
 | 30 | **Clave de idempotencia** · `BD intentos` | `clave`, `operacion` ∈ {`crear`,`pagar`,`cancelar`,`devolver`,`liberar`}, `punto_id`(FK), `giro_id`(FK, nulo hasta que existe), `huella_contenido`, `estado`, `resultado_serializado`, `creada_en`, `expira_en` (TTL) | `clave`. **Misma clave con distinta `huella_contenido` es conflicto, no operación nueva** — es lo único que impide que un corte convierta un giro en dos |
+| **31** | **Identificación derivada** · `BD cumplimiento` | `derivacion_id`, `giro_id`(FK, **ÚNICO por giro vivo**), `receptor_ref`(FK), `abierta_en`, `vence_en` (`abierta_en + [ASSUMPTION: 24 h]`, **`RF-219`**), `origen` = `intentos_agotados`, `estado` ∈ {`abierta`,`identificada`,`vencida`}, `resuelta_por_identidad_id`(FK, **nunca un operario de mostrador**), `contrastada_contra` = `datos_registrados_por_el_emisor` (**`RF-218`**: el enum **no** admite `documento_presentado`, porque quien llega acá es justamente quien no lo tiene), `motivo_cif`, `devolucion_id`(FK, nulo salvo al vencer, `RF-223`) | `derivacion_id`; `UNIQUE(giro_id) WHERE estado = 'abierta'` — sin ella, dos derivaciones abiertas habilitarían el pago dos veces |
+| **32** | **Duda sobre la fotografía** · `BD identidad` | `duda_id`, `verificacion_id`(FK), `giro_id`(FK, **nulo a propósito**), `abierta_en`, `vence_en` (`+ [ASSUMPTION: 10 min]`), `identidad_operario_id`(FK), `estado` ∈ {`abierta`,`corresponde`,`no_corresponde`,`vencida`}, `resuelta_por_identidad_id`(FK), `motivo_cif` | `duda_id`; `CHECK(resuelta_por_identidad_id <> identidad_operario_id)` — es `RF-225` escrito como restricción: la duda **no** la decide el criterio del operario. `giro_id` nulo porque `RF-229` rechaza antes del efectivo: no hay giro que revertir |
+| **33** | **Reposición** · `BD giros` | `reposicion_id`, `declaracion_id`(FK, **ÚNICO**), `giro_id`(FK), `monto_repuesto`, `techo` (**`RF-214`**: `lo que el giro fijó − lo que acredita la evidencia de RF-168`), `origen` ∈ {`comprobada`,`plazo_vencido`}, `punto_id`(FK), `verificacion_retiro_id`(FK, **NOT NULL** al entregar, `RF-204`), `documento_vigente_relevado_por_desafio` (bool, **`RF-222`**), `retirada_en`, `estado` | `reposicion_id`; `UNIQUE(declaracion_id)`; `CHECK(monto_repuesto <= techo)` — `RF-194` reponía desde la ronda 13 y **nadie modelaba la entrega** |
 
 ### 5.2 Elección de motor — por entidad, no global
 
