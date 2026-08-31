@@ -73,6 +73,41 @@ resumen en [`../evals/HISTORY.md`](../evals/HISTORY.md).
 | **18** | 2026-08-28 | 1,5 | 3,0 | 1,5 | 1,67 | **7,67** | **El cruce no se sostuvo.** `RF-202`, escrito en esta ronda para alcanzar el silencio del canal, reemite el código que `RF-94` promete no reemitir nunca — dos P0 contradictorios sobre el mismo aviso. Lo encontró Rosa **contra su propia conveniencia**. Nueve de diez bloques cerraron limpio. El agregador registra, sin enmendar, que la rúbrica quedó con **una sola dimensión decisoria y tres descriptivas** |
 | **19** | 2026-08-28 | 1,5 | 3,0 | **2,0** | 1,77 | **8,27** | **Gate recuperado con margen real**: 12,6 cuantums de `D4` contra 1 en la ronda 17. `RF-228` es el «salvo» que la 18 no escribió, hecho en la altitud de `RF-94` y T7. Siete clases de hallazgo en cero. El agregador cierra la serie con la aritmética: **el gate se alcanza si y solo si `D3 = 2,0`** |
 
+---
+
+## La repropagación de cierre — lo que el gate dejó pendiente
+
+El gate se alcanzó en la ronda 19 sobre el **backlog**, que es lo único que el EVAL puntúa. Pero el
+backlog es el paso `R`, y **las rondas 17 a 19 agregaron veintiún títulos que `E`, `D`, `A` y
+`E`-escalar nunca vieron**: esos cuatro pasos seguían calculados sobre los `155` ítems de la ronda
+11, con la deuda declarada en sus cabeceras. Solo `L` se había repropagado, y eso era el problema y
+no el mérito: **marcaba `DONE` cinco ítems que `A` y `D` no sostenían.**
+
+Esta pasada rehizo los cinco pasos contra los `236`. Lo que encontró, en orden de importancia:
+
+| # | Hallazgo | Dónde |
+|---|---|---|
+| **1** | **`S-14` enumeraba dieciocho avisos y el backlog despachaba veinticuatro.** Faltaban `RF-91`, `RF-156`, `RF-172`, `RF-178`, `RF-190` y `RF-199` — seis unidades que el operador factura. El factor sube de `6,5` a `8,02` por giro y **el primer cuello del sistema se adelanta un 19 %**, de `1 026` a `831` giros/día. La aritmética nunca falló: **la lista sobre la que corría estaba incompleta**, que es la clase de defecto que ningún `grep` delata | `E`, `E`-escalar |
+| **2** | **`L` daba por hecho lo que nadie sostenía.** `RF-218`, `RF-219`, `RF-223`, `RF-225` y `RF-229` tenían componente e iteración `DONE`, y ni `D` exponía una ruta ni `A` modelaba una entidad. Es **reparación en la altitud equivocada** leída al revés: el paso de abajo se adelantó a los de arriba | `L` contra `D` y `A` |
+| **3** | **Apareció un componente, y uno solo**: `Identificación Derivada Service`. De veintiún títulos nuevos, veinte cayeron dentro de cajas que ya existían. **Que un corte absorba un 52 % más de requerimientos con una caja nueva es la prueba de que el corte estaba bien puesto** | `D`(g), `A`, `L` |
+| **4** | **`RF-194` reponía desde la ronda 13 y nadie modelaba la entrega.** La reposición vivía como un `movimiento_id` colgado de una declaración: sin punto, sin plazo y **sin compuerta de identidad** | `A`, `D` |
+| **5** | **Dos cifras sin productor, cerradas.** `RF-234` produce el plazo que `RF-73` informaba desde la ronda 03; `RF-235`, el efectivo de corredor que `RF-20` comprobaba desde la 02 | `E`, `D` |
+| **6** | **La nota de `L` sobre `D:272-274` apuntaba a una versión vieja de `D`** y sobrevivió tres rondas a la contradicción que denunciaba | `L` |
+
+**Lo que no se movió, y vale tanto como lo que sí:** las seis decisiones de `D`, los motores de `A`,
+el orden de los tramos de `E`-escalar y las tres conclusiones de `E` —`13` servidores, `3,3 TB`
+retenidos, `1,7 Mbit/s` en pico—. Los caudales sí: `83 885 → 91 887` escrituras, `31 906 → 40 677`
+lecturas, y la cifra de servidores movió su segunda decimal por primera vez en el proyecto
+(`0,139 → 0,153`).
+
+**Y `E`-escalar se alineó además a la forma del capítulo 3**: las cinco láminas del material —el
+mismo diagrama creciendo, rotulado en usuarios—, su tabla de tres columnas y la comparación
+*scale out* / *scale up*. El análisis por `giros/día` queda debajo, como capa propia del caso. La
+lectura que eso produjo: **SendIt no arranca en el primer tramo del material sino en el tercero**, con
+`42 500` emisores distintos al mes.
+
+---
+
 **Gate ≥ 8 — ALCANZADO en la iteración 19 con 8,2669, y con margen.** Se cruzó primero en la 17 con 8,0045 —que el agregador declaró dentro de la resolución del instrumento: un hallazgo más habría dado 7,98—, se perdió en la 18 por `RF-202` contra `RF-94`, y se recuperó en la 19 con **12,6 cuantums de holgura**: para caerse habrían tenido que omitirse trece hallazgos. El detalle de cada corrida está en
 [`../evals/iterations/`](../evals/iterations/) y el resumen en
 [`../evals/HISTORY.md`](../evals/HISTORY.md).
