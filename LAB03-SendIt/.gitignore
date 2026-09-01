@@ -9,8 +9,9 @@ Thumbs.db
 # Claude Code: estado local por maquina (posibles credenciales)
 .claude/settings.local.json
 
-# Intermedio del conversor: se regenera con scripts/entrega-a-pdf.sh
+# Intermedios del conversor: se regeneran con scripts/entrega-a-pdf.sh y resumen-a-pdf.sh
 docs/ENTREGA.html
+docs/RESUMEN.html
 
 # Dependencia del conversor: 3,2 MB. La baja scripts/entrega-a-pdf.sh y la cachea
 scripts/mermaid.min.js

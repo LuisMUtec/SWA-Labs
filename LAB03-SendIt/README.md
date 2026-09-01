@@ -185,39 +185,41 @@ son indistinguibles si no se anota.
 
 ## Estado
 
-**Los seis pasos llenos, once rondas de EVAL, y el gate sin alcanzar.** Lo que está:
+**Los seis pasos llenos, diecinueve rondas de EVAL, y el gate alcanzado: 8,2669 / 10 sobre un umbral
+de 8, con margen.** Lo que está:
 
-- El **backlog**, que es el único artefacto puntuado: **155 ítems — 138 funcionales y 17 no
+- El **backlog**, que es el único artefacto puntuado: **236 ítems — 216 funcionales y 20 no
   funcionales**, cada uno con su persona, su regla `BR-nn` y su prioridad.
 - Las **tres personas** —[Rosa](personas/Rosa.MD), [Elena](personas/Elena.MD),
   [Kevin](personas/Operario.MD)— en `status: proto`, el usuario modelo designado y las **siete
-  tensiones**, cero de ellas sin decidir en la última ronda.
+  tensiones**, cero de ellas sin decidir.
 - Las **diecisiete reglas de negocio**, `BR-01` a `BR-17` en [`business-rules.md`](business-rules.md).
-- **Once corridas del EVAL**, de **3,5 a 6,61**, en [`evals/iterations/`](evals/iterations/) y
+- **Diecinueve corridas del EVAL**, de **3,5 a 8,27**, en [`evals/iterations/`](evals/iterations/) y
   resumidas en [`HISTORY.md`](evals/HISTORY.md). Cada una diagnostica cómo *mutó* el modo de falla, no
   solo qué falló.
-- Los **cinco pasos aguas abajo llenos**: `E` con cifras calibradas, `D` con su arquitectura, su
-  persistencia y el mecanismo de seguridad, `A` con el modelo de datos, `L` con **tres iteraciones del
-  diagrama** y la trazabilidad de las 155 filas, y `E-escalar` por tramos con su cuello de botella.
+- Los **cinco pasos aguas abajo llenos y repropagados sobre los 236 ítems**: `E` con cifras
+  calibradas —13 servidores, 3,3 TB, 1,7 Mbit/s—, `D` con su arquitectura, su persistencia y sus 48
+  endpoints, `A` con 37 entidades en 10 bases, `L` con **tres iteraciones del diagrama** y
+  trazabilidad **236 / 236**, y `E-escalar` por tramos con sus seis cuellos de botella.
 - La **bitácora** de [`redale/ITERACIONES.md`](redale/ITERACIONES.md), con las dos tablas llenas.
 - **Diez decisiones** registradas (`D-01` a `D-10`) y **ninguna pendiente**: las cinco que había se
   cerraron y [`docs/DECISIONES.md`](docs/DECISIONES.md) dice dónde se decidió cada una.
 - El **harness de Spec Kit** y la **constitución**, ahora en v1.1.0.
-- El **documento de entrega**, [`docs/ENTREGA.md`](docs/ENTREGA.md), con su PDF.
+- Los **dos documentos de entrega**, los dos regenerados sobre el estado vigente:
+  [`docs/RESUMEN.md`](docs/RESUMEN.md) —el dossier de ocho láminas, una por paso— y
+  [`docs/ENTREGA.md`](docs/ENTREGA.md), el documento completo con el backlog en su anexo.
 
 Lo que **no** está, y hay que decirlo así:
 
-- **El gate no está alcanzado: 6,61 sobre un umbral de 8.** Las correcciones que faltan están
-  derivadas y escritas en [`evals/CORRECCIONES-RONDA-12.md`](evals/CORRECCIONES-RONDA-12.md), sin
-  aplicar. Proyectan ≈9,0 con los tres primeros bloques, y los dos primeros son dieciséis ediciones de
-  título.
 - **La serie de puntajes está partida en dos.** `D4` se enmendó en la ronda 08 para puntuar por
   densidad ([D-09](docs/DECISIONES.md)), de modo que **las corridas 01 a 07 no son comparables con las
   siguientes**. Ninguna lectura de la tendencia puede cruzar esa ronda.
-- **El documento de entrega quedó atrás.** [`docs/ENTREGA.md`](docs/ENTREGA.md) y su PDF están
-  congelados en el estado de la **ronda 07**: afirman un backlog de 118 ítems y un EVAL que llega a
-  6,0, cuando el backlog tiene 155 y el EVAL va por la 11. **Hay que rehacerlo antes de subirlo**, y
-  el propio documento lo dice arriba de todo.
+- **`D1` nunca pasó de 1,5 sobre 3.** Nueve rondas cerrando las reservas nombradas y nueve veces la
+  misma lectura: cada persona encuentra una reserva nueva de la clase que se le acaba de cerrar. El
+  punto y medio está disponible en teoría y es 0 de 9 en la práctica.
+- **La enmienda a `D2` quedó redactada y sin aplicar**
+  ([`evals/ENMIENDA-PROPUESTA-D4.md`](evals/ENMIENDA-PROPUESTA-D4.md)): satisface las condiciones,
+  pero aplicarla en la ronda que voltea el veredicto es indistinguible de endurecer por su efecto.
 - Las personas siguen en `status: proto`: cada afirmación inventada está marcada
   `[ASSUMPTION: …]` y ninguna se validó contra una persona real.
 

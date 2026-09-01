@@ -54,7 +54,7 @@ blockquote p { margin:.35em 0; }
 hr { border:none; border-top:1px solid #ddd; margin:2em 0; }
 .mermaid { background:#fff; border:1px solid #e0e0e0; border-radius:4px; padding:10px; text-align:center; page-break-inside:avoid; margin:1em 0; }
 .mermaid svg { max-width:100%; height:auto; }
-a { color:#0b5; text-decoration:none; }
+a { color:#184f95; text-decoration:none; }
 strong { font-weight:600; }
 </style></head><body>
 CSS
@@ -73,6 +73,7 @@ JS
 
 # 3 · PDF
 "$CHROME" --headless --disable-gpu --no-sandbox --no-pdf-header-footer \
+  --generate-pdf-document-outline \
   --virtual-time-budget=20000 --run-all-compositor-stages-before-draw \
   --print-to-pdf="$PDF" "file://$PWD/$HTML" 2>/dev/null
 
