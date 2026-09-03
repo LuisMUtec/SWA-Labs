@@ -1,0 +1,51 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R /F2 6 0 R /F3 7 0 R >> >> /Contents 4 0 R /Annots [8 0 R] >>
+endobj
+4 0 obj
+<< /Length 676 >>
+stream
+q 0.55 0.55 0.55 RG 0.6 w 72 598 m 540 598 l S Q
+BT 0 0 0 rg /F2 15 Tf 72 702 Td (Caso de Estudio #1 — Sistema de Gestión UCI \(Essalud\)) Tj ET
+BT 0 0 0 rg /F2 10.5 Tf 72 678 Td (Arquitectura de Software · UTEC · 2026-II) Tj ET
+BT 0 0 0.75 rg /F2 12 Tf 72 646 Td (https://github.com/LuisMUtec/SWA-LAB01-UCI-Essalud) Tj ET
+BT 0 0 0 rg /F1 10.5 Tf 72 622 Td (Luis Maquera · Johar Barzola · Fernando Aguilar) Tj ET
+BT 0 0 0 rg /F2 12 Tf 72 572 Td (11 corridas. Mejor: it9 — 80,9 %   \(Spec/HISTORIAL.MD\)) Tj ET
+BT 0 0 0 rg /F3 9.5 Tf 72 538 Td (58,7 -> 71,4 -> 59,0 -> 64,7 -> 68,9 -> 71,5 -> 77,8 ->) Tj ET
+BT 0 0 0 rg /F3 9.5 Tf 72 523 Td (79,9 -> 80,9 -> 77,4 -> 72,7) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+7 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>
+endobj
+8 0 obj
+<< /Type /Annot /Subtype /Link /Rect [72 643 392 659] /Border [0 0 0] /A << /S /URI /URI (https://github.com/LuisMUtec/SWA-LAB01-UCI-Essalud) >> >>
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000277 00000 n 
+0000001004 00000 n 
+0000001101 00000 n 
+0000001203 00000 n 
+0000001298 00000 n 
+trailer
+<< /Size 9 /Root 1 0 R >>
+startxref
+1461
+%%EOF

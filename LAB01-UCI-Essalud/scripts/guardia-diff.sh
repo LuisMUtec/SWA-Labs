@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+#
+# guardia-diff.sh — comprueba que la corrida solo tocó archivos editables.
+#
+#   scripts/guardia-diff.sh [--silencioso] [--sin-agentes]
+#
+# La lista de editables la fija Spec/corridas/_ESQUEMA.MD, sección «Qué puede
+# tocar una corrida»: los cuatro agentes de persona, el índice de agentes, el
+# reporte, el historial, el directorio de la corrida y el marcador de resultado
+# del README. Todo lo demás —personas, requerimientos, convenciones, la rúbrica y
+# el esquema de corrida— es de solo lectura: son la vara con la que se mide, y una
+# vara que se ajusta para alcanzar el número deja de medir.
+#
+# Requirements/ReqFunc.MD NO es editable durante una corrida. Una corrida mide una
+# vez y no corrige: corregir los requerimientos con el puntaje a la vista convierte
+# la medición en una comprobación de la corrección.
+#
+# Dentro de Spec/corridas/ cada corrida escribe su propio directorio, sin límite
+# de corridas. Lo que vive en la raíz de esa carpeta —el esquema— no es material
+# de corrida y queda fuera.
+#
+# Los agentes de persona solo son editables durante la comprobación de conformidad
+# de Agents/README.md, que ocurre antes de leer un solo requerimiento. Terminada
+# esa comprobación pasan a ser instrumento de medición y --sin-agentes los retira
+# de la lista: así debe ejecutarse el control durante el resto de la corrida.
+#
+# Con --silencioso imprime solo las rutas infractoras, una por línea, sin adornos:
+# ese es el modo que consume verificar.sh.
+#
+# Códigos de salida
+#   0  no se tocó ningún archivo de solo lectura
+#   1  se tocó al menos uno
+#   2  no es un repositorio git
+
+set -uo pipefail
+export LC_ALL="${LC_ALL:-en_US.UTF-8}"
+
+cd "$(dirname "$0")/.." || exit 2
+
+SILENCIOSO=0
+SIN_AGENTES=0
+for arg in "$@"; do
+  case "$arg" in
+    --silencioso)  SILENCIOSO=1 ;;
+    --sin-agentes) SIN_AGENTES=1 ;;
+    *) printf '⛔ Opción desconocida: %s\n' "$arg" >&2; exit 2 ;;
+  esac
+done
+
+git rev-parse --git-dir >/dev/null 2>&1 || {
+  [ "$SILENCIOSO" -eq 1 ] && echo 'no es un repositorio git'
+  exit 2
+}
+
+EDITABLES="
+Spec/Eval-Report.MD
+Spec/HISTORIAL.MD
+README.md
+"
+
+# Los agentes solo entran durante la comprobación de conformidad.
+if [ "$SIN_AGENTES" -eq 0 ]; then
+  EDITABLES="${EDITABLES}Agents/agent-rodrigo.MD
+Agents/agent-milagros.MD
+Agents/agent-carmen.MD
+Agents/agent-anibal.MD
+Agents/README.md
+"
+fi
+
+# Todo lo que cambió respecto a HEAD, confirmado o no, con seguimiento o sin él.
+TOCADOS="$( { git diff --name-only HEAD
+              git diff --name-only --cached
+              git ls-files --others --exclude-standard; } | sort -u | grep -v '^$')"
+
+# es_editable <ruta>
+es_editable() {
+  printf '%s\n' "$EDITABLES" | grep -qxF "$1" && return 0
+  # Cada corrida escribe bajo su propio directorio; el esquema, que vive en la
+  # raíz de Spec/corridas/, no lo hace y por eso el patrón exige dos tramos.
+  case "$1" in
+    Spec/corridas/*/*) return 0 ;;
+  esac
+  return 1
+}
+
+INFRACTORES=""
+while IFS= read -r ruta; do
+  [ -z "$ruta" ] && continue
+  if ! es_editable "$ruta"; then
+    INFRACTORES="${INFRACTORES}${ruta}
+"
+  fi
+done <<< "$TOCADOS"
+INFRACTORES="$(printf '%s' "$INFRACTORES" | grep -v '^$')"
+
+if [ "$SILENCIOSO" -eq 1 ]; then
+  [ -n "$INFRACTORES" ] && printf '%s\n' "$INFRACTORES"
+  [ -z "$INFRACTORES" ] && exit 0 || exit 1
+fi
+
+printf '\nGuardia de archivos editables\n\n'
+
+if [ -z "$TOCADOS" ]; then
+  printf '   Sin cambios respecto a HEAD.\n\n'
+  exit 0
+fi
+
+printf '   Archivos tocados:\n'
+printf '%s\n' "$TOCADOS" | sed 's/^/     /'
+
+if [ -z "$INFRACTORES" ]; then
+  printf '\n✅ Todos son editables.\n\n'
+  exit 0
+fi
+
+printf '\n⛔ Fuera de la lista de editables:\n'
+printf '%s\n' "$INFRACTORES" | sed 's/^/     /'
+printf '\n   Revierte esos archivos antes de continuar. Si la corrección que\n'
+printf '   necesitas vive en uno de ellos, repórtala como bloqueada: no la\n'
+printf '   sustituyas por una solución inventada.\n\n'
+exit 1

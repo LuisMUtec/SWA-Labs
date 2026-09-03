@@ -1,0 +1,22 @@
+Verificación de requerimientos — eval/iteracion-2
+
+Controles mecánicos (CONVENCIONES §11)
+[M1] Enunciado sin DEBE ................... PASA
+[M2] Sujeto distinto del sistema .......... PASA
+[M3] Mecanismo o producto nombrado ........ PASA
+[M4] Lápidas o rastro de historial ........ PASA
+
+Controles estructurales
+[E1] Identificadores duplicados ........... PASA
+[E2] Campos obligatorios del RF ........... PASA
+[E3] Matrices citan IDs inexistentes ...... PASA
+[E4] Solo lectura intactos (sin agentes) .. PASA
+
+Control de cómputo
+[C1] Aritmética del puntaje ............... PASA
+
+59 requerimientos funcionales inventariados.
+
+✅ Los nueve controles devuelven vacío.
+
+exit_code=0

@@ -1,0 +1,39 @@
+{
+  "corrida": "2026-08-13-additional-v2",
+  "fecha": "2026-08-13",
+  "rama": "eval/additional-v2",
+  "modelo": "claude-opus-5[1m]",
+  "commits": {
+    "requerimientos": "a1df636",
+    "rubrica": "8af38e9",
+    "personas": "6340172",
+    "agentes": "fb5856c"
+  },
+  "instrumento_modificado": false,
+  "glosario": false,
+  "iteraciones": [
+    {
+      "n": 1,
+      "personas": {
+        "rodrigo":  { "tareas": 26, "estorba_fuera": 2, "flujo": 0, "puntaje": 4.4, "percibida": 100, "tareas_en_cero": 0 },
+        "milagros": { "tareas": 24, "estorba_fuera": 0, "flujo": 4, "puntaje": 8.8, "percibida": 100, "tareas_en_cero": 0 },
+        "carmen":   { "tareas": 22, "estorba_fuera": 0, "flujo": 0, "puntaje": 4.4, "percibida": 100, "tareas_en_cero": 0 },
+        "anibal":   { "tareas": 24, "estorba_fuera": 0, "flujo": 2, "puntaje": 6.8, "percibida": 100, "tareas_en_cero": 0 }
+      },
+      "dimensiones": { "D1": 61.0, "D2": 66.7, "D3": 54.8, "D4": 40.0, "D5": 40.0, "D6": 95.0 },
+      "d2_problemas": { "P1": 50, "P2": 100, "P3": 50 },
+      "d3_rf": { "conformes": 23, "total": 42 },
+      "tensiones_sin_decidir": 1,
+      "prioridad_uniforme": false,
+      "controles_pasan": true,
+      "global": 58.7,
+      "veredicto": "FAILED"
+    }
+  ],
+  "resultado": {
+    "global": 58.7,
+    "veredicto": "FAILED",
+    "promedio_personas": 6.1,
+    "brechas_abiertas": 14
+  }
+}
