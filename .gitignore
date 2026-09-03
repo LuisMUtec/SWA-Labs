@@ -1,0 +1,14 @@
+.DS_Store
+*.log
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+
+# Runtime state for a future school-edge prototype
+*.db
+*.db-shm
+*.db-wal
+.runtime/
