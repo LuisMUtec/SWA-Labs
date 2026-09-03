@@ -1,13 +1,14 @@
 # SWA — Arquitectura de Software · UTEC 2026-II
 
-Los tres casos de estudio del curso, cada uno en su carpeta, con la historia completa
-que traían de sus repositorios separados.
+Los casos de estudio del curso, cada uno en su carpeta. Los tres primeros llegaron con la
+historia completa que traían de sus repositorios separados; el cuarto nació ya aquí.
 
 | Carpeta | Caso | Tema |
 |---|---|---|
 | [`LAB01-UCI-Essalud/`](LAB01-UCI-Essalud/README.md) | #1 | Sistema de gestión de UCI para EsSalud |
 | [`LAB02-Lease/`](LAB02-Lease/README.md) | #2 | Lea$e — leasing de maquinaria en Perú |
 | [`LAB03-SendIt/`](LAB03-SendIt/README.md) | #3 | SendIt — remesas internacionales, por el método R.E.D.A.L.E. |
+| [`LAB04-RemoteSchooly/`](LAB04-RemoteSchooly/README.md) | #4 | RemoteSchooly — educación en línea para pueblos remotos, por el método R.E.D.A.L.E. |
 
 ## Cómo se armó
 
