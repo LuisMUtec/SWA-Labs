@@ -1,0 +1,9 @@
+.DS_Store
+Thumbs.db
+*~
+.vscode/
+.idea/
+
+# Grabaciones y apuntes que baja el pipeline de ~/CS/utec-clases: transcripciones
+# y URLs privadas de las sesiones. Material de estudio, no del laboratorio.
+clases/
