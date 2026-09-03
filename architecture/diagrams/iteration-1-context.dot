@@ -1,0 +1,27 @@
+digraph RemoteSchoolyContext {
+  graph [rankdir=LR, bgcolor="white", pad="0.35", nodesep="0.8", ranksep="1.0",
+         fontname="Helvetica", label="Iteración 1 — actores frente a una sola caja", labelloc=t,
+         fontsize=22];
+  node [fontname="Helvetica", fontsize=12, margin="0.18,0.12"];
+  edge [fontname="Helvetica", fontsize=10, color="#475569", penwidth=1.6, arrowsize=0.8];
+
+  gobierno [label="Gobierno\nadministra y supervisa", shape=ellipse, style=filled,
+            fillcolor="#e0f2fe", color="#0284c7"];
+  lima [label="Profesor de Lima\ncrea y publica", shape=ellipse, style=filled,
+        fillcolor="#e0f2fe", color="#0284c7"];
+  sistema [label="RemoteSchooly", shape=box, style="rounded,filled", width=2.7, height=1.3,
+           fillcolor="#dbeafe", color="#2563eb", penwidth=2.2, fontsize=18];
+  provincia [label="Profesor de Provincia\nsincroniza y enseña", shape=ellipse, style=filled,
+             fillcolor="#dcfce7", color="#16a34a"];
+  alumno [label="Alumno\naprende sin Internet", shape=ellipse, style=filled,
+          fillcolor="#dcfce7", color="#16a34a"];
+
+  {rank=same; gobierno; lima}
+  {rank=same; provincia; alumno}
+  gobierno -> sistema [label="asignaciones, presupuesto"];
+  lima -> sistema [label="material semanal"];
+  sistema -> provincia [label="paquete asignado"];
+  sistema -> alumno [label="material y avance"];
+  provincia -> sistema [label="estado de sede", dir=back];
+  alumno -> sistema [label="progreso", dir=back];
+}

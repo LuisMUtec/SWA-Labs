@@ -1,0 +1,71 @@
+digraph RemoteSchoolyComponents {
+  graph [rankdir=TB, bgcolor="white", pad="0.4", nodesep="0.55", ranksep="0.7",
+         fontname="Helvetica", label="Iteración 3 — componentes y cuatro happy paths",
+         labelloc=t, fontsize=22, splines=polyline];
+  node [fontname="Helvetica", fontsize=10.5];
+  edge [fontname="Helvetica", fontsize=9, color="#475569", penwidth=1.4, arrowsize=0.75];
+
+  gobierno [label="Gobierno", shape=ellipse, style=filled, fillcolor="#e0f2fe", color="#0284c7"];
+  lima [label="Profesor de Lima", shape=ellipse, style=filled, fillcolor="#e0f2fe", color="#0284c7"];
+  ai_provider [label="Proveedor de IA", shape=box, style="rounded,filled",
+               fillcolor="#fce7f3", color="#db2777"];
+  {rank=same; gobierno; lima; ai_provider}
+
+  center [shape=plain, label=<
+    <TABLE BORDER="2" COLOR="#2563eb" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10" BGCOLOR="#f8fbff">
+      <TR><TD COLSPAN="5" BGCOLOR="#dbeafe"><FONT POINT-SIZE="18"><B>CENTRO DE LIMA</B></FONT></TD></TR>
+      <TR>
+        <TD PORT="portal" BGCOLOR="#dbeafe"><B>Portal Central</B><BR/><FONT POINT-SIZE="9">Gobierno y autoría</FONT></TD>
+        <TD PORT="iam" BGCOLOR="#dbeafe"><B>Identity &amp; Access</B><BR/><FONT POINT-SIZE="9">rol · sede · curso</FONT></TD>
+        <TD PORT="program" BGCOLOR="#dbeafe"><B>Course &amp; Assignment</B><BR/><FONT POINT-SIZE="9">semanas · asignaciones</FONT></TD>
+        <TD PORT="authoring" BGCOLOR="#dbeafe"><B>Authoring &amp; Approval</B><BR/><FONT POINT-SIZE="9">manual · revisión humana</FONT></TD>
+        <TD PORT="ai" BGCOLOR="#dbeafe"><B>AI Gateway &amp; Policy</B><BR/><FONT POINT-SIZE="9">presupuesto · límites · reuse</FONT></TD>
+      </TR>
+      <TR>
+        <TD PORT="builder" BGCOLOR="#dbeafe"><B>Package Builder</B><BR/><FONT POINT-SIZE="9">manifiesto · versión</FONT></TD>
+        <TD PORT="sync" BGCOLOR="#dbeafe"><B>Sync Catalog</B><BR/><FONT POINT-SIZE="9">feed · revocación · estado</FONT></TD>
+        <TD PORT="progress" BGCOLOR="#dbeafe"><B>Progress Ingest</B><BR/><FONT POINT-SIZE="9">confirmación idempotente</FONT></TD>
+        <TD PORT="report" BGCOLOR="#dbeafe"><B>Reporting &amp; Audit</B><BR/><FONT POINT-SIZE="9">cobertura · ahorro · agregados</FONT></TD>
+        <TD PORT="audit" BGCOLOR="#ffedd5"><B>Auditoría · agregados</B><BR/><FONT POINT-SIZE="9">append-only · sin contenido personal</FONT></TD>
+      </TR>
+      <TR>
+        <TD PORT="meta" BGCOLOR="#ffedd5"><B>BD metadatos</B></TD>
+        <TD PORT="objects" BGCOLOR="#ffedd5"><B>Objetos por huella</B></TD>
+        <TD PORT="tokens" BGCOLOR="#ffedd5" COLSPAN="2"><B>Tokens · baseline · reuse index</B></TD>
+        <TD BGCOLOR="#ffffff"><FONT POINT-SIZE="9">H1: autoría → paquete<BR/>H4: programa → reporte</FONT></TD>
+      </TR>
+    </TABLE>
+  >];
+
+  edge_site [shape=plain, label=<
+    <TABLE BORDER="2" COLOR="#16a34a" CELLBORDER="1" CELLSPACING="0" CELLPADDING="11" BGCOLOR="#f0fdf4">
+      <TR><TD COLSPAN="5" BGCOLOR="#dcfce7"><FONT POINT-SIZE="18"><B>SEDE PROVINCIAL</B></FONT><BR/><FONT POINT-SIZE="10">sigue operando sin Internet externo</FONT></TD></TR>
+      <TR>
+        <TD PORT="sync" BGCOLOR="#dcfce7"><B>Sync Agent</B><BR/><FONT POINT-SIZE="9">reanuda · verifica · activa</FONT></TD>
+        <TD PORT="content" BGCOLOR="#fef3c7"><B>Paquetes completos</B><BR/><FONT POINT-SIZE="9">+ fragmentos parciales</FONT></TD>
+        <TD PORT="portal" BGCOLOR="#dcfce7"><B>Portal Local</B><BR/><FONT POINT-SIZE="9">clase por Wi-Fi/LAN</FONT></TD>
+        <TD PORT="auth" BGCOLOR="#dcfce7"><B>Sesión Local</B><BR/><FONT POINT-SIZE="9">actor activo</FONT></TD>
+        <TD PORT="outbox" BGCOLOR="#fef3c7"><B>Outbox local</B><BR/><FONT POINT-SIZE="9">avance hasta confirmar</FONT></TD>
+      </TR>
+      <TR><TD COLSPAN="5" BGCOLOR="#ffffff"><FONT POINT-SIZE="9">H2: catálogo → rangos → verificación → paquete activo   ·   H3: sesión → recurso local → outbox → confirmación</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  provincia [label="Profesor de Provincia", shape=ellipse, style=filled, fillcolor="#dcfce7", color="#16a34a"];
+  alumno [label="Alumno", shape=ellipse, style=filled, fillcolor="#dcfce7", color="#16a34a"];
+  legend [label="Azul: centro propio   ·   Verde: sede propia   ·   Rosado: tercero\nRojo punteado: Internet intermitente   ·   Naranja: datos",
+          shape=note, style=filled, fillcolor="#ffffff", color="#94a3b8", fontsize=9];
+  {rank=same; provincia; alumno; legend}
+
+  gobierno -> center:portal [label="H4 configura · consulta", color="#7c3aed", penwidth=2];
+  lima -> center:portal [label="H1 crea · aprueba", color="#2563eb", penwidth=2];
+  ai_provider -> center:ai [label="H1 propuesta + uso", color="#db2777", penwidth=1.8, dir=both];
+
+  center:sync -> edge_site:sync [label="H2 catálogo · revocación", color="#dc2626", style=dashed, penwidth=2];
+  center:objects -> edge_site:sync [label="H2 rangos faltantes", color="#dc2626", style=dashed, penwidth=2];
+  edge_site:sync -> center:report [label="H2 estado + last seen", color="#dc2626", style=dashed, penwidth=2];
+  edge_site:outbox -> center:progress [label="H3 lote idempotente", color="#dc2626", style=dashed, penwidth=2];
+
+  provincia -> edge_site:portal [label="H2 presenta", color="#16a34a", penwidth=2];
+  alumno -> edge_site:portal [label="H3 aprende", color="#16a34a", penwidth=2];
+}

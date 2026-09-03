@@ -1,0 +1,39 @@
+digraph RemoteSchoolyCenterEdge {
+  graph [rankdir=LR, compound=true, bgcolor="white", pad="0.35", nodesep="0.65", ranksep="0.95",
+         fontname="Helvetica", label="Iteración 2 — separar centro y sede escolar", labelloc=t,
+         fontsize=22];
+  node [fontname="Helvetica", fontsize=11, margin="0.16,0.10"];
+  edge [fontname="Helvetica", fontsize=9, color="#475569", penwidth=1.5, arrowsize=0.75];
+
+  gobierno [label="Gobierno", shape=ellipse, style=filled, fillcolor="#e0f2fe", color="#0284c7"];
+  lima [label="Profesor\nde Lima", shape=ellipse, style=filled, fillcolor="#e0f2fe", color="#0284c7"];
+  provincia [label="Profesor de\nProvincia", shape=ellipse, style=filled, fillcolor="#dcfce7", color="#16a34a"];
+  alumno [label="Alumno", shape=ellipse, style=filled, fillcolor="#dcfce7", color="#16a34a"];
+
+  subgraph cluster_center {
+    label="Centro de Lima";
+    style="rounded,filled";
+    fillcolor="#eff6ff";
+    color="#2563eb";
+    penwidth=2;
+    center [label="Plataforma Central\nautoría · publicación · gobierno",
+            shape=box, style="rounded,filled", fillcolor="#dbeafe", color="#2563eb", width=2.8, height=1.2];
+  }
+
+  subgraph cluster_edge {
+    label="Sede remota";
+    style="rounded,filled";
+    fillcolor="#f0fdf4";
+    color="#16a34a";
+    penwidth=2;
+    edge_node [label="Nodo Escolar\nsincroniza · verifica · sirve por LAN",
+               shape=box, style="rounded,filled", fillcolor="#dcfce7", color="#16a34a", width=2.8, height=1.2];
+  }
+
+  gobierno -> center [label="configura y consulta"];
+  lima -> center [label="crea, revisa y publica"];
+  center -> edge_node [label="paquetes semanales\n(enlace intermitente)", color="#dc2626", style=dashed, penwidth=2.2];
+  edge_node -> center [label="estado y progreso\ncuando vuelve Internet", color="#dc2626", style=dashed, penwidth=2.2];
+  provincia -> edge_node [label="sincroniza y presenta"];
+  alumno -> edge_node [label="aprende y guarda avance"];
+}
