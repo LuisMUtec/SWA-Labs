@@ -197,3 +197,13 @@ El profe pidió por Discord que corramos el minions archi evaluator cuando ya te
 * `requirements/`: requerimientos funcionales y no funcionales, sacados de lo que explicamos en este README.
 * `people/`: los usuarios de Genius-x.
 * `diagram/`: el diagrama de la parte 6 como imagen.
+
+## Lo que nos dijo el evaluador y lo que cambiamos
+
+Corrimos el minions archi evaluator y la primera vez sacamos 4.5 de 10. Con ese feedback hicimos estos cambios en el diagrama:
+
+* Security (sacamos 0): el diagrama no tenía login ni creación de usuarios. Agregamos el registro de usuarios, donde a cada ingeniero se le asigna su rol, y un login que valida quién entra y cuántas sesiones puede abrir según ese rol.
+* Reliability (sacamos 3): encontró el circuit breaker y la caché, pero no sabía qué protegían porque no habíamos marcado el SPOF ni el cuello de botella. Ahora el LLM aparece como SPOF, que es lo que dijimos en la parte 1, y también como cuello de botella. Además dejamos escrito que el load balancer evita el SPOF y que el circuit breaker protege al cuello de botella.
+* Spec (sacamos 9): faltaba mostrar cómo se clasifica un issue. Agregamos el registro del issue, la decisión de si es Customer, Support o Engineering, y que ese tipo se guarda en la BD antes de calcular el puntaje de urgencia.
+
+Después de los cambios lo volvimos a correr y sacamos 9.2 de 10.
