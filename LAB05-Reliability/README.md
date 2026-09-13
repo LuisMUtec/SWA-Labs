@@ -99,7 +99,9 @@ Son valores de ejemplo y se pueden ajustar según cómo se use la plataforma.
 
 ## 6. Diagrama de arquitectura
 
-Aquí juntamos todo lo anterior. Antes el sistema era API → LLM → MCP → BD y Slack, y si algo fallaba se caía todo. Ahora el LLM tiene respaldo, nada se ejecuta sin aprobación y la BD tiene réplica y backups.
+Aquí juntamos todo lo anterior. Antes el sistema iba de la API al LLM y de ahí a los MCP de la BD y de Slack, y si algo fallaba se caía todo. Ahora se entra con login, cada issue se registra con su tipo, el LLM tiene respaldo, nada se ejecuta sin aprobación y la BD tiene réplica y backups.
+
+En el diagrama marcamos el LLM como SPOF y también como cuello de botella, porque en la primera semana del mes ahí se acumulan los issues. El load balancer con varias instancias evita el SPOF, y la cola, el circuit breaker y la caché ayudan a que no se sature.
 
 Las flechas normales son el camino de un issue y las punteadas son lo que pasa por detrás, como las réplicas, los backups o lo que hace el circuit breaker cuando el LLM falla.
 
@@ -107,13 +109,21 @@ Las flechas normales son el camino de un issue y las punteadas son lo que pasa p
 flowchart TD
     U["Ingenieros y soporte"]
     API["API LLM"]
-    COLA["Cola por urgencia<br/>puntaje de la parte 3"]
-    CB["Circuit breaker"]
-    LB["Load balancer<br/>revisa /health"]
+    ISSUE["Registro del issue"]
+    TIPO{"¿Qué tipo de issue es?"}
+    PUNTAJE["Puntaje de urgencia<br/>variables de la parte 3"]
+    COLA["Cola por urgencia"]
+    CB["Circuit breaker<br/>protege al cuello de botella"]
+    LB["Load balancer<br/>revisa /health<br/>evita el SPOF"]
     CLS{"¿Qué complejidad tiene?"}
     MON["Métricas<br/>P95 y P99, availability,<br/>reliability y SLA vencidos"]
 
-    subgraph LLMS["LLM con respaldo"]
+    subgraph SEG["Seguridad"]
+        REG["Registro de usuarios<br/>se crea el ingeniero con su rol"]
+        LOGIN["Login<br/>autenticación y límite de sesiones por rol"]
+    end
+
+    subgraph LLMS["LLM con respaldo (SPOF y cuello de botella)"]
         direction LR
         LLM1["LLM 1"]
         LLM2["LLM 2"]
@@ -132,8 +142,9 @@ flowchart TD
     end
 
     subgraph DATOS["Datos"]
-        CACHE["Caché<br/>respuestas guardadas y estados<br/>TTL corto"]
-        BDP[("BD principal")]
+        USERS[("Usuarios y roles")]
+        CACHE["Caché<br/>respuestas guardadas y estados<br/>TTL corto, baja la carga del LLM"]
+        BDP[("BD principal<br/>issues y su tipo")]
         REP[("BD réplica")]
         BK[("Backups")]
         KB[("Base de conocimiento<br/>incidentes resueltos")]
@@ -145,7 +156,16 @@ flowchart TD
         SL["Slack"]
     end
 
-    U --> API --> COLA --> CB --> LB --> LLMS
+    U -->|primera vez| REG
+    REG -->|guarda usuario y rol| USERS
+    U --> LOGIN
+    LOGIN -.->|valida usuario y rol| USERS
+    LOGIN --> API --> ISSUE --> TIPO
+    ISSUE -->|guarda el issue y su tipo| BDP
+    TIPO -->|Customer| PUNTAJE
+    TIPO -->|Support| PUNTAJE
+    TIPO -->|Engineering| PUNTAJE
+    PUNTAJE --> COLA --> CB --> LB --> LLMS
     CB -.->|si el LLM falla| CACHE
     CB -.->|el resto espera| COLA
     LLMS --> CLS

@@ -1,4 +1,4 @@
-# Requerimientos no funcionales — Genius-x
+# Requerimientos no funcionales de Genius-x
 
 Estos requerimientos salen del enunciado del Lab 5 y de lo que explicamos en la parte 5 del README.
 
