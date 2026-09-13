@@ -1,4 +1,4 @@
-# Requerimientos funcionales — Genius-x
+# Requerimientos funcionales de Genius-x
 
 Estos requerimientos salen de lo que explicamos en el README (partes 3, 4 y 5) y del enunciado del Lab 5.
 
