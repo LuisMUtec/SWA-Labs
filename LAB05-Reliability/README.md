@@ -169,3 +169,11 @@ flowchart TD
     API -.-> MON
     LLMS -.-> MON
 ```
+
+## Carpetas para el evaluador de minions
+
+El profe pidió por Discord que corramos el minions archi evaluator cuando ya tengamos la arquitectura. Ese evaluador lee tres carpetas, así que las agregamos solo para eso:
+
+* `requirements/`: requerimientos funcionales y no funcionales, sacados de lo que explicamos en este README.
+* `people/`: los usuarios de Genius-x.
+* `diagram/`: el diagrama de la parte 6 como imagen.
