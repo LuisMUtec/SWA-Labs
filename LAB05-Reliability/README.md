@@ -39,7 +39,19 @@ Para calcular la urgencia usamos estos porcentajes:
 * Support (SLA de 2 días): SLA 50 %, categoría del cliente 30 % y tipo de mercado 20 %.
 * Engineering: SLA 50 % y sistema afectado 50 %.
 
-Los porcentajes de cada tipo suman 100 %. Customer siempre se atiende antes que Support y Engineering. Después, la cola ordena los issues por su puntaje de urgencia.
+Cada variable recibe un puntaje:
+
+* SLA: empieza en 1 y sube hasta 10 conforme se acerca el vencimiento.
+* Categoría del cliente: normal = 5 y VIP = 10.
+* Tipo de mercado: B2C = 5 y B2B = 10.
+* Sistema afectado: impacto bajo = 3, medio = 6 y alto = 10.
+
+El puntaje final se calcula así:
+
+* Customer y Support: SLA × 50 % + categoría × 30 % + mercado × 20 %.
+* Engineering: SLA × 50 % + sistema afectado × 50 %.
+
+El resultado queda entre 1 y 10. Customer siempre se atiende antes que Support y Engineering. Después, la cola ordena los issues por su puntaje de urgencia.
 
 ## 4. Ciclo de vida
 

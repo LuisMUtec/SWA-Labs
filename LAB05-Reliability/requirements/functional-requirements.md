@@ -5,8 +5,8 @@ Estos requerimientos salen de lo que explicamos en el README (partes 3, 4 y 5) y
 | ID | Requerimiento funcional |
 |---|---|
 | FR-01 | **Registro de issues por tipo.** El sistema debe recibir issues de tipo Customer, Support y Engineering, y guardar de qué tipo es cada uno. |
-| FR-02 | **Puntaje de urgencia.** El sistema debe calcular un puntaje de urgencia para cada issue con las variables de su tipo. Customer usa el tiempo que falta para vencer el SLA, la categoría del cliente y el tipo de mercado. Support usa las mismas variables más lo que ya hizo soporte. Engineering usa el tiempo que falta para vencer el SLA, la relevancia según rol y el sistema afectado. |
-| FR-03 | **Cola por urgencia.** Los issues deben entrar a una cola ordenada por su puntaje, para que primero se atiendan los que están por vencer su SLA. |
+| FR-02 | **Puntaje de urgencia.** Cada variable recibe un puntaje del 1 al 10. Customer y Support usan el SLA, la categoría del cliente y el tipo de mercado. Engineering usa el SLA y el sistema afectado. |
+| FR-03 | **Cola por urgencia.** Customer siempre se atiende antes que Support y Engineering. Después, la cola ordena los issues por su puntaje. |
 | FR-04 | **Clasificación por complejidad.** El LLM debe clasificar cada issue como de complejidad Alta, Media o Baja. |
 | FR-05 | **Embudo para complejidad Alta.** Antes de crear el plan, un issue de complejidad Alta debe pasar por un embudo que revisa palabras clave potencialmente destructivas. |
 | FR-06 | **Plan para Alta y Media.** Para los issues de complejidad Alta y Media, el LLM debe crear un plan.md con las acciones que propone. |
