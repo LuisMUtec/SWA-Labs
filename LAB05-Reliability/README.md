@@ -51,7 +51,7 @@ El puntaje final se calcula así:
 * Customer y Support: SLA × 50 % + categoría × 30 % + mercado × 20 %.
 * Engineering: SLA × 50 % + sistema afectado × 50 %.
 
-El resultado queda entre 1 y 10. Customer siempre se atiende antes que Support y Engineering. Después, la cola ordena los issues por su puntaje de urgencia.
+El resultado queda entre 1 y 10. Los issues con puntaje de 8 a 10 se consideran urgentes. Customer siempre se atiende antes que Support y Engineering. Después, la cola ordena los issues por su puntaje de urgencia.
 
 ## 4. Ciclo de vida
 
@@ -61,16 +61,16 @@ Cuando entra un issue pasa por el LLM y se abren 3 caminos según la complejidad
 * Media: se crea directamente el plan.md.
 * Baja: solo se permiten consultas de lectura. Si es una pregunta común, se usa la respuesta ya guardada para que siempre sea la misma. Si no, se lee el estado actual en la BD y se responde.
 
-Alta y Media terminan en un plan.md que pasa por Human in the loop. Mientras más complejo es el issue, más aprobación humana pide el harness: Alta necesita más aprobación del ingeniero y Media menos
+Alta y Media terminan en un plan.md que pasa por Human in the loop. Media necesita la aprobación de un ingeniero. Alta necesita dos aprobaciones, pero se solicitan al mismo tiempo para reducir la espera.
 
 ```mermaid
 flowchart TD
     A["Entra un issue"] --> B{"LLM: ¿qué complejidad tiene?"}
     B -->|Alta| C["Embudo: diccionario de palabras destructivas"]
     C --> D["Crea plan.md"]
-    D --> E["Human in the loop: más aprobación del ingeniero"]
+    D --> E["Human in the loop:<br/>dos aprobaciones en paralelo"]
     B -->|Media| F["Crea plan.md"]
-    F --> G["Human in the loop: menos aprobación del ingeniero"]
+    F --> G["Human in the loop:<br/>una aprobación"]
     B -->|Baja| H{"¿Es una pregunta común?"}
     H -->|Sí| I["Usa la respuesta guardada"]
     H -->|No| J["Lee el estado actual en la BD"]
@@ -86,6 +86,7 @@ Lo que agregamos:
 
 * Varios LLM con load balancer: como el LLM es nuestro SPOF, ponemos más de una instancia. El load balancer revisa el /health de cada una y si alguna se cae deja de mandarle issues, así las demás siguen respondiendo.
 * Cola por urgencia: los issues entran a una cola y se ordenan con el puntaje de la parte 3. En la primera semana del mes, que es cuando llegan más incidentes, se atienden primero los que están por vencer su SLA.
+* Aprobación rápida: si un issue Alta o Media tiene un puntaje de 8 a 10, el plan.md se envía inmediatamente al ingeniero de guardia. Media pide una aprobación y Alta pide dos en paralelo. Si un ingeniero no responde en 5 minutos, se avisa a uno de respaldo. Nada se ejecuta sin las aprobaciones necesarias.
 * Circuit breaker: si el LLM empieza a fallar muchas veces seguidas, se cortan los pedidos por un rato para que se recupere y no se sature más. Mientras tanto las preguntas comunes se responden con las respuestas guardadas y lo demás espera en la cola.
 * Control de acciones: el MCP de BD por defecto solo deja leer. Si hace falta cambiar algo, va en un plan.md y recién se ejecuta cuando el ingeniero lo aprueba en el human in the loop de la parte 4. Así el LLM ya no puede borrar nada por su cuenta.
 * Backups y réplica de la BD: en la parte 2 vimos que si se borra la BD se pierde todo, por eso sacamos backups seguido y tenemos una réplica para recuperarla si pasa algo.
@@ -93,7 +94,7 @@ Lo que agregamos:
 * Respuestas guardadas: las preguntas comunes tienen una respuesta ya revisada en caché, entonces el LLM responde siempre lo mismo y no algo distinto cada día.
 * Base de conocimiento: cada vez que se cierra un incidente guardamos cómo se resolvió y el LLM lo consulta antes de responder. Es su forma de aprender de casos anteriores sin reentrenarlo.
 * Cola para Slack: si Slack no responde, los avisos se guardan y se mandan cuando vuelva, para que no frene lo demás.
-* Métricas: para saber si cumplimos con disponibilidad, tolerancia a fallos y baja latencia medimos el P95 y P99 del tiempo de respuesta del LLM, la availability con 2xx / (2xx + 5xx) y la reliability con 2xx / (2xx + 4xx + 5xx). También contamos cuántos issues vencen su SLA.
+* Métricas: medimos el P95 y P99 desde que entra un issue hasta que recibe una respuesta o se aprueba su plan.md. También medimos la availability con 2xx / (2xx + 5xx), la reliability con 2xx / (2xx + 4xx + 5xx) y cuántos issues vencen su SLA.
 
 ### Sesiones por ingeniero
 
@@ -147,7 +148,10 @@ flowchart TD
     subgraph CONTROL["Control de acciones"]
         EMB["Embudo<br/>palabras destructivas"]
         PLAN["plan.md"]
-        HITL["Human in the loop<br/>el ingeniero aprueba"]
+        URG{"¿Es urgente?<br/>puntaje de 8 a 10"}
+        GUARDIA["Avisa al ingeniero de guardia"]
+        RESPALDO["Ingeniero de respaldo"]
+        HITL["Human in the loop<br/>una o dos aprobaciones<br/>en paralelo"]
     end
 
     subgraph ACCESO["Acceso a la BD"]
@@ -190,7 +194,10 @@ flowchart TD
     CLS -->|Baja| MCPL
     CLS -->|Media| PLAN
     CLS -->|Alta| EMB --> PLAN
-    PLAN --> HITL
+    PLAN --> URG
+    URG -->|Sí| GUARDIA --> HITL
+    URG -->|No| HITL
+    GUARDIA -.->|sin respuesta en 5 min| RESPALDO --> HITL
     HITL -->|aprobado| MCPW
 
     MCPL --> BDP

@@ -13,6 +13,6 @@ Estos requerimientos salen del enunciado del Lab 5 y de lo que explicamos en la 
 | NFR-07 | **Acciones controladas.** El MCP de base de datos por defecto solo permite leer. Ninguna escritura se ejecuta sin la aprobación de un ingeniero. |
 | NFR-08 | **Respuestas consistentes.** Una misma pregunta común debe tener siempre la misma respuesta. |
 | NFR-09 | **Datos actualizados.** El estado que muestra el sistema debe ser el actual. Si se usa caché, debe tener un TTL corto y limpiarse apenas el incidente cambia de estado. |
-| NFR-10 | **Latencia mínima para decisiones críticas.** Las decisiones críticas deben tener la menor latencia posible. Se mide con el P95 y el P99 del tiempo de respuesta. |
+| NFR-10 | **Latencia mínima para decisiones críticas.** Un issue con puntaje de 8 a 10 se considera crítico. Se mide el P95 y P99 desde que entra hasta que recibe una respuesta o se aprueba su plan.md. |
 | NFR-11 | **Disponibilidad y reliability medibles.** Se mide la availability con 2xx / (2xx + 5xx), la reliability con 2xx / (2xx + 4xx + 5xx) y cuántos issues vencen su SLA. |
 | NFR-12 | **Slack no bloquea el sistema.** Si Slack no responde, el resto del sistema debe seguir funcionando. |
