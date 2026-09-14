@@ -10,7 +10,7 @@ Estos requerimientos salen de lo que explicamos en el README (partes 3, 4 y 5) y
 | FR-04 | **Clasificación por complejidad.** El LLM debe clasificar cada issue como de complejidad Alta, Media o Baja. |
 | FR-05 | **Embudo para complejidad Alta.** Antes de crear el plan, un issue de complejidad Alta debe pasar por un embudo que revisa palabras clave potencialmente destructivas. |
 | FR-06 | **Plan para Alta y Media.** Para los issues de complejidad Alta y Media, el LLM debe crear un plan.md con las acciones que propone. |
-| FR-07 | **Human in the loop.** Ningún plan.md se ejecuta sin la aprobación de un ingeniero. Un issue de complejidad Alta necesita más aprobación humana que uno de complejidad Media. |
+| FR-07 | **Human in the loop.** Media necesita una aprobación y Alta necesita dos en paralelo. Si el issue es urgente, se avisa al ingeniero de guardia y, si no responde en 5 minutos, a uno de respaldo. Nada se ejecuta sin las aprobaciones necesarias. |
 | FR-08 | **Solo lectura para Baja.** Los issues de complejidad Baja solo pueden hacer consultas de lectura y el LLM responde directamente. |
 | FR-09 | **Respuestas guardadas.** Si la pregunta es común, el sistema debe responder con la respuesta ya guardada para que siempre sea la misma. |
 | FR-10 | **Estado actual del incidente.** Cuando se pregunta por un incidente, el sistema debe leer su estado actual de la base de datos. |
