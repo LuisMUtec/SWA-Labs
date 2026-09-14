@@ -41,7 +41,7 @@ Para calcular la urgencia usamos estos porcentajes:
 
 Cada variable recibe un puntaje:
 
-* SLA: empieza en 1 y sube hasta 10 conforme se acerca el vencimiento.
+* SLA: suma 1 punto por cada día que pasa. Customer empieza en 9, Support en 8 y Engineering en 7. Cuando vence el SLA llega a 10 y ya no sube más.
 * Categoría del cliente: normal = 5 y VIP = 10.
 * Tipo de mercado: B2C = 5 y B2B = 10.
 * Sistema afectado: impacto bajo = 3, medio = 6 y alto = 10.
