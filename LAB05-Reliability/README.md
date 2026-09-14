@@ -118,12 +118,15 @@ Aquí juntamos todo lo anterior. Antes el sistema iba de la API al LLM y de ahí
 
 En el diagrama marcamos el LLM como SPOF y también como cuello de botella, porque en la primera semana del mes ahí se acumulan los issues. El load balancer con varias instancias evita el SPOF, y la cola, el circuit breaker y la caché ayudan a que no se sature.
 
+Las preguntas comunes usan la respuesta guardada antes de llamar al LLM. Para consultar el estado de un incidente, primero se revisa la caché y, si no tiene un valor vigente, se lee la BD.
+
 Las flechas normales son el camino de un issue y las punteadas son lo que pasa por detrás, como las réplicas, los backups o lo que hace el circuit breaker cuando el LLM falla.
 
 ```mermaid
 flowchart TD
     U["Ingenieros y soporte"]
     API["API LLM"]
+    COMUN{"¿Es una pregunta común?"}
     ISSUE["Registro del issue"]
     TIPO{"¿Qué tipo de issue es?"}
     PUNTAJE["Puntaje de urgencia<br/>variables de la parte 3"]
@@ -131,6 +134,8 @@ flowchart TD
     CB["Circuit breaker<br/>protege al cuello de botella"]
     LB["Load balancer<br/>revisa /health<br/>evita el SPOF"]
     CLS{"¿Qué complejidad tiene?"}
+    ESTADO{"¿Estado actual<br/>en caché y vigente?"}
+    RESP["Responde"]
     MON["Métricas<br/>P95 y P99, availability,<br/>reliability y SLA vencidos"]
 
     subgraph SEG["Seguridad"]
@@ -178,7 +183,9 @@ flowchart TD
     REG -->|guarda usuario y rol| USERS
     U --> LOGIN
     LOGIN -.->|valida usuario y rol| USERS
-    LOGIN --> API --> ISSUE --> TIPO
+    LOGIN --> API --> COMUN
+    COMUN -->|Sí| CACHE
+    COMUN -->|No| ISSUE --> TIPO
     ISSUE -->|guarda el issue y su tipo| BDP
     TIPO -->|Customer| PUNTAJE
     TIPO -->|Support| PUNTAJE
@@ -190,21 +197,25 @@ flowchart TD
     LLMS -.->|consulta| KB
     LLMS --> AV --> MCPS --> SL
 
-    CLS -->|Baja| CACHE
-    CLS -->|Baja| MCPL
-    CLS -->|Media| PLAN
-    CLS -->|Alta| EMB --> PLAN
+    CLS -->|Baja| ESTADO
+    ESTADO -->|Sí| CACHE
+    ESTADO -->|No| MCPL
+    CLS -->|Media: una aprobación| PLAN
+    CLS -->|Alta: dos aprobaciones| EMB --> PLAN
     PLAN --> URG
     URG -->|Sí| GUARDIA --> HITL
     URG -->|No| HITL
     GUARDIA -.->|sin respuesta en 5 min| RESPALDO --> HITL
     HITL -->|aprobado| MCPW
 
+    CACHE -->|respuesta guardada<br/>o estado vigente| RESP
     MCPL --> BDP
+    BDP -->|estado actual| RESP
     MCPW --> BDP
     BDP -.->|réplica| REP
     BDP -.->|backups| BK
     BDP -.->|al cerrar un incidente| KB
+    BDP -.->|guarda el estado con TTL corto| CACHE
     BDP -.->|limpia al cambiar un estado| CACHE
 
     API -.-> MON
