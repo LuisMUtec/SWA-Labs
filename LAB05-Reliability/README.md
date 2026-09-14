@@ -33,11 +33,13 @@ Aquí la diferencia es que el componente de riesgo puede causar daños graves pe
 
 ## 3. Issues
 
-De cara al Harness, a cada tipo de issues, le asignamos variables y % de importancia para que por cada valor, obtengamos un valor y nos permita cuantificar la urgencia.
+Para calcular la urgencia usamos estos porcentajes:
 
-* Customer (prioritario, SLA de 1 día) : tiempo que falta para vencer el SLA, categoría del cliente (VIP, normal) y tipo de mercado (B2B, B2C).
-* Support : mismas variables que Customer porque el problema viene de un cliente, más lo que ya hizo soporte (si lo diagnosticó o lo pudo contener). Estamos asumiendo SLA de 2 días para este caso.
-* Engineering : tiempo que falta para vencer el SLA, Relevancia según rol (practi, analista, …, senior, lead), Sistema afectado (plataforma, bd, etc)
+* Customer (SLA de 1 día): SLA 50 %, categoría del cliente 30 % y tipo de mercado 20 %.
+* Support (SLA de 2 días): SLA 50 %, categoría del cliente 30 % y tipo de mercado 20 %.
+* Engineering: SLA 50 % y sistema afectado 50 %.
+
+Los porcentajes de cada tipo suman 100 %. Customer siempre se atiende antes que Support y Engineering. Después, la cola ordena los issues por su puntaje de urgencia.
 
 ## 4. Ciclo de vida
 
