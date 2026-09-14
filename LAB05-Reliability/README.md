@@ -123,6 +123,7 @@ Las preguntas comunes usan la respuesta guardada antes de llamar al LLM. Para co
 Las flechas normales son el camino de un issue y las punteadas son lo que pasa por detrás, como las réplicas, los backups o lo que hace el circuit breaker cuando el LLM falla.
 
 ```mermaid
+%%{init: {"themeVariables": {"fontSize": "20px"}, "flowchart": {"nodeSpacing": 50, "rankSpacing": 55}}}%%
 flowchart TD
     U["Ingenieros y soporte"]
     API["API LLM"]
@@ -131,8 +132,8 @@ flowchart TD
     TIPO{"¿Qué tipo de issue es?"}
     PUNTAJE["Puntaje de urgencia<br/>variables de la parte 3"]
     COLA["Cola por urgencia"]
-    CB["Circuit breaker<br/>protege al cuello de botella"]
-    LB["Load balancer<br/>revisa /health<br/>evita el SPOF"]
+    CB["CIRCUIT BREAKER<br/>protege el CUELLO DE BOTELLA"]
+    LB["LOAD BALANCER<br/>revisa /health<br/>elimina el SPOF"]
     CLS{"¿Qué complejidad tiene?"}
     ESTADO{"¿Estado actual<br/>en caché y vigente?"}
     RESP["Responde"]
@@ -143,20 +144,19 @@ flowchart TD
         LOGIN["Login<br/>autenticación y límite de sesiones por rol"]
     end
 
-    subgraph LLMS["LLM con respaldo (SPOF y cuello de botella)"]
-        direction LR
-        LLM1["LLM 1"]
-        LLM2["LLM 2"]
-        LLM3["LLM 3"]
+    subgraph LLMS["LLM CON RESPALDO"]
+        POOL["LLM 1 + LLM 2 + LLM 3<br/>LLM ORIGINAL = SPOF<br/>LLM = CUELLO DE BOTELLA"]
     end
 
     subgraph CONTROL["Control de acciones"]
         EMB["Embudo<br/>palabras destructivas"]
-        PLAN["plan.md"]
+        MEDIA["MEDIA<br/>plan.md<br/>1 APROBACIÓN"]
+        ALTA["ALTA<br/>plan.md<br/>2 APROBACIONES EN PARALELO"]
         URG{"¿Es urgente?<br/>puntaje de 8 a 10"}
         GUARDIA["Avisa al ingeniero de guardia"]
-        RESPALDO["Ingeniero de respaldo"]
-        HITL["Human in the loop<br/>una o dos aprobaciones<br/>en paralelo"]
+        TIEMPO{"¿Respondió en 5 minutos?"}
+        RESPALDO["INGENIERO DE RESPALDO"]
+        HITL["HUMAN IN THE LOOP<br/>aprueba o rechaza"]
     end
 
     subgraph ACCESO["Acceso a la BD"]
@@ -166,7 +166,7 @@ flowchart TD
 
     subgraph DATOS["Datos"]
         USERS[("Usuarios y roles")]
-        CACHE["Caché<br/>respuestas guardadas y estados<br/>TTL corto, baja la carga del LLM"]
+        CACHE["CACHÉ<br/>respuestas guardadas y estados<br/>TTL corto, baja la carga del LLM"]
         BDP[("BD principal<br/>issues y su tipo")]
         REP[("BD réplica")]
         BK[("Backups")]
@@ -190,22 +190,23 @@ flowchart TD
     TIPO -->|Customer| PUNTAJE
     TIPO -->|Support| PUNTAJE
     TIPO -->|Engineering| PUNTAJE
-    PUNTAJE --> COLA --> CB --> LB --> LLMS
+    PUNTAJE --> COLA --> CB --> LB --> POOL
     CB -.->|si el LLM falla| CACHE
     CB -.->|el resto espera| COLA
-    LLMS --> CLS
-    LLMS -.->|consulta| KB
-    LLMS --> AV --> MCPS --> SL
+    POOL --> CLS
+    POOL -.->|consulta| KB
+    POOL --> AV --> MCPS --> SL
 
     CLS -->|Baja| ESTADO
     ESTADO -->|Sí| CACHE
     ESTADO -->|No| MCPL
-    CLS -->|Media: una aprobación| PLAN
-    CLS -->|Alta: dos aprobaciones| EMB --> PLAN
-    PLAN --> URG
-    URG -->|Sí| GUARDIA --> HITL
+    CLS -->|Media| MEDIA --> URG
+    CLS -->|Alta| EMB --> ALTA --> URG
+    URG -->|Sí| GUARDIA
     URG -->|No| HITL
-    GUARDIA -.->|sin respuesta en 5 min| RESPALDO --> HITL
+    GUARDIA --> TIEMPO
+    TIEMPO -->|Sí| HITL
+    TIEMPO -->|No| RESPALDO --> HITL
     HITL -->|aprobado| MCPW
 
     CACHE -->|respuesta guardada<br/>o estado vigente| RESP
@@ -219,7 +220,7 @@ flowchart TD
     BDP -.->|limpia al cambiar un estado| CACHE
 
     API -.-> MON
-    LLMS -.-> MON
+    POOL -.-> MON
 ```
 
 ## Carpetas para el evaluador de minions
