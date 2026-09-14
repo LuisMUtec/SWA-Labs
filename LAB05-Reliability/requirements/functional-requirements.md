@@ -12,8 +12,8 @@ Estos requerimientos salen de lo que explicamos en el README (partes 3, 4 y 5) y
 | FR-06 | **Plan para Alta y Media.** Para los issues de complejidad Alta y Media, el LLM debe crear un plan.md con las acciones que propone. |
 | FR-07 | **Human in the loop.** Media necesita una aprobación y Alta necesita dos en paralelo. Si el issue es urgente, se avisa al ingeniero de guardia y, si no responde en 5 minutos, a uno de respaldo. Nada se ejecuta sin las aprobaciones necesarias. |
 | FR-08 | **Solo lectura para Baja.** Los issues de complejidad Baja solo pueden hacer consultas de lectura y el LLM responde directamente. |
-| FR-09 | **Respuestas guardadas.** Si la pregunta es común, el sistema debe responder con la respuesta ya guardada para que siempre sea la misma. |
-| FR-10 | **Estado actual del incidente.** Cuando se pregunta por un incidente, el sistema debe leer su estado actual de la base de datos. |
+| FR-09 | **Respuestas guardadas.** Si la pregunta es común, el sistema debe usar la respuesta guardada antes de llamar al LLM. |
+| FR-10 | **Estado actual del incidente.** Primero se revisa la caché. Si no tiene un estado vigente, se lee la BD. Cuando el estado cambia, se limpia la caché. |
 | FR-11 | **Base de conocimiento.** Cada vez que se cierra un incidente, el sistema debe guardar cómo se resolvió, y el LLM debe consultar esa información antes de responder. |
 | FR-12 | **Límite de sesiones por rol.** El sistema debe limitar cuántas sesiones puede tener abiertas cada ingeniero según su rol, y no debe dejarle abrir más cuando llega a su límite. |
 | FR-13 | **Avisos por Slack.** El sistema debe enviar avisos por Slack. Si Slack no responde, los avisos se guardan y se envían cuando vuelva. |
