@@ -139,8 +139,8 @@ flowchart TD
     RESP["Responde"]
     MON["Métricas<br/>P95 y P99, availability,<br/>reliability y SLA vencidos"]
 
-    subgraph SEG["Seguridad"]
-        REG["Registro de usuarios<br/>se crea el ingeniero con su rol"]
+    subgraph SEG["SEGURIDAD: REGISTRO Y LOGIN"]
+        REG["REGISTRO Y CREACIÓN DE USUARIO<br/>se crea el ingeniero con su rol"]
         LOGIN["Login<br/>autenticación y límite de sesiones por rol"]
     end
 
@@ -153,9 +153,8 @@ flowchart TD
         MEDIA["MEDIA<br/>plan.md<br/>1 APROBACIÓN"]
         ALTA["ALTA<br/>plan.md<br/>2 APROBACIONES EN PARALELO"]
         URG{"¿Es urgente?<br/>puntaje de 8 a 10"}
-        GUARDIA["Avisa al ingeniero de guardia"]
-        TIEMPO{"¿Respondió en 5 minutos?"}
-        RESPALDO["INGENIERO DE RESPALDO"]
+        GUARDIA["ISSUE URGENTE<br/>AVISA AL INGENIERO DE GUARDIA"]
+        RESPALDO["NO RESPONDE EN 5 MINUTOS<br/>AVISA AL INGENIERO DE RESPALDO"]
         HITL["HUMAN IN THE LOOP<br/>aprueba o rechaza"]
     end
 
@@ -204,9 +203,8 @@ flowchart TD
     CLS -->|Alta| EMB --> ALTA --> URG
     URG -->|Sí| GUARDIA
     URG -->|No| HITL
-    GUARDIA --> TIEMPO
-    TIEMPO -->|Sí| HITL
-    TIEMPO -->|No| RESPALDO --> HITL
+    GUARDIA -->|responde| HITL
+    GUARDIA -->|NO responde en 5 minutos| RESPALDO --> HITL
     HITL -->|aprobado| MCPW
 
     CACHE -->|respuesta guardada<br/>o estado vigente| RESP
