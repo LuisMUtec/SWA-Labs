@@ -49,13 +49,28 @@
     },
     {
       "path": "README.md",
-      "bytes": 957,
-      "sha256": "9857f37d7726913c11a8bd95c2c6e22b9c557e11e20bf2856dc202eee04a26a7"
+      "bytes": 1347,
+      "sha256": "6cb1620b0856c7f137fd73eba1386d230f054e5580e4c59d1f67ef7a7e69c5d4"
     },
     {
       "path": "REDALE.md",
       "bytes": 31975,
       "sha256": "78478ea9653a625cdddc0a17e7be0b7be346e7bb6a9f8bb6003f4f90eecac345"
+    },
+    {
+      "path": "evaluaciones/2026-10-25/registro.json",
+      "bytes": 636,
+      "sha256": "3bbd5f63a1c3cf21a58bb4322b53fdcad0b18fe81b44237ff664183afa162c85"
+    },
+    {
+      "path": "evaluaciones/2026-10-25/resultado.md",
+      "bytes": 6722,
+      "sha256": "e697fa4ccc4bc77b28862adb2884ebfbb376ee8f8325f7d782bb91c2c3f91e18"
+    },
+    {
+      "path": "evaluaciones/2026-10-25/solicitud.json",
+      "bytes": 237,
+      "sha256": "7bc4eeae26d376e7298504542d2b65fe2f47e2a296ea5ac0702464e33ffba4e9"
     },
     {
       "path": "requerimientos/00-enunciado.md",
