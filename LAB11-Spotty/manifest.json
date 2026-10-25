@@ -1,0 +1,81 @@
+{
+  "source": "Spotty_REDALE_avance.md",
+  "sourceSha256": "78478ea9653a625cdddc0a17e7be0b7be346e7bb6a9f8bb6003f4f90eecac345",
+  "files": [
+    {
+      "path": "Listado_Diagramas/00-arquitectura-final.png",
+      "bytes": 575418,
+      "sha256": "e3a8fb7b05f636345cbfb7090ae99e73ee5659f9c06975248d9c04c1ce0fa835"
+    },
+    {
+      "path": "Listado_Diagramas/01-transicion.png",
+      "bytes": 274113,
+      "sha256": "5aa5389f5dc677f536837321e16e8b7ca6e8f20a58c781f5df5aa7c341969df6"
+    },
+    {
+      "path": "Listado_Diagramas/02-casos-operativos.png",
+      "bytes": 344008,
+      "sha256": "14933f37d1907c57c0aea44d9244bd250b75212e2445959371380f1b218fffec"
+    },
+    {
+      "path": "Listado_Diagramas/03-mapa-evolutivo.png",
+      "bytes": 306930,
+      "sha256": "de833e2a1cb3c8df46229194abafb0773beea89ae2f276bb7940f84219d9226e"
+    },
+    {
+      "path": "Listado_Diagramas/04-cpu-spot.png",
+      "bytes": 290084,
+      "sha256": "f96fa50f5329365aa541f0a48a157f36cd0fcde69d0891f43c708294f09ee21b"
+    },
+    {
+      "path": "Listado_Diagramas/05-picos-capacidad.png",
+      "bytes": 348040,
+      "sha256": "257f8c3c304b9d02b14b023a1cb90d0a8032662a848ea4fd07909c1537197490"
+    },
+    {
+      "path": "Listado_Diagramas/06-ciclo-entrega.png",
+      "bytes": 305440,
+      "sha256": "b58f1e45c9325d4c09ed9a4fbf9f2eca72ff2d87bb344602e92c108ffdaa4932"
+    },
+    {
+      "path": "Listado_Diagramas/07-estado-inicial.png",
+      "bytes": 184081,
+      "sha256": "3ff1bc6bc1e9078477a767a2ec55efaa35ec975570e8ebcac80b7d8d2842a3d6"
+    },
+    {
+      "path": "Listado_Diagramas/README.md",
+      "bytes": 18030,
+      "sha256": "b663b68e124aa9127fe8d1f33517ada8ad116ca767d1a3c7d3fe8e7c88ad29e0"
+    },
+    {
+      "path": "README.md",
+      "bytes": 891,
+      "sha256": "0f9e5026a3fc3e6155c2848d604573073e73b3bc47110358745acdc792e2a48d"
+    },
+    {
+      "path": "REDALE.md",
+      "bytes": 31975,
+      "sha256": "78478ea9653a625cdddc0a17e7be0b7be346e7bb6a9f8bb6003f4f90eecac345"
+    },
+    {
+      "path": "requerimientos/00-enunciado.md",
+      "bytes": 2095,
+      "sha256": "4eae4ae653375cb9e017506a90a19475d82d6090f50d134012230172d7f4d305"
+    },
+    {
+      "path": "requerimientos/01-requisitos.md",
+      "bytes": 8047,
+      "sha256": "4f6fee349758b635a422661621f5164b4eaa63f7cb8f08b49dc9450ac6f58777"
+    },
+    {
+      "path": "users/alumno.md",
+      "bytes": 912,
+      "sha256": "8473e065c702e9fee83f32f340a4acd3f81f1fae102a81d8f580463efab1b2d7"
+    },
+    {
+      "path": "users/docente.md",
+      "bytes": 1030,
+      "sha256": "a2037aebe0c4b02d2d21e23568673e25de88e21435a39ea9bf2855dac3e0678a"
+    }
+  ]
+}
