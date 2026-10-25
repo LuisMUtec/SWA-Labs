@@ -3,11 +3,6 @@
   "sourceSha256": "78478ea9653a625cdddc0a17e7be0b7be346e7bb6a9f8bb6003f4f90eecac345",
   "files": [
     {
-      "path": "Listado_Diagramas/00-arquitectura-final.png",
-      "bytes": 575418,
-      "sha256": "e3a8fb7b05f636345cbfb7090ae99e73ee5659f9c06975248d9c04c1ce0fa835"
-    },
-    {
       "path": "Listado_Diagramas/01-transicion.png",
       "bytes": 274113,
       "sha256": "5aa5389f5dc677f536837321e16e8b7ca6e8f20a58c781f5df5aa7c341969df6"
@@ -43,14 +38,19 @@
       "sha256": "3ff1bc6bc1e9078477a767a2ec55efaa35ec975570e8ebcac80b7d8d2842a3d6"
     },
     {
+      "path": "Listado_Diagramas/Diagrama Final.png",
+      "bytes": 575418,
+      "sha256": "e3a8fb7b05f636345cbfb7090ae99e73ee5659f9c06975248d9c04c1ce0fa835"
+    },
+    {
       "path": "Listado_Diagramas/README.md",
       "bytes": 18030,
       "sha256": "b663b68e124aa9127fe8d1f33517ada8ad116ca767d1a3c7d3fe8e7c88ad29e0"
     },
     {
       "path": "README.md",
-      "bytes": 891,
-      "sha256": "0f9e5026a3fc3e6155c2848d604573073e73b3bc47110358745acdc792e2a48d"
+      "bytes": 957,
+      "sha256": "9857f37d7726913c11a8bd95c2c6e22b9c557e11e20bf2856dc202eee04a26a7"
     },
     {
       "path": "REDALE.md",
