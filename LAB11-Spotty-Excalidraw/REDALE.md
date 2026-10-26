@@ -215,6 +215,20 @@ Se propone inicialmente un **máximo de tres intentos automáticos en total por 
 
 Si no hay Spot compatible, el trabajo queda en espera durable, se intenta obtener capacidad compatible en otros tipos o zonas y se actualiza la proyección del plazo. La falta prolongada de GPU puede hacer incumplir los dos días; informar la espera y alertar al docente no amplía el plazo.
 
+## Protecciones de dependencias y riesgos residuales
+
+Esta iteración añade **Circuit Breaker** en dos límites concretos: el acceso del backend a la BD de control y las llamadas del adaptador a la laptop legacy. Cada circuito observa su dependencia; sus umbrales, timeout y período de recuperación son configurables y se ajustarán mediante pruebas. No se fijan cifras del caso que el enunciado no proporciona.
+
+El **circuito de BD** corta nuevas llamadas cuando la dependencia falla o tarda demasiado y permite una prueba controlada de recuperación. Si la BD no permite completar el registro durable, no se confirma una nueva entrega ni se publica una nota. Una consulta responde indisponibilidad temporal en lugar de inventar un estado. Si el minion ya guardó una salida en objetos y falta aceptar el final, el trabajo conserva su identificador y permanece pendiente hasta completar la aceptación durable; no se reconoce su terminación ni se crea otro final por reintentar. El código del alumno no accede directamente a la BD.
+
+El **circuito del adaptador legacy** evita seguir enviando llamadas a la única laptop cuando falla o responde fuera de su timeout. El trabajo y su estado permanecen registrados; se informa y se reintenta según la política acotada cuando corresponda. Solo puede cambiarse la ruta a una implementación compatible ya validada. No existe una sustitución de GPU mediante la laptop.
+
+La laptop es un **SPOF del recorrido legacy**. La BD es un **SPOF si el despliegue usa una sola instancia**, condición que el dibujo deja explícita. Los circuitos contienen la cascada de fallos; **no recuperan los datos ni eliminan esos SPOF**. El backend y las demás dependencias también necesitan una decisión de recuperación antes de producción; esta lámina no acredita redundancia ni un SLA.
+
+La capacidad GPU Spot se identifica como **bottleneck candidato**, por la escasez y duración de trabajos del enunciado. Se contrastará con capacidad obtenida, edad de cola, duración y preparación del entorno. Circuit Breaker no crea capacidad GPU ni garantiza el plazo de notas. Los pools separados y la planificación por curso conservan sus funciones de aislamiento y reparto.
+
+La justificación procede de SWA 5.1 [62:44] (Circuit Breaker y límite de su efecto), SWA 6.1 [19:49] (identificar la dependencia y ubicar su protección), Top-Down II [34:09] (dependencias lentas o caídas) y SWA 11.1 [89:12–94:54] (diagnóstico y patrón mínimo).
+
 # A — Armar el modelo de datos
 
 La BD relacional conserva identidad, cursos, entregas, trabajos, intentos y notas. Los archivos de alumnos, resultados y avances recuperables se conservan en almacenamiento de objetos; las imágenes base permanecen en un registro de imágenes. El sandbox no tiene acceso directo a la BD de control.
@@ -251,6 +265,7 @@ Una tarea recibe entregas; cada versión genera un trabajo; un trabajo admite va
 | Minion y sandbox | Supervisar desde el proceso de confianza y ejecutar el código aislado. |
 | Registro y copia local de imágenes | Conservar versiones de 3–5 GB y preparar el entorno del curso. |
 | Objetos y BD | Conservar archivos, resultados, identidad, trabajos, estados y notas. |
+| Circuit Breaker de BD y del adaptador legacy | Cortar llamadas ante falla o timeout; recuperación controlada sin confirmar datos no guardados. |
 | Strangler Router y adaptador | Conservar el recorrido legacy durante la migración y unificar resultados. |
 | Monitoreo y alertas | Medir esperas, recursos, interrupciones, capacidad obtenida y riesgo de plazo. |
 
@@ -276,7 +291,7 @@ La fórmula preliminar sigue siendo horas de trabajo pendiente, incluido el marg
 
 Una ejecución simultánea por host facilita el aislamiento y reemplazo, con posible capacidad ociosa. Los pools separados limitan el impacto de una clase de trabajo, pero pueden dejar recursos libres en un pool mientras otro espera. La planificación por turnos protege a cursos pequeños y debe medirse frente a las tareas urgentes.
 
-Se conservan **Strangler, Bulkhead y Retry** porque responden a migración, aislamiento y fallos de ejecución del caso. BFF, Cache-Aside, réplicas, sharding o circuit breaker se incorporarán cuando se identifique el problema concreto que resolverían y se compare su costo. La selección sigue la regla de la semana 11 de aplicar el patrón mínimo necesario.
+Se conservan **Strangler, Bulkhead y Retry** por migración, aislamiento y fallos de ejecución. Esta iteración concreta además **Circuit Breaker** en el acceso a la BD y a la laptop legacy para contener fallos de esas dependencias, con los límites descritos en D. BFF, Cache-Aside, réplicas y sharding requieren un diagnóstico adicional antes de incorporarse. La selección sigue la regla de la semana 11 de aplicar el patrón mínimo necesario.
 
 ## Límite ante escasez de GPU
 
@@ -294,6 +309,8 @@ Cada función identifica una dimensión, un indicador y una rúbrica. Su ejecuci
 
 **FF3 — Requerimiento de plazo.** Indicador: entregas sin nota publicada cuando vence su fecha límite, incluyendo las que continúan en espera. Rúbrica aceptable: **cero notas fuera del máximo de dos días**, usando el supuesto de cómputo de R. Prueba: cierres escalonados, colas acumuladas, interrupciones y escasez de GPU. Registrar el incumplimiento si ocurre; no excluir del indicador los trabajos que nunca llegaron a terminar.
 
+**FF4 — Contención del fallo de dependencias.** Indicadores: llamadas enviadas a BD o laptop mientras su circuito está abierto y confirmaciones o notas aceptadas sin persistencia durable. Rúbrica: cero llamadas de negocio mientras esté abierto, salvo la prueba de recuperación controlada, y cero confirmaciones o publicaciones sin guardado completo. Prueba propuesta: inyectar caída o latencia superior al timeout de cada dependencia; comprobar apertura, respuesta de espera o indisponibilidad, recuperación controlada y conservación de trabajos y finales únicos. No se declara una ejecución real de esta prueba.
+
 El objetivo interno de **99 % de correcciones automáticas en 36 horas desde el cierre** se mide adicionalmente y no sustituye FF3. La modularidad se representa mediante responsabilidades e interfaces claras entre identidad, entregas, coordinación y resultados; las dependencias se revisan cuando cambien esos módulos.
 
 ## Fuentes del curso y trazabilidad
@@ -304,6 +321,7 @@ El objetivo interno de **99 % de correcciones automáticas en 36 horas desde el 
 | Top-Down I, `[03:59]`, `[05:48]` y `[15:33]–[18:33]` | Definir problema y usuarios; relacionar estimaciones con recursos y disponibilidad. |
 | Top-Down II, `[02:07]`, `[05:03]`, `[06:49]` y `[10:56]` | Representar requerimientos, Login Service, datos por interacción y respuestas alternativas. |
 | Top-Down II, `[30:29]` y `[34:09]–[38:13]` | Control de estados frente a repetición y comportamiento ante dependencias fallidas o lentas. |
+| SWA 5.1 [62:44], [87:19] y SWA 6.1 [19:49] | Circuit Breaker ante dependencia fallida o lenta; protección junto al SPOF y uso de patrones en los laboratorios. |
 | Semana 6, diapositivas 30–32 | Confiabilidad, Bulkhead y Retry; entregables con tipo de arquitectura, camino crítico y fitness functions. |
 | Semana 7, diapositivas 24–36, 41 y 65 | Funciones automatizables, dimensiones e indicadores; modularidad y recorrido crítico. |
 | Semana 11, diapositivas 13–23 y 59–62 | Strangler para la transición; identificar el bottleneck y elegir el patrón mínimo necesario. |

@@ -1,15 +1,13 @@
-# Spotty — prueba del evaluador con el borrador Excalidraw
+# Spotty — borrador en iteración contra el minion
 
-Prueba solicitada por Luis después de aclarar que «minion» se refería al evaluador del profesor. El contenido está en una rama de prueba; la revisión de la entrega final sigue pendiente.
+La entrega final sigue pendiente de revisión de Luis. Esta rama contiene pruebas del evaluador.
 
-La imagen `Listado_Diagramas/Diagrama Final.png` reúne las tres vistas simplificadas. Se incluyen el enunciado, los requerimientos corregidos, los usuarios y el REDALE revisado como contexto. Las cifras ilustrativas y decisiones propuestas están identificadas en el documento.
+La iteración 2 hace explícitos el registro de usuarios, los errores devueltos al docente, los SPOF y el cuello de botella candidato, los Circuit Breaker de BD y laptop legacy, y la transición Strangler por curso y tarea. Los requisitos, restricciones y estimaciones anteriores se conservan. Cada decisión tiene referencias del curso y sus límites.
 
-Esta carpeta permite evaluar el borrador actual, no el diagrama original que obtuvo 1.6/10.
+La imagen principal tiene cuatro vistas legibles; el archivo .excalidraw conserva las cajas, textos y flechas. El REDALE describe la falla y recuperación de las dependencias y propone una fitness function adicional; no se declaran pruebas de ejecución de Spotty.
 
-## Resultado del minion
+## Historial
 
-HTTP 200 sobre el commit `c2929644f7f706bcadf585a739a03eeec89438e0`: **2.3/10**. Security 5/10, reliability 0/10, scalability 0/10 y spec 9/10. Critical Path y Happy Path: cumple según el evaluador. La nota anterior del diagrama original fue 1.6/10.
-
-[Informe completo](evaluaciones/prueba-excalidraw/resultado.md) · [Solicitud](evaluaciones/prueba-excalidraw/solicitud.json) · [Registro](evaluaciones/prueba-excalidraw/registro.json)
-
-El veredicto describe lo que el evaluador reconoció en el dibujo. No es una prueba de ejecución de los workers ni demuestra cumplir el plazo de notas bajo carga real.
+- Original: 1.6/10.
+- Primer borrador Excalidraw: **2.3/10** — [informe](evaluaciones/prueba-excalidraw/resultado.md).
+- Iteración 2: preparada para nueva evaluación.

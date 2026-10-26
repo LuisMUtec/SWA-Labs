@@ -1,0 +1,23 @@
+{
+  "version": "iteracion-2",
+  "estado": "borrador pendiente de revisión final",
+  "evaluacionAutorizada": true,
+  "entregaFinalAutorizada": false,
+  "elementos": 144,
+  "marcos": 4,
+  "referenciasVerificadas": true,
+  "requerimientosYEstimacionesSinCambios": true,
+  "cambios": [
+    "Login Service y Registro de usuarios explícitos",
+    "Retorno RF5 con resultado y errores al desktop",
+    "Circuit Breaker en BD y adaptador legacy",
+    "SPOF y bottleneck candidato con riesgos residuales",
+    "Transición Strangler por curso y tarea"
+  ],
+  "fuentes": [
+    "Top-Down II [05:03, 06:49, 34:09]",
+    "SWA 5.1 [62:44, 87:19]",
+    "SWA 6.1 [19:49]",
+    "SWA 11.1 [12:58–19:53, 89:12–94:54]"
+  ]
+}
