@@ -1,8 +1,8 @@
 {
-  "iteration": "6-publicacion",
+  "iteration": "6-panel-docente",
   "status": "Borrador pendiente de aprobación final",
   "sameRequirementsAsCommit": "a2b37a3c85e2658b2e4e9d730cda6ab05f25ff5a",
-  "elements": 124,
+  "elements": 129,
   "frames": 1,
   "width": 2000,
   "height": 2460,
@@ -18,5 +18,7 @@
   "explicitPublicationTransaction": true,
   "numberedPublicationAcks": true,
   "spotRisksGrouped": true,
-  "legacyCannotRunGpuExplicit": true
+  "legacyCannotRunGpuExplicit": true,
+  "teacherReviewPanelExplicit": true,
+  "stranglerProgressionExplicit": true
 }

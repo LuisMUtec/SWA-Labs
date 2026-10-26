@@ -35,4 +35,6 @@ Se explicitan dentro de los componentes RF4 la emisión del evento al cambiar de
 
 La presentación actual ancla y etiqueta los retornos de datos a las apps, y conecta la revisión del docente con su acción de publicar. Los requisitos y criterios no cambian. Comprobación anterior: **9.2/10** — [informe](evaluaciones/iteracion-6-retornos/resultado.md).
 
-La lámina actual muestra un estado con fecha en la pantalla mobile y el presupuesto temporal de RNF5; en publicación presenta la transacción por P-7 y las respuestas numeradas BD → backend → docente. Son ejemplos del diseño, no mediciones ni una implementación ejecutada. Verificación: pendiente.
+La lámina actual muestra un estado con fecha en la pantalla mobile y el presupuesto temporal de RNF5; en publicación presenta la transacción por P-7 y las respuestas numeradas BD → backend → docente. Son ejemplos del diseño, no mediciones ni una implementación ejecutada. Evaluación: **9.4/10**, RF4 completo — [informe](evaluaciones/iteracion-6-publicacion/resultado.md).
+
+Se hace visible en el panel desktop la revisión conjunta de original, resultado automático y errores/intententos antes de publicar. Se representan las etapas piloto, ampliación y retiro del legacy sin cambiar las reglas de curso/tarea. Comprobación del cierre funcional: pendiente.
