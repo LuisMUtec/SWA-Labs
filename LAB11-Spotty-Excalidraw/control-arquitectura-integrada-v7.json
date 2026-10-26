@@ -14,9 +14,21 @@
   "unexpectedShapeOverlaps": 0,
   "unexpectedFreeTextShapeOverlaps": 0,
   "arrowCrossingsThroughUnrelatedShapes": 0,
-  "publishedToGitHub": false,
-  "sentToEvaluator": false,
+  "publishedToGitHub": true,
+  "sentToEvaluator": true,
   "formalSubmissionApproved": false,
-  "preparedForEvaluation": true,
-  "evaluationAuthorizedByUser": true
+  "evaluationInputCommit": "4eead9a221e6f81bfc5bba63ccdbcc4282d6e1ba",
+  "evaluationScore": 5.1,
+  "evaluationScores": {
+    "security": 5,
+    "reliability": 10,
+    "scalability": 0,
+    "spec": 8
+  },
+  "evaluationE2E": {
+    "criticalPath": false,
+    "happyPath": true
+  },
+  "evaluationHttpStatus": 200,
+  "evaluationReport": "../../evaluaciones/arquitectura-integrada-v7/resultado.md"
 }
