@@ -1,14 +1,15 @@
-# Spotty — iteraciones del borrador contra el minion
+# Spotty — borrador en revisión
 
-La entrega final sigue pendiente de revisión de Luis. La rama contiene pruebas del evaluador. El archivo .excalidraw tiene cuatro marcos editables; la imagen principal los reúne para la evaluación.
+La entrega final sigue pendiente de aprobación de Luis. Esta rama contiene iteraciones contra el minion del profesor. La imagen principal reúne cuatro vistas y el archivo .excalidraw conserva los elementos editables.
 
-La iteración 3 conserva los requisitos y las estimaciones. Aclara login/registro, estados y final único, además de la transición Strangler y las protecciones justificadas en clase. Los riesgos de recursos siguen identificados como candidatos que requieren medición; no se presentan como fallos medidos.
+La iteración 4 aclara el camino crítico y las respuestas al alumno y al docente; conserva el diseño de identidad, Circuit Breaker, Strangler y control atómico de resultados. Los requisitos y estimaciones no cambian. Los riesgos de GPU, RAM e imágenes son candidatos a medir y los SPOF dependen del despliegue indicado.
 
 ## Historial
 
 - Original: 1.6/10.
-- Primer borrador Excalidraw: **2.3/10** — [informe](evaluaciones/prueba-excalidraw/resultado.md).
-- Iteración 2: **7.1/10** — [informe](evaluaciones/iteracion-2/resultado.md).
-- Iteración 3: preparada para evaluación.
+- Primer Excalidraw: 2.3/10 — [informe](evaluaciones/prueba-excalidraw/resultado.md).
+- Iteración 2: 7.1/10 — [informe](evaluaciones/iteracion-2/resultado.md).
+- Iteración 3: 9.6/10 — [informe](evaluaciones/iteracion-3/resultado.md).
+- Iteración 4: preparada para evaluación.
 
-El minion revisa el dibujo; sus notas no son pruebas de ejecución del sistema. Los FF del REDALE son propuestas de validación y la escasez prolongada de GPU sigue pudiendo impedir cumplir el plazo de notas.
+El evaluador revisa el diagrama; las notas no acreditan pruebas de ejecución, eliminación de los SPOF ni cumplimiento medido del plazo bajo escasez prolongada de GPU. Los FF del REDALE siguen siendo propuestas de validación.

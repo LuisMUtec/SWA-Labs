@@ -1,8 +1,6 @@
-# Cuatro vistas de Spotty, iteración 3
+# Cuatro vistas de Spotty, iteración 4
 
-01: arquitectura general con login y registro visibles, Circuit Breaker y SPOF condicionados al despliegue. 02: recorridos de alumno y docente. 03: minions, riesgos de recursos y control atómico de estados y resultados. 04: transición Strangler por curso y tarea.
-
-Los bottlenecks son candidatos a medir, no resultados de performance tests. El Circuit Breaker contiene fallos; no crea GPU ni elimina por sí mismo los SPOF. La lógica de aceptación ya estaba descrita en el REDALE; ahora se dibuja de forma explícita.
+Ajuste de legibilidad de la iteración 3: título CAMINO CRÍTICO, respuestas RF4 con estados y objetivo normal de 60 segundos, y respuesta RF5 con entrega original, resultado y errores. Los patrones de arquitectura y las reglas de aceptación del resultado no cambian.
 
 # D — Diseñar el servicio
 

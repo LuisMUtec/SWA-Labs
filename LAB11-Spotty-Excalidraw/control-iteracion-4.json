@@ -1,0 +1,12 @@
+{
+  "iteration": 4,
+  "status": "Borrador pendiente de aprobación final",
+  "scope": "Legibilidad y retornos RF4/RF5",
+  "architecturePatternsUnchanged": true,
+  "requirementsUnchanged": true,
+  "previousScore": 9.6,
+  "elements": 169,
+  "frames": 4,
+  "visualReview": true,
+  "validReferences": true
+}
