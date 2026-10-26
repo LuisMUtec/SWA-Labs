@@ -12,5 +12,7 @@
     "users/alumno.md": "8473e065c702e9fee83f32f340a4acd3f81f1fae102a81d8f580463efab1b2d7",
     "users/docente.md": "a2037aebe0c4b02d2d21e23568673e25de88e21435a39ea9bf2855dac3e0678a",
     "control-iteracion-5.json": "53df505a9b65b6f8bbcfce8dcfa72e7683804250a9992652cb36ff505fa930ac"
-  }
+  },
+  "evaluatedInputCommit": "fc7bb7ebed8cf1e777bd1daff80484c7eecd728e",
+  "fileHashScope": "Archivos del commit evaluado; consultar ese ref para verificar los hashes."
 }

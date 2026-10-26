@@ -8,5 +8,13 @@
   "frames": 4,
   "visualReview": true,
   "validReferences": true,
-  "protectedDbPath": true
+  "protectedDbPath": true,
+  "evaluatedInputCommit": "fc7bb7ebed8cf1e777bd1daff80484c7eecd728e",
+  "evaluationScore": 9.6,
+  "evaluationHttpStatus": 200,
+  "remainingEvaluatorObservations": [
+    "RF4: actualización de estados hacia mobile",
+    "RF5: revisión de errores y publicación de notas"
+  ],
+  "finalApproval": "pendiente de Luis"
 }
