@@ -1,13 +1,16 @@
 {
-  "iteration": "6-cierre-rf4",
+  "iteration": "6-retornos",
   "status": "Borrador pendiente de aprobación final",
   "sameRequirementsAsCommit": "a2b37a3c85e2658b2e4e9d730cda6ab05f25ff5a",
-  "elements": 111,
+  "elements": 119,
   "frames": 1,
   "width": 2000,
   "height": 2460,
   "visualReview": true,
   "preservedDetailedViews": 4,
   "explicitStateEmission": true,
-  "explicitMobileTimer": true
+  "explicitMobileTimer": true,
+  "arrowBindingsVerified": true,
+  "returnArrowsLabelled": true,
+  "reviewToPublishConnected": true
 }
