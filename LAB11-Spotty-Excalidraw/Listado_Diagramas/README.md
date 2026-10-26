@@ -1,6 +1,6 @@
-# RF4 y RF5 completados, iteración 6
+# Lámina principal de Spotty
 
-La vista 02 contiene la actualización automática de estado (consulta cada 30 s como decisión propuesta), consulta de entrega/resultado/errores y publicación de nota con confirmación durable. Una confirmación perdida se resuelve consultando o repitiendo la misma solicitud. Los estados proceden del Control de trabajo de la vista 03 y la consulta utiliza la misma BD.
+La imagen principal presenta en franjas legibles RF1, RF4, revisión RF5, publicación RF5 y transición Strangler. Los nombres repetidos representan los mismos componentes, no despliegues adicionales. Se conserva el detalle de las cuatro vistas en material_revision. Los requerimientos, usuarios y decisiones son idénticos a la entrada a2b37a3 de la evaluación anterior.
 
 # D — Diseñar el servicio
 

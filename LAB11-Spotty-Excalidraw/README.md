@@ -25,4 +25,8 @@ Commit evaluado: `fc7bb7ebed8cf1e777bd1daff80484c7eecd728e`. El manifiesto conti
 
 RF4 y RF5 tienen redacción y criterios de aceptación explícitos. RNF5 define el objetivo extremo a extremo de 60 segundos con la pantalla activa y conectividad operativa. El sondeo propuesto cada 30 segundos añade escenarios de 10.4 y 103.7 consultas/s para 311 y 3110 pantallas activas. Las estimaciones previas, RF6, RF7 y las restricciones se conservan. Se completan los retornos de datos y la publicación de notas en el dibujo; se proponen pruebas de frescura e idempotencia con pérdida de acuse.
 
-Evaluación de la iteración 6: pendiente. La entrega final sigue pendiente de aprobación de Luis.
+Evaluación de la iteración 6 con imagen conjunta: **6.9/10** — [informe](evaluaciones/iteracion-6/resultado.md). La entrega final sigue pendiente de aprobación de Luis.
+
+### Presentación legible de la misma iteración
+
+Se conserva el contenido de RF4 y RF5 y se cambia la lámina principal a una vista de 2000×2460 con letras mayores y recorridos continuos de evento a mobile y de revisión a publicación docente. Las cuatro vistas detalladas están en [material_revision](material_revision). Nueva comprobación del minion: pendiente.
