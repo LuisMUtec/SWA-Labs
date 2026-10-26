@@ -1,0 +1,26 @@
+{
+  "startedAt": "2026-10-26T04:50:03.556067+00:00",
+  "completedAt": "2026-10-26T04:50:17.608953+00:00",
+  "endpoint": "https://arquisoft-clasificacion.balbuenac.workers.dev/evaluate?format=md&debug=0",
+  "httpStatus": 200,
+  "curlExitCode": 0,
+  "inputCommit": "c2929644f7f706bcadf585a739a03eeec89438e0",
+  "repository": "LuisMUtec/SWA-Labs",
+  "branch": "lab11/spotty-prueba-excalidraw",
+  "path": "LAB11-Spotty-Excalidraw",
+  "credentialStored": false,
+  "resultSha256": "88583904620195d9ebb3bcb67967fdd7e0b557b47464ad35dee32c10a4f0b9ae",
+  "finalScore": 2.3,
+  "scores": {
+    "security": 5,
+    "reliability": 0,
+    "scalability": 0,
+    "spec": 9
+  },
+  "e2e": {
+    "criticalPath": true,
+    "happyPath": true
+  },
+  "baselineScore": 1.6,
+  "scope": "Borrador Excalidraw de tres vistas con requerimientos y usuarios corregidos"
+}
