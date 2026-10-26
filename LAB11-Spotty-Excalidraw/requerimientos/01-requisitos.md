@@ -19,8 +19,8 @@ El **docente usa la aplicación desktop** para consultar correcciones y gestiona
 | RF1 | Permitir que el alumno envíe desde mobile código o archivos de una tarea y reciba una confirmación cuando la entrega haya quedado guardada. |
 | RF2 | Permitir reanudar una carga interrumpida, especialmente para archivos grandes de IA o conexiones móviles inestables. |
 | RF3 | Corregir tres clases de trabajo: pruebas unitarias/código de Programación, diagramas/código de Arquitectura y modelos/ejecuciones GPU de IA. |
-| RF4 | Mostrar al alumno el estado de su entrega, incluidas espera, ejecución, reintento, demora por falta de capacidad y finalización. |
-| RF5 | Permitir al docente consultar desde desktop la entrega, el resultado y los errores de corrección para gestionar la nota. |
+| RF4 | Permitir al alumno consultar y recibir en mobile la actualización automática del estado de sus propias entregas, incluidas espera, ejecución, reintento, demora por falta de capacidad y finalización, con fecha de actualización. |
+| RF5 | Permitir al docente revisar desde desktop la entrega original, el resultado y los errores de corrección de sus cursos, registrar y publicar la nota y recibir confirmación de su guardado. |
 | RF6 | Los reintentos de una corrección no deben generar resultados finales duplicados. |
 | RF7 | Mantener operativo el corrector existente durante la incorporación del sistema nuevo. |
 
@@ -32,9 +32,25 @@ El **docente usa la aplicación desktop** para consultar correcciones y gestiona
 | RNF2 | **Escalabilidad** | Soportar el pico de entregas de los últimos 30 minutos y aumentar por separado los workers de Programación, Arquitectura e IA según el atraso de cada cola. |
 | RNF3 | **Aislamiento y seguridad** | Ejecutar cada entrega no confiable en un sandbox independiente, con límites de CPU, memoria, tiempo y almacenamiento, sin acceso a credenciales del sistema. |
 | RNF4 | **Durabilidad y consistencia** | No perder una entrega ya confirmada al alumno. Si Spot interrumpe un worker, el trabajo podrá repetirse sin publicar dos correcciones finales. |
-| RNF5 | **Continuidad del estado** | Reflejar en mobile un cambio de estado en **hasta 60 segundos** en operación normal, incluso cuando la corrección espere o sea reintentada. |
+| RNF5 | **Continuidad del estado** | Objetivo propuesto: reflejar en mobile un cambio de estado en **hasta 60 segundos desde su generación en coordinación o en el minion**, con la pantalla de seguimiento activa, conexión operativa y backend en operación normal. Incluye registro durable, consulta y presentación; también se aplica a espera y reintentos. |
 | RNF6 | **Uso justo de recursos** | Un curso con muchos alumnos no debe impedir indefinidamente que se corrijan entregas de otros cursos. |
 | RNF7 | **Observabilidad** | Medir entregas recibidas, tiempo en cola, duración total, uso de memoria, interrupciones Spot, falta de capacidad y trabajos en riesgo de incumplir el plazo. |
+
+## Criterios de aceptación de RF4 y RF5
+
+| ID | Comprobación esperada |
+|---|---|
+| CA4.1 | Un cambio emitido por coordinación o por un minion llega al Control de trabajo del backend central, se guarda en la BD y aparece en la siguiente consulta automática mobile. Se cubren en cola, esperando capacidad, ejecutando, reintentando, resultado listo y requiere revisión. |
+| CA4.2 | En el escenario normal definido en RNF5, una transición generada se refleja en la pantalla de seguimiento en hasta 60 segundos. El alumno solo accede a sus propias entregas. |
+| CA4.3 | Si falla la consulta, la app conserva el último estado conocido con su fecha y muestra que no se pudo actualizar. Al abrir la pantalla o recuperar la conexión, consulta de inmediato. No muestra un estado nuevo ni una nota publicada sin haberlos recibido del backend. |
+| CA5.1 | El docente autorizado obtiene de una entrega el archivo original, el resultado y los errores e incidencias de sus intentos. Puede revisarlos antes de registrar la nota; no accede ni publica en cursos ajenos. |
+| CA5.2 | La acción de publicar envía la entrega, la nota y un identificador de solicitud. El backend valida permisos y que exista un resultado aceptado, guarda nota y fecha de publicación, y solo después confirma «Nota publicada». |
+| CA5.3 | Repetir la misma solicitud de publicación devuelve la nota ya guardada sin crear otra. Si se pierde la confirmación, consultar o reintentar esa solicitud permite conocer su resultado real. Un error definitivo de guardado no se presenta como publicación exitosa. |
+| CA5.4 | La consulta mobile devuelve la nota solo cuando está publicada. La entrega de notas se mide por su publicación durable y disponibilidad para consulta dentro del plazo, no por la corrección automática ni por el momento en que el alumno abre la app. |
+
+**Decisión de seguimiento propuesta:** la app consulta automáticamente cada **30 segundos** mientras la pantalla de seguimiento está activa, y al abrirla o reconectar hace una consulta inmediata. El intervalo es una elección de esta propuesta, no una cifra del enunciado. Del presupuesto de 60 segundos se reservan hasta 30 para el siguiente sondeo y hasta 30 para recibir y registrar el evento, responder y presentar el dato; esta distribución debe comprobarse con pruebas. La app distingue la fecha del último cambio de estado de la fecha de su última consulta exitosa: un trabajo largo puede seguir ejecutándose sin generar una transición nueva.
+
+Estos criterios concretan RF4 y RF5. El alta institucional, la política de publicación y el sondeo son decisiones del diseño; no se atribuyen como instrucciones literales del profesor. RF6 y RF7 se mantienen.
 
 ## Plazo de notas y objetivo interno
 

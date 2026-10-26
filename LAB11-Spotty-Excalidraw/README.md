@@ -20,3 +20,9 @@ Los Circuit Breaker contienen la cascada de fallos y no eliminan por sí solos l
 Security 10/10, reliability 10/10, scalability 10/10 y spec 8/10. El informe conserva las observaciones sobre RF4 (actualización de estado mobile) y RF5 (revisión/publicación docente). Deben revisarse junto al dibujo y el REDALE antes de aprobar la entrega; el resultado automático no se presenta como conformidad total.
 
 Commit evaluado: `fc7bb7ebed8cf1e777bd1daff80484c7eecd728e`. El manifiesto contiene los hashes de los archivos en ese commit. Los informes posteriores no alteran la entrada de esa evaluación.
+
+## Actualización de requerimientos: iteración 6
+
+RF4 y RF5 tienen redacción y criterios de aceptación explícitos. RNF5 define el objetivo extremo a extremo de 60 segundos con la pantalla activa y conectividad operativa. El sondeo propuesto cada 30 segundos añade escenarios de 10.4 y 103.7 consultas/s para 311 y 3110 pantallas activas. Las estimaciones previas, RF6, RF7 y las restricciones se conservan. Se completan los retornos de datos y la publicación de notas en el dibujo; se proponen pruebas de frescura e idempotencia con pérdida de acuse.
+
+Evaluación de la iteración 6: pendiente. La entrega final sigue pendiente de aprobación de Luis.

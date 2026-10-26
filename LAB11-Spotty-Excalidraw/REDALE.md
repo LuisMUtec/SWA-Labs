@@ -19,8 +19,8 @@ El **docente usa la aplicación desktop** para consultar correcciones y gestiona
 | RF1 | Permitir que el alumno envíe desde mobile código o archivos de una tarea y reciba una confirmación cuando la entrega haya quedado guardada. |
 | RF2 | Permitir reanudar una carga interrumpida, especialmente para archivos grandes de IA o conexiones móviles inestables. |
 | RF3 | Corregir tres clases de trabajo: pruebas unitarias/código de Programación, diagramas/código de Arquitectura y modelos/ejecuciones GPU de IA. |
-| RF4 | Mostrar al alumno el estado de su entrega, incluidas espera, ejecución, reintento, demora por falta de capacidad y finalización. |
-| RF5 | Permitir al docente consultar desde desktop la entrega, el resultado y los errores de corrección para gestionar la nota. |
+| RF4 | Permitir al alumno consultar y recibir en mobile la actualización automática del estado de sus propias entregas, incluidas espera, ejecución, reintento, demora por falta de capacidad y finalización, con fecha de actualización. |
+| RF5 | Permitir al docente revisar desde desktop la entrega original, el resultado y los errores de corrección de sus cursos, registrar y publicar la nota y recibir confirmación de su guardado. |
 | RF6 | Los reintentos de una corrección no deben generar resultados finales duplicados. |
 | RF7 | Mantener operativo el corrector existente durante la incorporación del sistema nuevo. |
 
@@ -32,9 +32,25 @@ El **docente usa la aplicación desktop** para consultar correcciones y gestiona
 | RNF2 | **Escalabilidad** | Soportar el pico de entregas de los últimos 30 minutos y aumentar por separado los workers de Programación, Arquitectura e IA según el atraso de cada cola. |
 | RNF3 | **Aislamiento y seguridad** | Ejecutar cada entrega no confiable en un sandbox independiente, con límites de CPU, memoria, tiempo y almacenamiento, sin acceso a credenciales del sistema. |
 | RNF4 | **Durabilidad y consistencia** | No perder una entrega ya confirmada al alumno. Si Spot interrumpe un worker, el trabajo podrá repetirse sin publicar dos correcciones finales. |
-| RNF5 | **Continuidad del estado** | Reflejar en mobile un cambio de estado en **hasta 60 segundos** en operación normal, incluso cuando la corrección espere o sea reintentada. |
+| RNF5 | **Continuidad del estado** | Objetivo propuesto: reflejar en mobile un cambio de estado en **hasta 60 segundos desde su generación en coordinación o en el minion**, con la pantalla de seguimiento activa, conexión operativa y backend en operación normal. Incluye registro durable, consulta y presentación; también se aplica a espera y reintentos. |
 | RNF6 | **Uso justo de recursos** | Un curso con muchos alumnos no debe impedir indefinidamente que se corrijan entregas de otros cursos. |
 | RNF7 | **Observabilidad** | Medir entregas recibidas, tiempo en cola, duración total, uso de memoria, interrupciones Spot, falta de capacidad y trabajos en riesgo de incumplir el plazo. |
+
+## Criterios de aceptación de RF4 y RF5
+
+| ID | Comprobación esperada |
+|---|---|
+| CA4.1 | Un cambio emitido por coordinación o por un minion llega al Control de trabajo del backend central, se guarda en la BD y aparece en la siguiente consulta automática mobile. Se cubren en cola, esperando capacidad, ejecutando, reintentando, resultado listo y requiere revisión. |
+| CA4.2 | En el escenario normal definido en RNF5, una transición generada se refleja en la pantalla de seguimiento en hasta 60 segundos. El alumno solo accede a sus propias entregas. |
+| CA4.3 | Si falla la consulta, la app conserva el último estado conocido con su fecha y muestra que no se pudo actualizar. Al abrir la pantalla o recuperar la conexión, consulta de inmediato. No muestra un estado nuevo ni una nota publicada sin haberlos recibido del backend. |
+| CA5.1 | El docente autorizado obtiene de una entrega el archivo original, el resultado y los errores e incidencias de sus intentos. Puede revisarlos antes de registrar la nota; no accede ni publica en cursos ajenos. |
+| CA5.2 | La acción de publicar envía la entrega, la nota y un identificador de solicitud. El backend valida permisos y que exista un resultado aceptado, guarda nota y fecha de publicación, y solo después confirma «Nota publicada». |
+| CA5.3 | Repetir la misma solicitud de publicación devuelve la nota ya guardada sin crear otra. Si se pierde la confirmación, consultar o reintentar esa solicitud permite conocer su resultado real. Un error definitivo de guardado no se presenta como publicación exitosa. |
+| CA5.4 | La consulta mobile devuelve la nota solo cuando está publicada. La entrega de notas se mide por su publicación durable y disponibilidad para consulta dentro del plazo, no por la corrección automática ni por el momento en que el alumno abre la app. |
+
+**Decisión de seguimiento propuesta:** la app consulta automáticamente cada **30 segundos** mientras la pantalla de seguimiento está activa, y al abrirla o reconectar hace una consulta inmediata. El intervalo es una elección de esta propuesta, no una cifra del enunciado. Del presupuesto de 60 segundos se reservan hasta 30 para el siguiente sondeo y hasta 30 para recibir y registrar el evento, responder y presentar el dato; esta distribución debe comprobarse con pruebas. La app distingue la fecha del último cambio de estado de la fecha de su última consulta exitosa: un trabajo largo puede seguir ejecutándose sin generar una transición nueva.
+
+Estos criterios concretan RF4 y RF5. El alta institucional, la política de publicación y el sondeo son decisiones del diseño; no se atribuyen como instrucciones literales del profesor. RF6 y RF7 se mantienen.
 
 ## Plazo de notas y objetivo interno
 
@@ -119,6 +135,17 @@ El cierre de **23:59** concentra menos entregas que el de 20:00, pero más datos
 
 Cada uno de los 20 cursos tiene además una **imagen base de 3–5 GB**: guardar una versión por curso requiere **60–100 GB**. Esa cifra es separada de los archivos de los alumnos. Cuando un worker descarga una imagen que aún no tiene, consume tiempo y red adicionales; el número de copias dependerá de cuántos hosts la necesiten.
 
+## 2.1 Carga de la consulta automática de estados
+
+El sondeo propuesto añade lecturas al backend, separadas de la subida de entregas. La tasa aproximada es **pantallas de seguimiento activas / 30 segundos**. La matrícula ilustrativa no demuestra cuántas pantallas permanecerán activas simultáneamente.
+
+| Escenario de prueba propuesto | Pantallas activas | Consultas de estado por segundo |
+|---|---:|---:|
+| 10 % de las 3110 entregas del ejemplo en seguimiento simultáneo | 311 | 10,4 |
+| Escenario extremo: seguimiento simultáneo de las 3110 | 3110 | 103,7 |
+
+Son escenarios de carga, no observaciones de uso real. El pico de envíos de 0,51 entregas/s se conserva y corresponde a otra operación. Se medirán latencia y costo de las lecturas, de las escrituras de estado y de las consultas docentes antes de incorporar caché o réplicas. Si una consulta anterior sigue en curso, la app evita acumular sondeos simultáneos; no intenta recuperar en una ráfaga los que se omitieron sin conexión.
+
 ## 3. Trabajo de corrección
 
 Para un cálculo preliminar usamos los P99 del caso como tiempo de referencia por trabajo: **1 minuto** en Programación y **10 minutos** en Arquitectura. Para IA adoptamos **60 minutos como supuesto**, ya que el caso indica **40 minutos o más**. Añadimos un **25 % de margen ilustrativo** para preparación y reintentos.
@@ -169,9 +196,17 @@ Si el archivo se guardó pero falla el registro, no se confirma la recepción. S
 
 **RF3 — Corrección.** Coordinación clasifica el trabajo según curso y perfil: Programación, Arquitectura o IA. Lo coloca en su cola correspondiente. Un minion compatible toma el trabajo, prepara la versión de imagen fijada, inicia un sandbox y registra el intento. El minion de confianza recoge la salida y envía eventos y resultado al **backend central**, que invoca su **Control de trabajo**. Este módulo registra las transiciones en la misma BD que consulta mobile y acepta el final con la validación transaccional descrita en RF6; el código del alumno no escribe directamente en la BD de control ni recibe credenciales del sistema.
 
-**RF4 — Consulta y estados.** El alumno consulta entregaId. Resultados y notas comprueba el acceso, lee el estado durable y responde a la app. El recorrido cubre recibida, en cola, esperando capacidad, ejecutando, reintentando, resultado listo y requiere revisión. El objetivo de actualización normal de 60 segundos sigue siendo un objetivo propuesto, como se declaró en R.
+**RF4 — Actualización de estados.** Coordinación genera estados de recepción, cola, falta de capacidad y reintento; los minions de confianza reportan ejecución, salida e incidencias. El Control de trabajo del backend central valida el trabajo y el intento, registra el cambio en la misma BD que consulta mobile y conserva su fecha y revisión. Un evento de un intento obsoleto no puede sobrescribir un final aceptado.
 
-**RF5 — Revisión y nota.** El docente autenticado consulta las entregas de sus cursos, obtiene resultado y errores, revisa la corrección y solicita publicar la nota. El sistema guarda la nota y confirma su publicación. El plazo se verifica con la entrega de la nota; un resultado automático disponible todavía no completa ese recorrido.
+La app autenticada consulta automáticamente por entregaId cada 30 segundos mientras está activa la pantalla de seguimiento, y de inmediato al abrirla o reconectar. Resultados y notas comprueba que la entrega sea del alumno, consulta la BD mediante su Circuit Breaker y devuelve entregaId, estado de corrección, fecha y revisión del estado, y estado de la nota. La app actualiza la pantalla con esa respuesta y descarta una respuesta de revisión anterior a la que ya muestra. El objetivo extremo a extremo es el de RNF5; el sondeo por sí solo no acredita su cumplimiento.
+
+Si no existe capacidad Spot, coordinación guarda «Esperando capacidad» y el circuito de consulta sigue operando sin depender de un minion libre. Si falla la red o la BD, la app distingue el último estado conocido de una consulta exitosa nueva y muestra el aviso de actualización fallida. No interpreta una pérdida de conexión como finalización de la corrección. La nota se incluye únicamente después de la publicación de RF5.
+
+**RF5 — Revisión y publicación de la nota.** El docente autenticado selecciona entregaId de uno de sus cursos. Resultados y notas valida el acceso, recupera de la BD las referencias y los intentos, obtiene de objetos el archivo original, la salida y los errores, y los devuelve al desktop para su revisión. Los intentos fallidos u obsoletos permanecen identificados como historial; no reemplazan el resultado final aceptado.
+
+Tras revisar, el docente envía una solicitud de publicación con entregaId, nota e identificador de solicitud. El backend comprueba rol, curso y resultado aceptado, valida la nota según la configuración del curso y guarda la nota, el docente responsable, la solicitud y la fecha de publicación. Solo confirma «Nota publicada» después de completar ese guardado. Una corrección automática lista sigue pendiente de publicación docente.
+
+Repetir la misma solicitud devuelve la publicación existente. Ante un fallo definitivo de guardado, la respuesta indica que la nota no se publicó. Si se pierde el acuse o hay un timeout con resultado desconocido, el desktop consulta o reintenta el mismo identificador en vez de asumir éxito o crear una solicitud distinta. La siguiente consulta automática mobile puede recuperar la nota publicada desde la misma BD. El plazo de dos días se verifica con esa publicación durable y disponible, conservando el supuesto de cómputo desde el cierre.
 
 **RF6 — Final único.** Cada trabajo conserva jobId y registra sus intentos. La aceptación del resultado comprueba de forma transaccional que el intento sigue vigente y que el trabajo aún no tiene un final aceptado. Un intento obsoleto o una finalización repetida se rechazan sin sobrescribir el resultado ni crear otra nota. Los archivos de salida se identifican por trabajo e intento.
 
@@ -243,8 +278,8 @@ La BD relacional conserva identidad, cursos, entregas, trabajos, intentos y nota
 | Trabajo | Entrega, perfil, plazo, estado e intento vigente | Ser la referencia durable de lo pendiente; final único por trabajo. |
 | Intento | Trabajo, minion, inicio, señal de vida, asignación y causa de salida | Detectar interrupciones y rechazar finales de intentos obsoletos. |
 | Resultado | Trabajo, intento aceptado y referencias a salida y errores | Guardar como máximo un resultado final aceptado por trabajo. |
-| Nota | Resultado, docente, valor y fecha de publicación | Conservar la revisión y medir la entrega de notas dentro del plazo. |
-| Evento de estado | Trabajo, estado, fecha y causa | Mostrar y reconstruir espera, ejecución, reintento y finalización. |
+| Nota | Resultado, docente, valor, solicitud de publicación y fecha de publicación | Confirmar únicamente tras guardar; reconocer la repetición de la misma solicitud y medir el plazo de entrega de notas. |
+| Evento de estado | Trabajo, intento si aplica, estado, fecha, revisión y causa | Registrar las transiciones y devolver a mobile un estado durable con fecha y revisión, sin sobrescribir un final con un intento obsoleto. |
 
 Una tarea recibe entregas; cada versión genera un trabajo; un trabajo admite varios intentos y como máximo un final aceptado. Una revisión docente produce la nota. El historial de intentos no se confunde con versiones nuevas que el alumno envía deliberadamente.
 
@@ -303,13 +338,15 @@ Once GPU durante las 24 horas restantes alcanzarían solo para completar esa eje
 
 Cada función identifica una dimensión, un indicador y una rúbrica. Su ejecución queda asociada a pruebas de arquitectura con una carga y un conjunto de entregas definidos. No se declara que estas pruebas hayan sido ejecutadas sobre una implementación de Spotty.
 
-**FF1 — Integridad y confiabilidad.** Indicadores: entregas confirmadas que se pierden y resultados finales duplicados por trabajo. Rúbrica aceptable: **cero pérdidas y cero duplicados**. Prueba: interrumpir minions antes y después de guardar salida, reencolar trabajos, finalizar concurrentemente el mismo trabajo desde dos intentos y repetir solicitudes de finalización; comprobar los registros durables y rechazar intentos obsoletos.
+**FF1 — Integridad y confiabilidad.** Indicadores: entregas confirmadas que se pierden, resultados finales duplicados por trabajo y notas duplicadas por la misma solicitud de publicación. Rúbrica aceptable: **cero pérdidas y cero duplicados**. Prueba propuesta: interrumpir minions antes y después de guardar salida, reencolar trabajos, finalizar concurrentemente el mismo trabajo desde dos intentos y repetir solicitudes de finalización. Añadir pérdida del acuse después de guardar una nota y reintentar la misma solicitud; comprobar que se devuelve la publicación existente y se rechazan intentos obsoletos.
 
 **FF2 — Aislamiento y seguridad.** Indicadores: accesos del sandbox a credenciales o datos ajenos, y afectación de otro pool bajo la carga de prueba. Rúbrica aceptable: **cero accesos prohibidos y continuidad del otro pool**. Prueba: código que supera memoria o tiempo o intenta acceder fuera de su entorno. Registrar la causa y detener únicamente la ejecución infractora en el escenario definido.
 
 **FF3 — Requerimiento de plazo.** Indicador: entregas sin nota publicada cuando vence su fecha límite, incluyendo las que continúan en espera. Rúbrica aceptable: **cero notas fuera del máximo de dos días**, usando el supuesto de cómputo de R. Prueba: cierres escalonados, colas acumuladas, interrupciones y escasez de GPU. Registrar el incumplimiento si ocurre; no excluir del indicador los trabajos que nunca llegaron a terminar.
 
 **FF4 — Contención del fallo de dependencias.** Indicadores: llamadas enviadas a BD o laptop mientras su circuito está abierto y confirmaciones o notas aceptadas sin persistencia durable. Rúbrica: cero llamadas de negocio mientras esté abierto, salvo la prueba de recuperación controlada, y cero confirmaciones o publicaciones sin guardado completo. Prueba propuesta: inyectar caída o latencia superior al timeout de cada dependencia; comprobar apertura, respuesta de espera o indisponibilidad, recuperación controlada y conservación de trabajos y finales únicos. No se declara una ejecución real de esta prueba.
+
+**FF5 — Frescura del estado visible.** Indicador: demora desde que coordinación o un minion genera una transición hasta que la pantalla mobile activa refleja ese estado o uno posterior. Rúbrica propuesta: **hasta 60 segundos** en los escenarios normales definidos, incluidos espera de capacidad y reintento. Prueba propuesta: generar transiciones identificadas y registrar su presentación con 311 y 3110 pantallas de seguimiento activas, sondeo cada 30 segundos y conectividad operativa. Medir también la recuperación de una consulta fallida y comprobar que la app distingue información previa de una actualización exitosa. Estas son pruebas de arquitectura pendientes, no resultados medidos.
 
 El objetivo interno de **99 % de correcciones automáticas en 36 horas desde el cierre** se mide adicionalmente y no sustituye FF3. La modularidad se representa mediante responsabilidades e interfaces claras entre identidad, entregas, coordinación y resultados; las dependencias se revisan cuando cambien esos módulos.
 

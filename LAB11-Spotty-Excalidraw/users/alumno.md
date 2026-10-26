@@ -7,6 +7,9 @@ Accede desde una aplicación mobile para consultar el estado de sus entregables.
 - Envía una entrega y recibe confirmación cuando el archivo completo y su registro quedan guardados.
 - Puede reanudar una carga interrumpida, según RF2.
 - Consulta únicamente sus entregas y sus estados: recibida, en espera, en ejecución, reintento, espera por capacidad o finalizada.
+- La pantalla de seguimiento consulta automáticamente cada 30 segundos (decisión propuesta) y se actualiza con el estado recibido. El objetivo normal es hasta 60 segundos desde la transición.
+- Si falla una consulta, distingue el último estado conocido de una actualización exitosa y vuelve a consultar al reconectar.
+- La consulta devuelve la nota únicamente cuando el docente ya la publicó.
 
 ## Necesidades recogidas en el avance
 - No perder una entrega confirmada cuando se interrumpe un worker Spot.

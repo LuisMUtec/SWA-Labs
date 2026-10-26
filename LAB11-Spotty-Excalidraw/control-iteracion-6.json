@@ -1,0 +1,25 @@
+{
+  "iteration": 6,
+  "status": "Borrador pendiente de aprobación final",
+  "updatedRequirements": [
+    "RF4",
+    "RF5"
+  ],
+  "updatedQualityRequirements": [
+    "RNF5"
+  ],
+  "unchangedRestrictions": true,
+  "unchangedRF6andRF7": true,
+  "previousEstimatesPreserved": true,
+  "addedPollingLoadScenarios": true,
+  "validDiagramReferences": true,
+  "elements": 187,
+  "frames": 4,
+  "pollingSecondsProposed": 30,
+  "freshnessObjectiveSeconds": 60,
+  "pendingImplementationTests": [
+    "FF1: publicación idempotente con acuse perdido",
+    "FF5: frescura extremo a extremo con 311 y 3110 pantallas activas"
+  ],
+  "visualReview": true
+}

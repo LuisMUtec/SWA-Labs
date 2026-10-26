@@ -5,7 +5,9 @@ Accede desde desktop para revisar entregas y correcciones y gestionar las notas 
 
 ## Interacciones de la propuesta
 - Consulta las entregas, resultados, errores de corrección e intentos de sus cursos.
-- Revisa el resultado automático y publica la nota.
+- Revisa el archivo original, el resultado automático, los errores y el historial de intentos.
+- Registra y solicita publicar la nota con un identificador de solicitud; recibe confirmación únicamente después del guardado durable.
+- Si pierde la confirmación, consulta o reintenta la misma solicitud para recuperar el resultado real sin duplicar la publicación.
 - Consulta incidencias por interrupciones Spot o falta de capacidad y recibe alertas de riesgo de incumplimiento.
 
 ## Necesidades recogidas en el avance
