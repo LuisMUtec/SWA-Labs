@@ -1,16 +1,16 @@
 {
-  "iteration": "6-retornos",
+  "iteration": "6-publicacion",
   "pendingFinalApproval": true,
   "files": {
-    "README.md": "c65b93dfb4e4e4df3ad8b4158bbedb27d3c9e9c8cfa24f33425c3ea5aef98ecd",
+    "README.md": "dee8145ad70c42d27989420f1d469caa910c8d8a283be9ce2c1d737a6be9a177",
     "REDALE.md": "396618db2516a92d564c61e1afe2ddf8bff6640203c3e5682c980af89e4d36ec",
     "requerimientos/00-enunciado.md": "4eae4ae653375cb9e017506a90a19475d82d6090f50d134012230172d7f4d305",
     "requerimientos/01-requisitos.md": "1b68eaacd2a8fcc33597428e02fc351c3c5820ff65191c871967adddadc4b143",
     "users/alumno.md": "132244fc42281632df2fa3ea0252b408e6be0b6f5e559ecc46ac0e15aac9191d",
     "users/docente.md": "a8dcc522c981e5ef3cff4bac69a7e55ab79661710be86aa7d68c1cc9a45a531a",
     "Listado_Diagramas/README.md": "be5492558990a727f09fd3d733ae0eb1de245a1391a479c396eda50fca393cc9",
-    "Listado_Diagramas/Diagrama Final.png": "17a379b98ef26d8f34cf5bca0671ff347dbcb5de61ff32606d95c04c7b2d18ce",
-    "Listado_Diagramas/Diagrama Final.excalidraw": "7cd3aa96e4e301830b21cf830bd1a641312b591f4d0ad287c20487943df28cf8",
-    "control-lamina-principal.json": "1719b32c5a5b48ab0a16efad3821f5268d815f199b9e4e310b86adb6ebeaeaa3"
+    "Listado_Diagramas/Diagrama Final.png": "f62a9d13a71ee30860ac1dc12f92586abf38364f5d2fece87d520a137184feea",
+    "Listado_Diagramas/Diagrama Final.excalidraw": "aa2c8786c2161e5d06d6395871b6c3a0f0f072474afdafa64004adae13172ed6",
+    "control-lamina-principal.json": "ed830d26a6fdcbc68a46b830b0f1edb2562a93e4a0817a9f702866b98bfb2f27"
   }
 }

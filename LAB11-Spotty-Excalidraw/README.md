@@ -33,4 +33,6 @@ Se conserva el contenido de RF4 y RF5 y se cambia la lámina principal a una vis
 
 Se explicitan dentro de los componentes RF4 la emisión del evento al cambiar de estado y el temporizador de consulta mobile de 30 segundos. Los requisitos y usuarios permanecen iguales. Verificación anterior: **9.2/10** — [informe](evaluaciones/iteracion-6-cierre/resultado.md). Se conservan sus observaciones.
 
-La presentación actual ancla y etiqueta los retornos de datos a las apps, y conecta la revisión del docente con su acción de publicar. Los requisitos y criterios no cambian. Comprobación de esta presentación: pendiente.
+La presentación actual ancla y etiqueta los retornos de datos a las apps, y conecta la revisión del docente con su acción de publicar. Los requisitos y criterios no cambian. Comprobación anterior: **9.2/10** — [informe](evaluaciones/iteracion-6-retornos/resultado.md).
+
+La lámina actual muestra un estado con fecha en la pantalla mobile y el presupuesto temporal de RNF5; en publicación presenta la transacción por P-7 y las respuestas numeradas BD → backend → docente. Son ejemplos del diseño, no mediciones ni una implementación ejecutada. Verificación: pendiente.

@@ -1,8 +1,8 @@
 {
-  "iteration": "6-retornos",
+  "iteration": "6-publicacion",
   "status": "Borrador pendiente de aprobación final",
   "sameRequirementsAsCommit": "a2b37a3c85e2658b2e4e9d730cda6ab05f25ff5a",
-  "elements": 119,
+  "elements": 122,
   "frames": 1,
   "width": 2000,
   "height": 2460,
@@ -12,5 +12,9 @@
   "explicitMobileTimer": true,
   "arrowBindingsVerified": true,
   "returnArrowsLabelled": true,
-  "reviewToPublishConnected": true
+  "reviewToPublishConnected": true,
+  "visibleMobileState": true,
+  "explicitLatencyBudget": true,
+  "explicitPublicationTransaction": true,
+  "numberedPublicationAcks": true
 }
