@@ -1,0 +1,17 @@
+{
+  "purpose": "Prueba del evaluador del profesor, autorizada por el usuario",
+  "branch": "lab11/spotty-prueba-excalidraw",
+  "path": "LAB11-Spotty-Excalidraw",
+  "pendingFinalSubmissionApproval": true,
+  "files": {
+    "README.md": "53cc473bff44df6c733409e67d8f17430fdefa70c49d57e80b5675ff840077ed",
+    "REDALE.md": "009df00cca53dc9e9a411fd730482f55ca7bf474da869381842f0458e53170ae",
+    "requerimientos/00-enunciado.md": "4eae4ae653375cb9e017506a90a19475d82d6090f50d134012230172d7f4d305",
+    "requerimientos/01-requisitos.md": "0bc05d40503d19117353cb278b8342abef7b86e265e453ad48b00147f199a9e6",
+    "users/alumno.md": "8473e065c702e9fee83f32f340a4acd3f81f1fae102a81d8f580463efab1b2d7",
+    "users/docente.md": "a2037aebe0c4b02d2d21e23568673e25de88e21435a39ea9bf2855dac3e0678a",
+    "Listado_Diagramas/README.md": "731cefaeb042cd9ff7dfa47529914c9fc6a70f5bf34291562fc9fdd47edf542c",
+    "Listado_Diagramas/Diagrama Final.png": "947cb91cda6dc38511ff438ff53cc96f7e55aaf6df8e355c0714486130cac8e6",
+    "Listado_Diagramas/Diagrama Final.excalidraw": "da39338f8d0e7cabe02e508623c6e534e18c37d96318588d6aab8b03414cd5ce"
+  }
+}

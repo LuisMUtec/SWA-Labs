@@ -1,0 +1,7 @@
+# Spotty — prueba del evaluador con el borrador Excalidraw
+
+Prueba solicitada por Luis después de aclarar que «minion» se refería al evaluador del profesor. El contenido está en una rama de prueba; la revisión de la entrega final sigue pendiente.
+
+La imagen `Listado_Diagramas/Diagrama Final.png` reúne las tres vistas simplificadas. Se incluyen el enunciado, los requerimientos corregidos, los usuarios y el REDALE revisado como contexto. Las cifras ilustrativas y decisiones propuestas están identificadas en el documento.
+
+Esta carpeta permite evaluar el borrador actual, no el diagrama original que obtuvo 1.6/10.
