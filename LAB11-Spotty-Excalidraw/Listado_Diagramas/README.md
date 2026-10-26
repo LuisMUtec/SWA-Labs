@@ -1,6 +1,8 @@
-# Lámina principal de Spotty
+# Arquitectura integrada de Spotty, v7
 
-La imagen principal presenta en franjas legibles RF1, RF4, revisión RF5, publicación RF5 y transición Strangler. Los nombres repetidos representan los mismos componentes, no despliegues adicionales. Se conserva el detalle de las cuatro vistas en material_revision. Los requerimientos, usuarios y decisiones son idénticos a la entrada a2b37a3 de la evaluación anterior.
+La imagen principal es el nuevo grafo integrado que Luis pidió puntuar: actores, servicios lógicos, decisiones y almacenamiento. Los servicios pertenecen al mismo backend modular; no se propone un despliegue por caja. C representa la misma BD lógica de control y O el mismo almacenamiento lógico de objetos, aunque se dibujen varios accesos. El control legacy marcado como alias es el mismo Control de trabajo central.
+
+Los requerimientos, personas y REDALE conservan el contenido de la iteración 6; cambia la representación visual. Las condiciones se revalidan dentro del guardado atómico, tanto para un final único como para la publicación P-7.
 
 # D — Diseñar el servicio
 

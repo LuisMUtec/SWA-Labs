@@ -1,18 +1,16 @@
 {
-  "iteration": "6-panel-docente",
+  "version": "arquitectura-integrada-v7",
   "pendingFinalApproval": true,
   "files": {
-    "README.md": "09f036b07c4baee2f2bf939cc65b6711dca612d74606ae07e665d445f0d2fd7a",
+    "README.md": "6d6932cf63b8ea005ef8273f72dabf26a444f47f08a40b10a57793ab3c6f9874",
     "REDALE.md": "396618db2516a92d564c61e1afe2ddf8bff6640203c3e5682c980af89e4d36ec",
     "requerimientos/00-enunciado.md": "4eae4ae653375cb9e017506a90a19475d82d6090f50d134012230172d7f4d305",
     "requerimientos/01-requisitos.md": "1b68eaacd2a8fcc33597428e02fc351c3c5820ff65191c871967adddadc4b143",
     "users/alumno.md": "132244fc42281632df2fa3ea0252b408e6be0b6f5e559ecc46ac0e15aac9191d",
     "users/docente.md": "a8dcc522c981e5ef3cff4bac69a7e55ab79661710be86aa7d68c1cc9a45a531a",
-    "Listado_Diagramas/README.md": "be5492558990a727f09fd3d733ae0eb1de245a1391a479c396eda50fca393cc9",
-    "Listado_Diagramas/Diagrama Final.png": "05d1057af1761f8131fcfe59a75e870746b115f2872e942f2544f3c4d3beef89",
-    "Listado_Diagramas/Diagrama Final.excalidraw": "d47124ce813105c750ba4174e61a795daef6b73d08199b9012585f9586d1bfff",
-    "control-lamina-principal.json": "40992537a6e8186542e022723695fec62d08fbe34c75ef8df4fda0029df937b0"
-  },
-  "evaluatedInputCommit": "9f65f517ac21af776e9ca46d95b58a8b4c7dbf69",
-  "fileHashScope": "Archivos del commit evaluado, antes del informe posterior."
+    "Listado_Diagramas/README.md": "9e24bf6f1f6fd9a373225fa37008fb1547281692d6d2ea6e456e18660f8bfd3f",
+    "Listado_Diagramas/Diagrama Final.png": "d0871e0c4619e7f5c9a6b4538a8efae361a7ef060b7704c11cfc12eb59751833",
+    "Listado_Diagramas/Diagrama Final.excalidraw": "269415986a5d85dbd57af5152743662b4c031a6e816a7142a1860cea549175d1",
+    "control-arquitectura-integrada-v7.json": "af591b6e1cd1bf9c47871d432a8ef73d0f9e48381ce772caa5a29c5782612f3c"
+  }
 }

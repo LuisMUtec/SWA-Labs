@@ -1,0 +1,22 @@
+{
+  "version": "arquitectura-integrada-v7",
+  "status": "borrador local para revisión de Luis",
+  "reference": "Imagen de Game Purchase/Download Workflow proporcionada por el usuario",
+  "style": "Grafo integrado; servicios, actores, almacenamiento, decisiones y ramas; trazo a mano, fondo blanco y marco naranja",
+  "requirementsSource": "/Users/luism/CS/SWA/Spotty_todo_el_avance_2026-10-22/revision-para-aprobar/excalidraw-iteracion-6/Spotty_REDALE_iteracion_6.md",
+  "requirementsSha256": "396618db2516a92d564c61e1afe2ddf8bff6640203c3e5682c980af89e4d36ec",
+  "requirementsChanged": false,
+  "backendType": "modular con ejecución asíncrona separada en Spot",
+  "elements": 296,
+  "logicalShapes": 75,
+  "visualReview": true,
+  "referencesValid": true,
+  "unexpectedShapeOverlaps": 0,
+  "unexpectedFreeTextShapeOverlaps": 0,
+  "arrowCrossingsThroughUnrelatedShapes": 0,
+  "publishedToGitHub": false,
+  "sentToEvaluator": false,
+  "formalSubmissionApproved": false,
+  "preparedForEvaluation": true,
+  "evaluationAuthorizedByUser": true
+}
