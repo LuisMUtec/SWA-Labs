@@ -1,6 +1,6 @@
-# Cuatro vistas de Spotty, iteración 4
+# Cuatro vistas de Spotty, iteración 5
 
-Ajuste de legibilidad de la iteración 3: título CAMINO CRÍTICO, respuestas RF4 con estados y objetivo normal de 60 segundos, y respuesta RF5 con entrega original, resultado y errores. Los patrones de arquitectura y las reglas de aceptación del resultado no cambian.
+Se explicita la flecha desde la recepción de eventos del backend central al Control de trabajo. La coordinación central envía jobId + estado, y los minions envían estado, salida y errores. El mismo backend guarda estados y valida un único final en la BD consultada por las apps. Los nombres repetidos representan los mismos componentes ampliados en otras vistas.
 
 # D — Diseñar el servicio
 
@@ -26,7 +26,7 @@ Esta separación hace explícitos los controles que antes se resumían como «AP
 
 Si el archivo se guardó pero falla el registro, no se confirma la recepción. Si el registro ya existe y falla el anuncio a la cola, el trabajo durable permite a la conciliación volver a anunciarlo. La confirmación no depende de que ya haya un minion libre.
 
-**RF3 — Corrección.** Coordinación clasifica el trabajo según curso y perfil: Programación, Arquitectura o IA. Lo coloca en su cola correspondiente. Un minion compatible toma el trabajo, prepara la versión de imagen fijada, inicia un sandbox y registra el intento. El minion de confianza recoge la salida y publica el resultado; el código del alumno no escribe directamente en la BD de control ni recibe credenciales del sistema.
+**RF3 — Corrección.** Coordinación clasifica el trabajo según curso y perfil: Programación, Arquitectura o IA. Lo coloca en su cola correspondiente. Un minion compatible toma el trabajo, prepara la versión de imagen fijada, inicia un sandbox y registra el intento. El minion de confianza recoge la salida y envía eventos y resultado al **backend central**, que invoca su **Control de trabajo**. Este módulo registra las transiciones en la misma BD que consulta mobile y acepta el final con la validación transaccional descrita en RF6; el código del alumno no escribe directamente en la BD de control ni recibe credenciales del sistema.
 
 **RF4 — Consulta y estados.** El alumno consulta entregaId. Resultados y notas comprueba el acceso, lee el estado durable y responde a la app. El recorrido cubre recibida, en cola, esperando capacidad, ejecutando, reintentando, resultado listo y requiere revisión. El objetivo de actualización normal de 60 segundos sigue siendo un objetivo propuesto, como se declaró en R.
 

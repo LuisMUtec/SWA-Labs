@@ -1,0 +1,12 @@
+{
+  "iteration": 5,
+  "status": "Borrador pendiente de aprobación final",
+  "scope": "Conexión explícita del backend central al control de estados y finales",
+  "requirementsUnchanged": true,
+  "previousScore": 9.6,
+  "elements": 171,
+  "frames": 4,
+  "visualReview": true,
+  "validReferences": true,
+  "protectedDbPath": true
+}

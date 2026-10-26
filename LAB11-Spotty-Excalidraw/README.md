@@ -1,8 +1,8 @@
-# Spotty — borrador en revisión
+# Spotty — borrador para revisión
 
-La entrega final sigue pendiente de aprobación de Luis. Esta rama contiene iteraciones contra el minion del profesor. La imagen principal reúne cuatro vistas y el archivo .excalidraw conserva los elementos editables.
+La entrega final sigue pendiente de aprobación de Luis. Esta rama conserva las iteraciones contra el minion del profesor.
 
-La iteración 4 aclara el camino crítico y las respuestas al alumno y al docente; conserva el diseño de identidad, Circuit Breaker, Strangler y control atómico de resultados. Los requisitos y estimaciones no cambian. Los riesgos de GPU, RAM e imágenes son candidatos a medir y los SPOF dependen del despliegue indicado.
+El archivo .excalidraw contiene cuatro vistas editables: arquitectura general e identidad; camino crítico y consultas RF4/RF5; minions y control central de estados/finales; transición Strangler. Los requisitos, restricciones y estimaciones se conservan.
 
 ## Historial
 
@@ -10,6 +10,7 @@ La iteración 4 aclara el camino crítico y las respuestas al alumno y al docent
 - Primer Excalidraw: 2.3/10 — [informe](evaluaciones/prueba-excalidraw/resultado.md).
 - Iteración 2: 7.1/10 — [informe](evaluaciones/iteracion-2/resultado.md).
 - Iteración 3: 9.6/10 — [informe](evaluaciones/iteracion-3/resultado.md).
-- Iteración 4: preparada para evaluación.
+- Iteración 4: 9.6/10, Critical Path y Happy Path reconocidos — [informe](evaluaciones/iteracion-4/resultado.md).
+- Iteración 5: preparada para evaluación.
 
-El evaluador revisa el diagrama; las notas no acreditan pruebas de ejecución, eliminación de los SPOF ni cumplimiento medido del plazo bajo escasez prolongada de GPU. Los FF del REDALE siguen siendo propuestas de validación.
+Los Circuit Breaker contienen la cascada de fallos y no eliminan por sí solos los SPOF. Los cuellos de botella son candidatos que se deben medir. El minion revisa el dibujo; las pruebas de ejecución, concurrencia, carga y cumplimiento del plazo siguen pendientes de una implementación.
