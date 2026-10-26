@@ -20,5 +20,19 @@
   "spotRisksGrouped": true,
   "legacyCannotRunGpuExplicit": true,
   "teacherReviewPanelExplicit": true,
-  "stranglerProgressionExplicit": true
+  "stranglerProgressionExplicit": true,
+  "evaluatedInputCommit": "9f65f517ac21af776e9ca46d95b58a8b4c7dbf69",
+  "evaluationScore": 9.6,
+  "evaluationScores": {
+    "security": 10,
+    "reliability": 10,
+    "scalability": 10,
+    "spec": 8
+  },
+  "evaluationE2E": {
+    "criticalPath": true,
+    "happyPath": true
+  },
+  "automaticApprovalComplete": false,
+  "finalApproval": "pendiente de Luis"
 }

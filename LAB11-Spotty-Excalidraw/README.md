@@ -1,40 +1,39 @@
-# Spotty — borrador para revisión
+# Spotty — requerimientos y arquitectura para revisión
 
-La entrega final sigue pendiente de aprobación de Luis. Esta rama conserva las iteraciones contra el minion del profesor.
+**Estado:** borrador pendiente de aprobación de Luis; esta es una rama de prueba, no una entrega en Canvas.
 
-El archivo .excalidraw contiene cuatro vistas editables: arquitectura general e identidad; camino crítico y consultas RF4/RF5; minions y control central de estados/finales; transición Strangler. Los requisitos, restricciones y estimaciones se conservan.
+## Actualización funcional
 
-## Historial
+- RF4: consulta y actualización automática de estados propios en mobile, con fecha y revisión. Se propone consultar cada 30 segundos con la pantalla activa; el objetivo normal extremo a extremo es hasta 60 segundos. Se definen desconexión, recuperación y estados sin capacidad/reintento.
+- RF5: revisión conjunta de entrega original, resultado y errores/intententos; publicación de nota con validación de acceso y confirmación tras persistir. Una solicitud repetida devuelve la publicación guardada; una confirmación perdida se recupera sin otra nota.
+- RNF5, criterios CA4.1–CA5.4, escenarios de carga de consultas y fitness functions actualizados. RF6, RF7, restricciones y el plazo máximo de dos días se conservan.
 
-- Original: 1.6/10.
-- Primer Excalidraw: 2.3/10 — [informe](evaluaciones/prueba-excalidraw/resultado.md).
-- Iteración 2: 7.1/10 — [informe](evaluaciones/iteracion-2/resultado.md).
-- Iteración 3: 9.6/10 — [informe](evaluaciones/iteracion-3/resultado.md).
-- Iteración 4: 9.6/10, Critical Path y Happy Path reconocidos — [informe](evaluaciones/iteracion-4/resultado.md).
-- Iteración 5: **9.6/10**, Critical Path y Happy Path reconocidos — [informe](evaluaciones/iteracion-5/resultado.md).
+## Archivos para revisar
 
-Los Circuit Breaker contienen la cascada de fallos y no eliminan por sí solos los SPOF. Los cuellos de botella son candidatos que se deben medir. El minion revisa el dibujo; las pruebas de ejecución, concurrencia, carga y cumplimiento del plazo siguen pendientes de una implementación.
+- [Requerimientos y criterios](requerimientos/01-requisitos.md)
+- [REDALE completo](REDALE.md)
+- [Lámina principal](Listado_Diagramas/Diagrama%20Final.png)
+- [Excalidraw principal](Listado_Diagramas/Diagrama%20Final.excalidraw)
+- [Cuatro vistas detalladas](material_revision/Spotty-detallado.excalidraw)
+- [Detalle de RF4 y RF5](material_revision/02-requerimientos.png)
+- [Comparación de criterios y diagrama](revision-funcional.md)
 
-## Resultado actual y revisión pendiente
+## Resultado automático actual
 
-Security 10/10, reliability 10/10, scalability 10/10 y spec 8/10. El informe conserva las observaciones sobre RF4 (actualización de estado mobile) y RF5 (revisión/publicación docente). Deben revisarse junto al dibujo y el REDALE antes de aprobar la entrega; el resultado automático no se presenta como conformidad total.
+**9.6/10**: security 10, reliability 10, scalability 10 y spec 8. Critical Path y Happy Path: reconocidos. [Informe completo](evaluaciones/iteracion-6-panel/resultado.md).
 
-Commit evaluado: `fc7bb7ebed8cf1e777bd1daff80484c7eecd728e`. El manifiesto contiene los hashes de los archivos en ese commit. Los informes posteriores no alteran la entrada de esa evaluación.
+El evaluador todavía marca RF4 y RF5 como parciales; no se declara una aprobación total. Algunas observaciones no coinciden con elementos explícitos del dibujo, como la rama de P-7 existente. La comparación por criterio documenta dónde revisar cada punto; la interpretación final corresponde a la revisión humana.
 
-## Actualización de requerimientos: iteración 6
+Las pruebas de ejecución, frescura bajo carga y recuperación de pérdida de acuse siguen siendo propuestas de validación, no resultados medidos. El Circuit Breaker no elimina los SPOF ni garantiza el plazo bajo escasez prolongada de GPU.
 
-RF4 y RF5 tienen redacción y criterios de aceptación explícitos. RNF5 define el objetivo extremo a extremo de 60 segundos con la pantalla activa y conectividad operativa. El sondeo propuesto cada 30 segundos añade escenarios de 10.4 y 103.7 consultas/s para 311 y 3110 pantallas activas. Las estimaciones previas, RF6, RF7 y las restricciones se conservan. Se completan los retornos de datos y la publicación de notas en el dibujo; se proponen pruebas de frescura e idempotencia con pérdida de acuse.
+## Historial conservado
 
-Evaluación de la iteración 6 con imagen conjunta: **6.9/10** — [informe](evaluaciones/iteracion-6/resultado.md). La entrega final sigue pendiente de aprobación de Luis.
+- Primer Excalidraw: [2.3/10](evaluaciones/prueba-excalidraw/resultado.md).
+- Iteración 2: [7.1/10](evaluaciones/iteracion-2/resultado.md).
+- Iteración 3: [9.6/10](evaluaciones/iteracion-3/resultado.md).
+- Iteración 4: [9.6/10](evaluaciones/iteracion-4/resultado.md).
+- Iteración 5: [9.6/10](evaluaciones/iteracion-5/resultado.md).
+- Requisitos completados, imagen conjunta: [6.9/10](evaluaciones/iteracion-6/resultado.md).
+- Lámina principal: [9.4/10](evaluaciones/iteracion-6-legible/resultado.md), [9.2/10](evaluaciones/iteracion-6-cierre/resultado.md), [9.2/10](evaluaciones/iteracion-6-retornos/resultado.md), [9.4/10](evaluaciones/iteracion-6-publicacion/resultado.md), [9.6/10](evaluaciones/iteracion-6-panel/resultado.md).
 
-### Presentación legible de la misma iteración
-
-Se conserva el contenido de RF4 y RF5 y se cambia la lámina principal a una vista de 2000×2460 con letras mayores y recorridos continuos de evento a mobile y de revisión a publicación docente. Las cuatro vistas detalladas están en [material_revision](material_revision). Primera comprobación de la lámina legible: **9.4/10**, RF5 reconocido como completo — [informe](evaluaciones/iteracion-6-legible/resultado.md).
-
-Se explicitan dentro de los componentes RF4 la emisión del evento al cambiar de estado y el temporizador de consulta mobile de 30 segundos. Los requisitos y usuarios permanecen iguales. Verificación anterior: **9.2/10** — [informe](evaluaciones/iteracion-6-cierre/resultado.md). Se conservan sus observaciones.
-
-La presentación actual ancla y etiqueta los retornos de datos a las apps, y conecta la revisión del docente con su acción de publicar. Los requisitos y criterios no cambian. Comprobación anterior: **9.2/10** — [informe](evaluaciones/iteracion-6-retornos/resultado.md).
-
-La lámina actual muestra un estado con fecha en la pantalla mobile y el presupuesto temporal de RNF5; en publicación presenta la transacción por P-7 y las respuestas numeradas BD → backend → docente. Son ejemplos del diseño, no mediciones ni una implementación ejecutada. Evaluación: **9.4/10**, RF4 completo — [informe](evaluaciones/iteracion-6-publicacion/resultado.md).
-
-Se hace visible en el panel desktop la revisión conjunta de original, resultado automático y errores/intententos antes de publicar. Se representan las etapas piloto, ampliación y retiro del legacy sin cambiar las reglas de curso/tarea. Comprobación del cierre funcional: pendiente.
+Commit evaluado: `9f65f517ac21af776e9ca46d95b58a8b4c7dbf69`. Los hashes del manifiesto corresponden a los archivos de ese ref, antes de añadir el informe posterior.
