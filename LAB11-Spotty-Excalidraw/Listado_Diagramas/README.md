@@ -1,6 +1,8 @@
-# Cuatro vistas de Spotty, iteración 2
+# Cuatro vistas de Spotty, iteración 3
 
-La imagen principal reúne: 01 arquitectura general con identidad y protección de BD; 02 recorridos RF1, RF4 y RF5; 03 minions, sandboxes y capacidad GPU; 04 transición Strangler. Son vistas del mismo diseño. La cuarta representa la migración; el clasificador P/A/IA no se denomina Strangler.
+01: arquitectura general con login y registro visibles, Circuit Breaker y SPOF condicionados al despliegue. 02: recorridos de alumno y docente. 03: minions, riesgos de recursos y control atómico de estados y resultados. 04: transición Strangler por curso y tarea.
+
+Los bottlenecks son candidatos a medir, no resultados de performance tests. El Circuit Breaker contiene fallos; no crea GPU ni elimina por sí mismo los SPOF. La lógica de aceptación ya estaba descrita en el REDALE; ahora se dibuja de forma explícita.
 
 # D — Diseñar el servicio
 
@@ -134,7 +136,7 @@ El **camino crítico de negocio** se representa como envío y guardado durable, 
 
 La laptop es un **SPOF del recorrido legacy** mientras sea su única ejecución. En el objetivo nuevo, backend, planificador y BD son **riesgos de SPOF si el despliegue elige una única instancia**; dibujar un módulo lógico no acredita redundancia. Antes del despliegue se debe decidir su recuperación o redundancia según los requisitos. Esta revisión no atribuye un SLA 24/7 al caso Spotty.
 
-La capacidad IA es un **bottleneck candidato**, por las duraciones GPU y la posible escasez del caso. También deben medirse preparación de imágenes, memoria, edad de colas y acceso a datos. Se validan estas hipótesis con pruebas; las etiquetas no sustituyen las mediciones.
+La capacidad IA es un **bottleneck candidato**, por las duraciones GPU y la posible escasez del caso. También se señalan como **bottlenecks candidatos** la preparación de imágenes de 3–5 GB y la RAM del host. Se medirán duración de descarga y arranque, picos de memoria, rechazos por límites y edad de colas antes de confirmar el diagnóstico. Se validan estas hipótesis con pruebas; las etiquetas no sustituyen las mediciones.
 
 # E — Escalar la arquitectura
 
@@ -162,7 +164,7 @@ Once GPU durante las 24 horas restantes alcanzarían solo para completar esa eje
 
 Cada función identifica una dimensión, un indicador y una rúbrica. Su ejecución queda asociada a pruebas de arquitectura con una carga y un conjunto de entregas definidos. No se declara que estas pruebas hayan sido ejecutadas sobre una implementación de Spotty.
 
-**FF1 — Integridad y confiabilidad.** Indicadores: entregas confirmadas que se pierden y resultados finales duplicados por trabajo. Rúbrica aceptable: **cero pérdidas y cero duplicados**. Prueba: interrumpir minions antes y después de guardar salida, reencolar trabajos y repetir solicitudes de finalización; comprobar los registros durables y rechazar intentos obsoletos.
+**FF1 — Integridad y confiabilidad.** Indicadores: entregas confirmadas que se pierden y resultados finales duplicados por trabajo. Rúbrica aceptable: **cero pérdidas y cero duplicados**. Prueba: interrumpir minions antes y después de guardar salida, reencolar trabajos, finalizar concurrentemente el mismo trabajo desde dos intentos y repetir solicitudes de finalización; comprobar los registros durables y rechazar intentos obsoletos.
 
 **FF2 — Aislamiento y seguridad.** Indicadores: accesos del sandbox a credenciales o datos ajenos, y afectación de otro pool bajo la carga de prueba. Rúbrica aceptable: **cero accesos prohibidos y continuidad del otro pool**. Prueba: código que supera memoria o tiempo o intenta acceder fuera de su entorno. Registrar la causa y detener únicamente la ejecución infractora en el escenario definido.
 

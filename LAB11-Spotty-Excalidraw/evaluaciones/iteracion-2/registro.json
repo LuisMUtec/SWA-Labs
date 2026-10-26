@@ -1,0 +1,26 @@
+{
+  "iteration": 2,
+  "startedAt": "2026-10-26T05:46:14.457792+00:00",
+  "completedAt": "2026-10-26T05:46:29.259533+00:00",
+  "endpoint": "https://arquisoft-clasificacion.balbuenac.workers.dev/evaluate?format=md&debug=0",
+  "httpStatus": 200,
+  "curlExitCode": 0,
+  "inputCommit": "a13d0b6a78a4f772eebadc5c1b23c71d5c2ede7a",
+  "repository": "LuisMUtec/SWA-Labs",
+  "branch": "lab11/spotty-prueba-excalidraw",
+  "path": "LAB11-Spotty-Excalidraw",
+  "credentialStored": false,
+  "previousScore": 2.3,
+  "resultSha256": "5943b05dd1dd53af0a4d96ca92fc2a43dbfa92be6a50646b16aa0e7ba30392ea",
+  "finalScore": 7.1,
+  "scores": {
+    "security": 0,
+    "reliability": 5,
+    "scalability": 10,
+    "spec": 8
+  },
+  "e2e": {
+    "criticalPath": true,
+    "happyPath": true
+  }
+}

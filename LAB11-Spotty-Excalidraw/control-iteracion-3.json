@@ -1,0 +1,18 @@
+{
+  "iteration": 3,
+  "status": "Borrador; entrega final pendiente de aprobación",
+  "elements": 168,
+  "frames": 4,
+  "visualReview": true,
+  "validReferences": true,
+  "protectedDbConnectionVerified": true,
+  "requirementsAndEstimatesUnchanged": true,
+  "changes": [
+    "Login y registro como componentes visibles",
+    "Estados alimentados desde coordinación y minions",
+    "Final único aceptado de forma atómica; duplicados e intentos obsoletos rechazados",
+    "Riesgos de GPU, imágenes y RAM como candidatos a medir",
+    "Backend como SPOF condicionado a un despliegue único"
+  ],
+  "proposedArchitectureTestsExecuted": false
+}
