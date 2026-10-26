@@ -29,4 +29,6 @@ Evaluación de la iteración 6 con imagen conjunta: **6.9/10** — [informe](eva
 
 ### Presentación legible de la misma iteración
 
-Se conserva el contenido de RF4 y RF5 y se cambia la lámina principal a una vista de 2000×2460 con letras mayores y recorridos continuos de evento a mobile y de revisión a publicación docente. Las cuatro vistas detalladas están en [material_revision](material_revision). Nueva comprobación del minion: pendiente.
+Se conserva el contenido de RF4 y RF5 y se cambia la lámina principal a una vista de 2000×2460 con letras mayores y recorridos continuos de evento a mobile y de revisión a publicación docente. Las cuatro vistas detalladas están en [material_revision](material_revision). Primera comprobación de la lámina legible: **9.4/10**, RF5 reconocido como completo — [informe](evaluaciones/iteracion-6-legible/resultado.md).
+
+Se explicitan dentro de los componentes RF4 la emisión del evento al cambiar de estado y el temporizador de consulta mobile de 30 segundos. Los requisitos y usuarios permanecen iguales. Verificación final de esta aclaración: pendiente.
