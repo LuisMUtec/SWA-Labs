@@ -1,0 +1,24 @@
+{
+  "startedAt": "2026-10-29T23:34:17Z",
+  "completedAt": "2026-10-29T23:34:31Z",
+  "endpoint": "https://arquisoft-clasificacion.balbuenac.workers.dev/evaluate?format=md&debug=0",
+  "httpStatus": 200,
+  "inputCommit": "de0e1c60e166ab86018d98c90253e78a0edf866a",
+  "repository": "LuisMUtec/SWA-Labs",
+  "branch": "lab12/chernobyl-evaluacion",
+  "path": "LAB12-SaveChernobyl",
+  "finalScore": 5.0,
+  "scores": {
+    "security": 0,
+    "reliability": 10,
+    "scalability": 0,
+    "spec": 10
+  },
+  "e2e": {
+    "criticalPath": true,
+    "happyPath": true
+  },
+  "resultSha256": "0206cc7df689b4859b1cab3c996b3dc512d11580659b36433a88b83b7a946c64",
+  "credentialStored": false,
+  "scope": "Propuesta inicial del equipo (29 oct 2026), sin correcciones"
+}

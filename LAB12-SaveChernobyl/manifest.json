@@ -1,0 +1,60 @@
+{
+  "source": "Lab12_SaveChernobyl_equipo.zip (2026-10-29)",
+  "files": [
+    {
+      "path": "Listado_Diagramas/Diagrama Final.excalidraw",
+      "bytes": 229220,
+      "sha256": "72e87684ea9ad2458275ce5fa429a3f93b8d62cc13fcacc13690fdb416bb33a9"
+    },
+    {
+      "path": "Listado_Diagramas/Diagrama Final.png",
+      "bytes": 1427475,
+      "sha256": "f3bd3e7da98ea1b40cc200d9f756063217581542414d42a7f35ed1c3ca86d60f"
+    },
+    {
+      "path": "Listado_Diagramas/README.md",
+      "bytes": 4441,
+      "sha256": "983df432b43f74768b0d38010ce7a4f1e1411090d12902b079d28e9afbec1105"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3146,
+      "sha256": "07b59dffbe325a0b4ed42da16f31434837645a021c371d19fc56c77e8e2c97b5"
+    },
+    {
+      "path": "evaluaciones/2026-10-29/registro.json",
+      "bytes": 749,
+      "sha256": "e0adaf924bebd8000a2aafce6fbc225d64ceb4bf543b405022745a2179058157"
+    },
+    {
+      "path": "evaluaciones/2026-10-29/resultado.md",
+      "bytes": 7687,
+      "sha256": "0206cc7df689b4859b1cab3c996b3dc512d11580659b36433a88b83b7a946c64"
+    },
+    {
+      "path": "evaluaciones/2026-10-29/solicitud.json",
+      "bytes": 244,
+      "sha256": "708be7ffd7c3060377d6aeba026c13746b5d31ba91bf72a26deedb39b45eb17c"
+    },
+    {
+      "path": "requerimientos/00-enunciado.md",
+      "bytes": 2588,
+      "sha256": "add10b4362b237218789e50e8e9a1846071d6db1da3e8e6b34acb49143b074ab"
+    },
+    {
+      "path": "requerimientos/01-requisitos.md",
+      "bytes": 3238,
+      "sha256": "d53ecad197a8744a78c983eca6aa88815b73f921422c85baa967bbc8f419efd4"
+    },
+    {
+      "path": "requerimientos/diagrama-enunciado.png",
+      "bytes": 94204,
+      "sha256": "b8b2e10fedc4a0c0b6eb070cd3455dbed5dff214a80bab5c80ae3c066cefd974"
+    },
+    {
+      "path": "users/operador.md",
+      "bytes": 1214,
+      "sha256": "c3b7f3844c52c8c8601a45735cdb5ba177e688c6a05bb061d6b35c1c87aff240"
+    }
+  ]
+}
