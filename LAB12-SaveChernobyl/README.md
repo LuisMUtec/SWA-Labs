@@ -40,3 +40,21 @@ Lectura del resultado: el evaluador trabaja sobre una versión reducida de la im
 - [Informe completo](evaluaciones/2026-10-29/resultado.md)
 - [Solicitud usada](evaluaciones/2026-10-29/solicitud.json)
 - [Registro de la corrida](evaluaciones/2026-10-29/registro.json)
+
+## Segunda evaluación (v2 del diagrama)
+
+Corrida del 29 de octubre de 2026 sobre el commit `5f05820cd048eac6831efcd91bd32c1422985534`: **9.4/10** («Good but now our boss will evaluate you»).
+
+| Minion | Peso | v1 | v2 | Qué dijo de v2 |
+|---|---|---|---|---|
+| Security | 1 | 0 | **10** | Encontró Login / Auth Service y User Registration Service. |
+| Reliability | 3 | 10 | **10** | Bottleneck en Log DB con Read Replica + Cache-Aside; SPOF en Main Controller legacy protegido con Circuit Breaker + Retry. |
+| Scalability | 4 | 0 | **9** | Strangler, Side-car, Cache-Aside y Replicas bien etiquetados e implementados (4/4 + 5/6). Descuenta 1 porque Sharding solo aparece como texto en Log DB y en la leyenda, sin partición dibujada. |
+| Spec | 2 | 10 | **9** | Operador, RF1 y RF5 completos. RF6 parcial: los flujos alternos OFF 1 / OFF 2 están como texto, pero no está dibujado el camino de control degradado cuando falla un sensor o el Main. |
+| E2E | — | ✅ ✅ | ❌ ✅ | Happy path completo. Critical path «no cumple» porque no encontró una marca literal «critical path» en el dibujo (la leyenda la menciona en texto chico). |
+
+Lo que queda para una v3, por orden de valor: dibujar el sharding del Log DB (una partición por reactor), dibujar el flujo degradado de OFF 1 y OFF 2 como flechas rojas, y poner una etiqueta literal «CRITICAL PATH» sobre el camino verde.
+
+- [Informe completo](evaluaciones/2026-10-29-v2/resultado.md)
+- [Solicitud usada](evaluaciones/2026-10-29-v2/solicitud.json)
+- [Registro de la corrida](evaluaciones/2026-10-29-v2/registro.json)

@@ -3,13 +3,13 @@
   "files": [
     {
       "path": "Listado_Diagramas/Diagrama Final.excalidraw",
-      "bytes": 229220,
-      "sha256": "72e87684ea9ad2458275ce5fa429a3f93b8d62cc13fcacc13690fdb416bb33a9"
+      "bytes": 126796,
+      "sha256": "a0560d99e349aef58988321c263b44eb497844e3a7b93a7a36f351acc9cfd7fc"
     },
     {
       "path": "Listado_Diagramas/Diagrama Final.png",
-      "bytes": 1427475,
-      "sha256": "f3bd3e7da98ea1b40cc200d9f756063217581542414d42a7f35ed1c3ca86d60f"
+      "bytes": 633276,
+      "sha256": "ac14df249cd1f6e8d8cd088de8503dd6739433d1f14e2111694155de82d6918b"
     },
     {
       "path": "Listado_Diagramas/README.md",
@@ -18,8 +18,23 @@
     },
     {
       "path": "README.md",
-      "bytes": 3146,
-      "sha256": "07b59dffbe325a0b4ed42da16f31434837645a021c371d19fc56c77e8e2c97b5"
+      "bytes": 5884,
+      "sha256": "7b0a571116bfa3fdb0784f13b138011f430cdfb75fcfec30a59ae2e09bf7dd2e"
+    },
+    {
+      "path": "evaluaciones/2026-10-29-v2/registro.json",
+      "bytes": 804,
+      "sha256": "9cc278573c1fa4722f1683072712b24ac26c6d73c2895c5d1e1811f81ae2f368"
+    },
+    {
+      "path": "evaluaciones/2026-10-29-v2/resultado.md",
+      "bytes": 8591,
+      "sha256": "1a6999616ab6c46d5a2a04e16164c436a854b218cbbf1877422b95b88d9e8bfa"
+    },
+    {
+      "path": "evaluaciones/2026-10-29-v2/solicitud.json",
+      "bytes": 244,
+      "sha256": "222091937f13b2e858a7406d05abd72a17ee2cb877275d6ea1d60a9e73af2cf5"
     },
     {
       "path": "evaluaciones/2026-10-29/registro.json",
@@ -50,6 +65,26 @@
       "path": "requerimientos/diagrama-enunciado.png",
       "bytes": 94204,
       "sha256": "b8b2e10fedc4a0c0b6eb070cd3455dbed5dff214a80bab5c80ae3c066cefd974"
+    },
+    {
+      "path": "scripts/build_final.py",
+      "bytes": 11818,
+      "sha256": "ac2255d7bc32c3edd814ebe88c3bf61960e52b9e2472759ec3ca556edfdea361"
+    },
+    {
+      "path": "scripts/render_chrome.py",
+      "bytes": 1401,
+      "sha256": "11ee84dee62346ad00ec6025eea2c789ad718c87111a4ec818044cd8d1c8b5f9"
+    },
+    {
+      "path": "scripts/render_x.py",
+      "bytes": 8928,
+      "sha256": "aa500fd3f2d6f5ee65290d406d2db6d431b4c4d63f99dd399011e3c7f99751d0"
+    },
+    {
+      "path": "scripts/xlib.py",
+      "bytes": 11722,
+      "sha256": "e1935511d091cedb0fffd8e659115d31b93806fe6d2fd961eb9837eb2753c77f"
     },
     {
       "path": "users/operador.md",

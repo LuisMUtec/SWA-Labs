@@ -1,0 +1,25 @@
+{
+  "startedAt": "2026-10-29T23:49:26Z",
+  "completedAt": "2026-10-29T23:49:40Z",
+  "endpoint": "https://arquisoft-clasificacion.balbuenac.workers.dev/evaluate?format=md&debug=0",
+  "httpStatus": 200,
+  "inputCommit": "5f05820cd048eac6831efcd91bd32c1422985534",
+  "repository": "LuisMUtec/SWA-Labs",
+  "branch": "lab12/chernobyl-evaluacion",
+  "path": "LAB12-SaveChernobyl",
+  "finalScore": 9.4,
+  "scores": {
+    "security": 10,
+    "reliability": 10,
+    "scalability": 9,
+    "spec": 9
+  },
+  "e2e": {
+    "criticalPath": false,
+    "happyPath": true
+  },
+  "resultSha256": "1a6999616ab6c46d5a2a04e16164c436a854b218cbbf1877422b95b88d9e8bfa",
+  "credentialStored": false,
+  "scope": "v2: una sola lamina to-be, etiquetas de patron, SPOF/Bottleneck, Login + User Registration",
+  "baselineScore": 5.0
+}
