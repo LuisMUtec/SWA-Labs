@@ -12,14 +12,24 @@
       "sha256": "ac14df249cd1f6e8d8cd088de8503dd6739433d1f14e2111694155de82d6918b"
     },
     {
+      "path": "Listado_Diagramas/Lamina 2 - Legacy.excalidraw",
+      "bytes": 76206,
+      "sha256": "8b17a95cb46cc32e6075d5f62a09b542d34d58a05ffd6e72579c394a3ad2746d"
+    },
+    {
+      "path": "Listado_Diagramas/Lamina 2 - Legacy.png",
+      "bytes": 327299,
+      "sha256": "60b3a21164c13f35c9b31d7392bf9b7c8056498fecb26023e3a772622a45bcc6"
+    },
+    {
       "path": "Listado_Diagramas/README.md",
       "bytes": 4441,
       "sha256": "983df432b43f74768b0d38010ce7a4f1e1411090d12902b079d28e9afbec1105"
     },
     {
       "path": "README.md",
-      "bytes": 5884,
-      "sha256": "7b0a571116bfa3fdb0784f13b138011f430cdfb75fcfec30a59ae2e09bf7dd2e"
+      "bytes": 6798,
+      "sha256": "1d4bbd6d9f6b378190988f68c17e1a48c17bddc4dac33462ca07069cfb4e890e"
     },
     {
       "path": "evaluaciones/2026-10-29-v2/registro.json",
@@ -70,6 +80,11 @@
       "path": "scripts/build_final.py",
       "bytes": 11818,
       "sha256": "ac2255d7bc32c3edd814ebe88c3bf61960e52b9e2472759ec3ca556edfdea361"
+    },
+    {
+      "path": "scripts/build_legacy_simple.py",
+      "bytes": 5358,
+      "sha256": "2d0e94c867dd32adcba5deedfecd61928bae6ee8bff59cefe61cd12b3cc9ef99"
     },
     {
       "path": "scripts/render_chrome.py",

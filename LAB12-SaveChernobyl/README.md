@@ -19,6 +19,8 @@ Paquete del Lab 12 (Reliability Patterns, Fault Tolerance, Legacy Migration, Sca
 - Alert Service replicado (en v1 era una caja sola).
 - Los flujos alternos, la leyenda y el resumen de patrones pasan a bloques de texto al pie.
 
+**Lámina 2 — el legacy por dentro** (`Listado_Diagramas/Lamina 2 - Legacy.png`, generada con `scripts/build_legacy_simple.py`): responde al pedido del profesor del 27 de octubre de no dejar el legacy como una caja genérica. Foto actual del legacy como supuesto declarado (el enunciado no describe el interior) con qué se conserva (verde), qué se cambia envolviéndolo (naranja) y qué se retira (rojo); los tres puntos de integración y el patrón que cuelga de cada uno (ACL; Strangler Router por reactor + Circuit Breaker, Parallel Run con comparador de decisiones; Database View Layer, Event Interception, Sidecar Proxy); el costo del doble mantenimiento; la migración de datos como decisión propia (híbrida con conciliación: Loader ETL por orden de foreign keys, CDC en vivo, conciliación ON/OFF que bloquea el GO) y las fases 0 a 3. El minion no puntúa nada de esto; es para la revisión humana.
+
 Repositorio: `LuisMUtec/SWA-Labs`, rama `lab12/chernobyl-evaluacion`, carpeta `LAB12-SaveChernobyl`. El evaluador recibe `path: "LAB12-SaveChernobyl"` y los nombres relativos `requerimientos`, `users` y `Listado_Diagramas`. La imagen principal se llama `Diagrama Final.png`, como exige el servicio. Cada evaluación registra el commit exacto enviado.
 
 Pendiente: TEAM e INTEGRANTES en la cabecera del diagrama y en el PDF de criterios.
