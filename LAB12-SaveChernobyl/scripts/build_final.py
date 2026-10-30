@@ -25,7 +25,7 @@ def block(x, y, title, lines, color=BLACK, fs=14, title_fs=22):
 
 # ------------------------------------------------------------------ cabecera
 c.text(0, -150, 'Lab #12 - Save Chernobyl ( medium ) - Arquitectura to-be - Arquitectura de Software 2026-II', 32)
-c.text(0, -105, 'TEAM: Maquera - Barzola     INTEGRANTES: Luis Maquera, Johar Barzola     Prof. Carlos Balbuena', 20)
+c.text(0, -105, 'TEAM: Maquera - Barzola  ·  INTEGRANTES: Luis Maquera, Johar Barzola  ·  Prof. Carlos Balbuena', 20)
 c.text(0, -72, 'Reliability + fault tolerance + coexistencia con el legacy (<< Strangler >>): reactor 1 migrado al controller nuevo; reactores 2 y 3 siguen en el legacy.   Cajas apiladas = << Replicas >>.', 16, GRAY)
 
 # ------------------------------------------------------------------ carril 1: critical path (HOST reactor 1)

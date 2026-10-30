@@ -8,23 +8,23 @@
     },
     {
       "path": "Listado_Diagramas/Diagrama Final.excalidraw",
-      "bytes": 126808,
-      "sha256": "fe747c490ef2e076b9dc652fd9950599c77795c877e8a325283ac577dadb002d"
+      "bytes": 126812,
+      "sha256": "29b50ba8b874dc598725b04285f5d0faa88dcf388a14f3fbb065a52235f3cd01"
     },
     {
       "path": "Listado_Diagramas/Diagrama Final.png",
-      "bytes": 636828,
-      "sha256": "9f080f69af29c09d1155b61c478a54dc07b3e1e7d4bedb6f6d329299223bd9f1"
+      "bytes": 637022,
+      "sha256": "e357f362a22da3f64063635fdd550b627363cea840a526514a61f5c16a5609a4"
     },
     {
       "path": "Listado_Diagramas/Lamina 2 - Legacy.excalidraw",
-      "bytes": 77158,
-      "sha256": "e9f2d0cd09d7eca55405df45a28757ed4afdedc2223cfe3f1a9f7cd17c635651"
+      "bytes": 77162,
+      "sha256": "c16199c06e82a397641446626fb433d31035c4f7741ba23909f2f093c0364c4a"
     },
     {
       "path": "Listado_Diagramas/Lamina 2 - Legacy.png",
-      "bytes": 337869,
-      "sha256": "fc109bf712d6beca225d16e5a647fcef8c3c37f16f9899aa4cfbbcfc8fb44407"
+      "bytes": 337755,
+      "sha256": "a2547ea38040ac03af9c24c4cbc49f489cea6016fa00b1b9e634ed24e19b4e73"
     },
     {
       "path": "Listado_Diagramas/README.md",
@@ -83,13 +83,13 @@
     },
     {
       "path": "scripts/build_final.py",
-      "bytes": 11824,
-      "sha256": "73b447d692997ba2156e5a5a55fbf47134549b889315a6ee7c492998fed0e69a"
+      "bytes": 11826,
+      "sha256": "960c58feef0857da2e783b1cc588123e34ef01ae6a67ca9e9d9f6c1fb03bf345"
     },
     {
       "path": "scripts/build_legacy_simple.py",
-      "bytes": 5475,
-      "sha256": "19158fae5b461c6744ef593c7a0b6c1cb27c49f096f94bf00c59638ef544f288"
+      "bytes": 5477,
+      "sha256": "bd3168b0ad9bb862d7bea61c6855cbd68ae849ea75eeb677566482515d2da457"
     },
     {
       "path": "scripts/render_chrome.py",
