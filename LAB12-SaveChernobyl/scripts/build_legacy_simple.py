@@ -21,7 +21,8 @@ def pbox(x, y, w, h, txt, stroke=BLACK, fs=20):
 
 # ------------------------------------------------------------------ cabecera
 c.text(0, -150, 'Lab #12 - Save Chernobyl - Lamina 2: el legacy por dentro y como convivimos con el', 32)
-c.text(0, -100, 'Verde = CONSERVAR     Naranja = CAMBIAR (envolver, no reescribir)     Rojo = RETIRAR     (1) (2) (3) = puntos de integracion', 18, GRAY)
+c.text(0, -110, 'TEAM: Maquera - Barzola     INTEGRANTES: Luis Maquera, Johar Barzola     Prof. Carlos Balbuena', 18)
+c.text(0, -78, 'Verde = CONSERVAR     Naranja = CAMBIAR (envolver, no reescribir)     Rojo = RETIRAR     (1) (2) (3) = puntos de integracion', 18, GRAY)
 
 # ------------------------------------------------------------------ A. foto actual
 legbox = c.box(0, 0, 1400, 780, GRAY, 'dashed')

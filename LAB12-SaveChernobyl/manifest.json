@@ -2,29 +2,34 @@
   "source": "Lab12_SaveChernobyl_equipo.zip (2026-10-29)",
   "files": [
     {
+      "path": "Listado_Diagramas/Criterios_Escalabilidad.pdf",
+      "bytes": 127770,
+      "sha256": "a8b602caf4a4f5314f1bec56a76301324baacf268bc38c17ca2f83782378d128"
+    },
+    {
       "path": "Listado_Diagramas/Diagrama Final.excalidraw",
-      "bytes": 126796,
-      "sha256": "a0560d99e349aef58988321c263b44eb497844e3a7b93a7a36f351acc9cfd7fc"
+      "bytes": 126808,
+      "sha256": "fe747c490ef2e076b9dc652fd9950599c77795c877e8a325283ac577dadb002d"
     },
     {
       "path": "Listado_Diagramas/Diagrama Final.png",
-      "bytes": 633276,
-      "sha256": "ac14df249cd1f6e8d8cd088de8503dd6739433d1f14e2111694155de82d6918b"
+      "bytes": 636828,
+      "sha256": "9f080f69af29c09d1155b61c478a54dc07b3e1e7d4bedb6f6d329299223bd9f1"
     },
     {
       "path": "Listado_Diagramas/Lamina 2 - Legacy.excalidraw",
-      "bytes": 76206,
-      "sha256": "8b17a95cb46cc32e6075d5f62a09b542d34d58a05ffd6e72579c394a3ad2746d"
+      "bytes": 77158,
+      "sha256": "e9f2d0cd09d7eca55405df45a28757ed4afdedc2223cfe3f1a9f7cd17c635651"
     },
     {
       "path": "Listado_Diagramas/Lamina 2 - Legacy.png",
-      "bytes": 327299,
-      "sha256": "60b3a21164c13f35c9b31d7392bf9b7c8056498fecb26023e3a772622a45bcc6"
+      "bytes": 337869,
+      "sha256": "fc109bf712d6beca225d16e5a647fcef8c3c37f16f9899aa4cfbbcfc8fb44407"
     },
     {
       "path": "Listado_Diagramas/README.md",
-      "bytes": 4441,
-      "sha256": "983df432b43f74768b0d38010ce7a4f1e1411090d12902b079d28e9afbec1105"
+      "bytes": 4473,
+      "sha256": "bfbdc38f57d0a42cb0841e27a516709530fc68cbe28f4f9f735f70b88d0fcc5e"
     },
     {
       "path": "README.md",
@@ -78,13 +83,13 @@
     },
     {
       "path": "scripts/build_final.py",
-      "bytes": 11818,
-      "sha256": "ac2255d7bc32c3edd814ebe88c3bf61960e52b9e2472759ec3ca556edfdea361"
+      "bytes": 11824,
+      "sha256": "73b447d692997ba2156e5a5a55fbf47134549b889315a6ee7c492998fed0e69a"
     },
     {
       "path": "scripts/build_legacy_simple.py",
-      "bytes": 5358,
-      "sha256": "2d0e94c867dd32adcba5deedfecd61928bae6ee8bff59cefe61cd12b3cc9ef99"
+      "bytes": 5475,
+      "sha256": "19158fae5b461c6744ef593c7a0b6c1cb27c49f096f94bf00c59638ef544f288"
     },
     {
       "path": "scripts/render_chrome.py",

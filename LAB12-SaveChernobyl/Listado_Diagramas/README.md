@@ -1,6 +1,6 @@
 # Lab #12 – Save Chernobyl – Entregable 2: Criterios hipotéticos de escalabilidad
 
-**Arquitectura de Software 2026-II · Prof. Carlos Balbuena · TEAM: ______ · INTEGRANTES: ______**
+**Arquitectura de Software 2026-II · Prof. Carlos Balbuena · TEAM: Maquera - Barzola · INTEGRANTES: Luis Maquera, Johar Barzola**
 
 Son hipotéticos porque aún no hay data: se confirman con logs, monitoring, dashboards y performance testing (S10). Regla: "Scale your architecture only when needed, not before" (S11 p8).
 
